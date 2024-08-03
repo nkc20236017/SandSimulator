@@ -3,6 +3,13 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
+public enum BrushType
+{
+    Circle,
+    Square,
+    Smooth,
+}
+
 public enum TileType
 {
     None,
@@ -23,6 +30,7 @@ public struct TileData
 public class FallingSandSimulation : MonoBehaviour
 {
     [Header("Config")]
+    [SerializeField] private BrushType brushType;
     [SerializeField] private TileType tileType;
     [SerializeField] private Tilemap tilemap;
     [SerializeField] private TileData[] tiles;
@@ -49,11 +57,11 @@ public class FallingSandSimulation : MonoBehaviour
 
                 if (tileType == TileType.None)
                 {
-                    PlaceCircle(null, centerCell, size / 2);
+                    PlaceTiles(null, centerCell, size / 2);
                 }
                 else
                 {
-                    PlaceCircle(tile.tile, centerCell, size / 2);
+                    PlaceTiles(tile.tile, centerCell, size / 2);
                 }
                 break;
             }
@@ -63,7 +71,7 @@ public class FallingSandSimulation : MonoBehaviour
         {
             var mouseWorldPos = _camera.ScreenToWorldPoint(Input.mousePosition);
             var centerCell = tilemap.WorldToCell(mouseWorldPos);
-            PlaceCircle(null, centerCell, size / 2);
+            PlaceTiles(null, centerCell, size / 2);
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -78,17 +86,27 @@ public class FallingSandSimulation : MonoBehaviour
         }
     }
 
-    private void PlaceCircle(TileBase tile, Vector3Int center, int radius)
+    private void PlaceTiles(TileBase tile, Vector3Int center, int radius)
     {
-        for (var y = -radius; y <= radius; y++)
+        if (brushType == BrushType.Smooth)
         {
-            for (var x = -radius; x <= radius; x++)
+            // TODO: 平滑化処理を実装する
+        }
+        else
+        {
+            for (var y = -radius; y <= radius; y++)
             {
-                var pos = new Vector3Int(center.x + x, center.y + y, center.z);
-                if (Vector3Int.Distance(center, pos) > radius) { continue; }
-                if (tilemap.HasTile(pos) && tile != null) { continue; }
+                for (var x = -radius; x <= radius; x++)
+                {
+                    var pos = new Vector3Int(center.x + x, center.y + y, center.z);
+                    if (brushType == BrushType.Circle)
+                    {
+                        if (Vector3Int.Distance(center, pos) > radius) { continue; }
+                    }
+                    if (tilemap.HasTile(pos) && tile != null) { continue; }
                 
-                tilemap.SetTile(pos, tile);
+                    tilemap.SetTile(pos, tile);
+                }
             }
         }
     }
@@ -97,9 +115,7 @@ public class FallingSandSimulation : MonoBehaviour
     {
         // TODO: 四分木を使って高速化する
         var bounds = tilemap.cellBounds;
-        
         var allTiles = tilemap.GetTilesBlock(bounds);
-        
         for (var y = bounds.yMin; y < bounds.yMax; y++)
         {
             // 左右の行を交互に処理することで、片方ばかりに流れるのを防ぐ
@@ -107,218 +123,131 @@ public class FallingSandSimulation : MonoBehaviour
             {
                 for (var x = bounds.xMax - 1; x >= bounds.xMin; x--)
                 {
-                    foreach (var tile in tiles)
-                    {
-                        if (tile.canFall)
-                        {
-                            var pos = new Vector3Int(x, y, 0);
-                            var index = pos.y * bounds.size.x + pos.x - (bounds.position.y * bounds.size.x + bounds.position.x);
-                            if (allTiles[index] != tile.tile) { continue; }
-
-                            var below = new Vector3Int(x, y - 1, 0);
-                            var belowLeft = new Vector3Int(x - 1, y - 1, 0);
-                            var belowRight = new Vector3Int(x + 1, y - 1, 0);
-                            if (y <= -50) { break; }
-
-                            if (!tilemap.HasTile(below))
-                            {
-                                // 各々即時に落下することで、セルオートマトン特有の間が空く減少を回避
-                                tilemap.SetTile(below, tile.tile);
-                                tilemap.SetTile(pos, null);
-                            }
-                            else
-                            {
-                                // 左右ランダムに流れるようにする
-                                var random = Random.Range(0, 2);
-                                if (random == 0)
-                                {
-                                    if (!tilemap.HasTile(belowLeft))
-                                    {
-                                        tilemap.SetTile(belowLeft, tile.tile);
-                                        tilemap.SetTile(pos, null);
-                                    }
-                                }
-                                else if (random == 1)
-                                {
-                                    if (!tilemap.HasTile(belowRight))
-                                    {
-                                        tilemap.SetTile(belowRight, tile.tile);
-                                        tilemap.SetTile(pos, null);
-                                    }
-                                }
-                            } 
-                        }
-                        else if (tile.canWater)
-                        {
-                            var pos = new Vector3Int(x, y, 0);
-                            var index = pos.y * bounds.size.x + pos.x - (bounds.position.y * bounds.size.x + bounds.position.x);
-                            if (allTiles[index] != tile.tile) { continue; }
-
-                            var right = new Vector3Int(x + 1, y, 0);
-                            var left = new Vector3Int(x - 1, y, 0);
-                            var below = new Vector3Int(x, y - 1, 0);
-                            var belowLeft = new Vector3Int(x - 1, y - 1, 0);
-                            var belowRight = new Vector3Int(x + 1, y - 1, 0);
-                            if (y <= -50) { break; }
-
-                            if (!tilemap.HasTile(below))
-                            {
-                                // 各々即時に落下することで、セルオートマトン特有の間が空く減少を回避
-                                tilemap.SetTile(below, tile.tile);
-                                tilemap.SetTile(pos, null);
-                            }
-                            else if (!tilemap.HasTile(belowLeft) || !tilemap.HasTile(belowRight))
-                            {
-                                // 左右ランダムに流れるようにする
-                                var random = Random.Range(0, 2);
-                                if (random == 0)
-                                {
-                                    if (!tilemap.HasTile(belowLeft))
-                                    {
-                                        tilemap.SetTile(belowLeft, tile.tile);
-                                        tilemap.SetTile(pos, null);
-                                    }
-                                }
-                                else if (random == 1)
-                                {
-                                    if (!tilemap.HasTile(belowRight))
-                                    {
-                                        tilemap.SetTile(belowRight, tile.tile);
-                                        tilemap.SetTile(pos, null);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                var random = Random.Range(0, 2);
-                                if (random == 0)
-                                {
-                                    if (!tilemap.HasTile(left))
-                                    {
-                                        tilemap.SetTile(left, tile.tile);
-                                        tilemap.SetTile(pos, null);
-                                    }
-                                }
-                                else if (random == 1)
-                                {
-                                    if (!tilemap.HasTile(right))
-                                    {
-                                        tilemap.SetTile(right, tile.tile);
-                                        tilemap.SetTile(pos, null);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    Tiles(x, y, bounds, allTiles);
                 }
             }
             else
             {
                 for (var x = bounds.xMin; x < bounds.xMax; x++)
                 {
-                    foreach (var tile in tiles)
-                    {
-                        if (tile.canFall)
-                        {
-                            var pos = new Vector3Int(x, y, 0);
-                            var index = pos.y * bounds.size.x + pos.x - (bounds.position.y * bounds.size.x + bounds.position.x);
-                            if (allTiles[index] != tile.tile) { continue; }
+                    Tiles(x, y, bounds, allTiles);
+                }
+            }
+        }
+    }
 
-                            var below = new Vector3Int(x, y - 1, 0);
-                            var belowLeft = new Vector3Int(x - 1, y - 1, 0);
-                            var belowRight = new Vector3Int(x + 1, y - 1, 0);
-                            if (y <= -50) { break; }
+    private void Tiles(int x, int y, BoundsInt bounds, TileBase[] allTiles)
+    {
+        foreach (var tile in tiles)
+        {
+            if (tile.canFall)
+            {
+                FallTiles(x, y, bounds, allTiles, tile);
+            }
+            else if (tile.canWater)
+            {
+                WaterTiles(x, y, bounds, allTiles, tile);
+            }
+        }
+    }
 
-                            if (!tilemap.HasTile(below))
-                            {
-                                // 各々即時に落下することで、セルオートマトン特有の間が空く減少を回避
-                                tilemap.SetTile(below, tile.tile);
-                                tilemap.SetTile(pos, null);
-                            }
-                            else
-                            {
-                                // 左右ランダムに流れるようにする
-                                var random = Random.Range(0, 2);
-                                if (random == 0)
-                                {
-                                    if (!tilemap.HasTile(belowLeft))
-                                    {
-                                        tilemap.SetTile(belowLeft, tile.tile);
-                                        tilemap.SetTile(pos, null);
-                                    }
-                                }
-                                else if (random == 1)
-                                {
-                                    if (!tilemap.HasTile(belowRight))
-                                    {
-                                        tilemap.SetTile(belowRight, tile.tile);
-                                        tilemap.SetTile(pos, null);
-                                    }
-                                }
-                            } 
-                        }
-                        else if (tile.canWater)
-                        {
-                            var pos = new Vector3Int(x, y, 0);
-                            var index = pos.y * bounds.size.x + pos.x - (bounds.position.y * bounds.size.x + bounds.position.x);
-                            if (allTiles[index] != tile.tile) { continue; }
+    private void WaterTiles(int x, int y, BoundsInt bounds, TileBase[] allTiles, TileData tile)
+    {
+        var pos = new Vector3Int(x, y, 0);
+        var index = pos.y * bounds.size.x + pos.x - (bounds.position.y * bounds.size.x + bounds.position.x);
+        if (allTiles[index] != tile.tile) { return; }
 
-                            var right = new Vector3Int(x + 1, y, 0);
-                            var left = new Vector3Int(x - 1, y, 0);
-                            var below = new Vector3Int(x, y - 1, 0);
-                            var belowLeft = new Vector3Int(x - 1, y - 1, 0);
-                            var belowRight = new Vector3Int(x + 1, y - 1, 0);
-                            if (y <= -50) { break; }
+        var right = new Vector3Int(x + 1, y, 0);
+        var left = new Vector3Int(x - 1, y, 0);
+        var below = new Vector3Int(x, y - 1, 0);
+        var belowLeft = new Vector3Int(x - 1, y - 1, 0);
+        var belowRight = new Vector3Int(x + 1, y - 1, 0);
+        if (y <= -50) { return; }
 
-                            if (!tilemap.HasTile(below))
-                            {
-                                // 各々即時に落下することで、セルオートマトン特有の間が空く減少を回避
-                                tilemap.SetTile(below, tile.tile);
-                                tilemap.SetTile(pos, null);
-                            }
-                            else if (!tilemap.HasTile(belowLeft) || !tilemap.HasTile(belowRight))
-                            {
-                                // 左右ランダムに流れるようにする
-                                var random = Random.Range(0, 2);
-                                if (random == 0)
-                                {
-                                    if (!tilemap.HasTile(belowLeft))
-                                    {
-                                        tilemap.SetTile(belowLeft, tile.tile);
-                                        tilemap.SetTile(pos, null);
-                                    }
-                                }
-                                else if (random == 1)
-                                {
-                                    if (!tilemap.HasTile(belowRight))
-                                    {
-                                        tilemap.SetTile(belowRight, tile.tile);
-                                        tilemap.SetTile(pos, null);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                var random = Random.Range(0, 2);
-                                if (random == 0)
-                                {
-                                    if (!tilemap.HasTile(left))
-                                    {
-                                        tilemap.SetTile(left, tile.tile);
-                                        tilemap.SetTile(pos, null);
-                                    }
-                                }
-                                else if (random == 1)
-                                {
-                                    if (!tilemap.HasTile(right))
-                                    {
-                                        tilemap.SetTile(right, tile.tile);
-                                        tilemap.SetTile(pos, null);
-                                    }
-                                }
-                            }
-                        }
-                    }
+        if (!tilemap.HasTile(below))
+        {
+            // 各々即時に落下することで、セルオートマトン特有の間が空く減少を回避
+            tilemap.SetTile(below, tile.tile);
+            tilemap.SetTile(pos, null);
+        }
+        else if (!tilemap.HasTile(belowLeft) || !tilemap.HasTile(belowRight))
+        {
+            // 左右ランダムに流れるようにする
+            var random = Random.Range(0, 2);
+            if (random == 0)
+            {
+                if (!tilemap.HasTile(belowLeft))
+                {
+                    tilemap.SetTile(belowLeft, tile.tile);
+                    tilemap.SetTile(pos, null);
+                }
+            }
+            else if (random == 1)
+            {
+                if (!tilemap.HasTile(belowRight))
+                {
+                    tilemap.SetTile(belowRight, tile.tile);
+                    tilemap.SetTile(pos, null);
+                }
+            }
+        }
+        else if (!tilemap.HasTile(left) || !tilemap.HasTile(right))
+        {
+            var random = Random.Range(0, 2);
+            if (random == 0)
+            {
+                if (!tilemap.HasTile(left))
+                {
+                    tilemap.SetTile(left, tile.tile);
+                    tilemap.SetTile(pos, null);
+                }
+            }
+            else if (random == 1)
+            {
+                if (!tilemap.HasTile(right))
+                {
+                    tilemap.SetTile(right, tile.tile);
+                    tilemap.SetTile(pos, null);
+                }
+            }
+        }
+    }
+
+    private void FallTiles(int x, int y, BoundsInt bounds, TileBase[] allTiles, TileData tile)
+    {
+        var pos = new Vector3Int(x, y, 0);
+        var index = pos.y * bounds.size.x + pos.x - (bounds.position.y * bounds.size.x + bounds.position.x);
+        if (allTiles[index] != tile.tile) { return; }
+
+        var below = new Vector3Int(x, y - 1, 0);
+        var belowLeft = new Vector3Int(x - 1, y - 1, 0);
+        var belowRight = new Vector3Int(x + 1, y - 1, 0);
+        if (y <= -50) { return; }
+
+        if (!tilemap.HasTile(below))
+        {
+            // 各々即時に落下することで、セルオートマトン特有の間が空く減少を回避
+            tilemap.SetTile(below, tile.tile);
+            tilemap.SetTile(pos, null);
+        }
+        else
+        {
+            // 左右ランダムに流れるようにする
+            var random = Random.Range(0, 2);
+            if (random == 0)
+            {
+                if (!tilemap.HasTile(belowLeft))
+                {
+                    tilemap.SetTile(belowLeft, tile.tile);
+                    tilemap.SetTile(pos, null);
+                }
+            }
+            else if (random == 1)
+            {
+                if (!tilemap.HasTile(belowRight))
+                {
+                    tilemap.SetTile(belowRight, tile.tile);
+                    tilemap.SetTile(pos, null);
                 }
             }
         }

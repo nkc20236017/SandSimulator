@@ -407,7 +407,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30f991fbddc549ff8cae9305b927d6e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileType: 1
+  brushType: 0
+  tileType: 2
   tilemap: {fileID: 15525209}
   tiles:
   - type: 0
@@ -580,6 +581,67 @@ Transform:
   - {fileID: 15525204}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2032850666
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2032850668}
+  - component: {fileID: 2032850667}
+  m_Layer: 0
+  m_Name: MapGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2032850667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2032850666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8141a3f7c0e34efcb398fd62699a8bdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tilemap: {fileID: 15525209}
+  tiles:
+  - name: Air - 55%
+    tile: {fileID: 0}
+    generationRate: 0.6
+  - name: Mud - 25%
+    tile: {fileID: 11400000, guid: f71c8f4de0d0c4c4ca5f4f79858b001b, type: 2}
+    generationRate: 0.25
+  - name: Sand - 15%
+    tile: {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
+    generationRate: 0.15
+  - name: Water - 5%
+    tile: {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
+    generationRate: 0.05
+  mapSize: {x: 0, y: 0}
+  seed: 0
+  modifier: 0
+--- !u!4 &2032850668
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2032850666}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -587,3 +649,4 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 335915410}
   - {fileID: 680185297}
+  - {fileID: 2032850668}
