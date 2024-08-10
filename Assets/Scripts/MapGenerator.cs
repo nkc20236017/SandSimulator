@@ -47,4 +47,3 @@ public class MapGenerator : MonoBehaviour
 		}
 	}
 }
-
