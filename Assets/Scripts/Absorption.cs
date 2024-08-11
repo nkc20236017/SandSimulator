@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -14,7 +15,10 @@ public class Absorption : MonoBehaviour
 	[SerializeField] private float sightAngle;
 	[SerializeField] private float absorptionDistance;
 	[SerializeField] private float deleteDistance;
+	[SerializeField] private int capacity;
 
+	private int _currentCapacity;
+	private int[] _tileCapacityCount;
 	private Camera _camera;
 	
 	public List<Vector3Int> AbsorptionTilePositions { get; private set; } = new();
@@ -22,11 +26,22 @@ public class Absorption : MonoBehaviour
 	private void Start()
 	{
 		_camera = Camera.main;
+		_tileCapacityCount = new int[TilesUpdate.Instance.TileDatas.Length];
 	}
 
 	private void Update()
 	{
 		RotateToCursorDirection();
+
+		if (capacity != 0)
+		{
+			if (_currentCapacity >= capacity) { return; }
+		}
+
+		if (Input.GetMouseButtonUp(0))
+		{
+			AbsorptionTilePositions.Clear();
+		}
 		
 		if (!Input.GetMouseButton(0)) { return; }
 		
@@ -55,19 +70,48 @@ public class Absorption : MonoBehaviour
 		{
 			var tile = tilemap.GetTile(tilePosition);
 			if (tile == null) { continue; }
-			tilemap.SetColliderType(tilePosition, UnityEngine.Tilemaps.Tile.ColliderType.None);
 			
 			var direction = (pivot.position - tilemap.GetCellCenterWorld(tilePosition)).normalized;
-			var newTilePosition = tilePosition + new Vector3Int(Mathf.RoundToInt(direction.x), Mathf.RoundToInt(direction.y), 0);
+			// var mouseWorldPos = _camera.ScreenToWorldPoint(Input.mousePosition);
+			// var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPos);
+			// var closestPoint = GetClosesPointOnLine(pivot.position, centerCell, tilemap.GetCellCenterWorld(tilePosition));
+			var newPosition = new Vector3Int(Mathf.RoundToInt(direction.x), Mathf.RoundToInt(direction.y), 0);
+			var newTilePosition = tilePosition + newPosition;
 			tilemap.SetTile(newTilePosition, tile);
 			tilemap.SetTile(tilePosition, null);
+			// tilemap.SetColliderType(newTilePosition, UnityEngine.Tilemaps.Tile.ColliderType.None);
+			// tilemap.SetColliderType(tilePosition, UnityEngine.Tilemaps.Tile.ColliderType.Sprite);
 			
 			if (Vector3.Distance(tilemap.GetCellCenterWorld(newTilePosition), pivot.position) <= deleteDistance)
 			{
+				if (capacity != 0)
+				{
+					var index = Array.FindIndex(TilesUpdate.Instance.TileDatas, t => t.tile == tile);
+					_tileCapacityCount[index]++;
+					_currentCapacity++;
+				}
 				tilemap.SetTile(newTilePosition, null);
 			}
 		}
 	}
+	
+	// private bool CheckAbsorptionTilePosition(Vector3Int position)
+	// {
+	// 	return AbsorptionTilePositions.Any(updateTile => updateTile == position);
+	// }
+	
+	// private Vector3 GetClosesPointOnLine(Vector3 start, Vector3 end, Vector3 point)
+	// {
+	// 	var line = end - start;
+	// 	var length = line.magnitude;
+	// 	line.Normalize();
+	// 	
+	// 	var v = point - start;
+	// 	var d = Vector3.Dot(v, line);
+	// 	d = Mathf.Clamp(d, 0f, length);
+	// 	
+	// 	return start + line * d;
+	// }
 	
 	private void GetAbsorptionTilePositions()
 	{
@@ -100,8 +144,10 @@ public class Absorption : MonoBehaviour
 		Gizmos.DrawWireSphere(pivot.position, deleteDistance);
 		
 		Gizmos.color = Color.green;
+		var camera = Camera.main;
+		if (camera == null) { return; }
 		
-		var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		var mouseWorldPos = camera.ScreenToWorldPoint(Input.mousePosition);
 		var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPos);
 		
 		var angleInRadians = sightAngle * Mathf.Deg2Rad;
@@ -114,7 +160,7 @@ public class Absorption : MonoBehaviour
 		var newDirection1 = new Vector3(newX1, newY1, 0);
 		var newCell1 = pivot.position + newDirection1;
 		Gizmos.DrawLine(pivot.position, newCell1);
-			
+		
 		var newAngle2 = angle + angleInRadians;
 		var newX2 = absorptionDistance * Mathf.Cos(newAngle2);
 		var newY2 = absorptionDistance * Mathf.Sin(newAngle2);

@@ -83,11 +83,6 @@ public class TilesUpdate : Singleton<TilesUpdate>
             var randomTilePositions = tileData.tilePositions.OrderBy(_ => Guid.NewGuid()).ToList();
             foreach (var position in randomTilePositions)
             {
-                // foreach (var absorptionTilePosition in _absorption.AbsorptionTilePositions.Where(absorptionTilePosition => position != absorptionTilePosition).Where(absorptionTilePosition => tilemap.GetColliderType(position) == UnityEngine.Tilemaps.Tile.ColliderType.None))
-                // {
-                //     tilemap.SetColliderType(position, UnityEngine.Tilemaps.Tile.ColliderType.Sprite);
-                // }
-
                 switch (tileData.type)
                 {
                     case TileType.Sand:

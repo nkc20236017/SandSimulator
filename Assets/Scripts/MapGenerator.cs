@@ -40,7 +40,7 @@ public class MapGenerator : MonoBehaviour
 				var spawnPoint = Mathf.RoundToInt(Mathf.PerlinNoise((x * modifier) + seed, (y * modifier) + seed));
 				if (spawnPoint == 1)
 				{
-					var tileIndex = UnityEngine.Random.Range(0, tiles.Length);
+					var tileIndex = Random.Range(0, tiles.Length);
 					tilemap.SetTile(new Vector3Int(x, y, 0), tiles[tileIndex].tile);
 				}
 			}
