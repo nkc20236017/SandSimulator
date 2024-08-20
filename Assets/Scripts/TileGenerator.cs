@@ -22,29 +22,6 @@ public class TileGenerator : MonoBehaviour
         _tilesUpdate = TilesUpdate.Instance;
     }
 
-    private void Update()
-    {
-        // if (Input.GetKeyDown(KeyCode.Space))
-        // {
-        //     tilemap.ClearAllTiles();
-        // }
-
-        // if (Input.GetMouseButton(1))
-        // {
-        //     var mouseWorldPos = _camera.ScreenToWorldPoint(Input.mousePosition);
-        //     var centerCell = tilemap.WorldToCell(mouseWorldPos);
-        //     PlaceTiles(null, centerCell, radius);
-        //     return;
-        // }
-        
-        if (Input.GetMouseButton(1))
-        {
-            var mouseWorldPos = _camera.ScreenToWorldPoint(Input.mousePosition);
-            var centerCell = tilemap.WorldToCell(mouseWorldPos);
-            PlaceTiles(GetTile(tileType), centerCell, radius);
-        }
-    }
-
     private void PlaceTiles(TileBase tile, Vector3Int center, int radius)
     {
         if (!IsCameraVisible(center)) { return; }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -44,12 +43,11 @@ public class TilesUpdate : Singleton<TilesUpdate>
     {
         if (tilemap.GetUsedTilesCount() == 0) { return; }
         
-        if (Time.time - _lastUpdateTime > updateInterval)
-        {
-            GetTilePosition();
-            CheckUpdateTiles();
-            _lastUpdateTime = Time.time;
-        }
+        if (Time.time - _lastUpdateTime <= updateInterval) { return; }
+        
+        GetTilePosition();
+        CheckUpdateTiles();
+        _lastUpdateTime = Time.time;
     }
 
     private void GetTilePosition()
@@ -59,6 +57,7 @@ public class TilesUpdate : Singleton<TilesUpdate>
             tile.tilePositions.Clear();
         }
         
+        // TODO: boundsをもっと軽量化したい
         var bounds = tilemap.cellBounds.allPositionsWithin;
         foreach (var position in bounds)
         {
@@ -119,6 +118,8 @@ public class TilesUpdate : Singleton<TilesUpdate>
         foreach (var position in _updateTiles)
         {
             tilemap.SetTile(position, tileData.tile);
+            // TODO: 動いているタイルの当たり判定を消す
+            // tilemap.SetColliderType(position, UnityEngine.Tilemaps.Tile.ColliderType.None);
         }
     }
 
@@ -134,7 +135,7 @@ public class TilesUpdate : Singleton<TilesUpdate>
         var belowLeft = position + new Vector3Int(-1, -1, 0);
         var belowRight = position + new Vector3Int(1, -1, 0);
         
-        if (!tilemap.HasTile(below) && !CheckUpdateTilePosition(below))
+        if (!tilemap.HasTile(below) && !CheckUpdateTilePosition(below) && IsCameraVisible(below))
         {
             _clearTiles.Add(position);
             _updateTiles.Add(below);
@@ -145,14 +146,14 @@ public class TilesUpdate : Singleton<TilesUpdate>
             switch (random)
             {
                 case 0:
-                    if (!tilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft))
+                    if (!tilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft) && IsCameraVisible(belowLeft))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowLeft);
                     }
                     break;
                 case 1:
-                    if (!tilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight))
+                    if (!tilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight) && IsCameraVisible(belowRight))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowRight);
@@ -176,7 +177,7 @@ public class TilesUpdate : Singleton<TilesUpdate>
         var belowLeft = position + new Vector3Int(-1, -1, 0);
         var belowRight = position + new Vector3Int(1, -1, 0);
         
-        if (!tilemap.HasTile(below) && !CheckUpdateTilePosition(below))
+        if (!tilemap.HasTile(below) && !CheckUpdateTilePosition(below) && IsCameraVisible(below))
         {
             _clearTiles.Add(position);
             _updateTiles.Add(below);
@@ -187,14 +188,14 @@ public class TilesUpdate : Singleton<TilesUpdate>
             switch (random)
             {
                 case 0:
-                    if (!tilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft))
+                    if (!tilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft) && IsCameraVisible(belowLeft))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowLeft);
                     }
                     break;
                 case 1:
-                    if (!tilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight))
+                    if (!tilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight) && IsCameraVisible(belowRight))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowRight);
@@ -209,7 +210,7 @@ public class TilesUpdate : Singleton<TilesUpdate>
             {
                 case 0:
                 {
-                    if (!tilemap.HasTile(left) && !CheckUpdateTilePosition(left))
+                    if (!tilemap.HasTile(left) && !CheckUpdateTilePosition(left) && IsCameraVisible(left))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(left);
@@ -218,7 +219,7 @@ public class TilesUpdate : Singleton<TilesUpdate>
                 }
                 case 1:
                 {
-                    if (!tilemap.HasTile(right) && !CheckUpdateTilePosition(right))
+                    if (!tilemap.HasTile(right) && !CheckUpdateTilePosition(right) && IsCameraVisible(right))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(right);
@@ -231,6 +232,7 @@ public class TilesUpdate : Singleton<TilesUpdate>
     
     private bool IsCameraVisible(Vector3Int pos)
     {
+        // TODO: カメラ外になったら止めているので移動先がカメラ外になったら止めるようにする
         var cameraPosition = _camera.WorldToScreenPoint(tilemap.GetCellCenterWorld(pos));
         return _camera.pixelRect.Contains(cameraPosition);
     }
