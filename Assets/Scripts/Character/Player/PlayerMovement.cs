@@ -10,7 +10,8 @@ public class PlayerMovement : MonoBehaviour
 	[Header("Ground Check")]
 	[SerializeField] private float radius;
 	[SerializeField] private LayerMask groundLayerMask;
-	
+
+	private Vector3 _scale;
 	private CapsuleCollider2D _capsuleCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private Camera _camera;
@@ -24,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
 	private void Start()
 	{
 		_camera = Camera.main;
+		_scale = transform.localScale;
 	}
 
 	private void Update()
@@ -43,14 +45,13 @@ public class PlayerMovement : MonoBehaviour
 	private void Flip()
 	{
 		var direction = Input.mousePosition - _camera.WorldToScreenPoint(transform.position);
-		const float scale = 7.5f;
 		if (direction.x > 0)
 		{
-			transform.localScale = new Vector3(scale, scale, scale);
+			transform.localScale = new Vector3(_scale.x, _scale.y, _scale.z);
 		}
 		else
 		{
-			transform.localScale = new Vector3(-scale, scale, scale);
+			transform.localScale = new Vector3(-_scale.x, _scale.y, _scale.z);
 		}
 	}
 

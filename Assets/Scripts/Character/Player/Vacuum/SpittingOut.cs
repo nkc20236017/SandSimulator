@@ -29,21 +29,21 @@ public class SpittingOut : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetMouseButtonUp(1))
-		{
-			_lastUpdateTime = Time.time;
-		}
-		
-		if (Input.GetMouseButton(1))
-		{
-			if (Time.time - _lastUpdateTime > interval)
-			{
-				_lastUpdateTime = Time.time;
-				GenerateTile();
-			}
-			
-			UpdateTile();
-		}
+		// if (Input.GetMouseButtonUp(1))
+		// {
+		// 	_lastUpdateTime = Time.time;
+		// }
+		//
+		// if (Input.GetMouseButton(1))
+		// {
+		// 	if (Time.time - _lastUpdateTime > interval)
+		// 	{
+		// 		_lastUpdateTime = Time.time;
+		// 		GenerateTile();
+		// 	}
+		// 	
+		// 	UpdateTile();
+		// }
 	}
 	
 	private void GenerateTile()
