@@ -119,7 +119,7 @@ public class TilesUpdate : Singleton<TilesUpdate>
         {
             tilemap.SetTile(position, tileData.tile);
             // TODO: 動いているタイルの当たり判定を消す
-            // tilemap.SetColliderType(position, UnityEngine.Tilemaps.Tile.ColliderType.None);
+            // tilemap.SetColliderType(position, Tile.ColliderType.None);
         }
     }
 
@@ -232,7 +232,6 @@ public class TilesUpdate : Singleton<TilesUpdate>
     
     private bool IsCameraVisible(Vector3Int pos)
     {
-        // TODO: カメラ外になったら止めているので移動先がカメラ外になったら止めるようにする
         var cameraPosition = _camera.WorldToScreenPoint(tilemap.GetCellCenterWorld(pos));
         return _camera.pixelRect.Contains(cameraPosition);
     }
@@ -259,7 +258,7 @@ public class TilesUpdate : Singleton<TilesUpdate>
         }
     }
 
-    private TileData GetTileData(TileType type)
+    public TileData GetTileData(TileType type)
     {
         return (from tile in tiles where tile.type == type select tile).FirstOrDefault();
     }
