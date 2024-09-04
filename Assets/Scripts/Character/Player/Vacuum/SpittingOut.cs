@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 using NaughtyAttributes;
+using Random = UnityEngine.Random;
 
-public class SpittingOut : MonoBehaviour
+public class SpittingOut : Singleton<SpittingOut>
 {
 	[Header("Tile Config")]
 	[SerializeField] private Tilemap tilemap;
@@ -23,6 +26,8 @@ public class SpittingOut : MonoBehaviour
 	private float _lastUpdateTime;
 	private Camera _camera;
 	private TilesUpdate _tilesUpdate;
+	
+	public List<Vector3Int> SpittingOutTilePositions { get; private set; } = new();
 
 	private void Start()
 	{
@@ -56,23 +61,69 @@ public class SpittingOut : MonoBehaviour
 	
 	private void GenerateTile()
 	{
-		var mousePosition = Input.mousePosition;
-		mousePosition.z = _camera.nearClipPlane;
-		var worldPosition = _camera.ScreenToWorldPoint(mousePosition);
+		var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+		var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPosition);
 
-		var direction = (worldPosition - pivot.position).normalized;
-		var targetPosition = pivot.position + direction * distance;
-
-		var randomOffset = Random.Range(-range / 2, range / 2);
-		var randomPosition = targetPosition + new Vector3(randomOffset, 0, 0);
-		var tilePosition = tilemap.WorldToCell(randomPosition);
+		var direction = centerCell - pivot.position;
+		var angle = Mathf.Atan2(direction.y, direction.x);
 		
-		tilemap.SetTile(tilePosition, _tilesUpdate.GetTileData(TileType.Sand).tile);
+		var chordLength = Mathf.Sqrt(Mathf.Pow(distance, 2) + Mathf.Pow(range, 2));
+		var angle2 = Mathf.Acos(distance / chordLength);
+		var newCell1 = GetNewCell(angle - angle2, chordLength);
+		var newCell2 = GetNewCell(angle + angle2, chordLength);
+		
+		var random = Random.Range(generateTileCount.x, generateTileCount.y);
+		for (var i = 0; i < random; i++)
+		{
+			var randomX = Random.Range(newCell1.x, newCell2.x);
+			var randomY = Random.Range(newCell1.y, newCell2.y);
+			var randomPosition = new Vector3(randomX, randomY, 0);
+			var randomCell = tilemap.WorldToCell(randomPosition);
+			tilemap.SetTile(randomCell, _tilesUpdate.GetTileData(TileType.Sand).tile);
+			tilemap.SetColliderType(randomCell, Tile.ColliderType.None);
+		}
 	}
 	
 	private void UpdateTile()
 	{
+		var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+		var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPosition);
+
+		var direction = centerCell - pivot.position;
+		var angle = Mathf.Atan2(direction.y, direction.x);
 		
+		var chordLength = Mathf.Sqrt(Mathf.Pow(distance, 2) + Mathf.Pow(range, 2));
+		var angle2 = Mathf.Acos(distance / chordLength);
+		var a = GetNewCell(angle - angle2, chordLength);
+		var b = GetNewCell(angle + angle2, chordLength);
+		
+		var chordLength2 = Mathf.Sqrt(Mathf.Pow(0, 2) + Mathf.Pow(range, 2));
+		var angle3 = Mathf.Acos(0 / chordLength2);
+		var h = radius * (1 - Mathf.Cos(angle3));
+		var y = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(range, 2)) - (radius - h) - distance;
+		
+		var newX3 = y * Mathf.Cos(angle);
+		var newY3 = y * Mathf.Sin(angle);
+		var newDirection3 = new Vector3(newX3, newY3, 0);
+		
+		var c = a + newDirection3;
+		var d = b + newDirection3;
+
+		var bounds = new BoundsInt((int)Mathf.Min(a.x, b.x, c.x, d.x), (int)Mathf.Min(a.y, b.y, c.y, d.y), 0, (int)Mathf.Abs(a.x - b.x), (int)Mathf.Abs(a.y - b.y), 1);
+		foreach (var position in bounds.allPositionsWithin)
+		{
+			var tile = tilemap.GetTile(position);
+			if (!tile) { continue; }
+
+			var dir = (tilemap.GetCellCenterWorld(position) - pivot.position).normalized;
+			var newPosition = new Vector3Int(Mathf.RoundToInt(dir.x), Mathf.RoundToInt(dir.y), 0);
+			var newTilePosition = position + newPosition;
+			if (tilemap.HasTile(newTilePosition)) { continue; }
+
+			tilemap.SetTile(newTilePosition, tile);
+			tilemap.SetTile(position, null);
+			tilemap.SetColliderType(newTilePosition, Tile.ColliderType.None);
+		}
 	}
 
 	private void OnDrawGizmos()

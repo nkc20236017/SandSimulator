@@ -119,7 +119,7 @@ public class TilesUpdate : Singleton<TilesUpdate>
         {
             tilemap.SetTile(position, tileData.tile);
             // TODO: 動いているタイルの当たり判定を消す
-            // tilemap.SetColliderType(position, Tile.ColliderType.None);
+            tilemap.SetColliderType(position, Tile.ColliderType.None);
         }
     }
 
@@ -127,13 +127,22 @@ public class TilesUpdate : Singleton<TilesUpdate>
     {
         var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
         var tilesBlock = tilemap.GetTilesBlock(checkBound);
-        tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
-        if (tilesBlock.Length == 9) { return; }
+        tilesBlock = tilesBlock.Where(tileBase => tileBase).ToArray();
+        if (tilesBlock.Length == 9)
+        {
+            tilemap.SetColliderType(position, Tile.ColliderType.Sprite);
+            return;
+        }
         if (!IsCameraVisible(position)) { return; }
         
         var below = position + Vector3Int.down;
         var belowLeft = position + new Vector3Int(-1, -1, 0);
         var belowRight = position + new Vector3Int(1, -1, 0);
+        if (tilemap.HasTile(below) && tilemap.HasTile(belowLeft) && tilemap.HasTile(belowRight))
+        {
+            tilemap.SetColliderType(position, Tile.ColliderType.Sprite);
+            return;
+        }
         
         if (!tilemap.HasTile(below) && !CheckUpdateTilePosition(below) && IsCameraVisible(below))
         {
@@ -249,7 +258,7 @@ public class TilesUpdate : Singleton<TilesUpdate>
             
         var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
         var tilesBlock = tilemap.GetTilesBlock(checkBound);
-        tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
+        tilesBlock = tilesBlock.Where(tileBase => tileBase).ToArray();
         if (tilesBlock.Length == 0) { return; }
 
         if (tilesBlock.Any(tileBase => tileBase == GetTileData(TileType.Water).tile))

@@ -1,0 +1,75 @@
+#pragma kernel CSMain
+#pragma kernel AddSand
+#pragma kernel EraseSand
+
+RWTexture2D<float4> Result;
+int Width;
+int Height;
+float Time;
+float2 MousePos;
+float BrushSize;
+
+float Random(float2 p)
+{
+    return frac(sin(dot(p, float2(12.9898f, 78.233f))) * 43758.5453f);
+}
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= (uint)Width || id.y >= (uint)Height) { return; }
+
+    float4 currentPixel = Result[id.xy];
+    
+    if (all(currentPixel == 0)) { return; }
+
+    if (id.y > 0 && all(Result[int2(id.x, id.y - 1)] == 0))
+    {
+        Result[int2(id.x, id.y - 1)] = currentPixel;
+        Result[id.xy] = float4(0, 0, 0, 0);
+    }
+    else if (id.y > 0)
+    {
+        if (id.x > 0 && all(Result[int2(id.x - 1, id.y - 1)] == 0))
+        {
+            if (Random(id.xy + Time) > 0.5)
+            {
+                Result[int2(id.x - 1, id.y - 1)] = currentPixel;
+                Result[id.xy] = float4(0, 0, 0, 0);
+            }
+        }
+        else if (id.x < (uint)(Width - 1) && all(Result[int2(id.x + 1, id.y - 1)] == 0))
+        {
+            Result[int2(id.x + 1, id.y - 1)] = currentPixel;
+            Result[id.xy] = float4(0, 0, 0, 0);
+        }
+    }
+}
+
+[numthreads(8,8,1)]
+void AddSand (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= (uint)Width || id.y >= (uint)Height) { return; }
+
+    float2 pos = float2(id.x, id.y);
+    float dist = distance(pos, MousePos);
+
+    if (dist < BrushSize && all(Result[id.xy] == 0))
+    {
+        Result[id.xy] = float4(1.0, 0.8, 0.0, 1.0);
+    }
+}
+
+[numthreads(8,8,1)]
+void EraseSand (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= (uint)Width || id.y >= (uint)Height) { return; }
+
+    float2 pos = float2(id.x, id.y);
+    float dist = distance(pos, MousePos);
+
+    if (dist < BrushSize)
+    {
+        Result[id.xy] = float4(0, 0, 0, 0);
+    }
+}

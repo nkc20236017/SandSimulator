@@ -39,7 +39,8 @@ public class PlayerMovement : MonoBehaviour
 	private void Movement()
 	{
 		var horizontal = Input.GetAxisRaw("Horizontal");
-		transform.position += new Vector3(horizontal, 0, 0) * (speed * Time.deltaTime);
+		var vertical = Input.GetAxisRaw("Vertical");
+		transform.position += new Vector3(horizontal, vertical, 0) * (speed * Time.deltaTime);
 	}
 
 	private void Flip()

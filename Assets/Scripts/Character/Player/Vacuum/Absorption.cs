@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class Absorption : MonoBehaviour
+public class Absorption : Singleton<Absorption>
 {
     [Header("Tile Config")]
     [SerializeField] private Tilemap _tilemap;
@@ -59,18 +59,19 @@ public class Absorption : MonoBehaviour
 
     private void AbsorbTiles()
     {
-        AbsorbedTilePositions = AbsorbedTilePositions.OrderBy(x => Random.value).ToList();
+        AbsorbedTilePositions = AbsorbedTilePositions.OrderBy(_ => Random.value).ToList();
 
         foreach (var tilePosition in AbsorbedTilePositions)
         {
             var tile = _tilemap.GetTile(tilePosition);
-            if (tile == null) { continue; }
+            if (!tile) { continue; }
 
             var direction = (pivot.position - _tilemap.GetCellCenterWorld(tilePosition)).normalized;
             var newPosition = new Vector3Int(Mathf.RoundToInt(direction.x), Mathf.RoundToInt(direction.y), 0);
             var newTilePosition = tilePosition + newPosition;
             _tilemap.SetTile(newTilePosition, tile);
             _tilemap.SetTile(tilePosition, null);
+            _tilemap.SetColliderType(newTilePosition, Tile.ColliderType.None);
 
             if (Vector3.Distance(_tilemap.GetCellCenterWorld(newTilePosition), pivot.position) <= _deleteDistance)
             {
