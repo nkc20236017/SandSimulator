@@ -79,7 +79,7 @@ public class SpittingOut : Singleton<SpittingOut>
 			var randomY = Random.Range(newCell1.y, newCell2.y);
 			var randomPosition = new Vector3(randomX, randomY, 0);
 			var randomCell = tilemap.WorldToCell(randomPosition);
-			tilemap.SetTile(randomCell, _tilesUpdate.GetTileData(TileType.Sand).tile);
+			// tilemap.SetTile(randomCell, _tilesUpdate.GetTileData(TileType.Sand).tile);
 			tilemap.SetColliderType(randomCell, Tile.ColliderType.None);
 		}
 	}
@@ -140,9 +140,9 @@ public class SpittingOut : Singleton<SpittingOut>
 		if (camera == null) { return; }
 		
 		var mouseWorldPosition = camera.ScreenToWorldPoint(Input.mousePosition);
-		var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPosition);
+		// var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPosition);
 
-		var direction = centerCell - pivot.position;
+		var direction = mouseWorldPosition - pivot.position;
 		
 		var targetPosition = pivot.position + direction.normalized * distance;
 		Gizmos.DrawLine(pivot.position, targetPosition);

@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class SandSimulation : Singleton<SandSimulation>
+public class MapGenerator : Singleton<MapGenerator>
 {
     [Header("Renderer Config")]
     [SerializeField] private ComputeShader computeShader;
     [SerializeField] private GameObject player;
     
     [Header("Brush Config")]
-    [SerializeField] private TileType tileType;
+    [SerializeField] private BlockType tileType;
     [SerializeField] private float brushSize = 5;
     
     [Header("Chunk Config")]
@@ -76,15 +75,6 @@ public class SandSimulation : Singleton<SandSimulation>
         }
         
         var texture = new Texture2D(mapSize.x, mapSize.y);
-        var colors = new Color[mapSize.x * mapSize.y];
-        for (var i = 0; i < colors.Length; i++)
-        {
-            var x = i % mapSize.x;
-            var y = i / mapSize.x;
-            var value = Mathf.PerlinNoise(x / 10f, y / 10f);
-            colors[i] = value < 0.5f ? Color.black : Color.white;
-        }
-        texture.SetPixels(colors);
         texture.filterMode = FilterMode.Point;
         texture.Apply();
 		

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5332649298738805019}
   - component: {fileID: 2226674205909868258}
-  - component: {fileID: -8061047336791462456}
+  - component: {fileID: 8783976610536287446}
   m_Layer: 0
   m_Name: Chunk
   m_TagString: Untagged
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-8061047336791462456
+--- !u!114 &8783976610536287446
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -120,10 +120,10 @@ public class Absorption : Singleton<Absorption>
         if (camera == null) { return; }
 
         var mouseWorldPosition = camera.ScreenToWorldPoint(Input.mousePosition);
-        var centerCell = (Vector3)_tilemap.WorldToCell(mouseWorldPosition);
+        // var centerCell = (Vector3)_tilemap.WorldToCell(mouseWorldPosition);
 
         var angleInRadians = _suctionAngle * Mathf.Deg2Rad;
-        var direction2 = centerCell - pivot.position;
+        var direction2 = mouseWorldPosition - pivot.position;
         var angle = Mathf.Atan2(direction2.y, direction2.x);
 
         var newCell1 = GetNewCell(angle - angleInRadians, _suctionDistance);
