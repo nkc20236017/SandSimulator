@@ -52,16 +52,16 @@ public class MapGenerator : Singleton<MapGenerator>
 
     private void Update()
     {
-        var newChunkPositions = GenerateSpiralCoordinates(chunkCount);
-        if (newChunkPositions.SequenceEqual(_chunkPositions)) { return; }
-
-        for (var i = 0; i < chunkCount; i++)
-        {
-            _chunks[i].transform.position = newChunkPositions[i];
-            _chunks[i].UpdateChunkSprite(map.texture);
-        }
-
-        _chunkPositions = newChunkPositions;
+        // var newChunkPositions = GenerateSpiralCoordinates(chunkCount);
+        // if (newChunkPositions.SequenceEqual(_chunkPositions)) { return; }
+        //
+        // for (var i = 0; i < chunkCount; i++)
+        // {
+        //     _chunks[i].transform.position = newChunkPositions[i];
+        //     _chunks[i].UpdateChunkSprite(map.texture);
+        // }
+        //
+        // _chunkPositions = newChunkPositions;
     }
 
     private void MapGenerate()
