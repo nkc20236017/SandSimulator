@@ -33,10 +33,7 @@ public class TilesUpdate : Singleton<TilesUpdate>
     {
 	    _camera = Camera.main;
 
-        foreach (var tile in tiles.Where(tile => tile.tilePositions == null))
-        {
-            tile.tilePositions = new List<Vector3Int>();
-        }
+        tiles.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
     }
 
     private void Update()
@@ -57,7 +54,6 @@ public class TilesUpdate : Singleton<TilesUpdate>
             tile.tilePositions.Clear();
         }
         
-        // TODO: boundsをもっと軽量化したい
         var bounds = tilemap.cellBounds.allPositionsWithin;
         foreach (var position in bounds)
         {
@@ -110,17 +106,23 @@ public class TilesUpdate : Singleton<TilesUpdate>
     {
         if (_clearTiles.Count == 0 && _updateTiles.Count == 0) { return; }
         
-        foreach (var position in _clearTiles)
+        var clearTiles = _clearTiles.ToArray();
+        var updateTiles = _updateTiles.ToArray();
+        var tilePositions = new Vector3Int[clearTiles.Length + updateTiles.Length];
+        var tileArray = new TileBase[clearTiles.Length + updateTiles.Length];
+        for (var i = 0; i < clearTiles.Length; i++)
         {
-            tilemap.SetTile(position, null);
+            tilePositions[i] = clearTiles[i];
+            tileArray[i] = null;
         }
-
-        foreach (var position in _updateTiles)
+        for (var i = 0; i < updateTiles.Length; i++)
         {
-            tilemap.SetTile(position, tileData.tile);
-            // TODO: 動いているタイルの当たり判定を消す
-            // tilemap.SetColliderType(position, Tile.ColliderType.None);
+            tilePositions[i + clearTiles.Length] = updateTiles[i];
+            tileArray[i + clearTiles.Length] = tileData.tile;
         }
+        
+        // tilemap.SetTiles(tilePositions, tileArray);
+        // TODO: 動いているタイルの当たり判定を消す
     }
 
     private void UpdateSand(Vector3Int position)
