@@ -1,13 +1,16 @@
 ﻿using System;
+using NaughtyAttributes;
 using UnityEngine;
 
 public class Chunk : MonoBehaviour
 {
-    [SerializeField] private Vector2Int ChunkSize;
+    [SerializeField] private Vector2Int chunkSize;
 
-    private Texture2D _texture;
+    [ShowAssetPreview] private Texture2D _texture;
     private SpriteRenderer _spriteRenderer;
     private MapGenerator _mapGenerator;
+    
+    public Vector2Int ChunkSize => chunkSize;
 
     private void Awake()
     {
@@ -19,18 +22,15 @@ public class Chunk : MonoBehaviour
         // ChunkUpdate();
     }
     
-    private void ChunkUpdate()
-    {
-        var position = Vector3Int.FloorToInt(transform.position);
-        var width = _texture.width / 2 + position.x * 100;
-        var height = _texture.height / 2 + position.y * 100;
-        var colors = _texture.GetPixels(width, height, ChunkSize.x, ChunkSize.y);
-
-        foreach (var color in colors)
-        {
-            
-        }
-    }
+    // private void ChunkUpdate()
+    // {
+    //     var position = Vector3Int.FloorToInt(transform.position);
+    //     var width = _texture.width / 2 + position.x * 100;
+    //     var height = _texture.height / 2 + position.y * 100;
+    //     var colors = _texture.GetPixels(width, height, ChunkSize.x, ChunkSize.y);
+    //
+    //     
+    // }
 
     public void UpdateChunkSprite(Texture2D texture)
     {
@@ -40,11 +40,11 @@ public class Chunk : MonoBehaviour
         var width = texture.width / 2 + position.x * 100;
         var height = texture.height / 2 + position.y * 100;
         var pixelColor = texture.GetPixels(width, height, ChunkSize.x, ChunkSize.y);
-
+        
         _texture.SetPixels(pixelColor);
         _texture.filterMode = FilterMode.Point;
         _texture.Apply();
-
+        
         _spriteRenderer.sprite = Sprite.Create(_texture, new Rect(0, 0, ChunkSize.x, ChunkSize.y), Vector2.one * 0.5f);
 
         // var polygonCollider2D = gameObject.AddComponent<PolygonCollider2D>();

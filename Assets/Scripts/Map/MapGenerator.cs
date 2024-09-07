@@ -15,12 +15,10 @@ public class MapGenerator : Singleton<MapGenerator>
     [Header("Chunk Config")]
     [SerializeField] private GameObject chunkParent;
     [SerializeField] private Chunk chunkPrefab;
-    [SerializeField] private Vector2Int chunkSize;
     [SerializeField] private int mainChunkCount;
     [SerializeField] private int chunkCount;
     
     [Header("Map Config")]
-    [SerializeField] private Vector2Int mapSize;
     [SerializeField] private Texture2D mapTexture;
 
     private Sprite map;
@@ -30,91 +28,80 @@ public class MapGenerator : Singleton<MapGenerator>
     
     private void Start()
     {
-        MapGenerate();
-
+        TextureToSprite();
+    
         _chunkPositions = GenerateSpiralCoordinates(chunkCount);
-
+        ChunkGenerate();
+    }
+    
+    private void TextureToSprite()
+    {
+        var texture = new Texture2D(mapTexture.width, mapTexture.height);
+        texture.filterMode = FilterMode.Point;
+        texture.Apply();
+		
+        map = Sprite.Create(texture, new Rect(0, 0, mapTexture.width, mapTexture.height), Vector2.one * 0.5f);
+    }
+    
+    private void ChunkGenerate()
+    {
         foreach (var position in _chunkPositions)
         {
             var chunk = Instantiate(chunkPrefab, position, Quaternion.identity, chunkParent.transform);
+            var chunkPosition = new Vector3Int(position.x + chunk.ChunkSize.x, position.y + chunk.ChunkSize.y, 0);
+            chunk.transform.position = chunkPosition;
+            _chunkPositions[_chunkPositions.ToList().IndexOf(position)] = chunkPosition;
             chunk.UpdateChunkSprite(map.texture);
             var chunkRenderer = chunk.GetComponent<SpriteRenderer>();
             _chunkRenderers.Add(chunkRenderer);
             _chunks.Add(chunk);
             _chunks[^1].name = $"Chunk {_chunks.Count - 1}";
-
+    
             if (_chunks.Count > mainChunkCount)
             {
                 chunkRenderer.enabled = false;
             }
         }
     }
-
+    
     private void Update()
     {
-        // var newChunkPositions = GenerateSpiralCoordinates(chunkCount);
-        // if (newChunkPositions.SequenceEqual(_chunkPositions)) { return; }
-        //
-        // for (var i = 0; i < chunkCount; i++)
-        // {
-        //     _chunks[i].transform.position = newChunkPositions[i];
-        //     _chunks[i].UpdateChunkSprite(map.texture);
-        // }
-        //
-        // _chunkPositions = newChunkPositions;
+        ChunkUpdate();
     }
 
-    private void MapGenerate()
+    private void ChunkUpdate()
     {
-        if (mapTexture != null)
+        var newChunkPositions = GenerateSpiralCoordinates(chunkCount);
+        if (newChunkPositions.SequenceEqual(_chunkPositions)) { return; }
+        
+        for (var i = 0; i < chunkCount; i++)
         {
-            map = Sprite.Create(mapTexture, new Rect(0, 0, mapTexture.width, mapTexture.height), Vector2.one * 0.5f);
-            var spriteRenderer = GetComponent<SpriteRenderer>();
-            spriteRenderer.sprite = map;
-            return;
+            newChunkPositions[i] = new Vector3Int(newChunkPositions[i].x + _chunks[i].ChunkSize.x, newChunkPositions[i].y + _chunks[i].ChunkSize.y, 0);
+            _chunks[i].transform.position = newChunkPositions[i];
+            _chunks[i].UpdateChunkSprite(map.texture);
         }
         
-        var texture = new Texture2D(mapSize.x, mapSize.y);
-        texture.filterMode = FilterMode.Point;
-        texture.Apply();
-		
-        map = Sprite.Create(texture, new Rect(0, 0, mapSize.x, mapSize.y), Vector2.one * 0.5f);
+        _chunkPositions = newChunkPositions;
     }
 
     private Vector3Int[] GenerateSpiralCoordinates(int n)
     {
         var positions = new Vector3Int[n];
-
-        int x = 0, y = 0;
-        int dx = 1, dy = 0;
-        var segmentLength = 1;
-        var steps = 0;
-        var segmentPassed = 0;
-        
-        var playerPosition = player.transform.position;
-        var centerPosition = new Vector3(playerPosition.x / chunkSize.x, playerPosition.y / chunkSize.y, 0f);
-        centerPosition = Vector3Int.RoundToInt(centerPosition);
-        centerPosition = new Vector3(centerPosition.x * chunkSize.x, centerPosition.y * chunkSize.y, 0f);
+        int x = 0, y = 0, dx = 1, dy = 0, segmentLength = 1, steps = 0, segmentPassed = 0;
 
         for (var i = 0; i < n; i++)
         {
-            positions[i] = Vector3Int.RoundToInt(centerPosition + new Vector3(x, y));
+            positions[i] = Vector3Int.RoundToInt(player.transform.position + new Vector3(x, y));
             x += dx;
             y += dy;
             steps++;
 
-            // セグメントが終わると方向を変える
             if (steps != segmentLength) { continue; }
 
             steps = 0;
             segmentPassed++;
+            (dx, dy) = (-dy, dx);
 
-            // 方向を時計回りに変更
-            var temp = dx;
-            dx = -dy;
-            dy = temp;
-
-            // 2セグメント毎にセグメントの長さを増加
             if (segmentPassed != 2) { continue; }
 
             segmentPassed = 0;

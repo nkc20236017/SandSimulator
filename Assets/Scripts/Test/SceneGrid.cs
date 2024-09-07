@@ -3,8 +3,8 @@
 public class SceneGrid : MonoBehaviour
 {
 	[SerializeField] private bool viewGrid = true;
-	[SerializeField, Min(0)] private int gridSize = 16;
-	[SerializeField, Min(1)] private int worldSize;
+	[SerializeField] private Vector2Int gridSize;
+	[SerializeField] private Vector2Int worldSize;
 	
 	private void OnDrawGizmos()
 	{
@@ -17,23 +17,19 @@ public class SceneGrid : MonoBehaviour
 		var cameraSize = camera.orthographicSize;
 		var aspect = camera.aspect;
 
-		var halfWidth = cameraSize * aspect * worldSize;
-		var halfHeight = cameraSize * worldSize;
+		var halfWidth = cameraSize * aspect * worldSize.x;
+		var halfHeight = cameraSize * worldSize.y;
 
-		var startX = Mathf.Floor(cameraPosition.x - halfWidth);
-		var endX = Mathf.Ceil(cameraPosition.x + halfWidth);
-		var startY = Mathf.Floor(cameraPosition.y - halfHeight);
-		var endY = Mathf.Ceil(cameraPosition.y + halfHeight);
+		var startX = -worldSize.x;
+		var endX = worldSize.x;
+		var startY = -worldSize.y;
+		var endY = worldSize.y;
 
 		for (var x = startX; x <= endX; x++)
 		{
-			if (x % gridSize == 0)
+			if (x % gridSize.x == 0)
 			{
 				Gizmos.color = new Color(1f, 0f, 0f, 0.75f);
-			}
-			else if (x % (gridSize / 2) == 0)
-			{
-				Gizmos.color = new Color(1f, 0.5f, 0f, 0.5f);
 			}
 			else
 			{
@@ -45,13 +41,9 @@ public class SceneGrid : MonoBehaviour
 
 		for (var y = startY; y <= endY; y++)
 		{
-			if (y % gridSize == 0)
+			if (y % gridSize.y == 0)
 			{
 				Gizmos.color = new Color(1f, 0f, 0f, 0.75f);
-			}
-			else if (y % (gridSize / 2) == 0)
-			{
-				Gizmos.color = new Color(1f, 0.5f, 0f, 0.5f);
 			}
 			else
 			{
