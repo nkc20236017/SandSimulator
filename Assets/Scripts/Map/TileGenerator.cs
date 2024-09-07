@@ -12,24 +12,31 @@ public class TileGenerator : MonoBehaviour
     
 	[Header("Tile Config")]
 	[SerializeField] private Tilemap tilemap;
+    [SerializeField] private TileBase tile;
     
     private Camera _camera;
-    private TilesUpdate _tilesUpdate;
 
     private void Start()
     {
         _camera = Camera.main;
-        _tilesUpdate = TilesUpdate.Instance;
     }
 
     private void Update()
     {
+        if (Input.GetMouseButton(0))
+        {
+            var mousePosition = Input.mousePosition;
+            var worldPosition = _camera.ScreenToWorldPoint(mousePosition);
+            var cellPosition = tilemap.WorldToCell(worldPosition);
+            PlaceTiles(tile, cellPosition, radius);
+        }
+        
         if (Input.GetMouseButton(1))
         {
             var mousePosition = Input.mousePosition;
             var worldPosition = _camera.ScreenToWorldPoint(mousePosition);
             var cellPosition = tilemap.WorldToCell(worldPosition);
-            PlaceTiles(GetTile(tileType), cellPosition, radius);
+            PlaceTiles(null, cellPosition, radius);
         }
     }
 
@@ -51,11 +58,6 @@ public class TileGenerator : MonoBehaviour
     private bool IsCameraVisible(Vector3Int pos)
     {
         return _camera.pixelRect.Contains(_camera.WorldToScreenPoint(tilemap.GetCellCenterWorld(pos)));
-    }
-    
-    private TileBase GetTile(TileType type)
-    {
-        return (from tile in _tilesUpdate.TileDatas where tile.type == type select tile.tile).FirstOrDefault();
     }
 }
 

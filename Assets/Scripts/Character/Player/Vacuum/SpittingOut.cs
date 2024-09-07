@@ -22,13 +22,11 @@ public class SpittingOut : MonoBehaviour
 	
 	private float _lastUpdateTime;
 	private Camera _camera;
-	private TilesUpdate _tilesUpdate;
 
 	private void Start()
 	{
 		_camera = Camera.main;
 		_lastUpdateTime = Time.time;
-		_tilesUpdate = TilesUpdate.Instance;
 	}
 
 	private void Update()
@@ -67,7 +65,8 @@ public class SpittingOut : MonoBehaviour
 		var randomPosition = targetPosition + new Vector3(randomOffset, 0, 0);
 		var tilePosition = tilemap.WorldToCell(randomPosition);
 		
-		tilemap.SetTile(tilePosition, _tilesUpdate.GetTileData(TileType.Sand).tile);
+		// TODO: タイルを生成する処理
+		// tilemap.SetTile(tilePosition, タイル);
 	}
 	
 	private void UpdateTile()

@@ -14,37 +14,56 @@ public enum TileType
     Smoke
 }
 
-public class TilesUpdate : Singleton<TilesUpdate>
+public class TilesUpdate : MonoBehaviour
 {
     [Header("Config")]
-    [SerializeField] private Tilemap tilemap;
     [SerializeField] private TileData[] tiles;
-    [SerializeField] private float updateInterval = 0.5f;
-    [SerializeField] private Absorption _absorption;
+    [SerializeField] private float updateInterval = 0.01f;
+    [SerializeField] private Vector2Int chunkSize = new(84, 45);
     
     private float _lastUpdateTime;
     private List<Vector3Int> _clearTiles = new();
     private List<Vector3Int> _updateTiles = new();
-    private Camera _camera;
+    private Tilemap _tilemap;
     
-    public TileData[] TileDatas => tiles;
+    private Dictionary<Vector3Int, TileBase> _previousTilemapState = new();
+    
+    protected void Awake()
+    {
+        _tilemap = GetComponent<Tilemap>();
+    }
 
     private void Start()
     {
-	    _camera = Camera.main;
-
         tiles.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
     }
 
     private void Update()
     {
-        if (tilemap.GetUsedTilesCount() == 0) { return; }
-        
         if (Time.time - _lastUpdateTime <= updateInterval) { return; }
+        if (_tilemap.GetUsedTilesCount() == 0) { return; }
+        if (!HasTilemapChanged()) { return; }
         
         GetTilePosition();
-        CheckUpdateTiles();
         _lastUpdateTime = Time.time;
+    }
+    
+    private bool HasTilemapChanged()
+    {
+        var currentTilemapState = new Dictionary<Vector3Int, TileBase>();
+        for (var y = -chunkSize.y / 2; y < chunkSize.y / 2; y++)
+        {
+            for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
+            {
+                var position = new Vector3Int(x, y, 0);
+                var tile = _tilemap.GetTile(position);
+                currentTilemapState[position] = tile;
+            }
+        }
+
+        var hasChanged = !currentTilemapState.SequenceEqual(_previousTilemapState);
+        _previousTilemapState = currentTilemapState;
+        return hasChanged;
     }
 
     private void GetTilePosition()
@@ -53,19 +72,25 @@ public class TilesUpdate : Singleton<TilesUpdate>
         {
             tile.tilePositions.Clear();
         }
-        
-        var bounds = tilemap.cellBounds.allPositionsWithin;
-        foreach (var position in bounds)
+
+        for (var y = -chunkSize.y / 2; y < chunkSize.y / 2; y++)
         {
-            if (!IsCameraVisible(position)) { continue; }
-            
-            var tile = tilemap.GetTile(position);
-            var index = Array.FindIndex(tiles, t => t.tile == tile);
-            if (index >= 0 && index < tiles.Length)
+            for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
             {
-                tiles[index].tilePositions.Add(position);
+                var position = new Vector3Int(x, y, 0);
+            
+                var tile = _tilemap.GetTile(position);
+                var index = Array.FindIndex(tiles, t => t.tile == tile);
+                
+                if (index >= 0 && index < tiles.Length)
+                {
+                    tiles[index].tilePositions.Add(position);
+                }
             }
         }
+        if (tiles.All(tile => tile.tilePositions.Count == 0)) { return; }
+        
+        CheckUpdateTiles();
     }
 
     private void CheckUpdateTiles()
@@ -121,41 +146,40 @@ public class TilesUpdate : Singleton<TilesUpdate>
             tileArray[i + clearTiles.Length] = tileData.tile;
         }
         
-        // tilemap.SetTiles(tilePositions, tileArray);
+        _tilemap.SetTiles(tilePositions, tileArray);
         // TODO: 動いているタイルの当たり判定を消す
     }
 
     private void UpdateSand(Vector3Int position)
     {
         var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
-        var tilesBlock = tilemap.GetTilesBlock(checkBound);
+        var tilesBlock = _tilemap.GetTilesBlock(checkBound);
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
         if (tilesBlock.Length == 9) { return; }
-        if (!IsCameraVisible(position)) { return; }
         
         var below = position + Vector3Int.down;
         var belowLeft = position + new Vector3Int(-1, -1, 0);
         var belowRight = position + new Vector3Int(1, -1, 0);
         
-        if (!tilemap.HasTile(below) && !CheckUpdateTilePosition(below) && IsCameraVisible(below))
+        if (!_tilemap.HasTile(below) && !CheckUpdateTilePosition(below))
         {
             _clearTiles.Add(position);
             _updateTiles.Add(below);
         }
-        else if (!tilemap.HasTile(belowLeft) || !tilemap.HasTile(belowRight))
+        else if (!_tilemap.HasTile(belowLeft) || !_tilemap.HasTile(belowRight))
         {
             var random = Random.Range(0, 2);
             switch (random)
             {
                 case 0:
-                    if (!tilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft) && IsCameraVisible(belowLeft))
+                    if (!_tilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowLeft);
                     }
                     break;
                 case 1:
-                    if (!tilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight) && IsCameraVisible(belowRight))
+                    if (!_tilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowRight);
@@ -168,10 +192,9 @@ public class TilesUpdate : Singleton<TilesUpdate>
     private void UpdateWater(Vector3Int position)
     {
         var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
-        var tilesBlock = tilemap.GetTilesBlock(checkBound);
+        var tilesBlock = _tilemap.GetTilesBlock(checkBound);
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
         if (tilesBlock.Length == 9) { return; }
-        if (!IsCameraVisible(position)) { return; }
         
         var left = position + Vector3Int.left;
         var right = position + Vector3Int.right;
@@ -179,25 +202,25 @@ public class TilesUpdate : Singleton<TilesUpdate>
         var belowLeft = position + new Vector3Int(-1, -1, 0);
         var belowRight = position + new Vector3Int(1, -1, 0);
         
-        if (!tilemap.HasTile(below) && !CheckUpdateTilePosition(below) && IsCameraVisible(below))
+        if (!_tilemap.HasTile(below) && !CheckUpdateTilePosition(below))
         {
             _clearTiles.Add(position);
             _updateTiles.Add(below);
         }
-        else if (!tilemap.HasTile(belowLeft) || !tilemap.HasTile(belowRight))
+        else if (!_tilemap.HasTile(belowLeft) || !_tilemap.HasTile(belowRight))
         {
             var random = Random.Range(0, 2);
             switch (random)
             {
                 case 0:
-                    if (!tilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft) && IsCameraVisible(belowLeft))
+                    if (!_tilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowLeft);
                     }
                     break;
                 case 1:
-                    if (!tilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight) && IsCameraVisible(belowRight))
+                    if (!_tilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowRight);
@@ -205,14 +228,14 @@ public class TilesUpdate : Singleton<TilesUpdate>
                     break;
             }
         }
-        else if (!tilemap.HasTile(left) || !tilemap.HasTile(right))
+        else if (!_tilemap.HasTile(left) || !_tilemap.HasTile(right))
         {
             var random = Random.Range(0, 2);
             switch (random)
             {
                 case 0:
                 {
-                    if (!tilemap.HasTile(left) && !CheckUpdateTilePosition(left) && IsCameraVisible(left))
+                    if (!_tilemap.HasTile(left) && !CheckUpdateTilePosition(left))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(left);
@@ -221,7 +244,7 @@ public class TilesUpdate : Singleton<TilesUpdate>
                 }
                 case 1:
                 {
-                    if (!tilemap.HasTile(right) && !CheckUpdateTilePosition(right) && IsCameraVisible(right))
+                    if (!_tilemap.HasTile(right) && !CheckUpdateTilePosition(right))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(right);
@@ -230,12 +253,6 @@ public class TilesUpdate : Singleton<TilesUpdate>
                 }
             }
         }
-    }
-    
-    private bool IsCameraVisible(Vector3Int pos)
-    {
-        var cameraPosition = _camera.WorldToScreenPoint(tilemap.GetCellCenterWorld(pos));
-        return _camera.pixelRect.Contains(cameraPosition);
     }
     
     private bool CheckUpdateTilePosition(Vector3Int position)
@@ -250,13 +267,13 @@ public class TilesUpdate : Singleton<TilesUpdate>
         if (GetTileData(TileType.Sand).tilePositions.Count == 0) { return; }
             
         var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
-        var tilesBlock = tilemap.GetTilesBlock(checkBound);
+        var tilesBlock = _tilemap.GetTilesBlock(checkBound);
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
         if (tilesBlock.Length == 0) { return; }
 
         if (tilesBlock.Any(tileBase => tileBase == GetTileData(TileType.Water).tile))
         {
-            tilemap.SetTile(position, GetTileData(TileType.Mud).tile);
+            _tilemap.SetTile(position, GetTileData(TileType.Mud).tile);
         }
     }
 
