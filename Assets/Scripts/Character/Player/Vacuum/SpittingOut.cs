@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 using NaughtyAttributes;
+using Random = UnityEngine.Random;
 
 public class SpittingOut : MonoBehaviour
 {
@@ -22,36 +24,37 @@ public class SpittingOut : MonoBehaviour
 	
 	private float _lastUpdateTime;
 	private Camera _camera;
+	private PlayerActions _playerActions;
+
+	private void Awake()
+	{
+		_playerActions = new PlayerActions();
+	}
 
 	private void Start()
 	{
 		_camera = Camera.main;
 		_lastUpdateTime = Time.time;
+		
+		_playerActions.Vacuum.SpittingOut.performed += _ => SpittingOutTiles();
+		_playerActions.Vacuum.SpittingOut.canceled += _ => _lastUpdateTime = Time.time;
 	}
 
-	private void Update()
+	private void SpittingOutTiles()
 	{
-		if (Input.GetMouseButtonUp(1))
+		if (Time.time - _lastUpdateTime > interval)
 		{
 			_lastUpdateTime = Time.time;
-		}
-		
-		if (Input.GetMouseButton(1))
-		{
-			if (Time.time - _lastUpdateTime > interval)
+			var randomGenerateTileCount = Random.Range(generateTileCount.x, generateTileCount.y);
+			for (var i = 0; i < randomGenerateTileCount; i++)
 			{
-				_lastUpdateTime = Time.time;
-				var randomGenerateTileCount = Random.Range(generateTileCount.x, generateTileCount.y);
-				for (var i = 0; i < randomGenerateTileCount; i++)
-				{
-					GenerateTile();
-				}
+				GenerateTile();
 			}
-			
-			UpdateTile();
 		}
+
+		UpdateTile();
 	}
-	
+
 	private void GenerateTile()
 	{
 		var mousePosition = Input.mousePosition;

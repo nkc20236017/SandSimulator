@@ -1,5 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -8,79 +8,140 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private float jumpForce;
 	
 	[Header("Ground Check")]
+	[SerializeField] private bool isColliderRadius;
 	[SerializeField] private float radius;
 	[SerializeField] private LayerMask groundLayerMask;
+	[SerializeField] private Tilemap tilemap;
 
-	private Vector3 _scale;
-	private CapsuleCollider2D _capsuleCollider2D;
+	private float _currentSpeed;
+	private Vector2 _moveDirection;
+	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
-	private Camera _camera;
+	private SpriteRenderer _spriteRenderer;
+	private PlayerActions _playerActions;
+	private PlayerActions.MovementActions MovementActions => _playerActions.Movement;
 
 	private void Awake()
 	{
-		_capsuleCollider2D = GetComponent<CapsuleCollider2D>();
+		_playerActions = new PlayerActions();
+
+		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
+		_spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 	}
 
 	private void Start()
 	{
-		_camera = Camera.main;
-		_scale = transform.localScale;
+		MovementActions.Jump.started += _ => Jump();
+		
+		_currentSpeed = speed;
+	}
+
+	private void FixedUpdate()
+	{
+		Movement();
+	}
+	
+	private void Movement()
+	{
+		_rigidbody2D.velocity = new Vector2(_moveDirection.x * _currentSpeed, _rigidbody2D.velocity.y);
 	}
 
 	private void Update()
 	{
-		Movement();
-		Flip();
-		Jump();
+		InputMovement();
 		IsGround();
+		OneBlockUp();
 	}
 
-	private void Movement()
+	private void InputMovement()
 	{
-		var horizontal = Input.GetAxisRaw("Horizontal");
-		transform.position += new Vector3(horizontal, 0, 0) * (speed * Time.deltaTime);
-	}
-
-	private void Flip()
-	{
-		var direction = Input.mousePosition - _camera.WorldToScreenPoint(transform.position);
-		if (direction.x > 0)
-		{
-			transform.localScale = new Vector3(_scale.x, _scale.y, _scale.z);
-		}
-		else
-		{
-			transform.localScale = new Vector3(-_scale.x, _scale.y, _scale.z);
-		}
+		_moveDirection = MovementActions.Move.ReadValue<Vector2>();
+		
+		Flip();
 	}
 
 	private void Jump()
 	{
 		if (!IsGround()) { return; }
 		
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			_rigidbody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-		}
+		_rigidbody2D.velocity = Vector2.up * jumpForce;
 	}
 	
 	private bool IsGround()
 	{
-		var x = _capsuleCollider2D.bounds.center.x;
-		var y = _capsuleCollider2D.bounds.min.y;
+		var x = _boxCollider2D.bounds.center.x;
+		var y = _boxCollider2D.bounds.min.y;
 		var position = new Vector2(x, y);
 		var hit = Physics2D.CircleCast(position, radius, Vector2.down, 0.1f, groundLayerMask);
 		return hit.collider != null;
+	}
+	
+	private void OneBlockUp()
+	{
+		if (_rigidbody2D.velocity.y != 0) { return; }
+
+		var x = _moveDirection.x > 0 ? _boxCollider2D.bounds.max.x : _boxCollider2D.bounds.min.x;
+		var position = new Vector2(x, transform.position.y);
+		var cellPosition = tilemap.WorldToCell(position + _moveDirection);
+		var directionTile = tilemap.GetTile(cellPosition);
+		var directionDownTile = tilemap.GetTile(cellPosition + Vector3Int.down);
+		if (directionTile == null && directionDownTile != null)
+		{
+			transform.position += new Vector3(_moveDirection.x * 0.01f, Vector3.up.y);
+		}
+	}
+	
+	private void Flip()
+	{
+		_spriteRenderer.flipX = _moveDirection.x switch
+		{
+				> 0 => false,
+				< 0 => true,
+				_ => _spriteRenderer.flipX,
+		};
+	}
+	
+	public void SetSpeed(float speed)
+	{
+		_currentSpeed = speed;
+	}
+	
+	public void ResetSpeed()
+	{
+		_currentSpeed = speed;
 	}
 
 	private void OnDrawGizmos()
 	{
 		Gizmos.color = Color.red;
-		var capsuleCollider2D = GetComponent<CapsuleCollider2D>();
-		var x = capsuleCollider2D.bounds.center.x;
-		var y = capsuleCollider2D.bounds.min.y;
+		var boxCollider2D = GetComponent<BoxCollider2D>();
+		var x = boxCollider2D.bounds.center.x;
+		var y = boxCollider2D.bounds.min.y;
 		var position = new Vector2(x, y);
-		Gizmos.DrawWireSphere(position, radius);
+		if (isColliderRadius)
+		{
+			Gizmos.DrawWireSphere(position, boxCollider2D.size.x / 2);
+		}
+		else
+		{
+			Gizmos.DrawWireSphere(position, radius);
+		}
+		
+		Gizmos.color = Color.green;
+		var cellPosition = tilemap.WorldToCell(transform.position);
+		var directionPosition = cellPosition + Vector3Int.RoundToInt(_moveDirection);
+		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(directionPosition), Vector3.one);
+		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(directionPosition + Vector3Int.down), Vector3.one);
+	}
+	
+	private void OnEnable()
+	{
+		_playerActions.Enable();
+	}
+	
+	private void OnDisable()
+	{
+		_playerActions.Disable();
 	}
 }

@@ -21,6 +21,11 @@ public class TilesUpdate : MonoBehaviour
     [SerializeField] private float updateInterval = 0.01f;
     [SerializeField] private Vector2Int chunkSize = new(84, 45);
     
+    [Header("Update Tile Config")]
+    [SerializeField] private bool canUpdateSand;
+    [SerializeField] private bool canUpdateWater;
+    [SerializeField] private bool canUpdateSandToMud;
+    
     private float _lastUpdateTime;
     private List<Vector3Int> _clearTiles = new();
     private List<Vector3Int> _updateTiles = new();
@@ -106,13 +111,23 @@ public class TilesUpdate : MonoBehaviour
                 switch (tileData.type)
                 {
                     case TileType.Sand:
-                        UpdateSand(position);
-                        SandToMud(position, tileData);
+                        if (canUpdateSand)
+                        {
+                            UpdateSand(position);
+                        }
+
+                        if (canUpdateSandToMud)
+                        {
+                            SandToMud(position, tileData);
+                        }
                         break;
                     case TileType.Mud:
                         break;
                     case TileType.Water:
-                        UpdateWater(position);
+                        if (canUpdateWater)
+                        {
+                            UpdateWater(position);
+                        }
                         break;
                     case TileType.Fire:
                         break;
@@ -147,7 +162,19 @@ public class TilesUpdate : MonoBehaviour
         }
         
         _tilemap.SetTiles(tilePositions, tileArray);
+        
         // TODO: 動いているタイルの当たり判定を消す
+        foreach (var tilePosition in _updateTiles)
+        {
+            if (tileData.type == TileType.Water)
+            {
+                _tilemap.SetColliderType(tilePosition, Tile.ColliderType.None);
+            }
+            else
+            {
+                _tilemap.SetColliderType(tilePosition, Tile.ColliderType.Sprite);
+            }
+        }
     }
 
     private void UpdateSand(Vector3Int position)
@@ -277,7 +304,7 @@ public class TilesUpdate : MonoBehaviour
         }
     }
 
-    public TileData GetTileData(TileType type)
+    private TileData GetTileData(TileType type)
     {
         return (from tile in tiles where tile.type == type select tile).FirstOrDefault();
     }

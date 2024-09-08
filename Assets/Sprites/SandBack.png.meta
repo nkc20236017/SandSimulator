@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8e3e0692f42c9064299b43136cf86086
+guid: 0c1cae1a3ee536d48b9cfadac84fbd4a
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,11 +97,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Sand_0
+      name: SandBack_0
       rect:
         serializedVersion: 2
         x: 8
-        y: 72
+        y: 56
         width: 8
         height: 8
       alignment: 0
@@ -118,11 +118,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_1
+      name: SandBack_1
       rect:
         serializedVersion: 2
         x: 24
-        y: 72
+        y: 56
         width: 8
         height: 8
       alignment: 0
@@ -139,11 +139,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_2
+      name: SandBack_2
       rect:
         serializedVersion: 2
         x: 40
-        y: 72
+        y: 56
         width: 8
         height: 8
       alignment: 0
@@ -160,11 +160,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_3
+      name: SandBack_3
       rect:
         serializedVersion: 2
         x: 56
-        y: 72
+        y: 56
         width: 8
         height: 8
       alignment: 0
@@ -181,11 +181,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_4
+      name: SandBack_4
       rect:
         serializedVersion: 2
         x: 72
-        y: 72
+        y: 56
         width: 8
         height: 8
       alignment: 0
@@ -202,11 +202,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_5
+      name: SandBack_5
       rect:
         serializedVersion: 2
         x: 8
-        y: 56
+        y: 40
         width: 8
         height: 8
       alignment: 0
@@ -223,11 +223,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_6
+      name: SandBack_6
       rect:
         serializedVersion: 2
         x: 24
-        y: 56
+        y: 40
         width: 8
         height: 8
       alignment: 0
@@ -244,11 +244,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_7
+      name: SandBack_7
       rect:
         serializedVersion: 2
         x: 40
-        y: 56
+        y: 40
         width: 8
         height: 8
       alignment: 0
@@ -265,11 +265,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_8
+      name: SandBack_8
       rect:
         serializedVersion: 2
         x: 56
-        y: 56
+        y: 40
         width: 8
         height: 8
       alignment: 0
@@ -286,11 +286,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_9
+      name: SandBack_9
       rect:
         serializedVersion: 2
         x: 72
-        y: 56
+        y: 40
         width: 8
         height: 8
       alignment: 0
@@ -307,11 +307,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_10
+      name: SandBack_10
       rect:
         serializedVersion: 2
         x: 8
-        y: 40
+        y: 24
         width: 8
         height: 8
       alignment: 0
@@ -328,11 +328,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_11
+      name: SandBack_11
       rect:
         serializedVersion: 2
         x: 24
-        y: 40
+        y: 24
         width: 8
         height: 8
       alignment: 0
@@ -349,11 +349,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_12
+      name: SandBack_12
       rect:
         serializedVersion: 2
         x: 40
-        y: 40
+        y: 24
         width: 8
         height: 8
       alignment: 0
@@ -370,11 +370,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_13
+      name: SandBack_13
       rect:
         serializedVersion: 2
         x: 56
-        y: 40
+        y: 24
         width: 8
         height: 8
       alignment: 0
@@ -391,11 +391,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_14
+      name: SandBack_14
       rect:
         serializedVersion: 2
         x: 72
-        y: 40
+        y: 24
         width: 8
         height: 8
       alignment: 0
@@ -412,11 +412,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_15
+      name: SandBack_15
       rect:
         serializedVersion: 2
         x: 8
-        y: 24
+        y: 8
         width: 8
         height: 8
       alignment: 0
@@ -433,11 +433,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_16
+      name: SandBack_16
       rect:
         serializedVersion: 2
         x: 24
-        y: 24
+        y: 8
         width: 8
         height: 8
       alignment: 0
@@ -454,11 +454,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_17
+      name: SandBack_17
       rect:
         serializedVersion: 2
         x: 40
-        y: 24
+        y: 8
         width: 8
         height: 8
       alignment: 0
@@ -475,11 +475,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_18
+      name: SandBack_18
       rect:
         serializedVersion: 2
-        x: 56
-        y: 24
+        x: 55
+        y: 8
         width: 8
         height: 8
       alignment: 0
@@ -495,90 +495,6 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: Sand_19
-      rect:
-        serializedVersion: 2
-        x: 8
-        y: 8
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 32d7ca06d45d8d04e8dbda874305dd2d
-      internalID: 203927208
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sand_20
-      rect:
-        serializedVersion: 2
-        x: 24
-        y: 8
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bb646340070a83f4f87e51bd55f41898
-      internalID: -24748151
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sand_21
-      rect:
-        serializedVersion: 2
-        x: 40
-        y: 8
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 985032beb9bb82e4ab2f8d9c1ba380fb
-      internalID: -554041075
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sand_22
-      rect:
-        serializedVersion: 2
-        x: 56
-        y: 8
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8742a2a0e1a9aa44ebcbb08051897ba3
-      internalID: 1060137253
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -590,29 +506,25 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Sand_0: -1194580231
-      Sand_1: 668682857
-      Sand_10: 562918693
-      Sand_11: -2026780159
-      Sand_12: 1400942085
-      Sand_13: 1464494326
-      Sand_14: 28484400
-      Sand_15: -385365421
-      Sand_16: -208913967
-      Sand_17: -539387897
-      Sand_18: 535653961
-      Sand_19: 203927208
-      Sand_2: 180892775
-      Sand_20: -24748151
-      Sand_21: -554041075
-      Sand_22: 1060137253
-      Sand_3: 2035628506
-      Sand_4: -214983656
-      Sand_5: -1450161209
-      Sand_6: 972085822
-      Sand_7: -981768897
-      Sand_8: 30593014
-      Sand_9: -2043635501
+      SandBack_0: -1194580231
+      SandBack_1: 668682857
+      SandBack_10: 562918693
+      SandBack_11: -2026780159
+      SandBack_12: 1400942085
+      SandBack_13: 1464494326
+      SandBack_14: 28484400
+      SandBack_15: -385365421
+      SandBack_16: -208913967
+      SandBack_17: -539387897
+      SandBack_18: 535653961
+      SandBack_2: 180892775
+      SandBack_3: 2035628506
+      SandBack_4: -214983656
+      SandBack_5: -1450161209
+      SandBack_6: 972085822
+      SandBack_7: -981768897
+      SandBack_8: 30593014
+      SandBack_9: -2043635501
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

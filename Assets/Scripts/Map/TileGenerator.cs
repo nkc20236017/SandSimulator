@@ -12,13 +12,18 @@ public class TileGenerator : MonoBehaviour
     
 	[Header("Tile Config")]
 	[SerializeField] private Tilemap tilemap;
-    [SerializeField] private TileBase tile;
+    [SerializeField] private TileData[] tiles;
     
     private Camera _camera;
 
     private void Start()
     {
         _camera = Camera.main;
+    }
+    
+    private TileData GetTileData(TileType type)
+    {
+        return (from tile in tiles where tile.type == type select tile).FirstOrDefault();
     }
 
     private void Update()
@@ -28,7 +33,7 @@ public class TileGenerator : MonoBehaviour
             var mousePosition = Input.mousePosition;
             var worldPosition = _camera.ScreenToWorldPoint(mousePosition);
             var cellPosition = tilemap.WorldToCell(worldPosition);
-            PlaceTiles(tile, cellPosition, radius);
+            PlaceTiles(GetTileData(tileType).tile, cellPosition, radius);
         }
         
         if (Input.GetMouseButton(1))

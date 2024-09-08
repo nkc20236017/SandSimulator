@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8e3e0692f42c9064299b43136cf86086
+guid: e4942c07e615b06429aa1a2efae8f902
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,7 +97,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Sand_0
+      name: Water_0
       rect:
         serializedVersion: 2
         x: 8
@@ -118,7 +118,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_1
+      name: Water_1
       rect:
         serializedVersion: 2
         x: 24
@@ -139,7 +139,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_2
+      name: Water_2
       rect:
         serializedVersion: 2
         x: 40
@@ -160,7 +160,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_3
+      name: Water_3
       rect:
         serializedVersion: 2
         x: 56
@@ -181,11 +181,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_4
+      name: Water_4
       rect:
         serializedVersion: 2
-        x: 72
-        y: 72
+        x: 8
+        y: 56
         width: 8
         height: 8
       alignment: 0
@@ -202,10 +202,10 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_5
+      name: Water_5
       rect:
         serializedVersion: 2
-        x: 8
+        x: 24
         y: 56
         width: 8
         height: 8
@@ -223,10 +223,10 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_6
+      name: Water_6
       rect:
         serializedVersion: 2
-        x: 24
+        x: 40
         y: 56
         width: 8
         height: 8
@@ -244,10 +244,10 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_7
+      name: Water_7
       rect:
         serializedVersion: 2
-        x: 40
+        x: 56
         y: 56
         width: 8
         height: 8
@@ -265,11 +265,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_8
+      name: Water_8
       rect:
         serializedVersion: 2
-        x: 56
-        y: 56
+        x: 8
+        y: 40
         width: 8
         height: 8
       alignment: 0
@@ -286,11 +286,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_9
+      name: Water_9
       rect:
         serializedVersion: 2
-        x: 72
-        y: 56
+        x: 24
+        y: 40
         width: 8
         height: 8
       alignment: 0
@@ -307,10 +307,10 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_10
+      name: Water_10
       rect:
         serializedVersion: 2
-        x: 8
+        x: 40
         y: 40
         width: 8
         height: 8
@@ -328,10 +328,10 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_11
+      name: Water_11
       rect:
         serializedVersion: 2
-        x: 24
+        x: 56
         y: 40
         width: 8
         height: 8
@@ -349,11 +349,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_12
+      name: Water_12
       rect:
         serializedVersion: 2
-        x: 40
-        y: 40
+        x: 8
+        y: 24
         width: 8
         height: 8
       alignment: 0
@@ -370,11 +370,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_13
+      name: Water_13
       rect:
         serializedVersion: 2
-        x: 56
-        y: 40
+        x: 24
+        y: 24
         width: 8
         height: 8
       alignment: 0
@@ -391,11 +391,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_14
+      name: Water_14
       rect:
         serializedVersion: 2
-        x: 72
-        y: 40
+        x: 40
+        y: 24
         width: 8
         height: 8
       alignment: 0
@@ -412,10 +412,10 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_15
+      name: Water_15
       rect:
         serializedVersion: 2
-        x: 8
+        x: 56
         y: 24
         width: 8
         height: 8
@@ -433,70 +433,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_16
-      rect:
-        serializedVersion: 2
-        x: 24
-        y: 24
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d0f0ddd3bb7519f49a9a5ac46b4413a3
-      internalID: -208913967
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sand_17
-      rect:
-        serializedVersion: 2
-        x: 40
-        y: 24
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 85895bc49b37bb14d9fa4ebc7935b580
-      internalID: -539387897
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sand_18
-      rect:
-        serializedVersion: 2
-        x: 56
-        y: 24
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 909f8c04e9565364aa8590ea84df04fa
-      internalID: 535653961
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sand_19
+      name: Water_16
       rect:
         serializedVersion: 2
         x: 8
@@ -510,14 +447,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 32d7ca06d45d8d04e8dbda874305dd2d
-      internalID: 203927208
+      spriteID: 7cd7f2bc180410d458be184f81c97fa9
+      internalID: -2090671245
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sand_20
+      name: Water_17
       rect:
         serializedVersion: 2
         x: 24
@@ -531,50 +468,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bb646340070a83f4f87e51bd55f41898
-      internalID: -24748151
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sand_21
-      rect:
-        serializedVersion: 2
-        x: 40
-        y: 8
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 985032beb9bb82e4ab2f8d9c1ba380fb
-      internalID: -554041075
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sand_22
-      rect:
-        serializedVersion: 2
-        x: 56
-        y: 8
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8742a2a0e1a9aa44ebcbb08051897ba3
-      internalID: 1060137253
+      spriteID: 137e144322ed2494ea60f185136e36d3
+      internalID: -89077016
       vertices: []
       indices: 
       edges: []
@@ -590,29 +485,27 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Sand_0: -1194580231
-      Sand_1: 668682857
-      Sand_10: 562918693
-      Sand_11: -2026780159
-      Sand_12: 1400942085
-      Sand_13: 1464494326
-      Sand_14: 28484400
-      Sand_15: -385365421
-      Sand_16: -208913967
-      Sand_17: -539387897
-      Sand_18: 535653961
-      Sand_19: 203927208
-      Sand_2: 180892775
-      Sand_20: -24748151
-      Sand_21: -554041075
-      Sand_22: 1060137253
-      Sand_3: 2035628506
-      Sand_4: -214983656
-      Sand_5: -1450161209
-      Sand_6: 972085822
-      Sand_7: -981768897
-      Sand_8: 30593014
-      Sand_9: -2043635501
+      SandTile_16: -208913967
+      SandTile_17: -539387897
+      SandTile_18: 535653961
+      Water_0: -1194580231
+      Water_1: 668682857
+      Water_10: 562918693
+      Water_11: -2026780159
+      Water_12: 1400942085
+      Water_13: 1464494326
+      Water_14: 28484400
+      Water_15: -385365421
+      Water_16: -2090671245
+      Water_17: -89077016
+      Water_2: 180892775
+      Water_3: 2035628506
+      Water_4: -214983656
+      Water_5: -1450161209
+      Water_6: 972085822
+      Water_7: -981768897
+      Water_8: 30593014
+      Water_9: -2043635501
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

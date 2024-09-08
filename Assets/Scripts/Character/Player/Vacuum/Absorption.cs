@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -19,28 +20,26 @@ public class Absorption : MonoBehaviour
     [SerializeField] private bool _debugMode;
 
     private Camera _mainCamera;
+    private PlayerActions _playerActions;
 
     public List<Vector3Int> AbsorbedTilePositions { get; private set; } = new();
+
+    private void Awake()
+    {
+        _playerActions = new PlayerActions();
+    }
 
     private void Start()
     {
         _mainCamera = Camera.main;
+        
+        _playerActions.Vacuum.Absorption.performed += _ => GetAbsorbedTilePositions();
+        _playerActions.Vacuum.Absorption.canceled += _ => AbsorbedTilePositions.Clear();
     }
 
     private void Update()
     {
         RotateToCursorDirection();
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            AbsorbedTilePositions.Clear();
-        }
-
-        if (Input.GetMouseButton(0))
-        {
-            GetAbsorbedTilePositions();
-            AbsorbTiles();
-        }
     }
 
     private void RotateToCursorDirection()
@@ -56,9 +55,41 @@ public class Absorption : MonoBehaviour
         pivot.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
     }
 
+    private void GetAbsorbedTilePositions()
+    {
+        AbsorbedTilePositions.Clear();
+        var position = Vector3Int.RoundToInt(pivot.position);
+        var size = Vector3Int.RoundToInt(new Vector3(_suctionDistance, _suctionDistance, 0));
+        var bounds = new BoundsInt(position, size);
+        // var getTilesBlock = _tilemap.GetTilesBlock(bounds);
+        // getTilesBlock = getTilesBlock.Where(x => x != null).ToArray();
+        // if (getTilesBlock.Length == 0) { return; }
+        
+        foreach (var tilePosition in bounds.allPositionsWithin)
+        {
+            if (_tilemap.GetTile(tilePosition) == null) { continue; }
+            
+            var mouseWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            var centerCell = (Vector3)_tilemap.WorldToCell(mouseWorldPosition);
+
+            var direction1 = (Vector3)_tilemap.WorldToCell(tilePosition) - _tilemap.WorldToCell(pivot.position);
+            var direction2 = (Vector3)_tilemap.WorldToCell(centerCell) - _tilemap.WorldToCell(pivot.position);
+            var angle = Vector3.Angle(direction1, direction2);
+
+            var distance = Vector3.Distance(_tilemap.GetCellCenterWorld(tilePosition), pivot.position);
+
+            if (angle <= _suctionAngle && distance <= _suctionDistance && distance > _deleteDistance)
+            {
+                AbsorbedTilePositions.Add(tilePosition);
+            }
+        }
+        
+        AbsorbTiles();
+    }
+    
     private void AbsorbTiles()
     {
-        AbsorbedTilePositions = AbsorbedTilePositions.OrderBy(x => Random.value).ToList();
+        AbsorbedTilePositions = AbsorbedTilePositions.OrderBy(_ => Random.value).ToList();
 
         foreach (var tilePosition in AbsorbedTilePositions)
         {
@@ -74,28 +105,6 @@ public class Absorption : MonoBehaviour
             if (Vector3.Distance(_tilemap.GetCellCenterWorld(newTilePosition), pivot.position) <= _deleteDistance)
             {
                 _tilemap.SetTile(newTilePosition, null);
-            }
-        }
-    }
-
-    private void GetAbsorbedTilePositions()
-    {
-        AbsorbedTilePositions.Clear();
-        var bounds = new BoundsInt(_tilemap.WorldToCell(pivot.position) - new Vector3Int((int)_suctionDistance, (int)_suctionDistance, 0), new Vector3Int((int)_suctionDistance * 2, (int)_suctionDistance * 2, 1));
-        foreach (var tilePosition in bounds.allPositionsWithin)
-        {
-            var mouseWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            var centerCell = (Vector3)_tilemap.WorldToCell(mouseWorldPosition);
-
-            var direction1 = (Vector3)_tilemap.WorldToCell(tilePosition) - _tilemap.WorldToCell(pivot.position);
-            var direction2 = (Vector3)_tilemap.WorldToCell(centerCell) - _tilemap.WorldToCell(pivot.position);
-            var angle = Vector3.Angle(direction1, direction2);
-
-            var distance = Vector3.Distance(_tilemap.GetCellCenterWorld(tilePosition), pivot.position);
-
-            if (angle <= _suctionAngle && distance < _suctionDistance && distance > _deleteDistance)
-            {
-                AbsorbedTilePositions.Add(tilePosition);
             }
         }
     }
@@ -138,5 +147,15 @@ public class Absorption : MonoBehaviour
         var newDirection = new Vector3(newX, newY, 0);
         var newCell = pivot.position + newDirection;
         return newCell;
+    }
+    
+    private void OnEnable()
+    {
+        _playerActions.Enable();
+    }
+    
+    private void OnDisable()
+    {
+        _playerActions.Disable();
     }
 }
