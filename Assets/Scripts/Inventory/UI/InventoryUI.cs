@@ -10,10 +10,18 @@ public class InventoryUI : MonoBehaviour
     [SerializeField]
     private Text itemAmount;
 
-    public void UpdateUI(Sprite spriteRenderer ,string itemAmount)
+
+    public void UpdateUI(ItemInventory itemInventory)
     {
-            itemIamge.sprite = spriteRenderer;
-            this.itemAmount.text = itemAmount;
+        itemIamge.color = Color.white;
+        itemIamge.sprite = itemInventory.ItemData.itemIcom;
+            this.itemAmount.text = itemInventory.StackSize.ToString();
+    }
+    public void CleanUp()
+    {
+        itemIamge.sprite = null;
+        itemIamge.color = Color.clear;
+        itemAmount.text = string.Empty;
     }
 
 }
