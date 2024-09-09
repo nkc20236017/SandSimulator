@@ -98,7 +98,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             ""id"": ""6ec33095-08b2-4395-96c6-907b4f5622bd"",
             ""actions"": [
                 {
-                    ""name"": ""Absorption"",
+                    ""name"": ""SuckUp"",
                     ""type"": ""Button"",
                     ""id"": ""582d8831-77da-4f6c-bcdd-6038628976f8"",
                     ""expectedControlType"": ""Button"",
@@ -107,7 +107,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""SpittingOut"",
+                    ""name"": ""BlowOut"",
                     ""type"": ""Button"",
                     ""id"": ""d554c1a6-0189-4d64-b510-241cb4c9db19"",
                     ""expectedControlType"": ""Button"",
@@ -124,7 +124,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Absorption"",
+                    ""action"": ""SuckUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -135,7 +135,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SpittingOut"",
+                    ""action"": ""BlowOut"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -150,8 +150,8 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Movement_Jump = m_Movement.FindAction("Jump", throwIfNotFound: true);
         // Vacuum
         m_Vacuum = asset.FindActionMap("Vacuum", throwIfNotFound: true);
-        m_Vacuum_Absorption = m_Vacuum.FindAction("Absorption", throwIfNotFound: true);
-        m_Vacuum_SpittingOut = m_Vacuum.FindAction("SpittingOut", throwIfNotFound: true);
+        m_Vacuum_Absorption = m_Vacuum.FindAction("SuckUp", throwIfNotFound: true);
+        m_Vacuum_SpittingOut = m_Vacuum.FindAction("BlowOut", throwIfNotFound: true);
     }
 
     public void Dispose()

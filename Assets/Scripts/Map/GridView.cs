@@ -24,7 +24,7 @@ public class GridView : MonoBehaviour
 			}
 			else
 			{
-				Gizmos.color = new Color(0, 0, 0, 0.25f);
+				Gizmos.color = new Color(0, 0, 0, 0.5f);
 			}
 			
 			Gizmos.DrawLine(new Vector3(x, startY), new Vector3(x, endY));
@@ -38,7 +38,7 @@ public class GridView : MonoBehaviour
 			}
 			else
 			{
-				Gizmos.color = new Color(0, 0, 0, 0.25f);
+				Gizmos.color = new Color(0, 0, 0, 0.5f);
 			}
 			
 			Gizmos.DrawLine(new Vector3(startX, y), new Vector3(endX, y));

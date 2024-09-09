@@ -34,11 +34,6 @@ public class TilesUpdate : MonoBehaviour
     
     private Dictionary<Vector3Int, TileBase> _previousTilemapState = new();
     
-    protected void Awake()
-    {
-        _updateTilemap = GetComponent<Tilemap>();
-    }
-
     private void Start()
     {
         tiles.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
@@ -48,28 +43,9 @@ public class TilesUpdate : MonoBehaviour
     {
         if (Time.time - _lastUpdateTime <= updateInterval) { return; }
         if (_updateTilemap.GetUsedTilesCount() == 0) { return; }
-        if (!HasTilemapChanged()) { return; }
         
         GetTilePosition();
         _lastUpdateTime = Time.time;
-    }
-    
-    private bool HasTilemapChanged()
-    {
-        var currentTilemapState = new Dictionary<Vector3Int, TileBase>();
-        for (var y = -chunkSize.y / 2; y < chunkSize.y / 2; y++)
-        {
-            for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
-            {
-                var position = new Vector3Int(x, y, 0);
-                var tile = _updateTilemap.GetTile(position);
-                currentTilemapState[position] = tile;
-            }
-        }
-
-        var hasChanged = !currentTilemapState.SequenceEqual(_previousTilemapState);
-        _previousTilemapState = currentTilemapState;
-        return hasChanged;
     }
 
     private void GetTilePosition()
@@ -86,14 +62,8 @@ public class TilesUpdate : MonoBehaviour
                 var position = new Vector3Int(x, y, 0);
                 var tile = _updateTilemap.GetTile(position);
                 if (tile == null) { continue; }
-                
-                var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
-                var tilesBlock = _updateTilemap.GetTilesBlock(checkBound);
-                tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
-                if (tilesBlock.Length == 9) { return; }
             
                 var index = Array.FindIndex(tiles, t => t.tile == tile);
-                
                 if (index >= 0 && index < tiles.Length)
                 {
                     tiles[index].tilePositions.Add(position);
@@ -187,12 +157,14 @@ public class TilesUpdate : MonoBehaviour
     private void UpdateSand(Vector3Int position)
     {
         var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 1, 1);
-        var tilesBlock = _updateTilemap.GetTilesBlock(checkBound);
+        var tilesBlock1 = _updateTilemap.GetTilesBlock(checkBound);
+        var tilesBlock2 = _mapTilemap.GetTilesBlock(checkBound);
+        var tilesBlock = tilesBlock1.Concat(tilesBlock2).ToArray();
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
         if (tilesBlock.Length == 3)
         {
             _mapTilemap.SetTile(position, GetTileData(TileType.Sand).tile);
-            _updateTilemap.SetTile(position, null);
+            _clearTiles.Add(position);
             return;
         }
         
@@ -200,25 +172,25 @@ public class TilesUpdate : MonoBehaviour
         var belowLeft = position + new Vector3Int(-1, -1, 0);
         var belowRight = position + new Vector3Int(1, -1, 0);
         
-        if ((!_mapTilemap.HasTile(below) || !_updateTilemap.HasTile(below)) && !CheckUpdateTilePosition(below))
+        if (!_mapTilemap.HasTile(below) && !_updateTilemap.HasTile(below) && !CheckUpdateTilePosition(below))
         {
             _clearTiles.Add(position);
             _updateTiles.Add(below);
         }
-        else if (!_mapTilemap.HasTile(belowLeft) || !_mapTilemap.HasTile(belowRight) || !_updateTilemap.HasTile(belowLeft) || !_updateTilemap.HasTile(belowRight))
+        else if (!_mapTilemap.HasTile(belowLeft) && !_updateTilemap.HasTile(belowLeft) || !_mapTilemap.HasTile(belowRight) && !_updateTilemap.HasTile(belowRight))
         {
             var random = Random.Range(0, 2);
             switch (random)
             {
                 case 0:
-                    if ((!_mapTilemap.HasTile(belowLeft) || !_updateTilemap.HasTile(belowLeft)) && !CheckUpdateTilePosition(belowLeft))
+                    if (!_mapTilemap.HasTile(belowLeft) && !_updateTilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowLeft);
                     }
                     break;
                 case 1:
-                    if ((!_mapTilemap.HasTile(belowRight) || !_updateTilemap.HasTile(belowRight)) && !CheckUpdateTilePosition(belowRight))
+                    if (!_mapTilemap.HasTile(belowRight) && !_updateTilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowRight);

@@ -33,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
 	private void Start()
 	{
 		MovementActions.Jump.started += _ => Jump();
+		MovementActions.Jump.canceled += _ => JumpCancel();
 		
 		_currentSpeed = speed;
 	}
@@ -68,6 +69,14 @@ public class PlayerMovement : MonoBehaviour
 		_rigidbody2D.velocity = Vector2.up * jumpForce;
 	}
 	
+	private void JumpCancel()
+	{
+		if (_rigidbody2D.velocity.y > 0)
+		{
+			_rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _rigidbody2D.velocity.y * 0.5f);
+		}
+	}
+	
 	private bool IsGround()
 	{
 		var x = _boxCollider2D.bounds.center.x;
@@ -80,13 +89,15 @@ public class PlayerMovement : MonoBehaviour
 	private void OneBlockUp()
 	{
 		if (_rigidbody2D.velocity.y != 0) { return; }
+		if (_moveDirection == Vector2.zero) { return; }
 
 		var x = _moveDirection.x > 0 ? _boxCollider2D.bounds.max.x : _boxCollider2D.bounds.min.x;
-		var position = new Vector2(x, transform.position.y);
-		var cellPosition = tilemap.WorldToCell(position + _moveDirection);
-		var directionTile = tilemap.GetTile(cellPosition);
-		var directionDownTile = tilemap.GetTile(cellPosition + Vector3Int.down);
-		if (directionTile == null && directionDownTile != null)
+		var position = new Vector2(x, _boxCollider2D.bounds.min.y);
+		var cellPosition = tilemap.WorldToCell(position);
+		var directionPosition = cellPosition;
+		var variate = tilemap.GetTile(directionPosition);
+		var immediate = tilemap.GetTile(directionPosition + Vector3Int.up);
+		if (immediate == null && variate != null)
 		{
 			transform.position += new Vector3(_moveDirection.x * 0.01f, Vector3.up.y);
 		}
@@ -129,10 +140,14 @@ public class PlayerMovement : MonoBehaviour
 		}
 		
 		Gizmos.color = Color.green;
-		var cellPosition = tilemap.WorldToCell(transform.position);
+		if (_moveDirection == Vector2.zero) { return; }
+		
+		x = _moveDirection.x > 0 ? boxCollider2D.bounds.max.x : boxCollider2D.bounds.min.x;
+		position = new Vector2(x, boxCollider2D.bounds.min.y);
+		var cellPosition = tilemap.WorldToCell(position);
 		var directionPosition = cellPosition + Vector3Int.RoundToInt(_moveDirection);
 		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(directionPosition), Vector3.one);
-		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(directionPosition + Vector3Int.down), Vector3.one);
+		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(directionPosition + Vector3Int.up), Vector3.one);
 	}
 	
 	private void OnEnable()
