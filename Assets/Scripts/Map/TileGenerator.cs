@@ -28,20 +28,12 @@ public class TileGenerator : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButton(0))
-        {
-            var mousePosition = Input.mousePosition;
-            var worldPosition = _camera.ScreenToWorldPoint(mousePosition);
-            var cellPosition = tilemap.WorldToCell(worldPosition);
-            PlaceTiles(GetTileData(tileType).tile, cellPosition, radius);
-        }
-        
         if (Input.GetMouseButton(1))
         {
             var mousePosition = Input.mousePosition;
             var worldPosition = _camera.ScreenToWorldPoint(mousePosition);
             var cellPosition = tilemap.WorldToCell(worldPosition);
-            PlaceTiles(null, cellPosition, radius);
+            PlaceTiles(GetTileData(tileType).tile, cellPosition, radius);
         }
     }
 

@@ -26,13 +26,13 @@ public class LightingTile : MonoBehaviour
 			mapTilemap.SetColor(bound, Color.black);
 		}
 		
-		var backgroundBounds = backgroundTilemap.cellBounds.allPositionsWithin;
-		foreach (var bound in backgroundBounds)
-		{
-			if (backgroundTilemap.GetTile(bound) == null) { continue; }
-			
-			backgroundTilemap.SetColor(bound, Color.black);
-		}
+		// var backgroundBounds = backgroundTilemap.cellBounds.allPositionsWithin;
+		// foreach (var bound in backgroundBounds)
+		// {
+		// 	if (backgroundTilemap.GetTile(bound) == null) { continue; }
+		// 	
+		// 	backgroundTilemap.SetColor(bound, Color.black);
+		// }
 	}
 
 	private void SetLight()
@@ -59,11 +59,11 @@ public class LightingTile : MonoBehaviour
 					color.b = Mathf.Max(color.b, color.b + ratio);
 					mapTilemap.SetColor(position, color);
 					
-					color = backgroundTilemap.GetColor(position);
-					color.r = Mathf.Max(color.r, color.r + ratio);
-					color.g = Mathf.Max(color.g, color.g + ratio);
-					color.b = Mathf.Max(color.b, color.b + ratio);
-					backgroundTilemap.SetColor(position, color);
+					// color = backgroundTilemap.GetColor(position);
+					// color.r = Mathf.Max(color.r, color.r + ratio);
+					// color.g = Mathf.Max(color.g, color.g + ratio);
+					// color.b = Mathf.Max(color.b, color.b + ratio);
+					// backgroundTilemap.SetColor(position, color);
 				}
 			}
 		}

@@ -19,6 +19,9 @@ public class Absorption : MonoBehaviour
     [Header("Debug Config")]
     [SerializeField] private bool _debugMode;
 
+    [Header("Delete Config")]
+    [SerializeField] private bool matchTheSizeOfTheCollider;
+
     private Camera _mainCamera;
     private PlayerActions _playerActions;
 
@@ -33,13 +36,24 @@ public class Absorption : MonoBehaviour
     {
         _mainCamera = Camera.main;
         
-        _playerActions.Vacuum.Absorption.performed += _ => GetAbsorbedTilePositions();
-        _playerActions.Vacuum.Absorption.canceled += _ => AbsorbedTilePositions.Clear();
+        // _playerActions.Vacuum.Absorption.performed += _ => GetAbsorbedTilePositions();
+        // _playerActions.Vacuum.Absorption.canceled += _ => AbsorbedTilePositions.Clear();
     }
 
     private void Update()
     {
         RotateToCursorDirection();
+        
+        if (Input.GetMouseButtonUp(0))
+        {
+            AbsorbedTilePositions.Clear();
+        }
+        
+        if (Input.GetMouseButton(0))
+        {
+            GetAbsorbedTilePositions();
+            AbsorbTiles();
+        }
     }
 
     private void RotateToCursorDirection()
@@ -58,12 +72,10 @@ public class Absorption : MonoBehaviour
     private void GetAbsorbedTilePositions()
     {
         AbsorbedTilePositions.Clear();
-        var position = Vector3Int.RoundToInt(pivot.position);
-        var size = Vector3Int.RoundToInt(new Vector3(_suctionDistance, _suctionDistance, 0));
-        var bounds = new BoundsInt(position, size);
-        // var getTilesBlock = _tilemap.GetTilesBlock(bounds);
-        // getTilesBlock = getTilesBlock.Where(x => x != null).ToArray();
-        // if (getTilesBlock.Length == 0) { return; }
+        var bounds = new BoundsInt(_tilemap.WorldToCell(pivot.position) - new Vector3Int((int)_suctionDistance, (int)_suctionDistance, 0), new Vector3Int((int)_suctionDistance * 2, (int)_suctionDistance * 2, 1));
+        var getTilesBlock = _tilemap.GetTilesBlock(bounds);
+        getTilesBlock = getTilesBlock.Where(x => x != null).ToArray();
+        if (getTilesBlock.Length == 0) { return; }
         
         foreach (var tilePosition in bounds.allPositionsWithin)
         {
@@ -83,8 +95,6 @@ public class Absorption : MonoBehaviour
                 AbsorbedTilePositions.Add(tilePosition);
             }
         }
-        
-        AbsorbTiles();
     }
     
     private void AbsorbTiles()
@@ -93,14 +103,22 @@ public class Absorption : MonoBehaviour
 
         foreach (var tilePosition in AbsorbedTilePositions)
         {
+            var mouseWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            var deletePivotDirection = (mouseWorldPosition - pivot.position).normalized;
+            var deletePivotPosition = deletePivotDirection * _deleteDistance;
+            var direction = deletePivotPosition - pivot.position;
+            var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized);
+            newTilePosition = _tilemap.WorldToCell(newTilePosition);
+            newTilePosition = Vector3Int.RoundToInt((tilePosition - pivot.position).normalized * _deleteDistance + pivot.position);
+            Debug.DrawLine(_tilemap.WorldToCell(tilePosition), _tilemap.WorldToCell(newTilePosition), Color.red, 1f);
+            if (_tilemap.GetTile(newTilePosition) != null) { continue; }
+            
             var tile = _tilemap.GetTile(tilePosition);
-            if (tile == null) { continue; }
-
-            var direction = (pivot.position - _tilemap.GetCellCenterWorld(tilePosition)).normalized;
-            var newPosition = new Vector3Int(Mathf.RoundToInt(direction.x), Mathf.RoundToInt(direction.y), 0);
-            var newTilePosition = tilePosition + newPosition;
+            
             _tilemap.SetTile(newTilePosition, tile);
             _tilemap.SetTile(tilePosition, null);
+            
+            _tilemap.SetColliderType(newTilePosition, Tile.ColliderType.None);
 
             if (Vector3.Distance(_tilemap.GetCellCenterWorld(newTilePosition), pivot.position) <= _deleteDistance)
             {
@@ -116,9 +134,20 @@ public class Absorption : MonoBehaviour
         
         if (!_debugMode) { return; }
 
+        if (matchTheSizeOfTheCollider)
+        {
+            var boxCollider2D = GetComponentInParent<BoxCollider2D>();
+            if (boxCollider2D != null)
+            {
+                _suctionDistance = pivot.transform.position.y - boxCollider2D.bounds.min.y;
+                var left = pivot.transform.position.x - boxCollider2D.bounds.min.x;
+                var right = boxCollider2D.bounds.max.x - pivot.transform.position.x;
+                _deleteDistance = Mathf.Max(left, right);
+            }
+        }
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(pivot.position, _suctionDistance);
-
+        
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(pivot.position, _deleteDistance);
 

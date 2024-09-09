@@ -17,6 +17,8 @@ public enum TileType
 public class TilesUpdate : MonoBehaviour
 {
     [Header("Config")]
+    [SerializeField] private Tilemap _updateTilemap;
+    [SerializeField] private Tilemap _mapTilemap;
     [SerializeField] private TileData[] tiles;
     [SerializeField] private float updateInterval = 0.01f;
     [SerializeField] private Vector2Int chunkSize = new(84, 45);
@@ -29,13 +31,12 @@ public class TilesUpdate : MonoBehaviour
     private float _lastUpdateTime;
     private List<Vector3Int> _clearTiles = new();
     private List<Vector3Int> _updateTiles = new();
-    private Tilemap _tilemap;
     
     private Dictionary<Vector3Int, TileBase> _previousTilemapState = new();
     
     protected void Awake()
     {
-        _tilemap = GetComponent<Tilemap>();
+        _updateTilemap = GetComponent<Tilemap>();
     }
 
     private void Start()
@@ -46,7 +47,7 @@ public class TilesUpdate : MonoBehaviour
     private void Update()
     {
         if (Time.time - _lastUpdateTime <= updateInterval) { return; }
-        if (_tilemap.GetUsedTilesCount() == 0) { return; }
+        if (_updateTilemap.GetUsedTilesCount() == 0) { return; }
         if (!HasTilemapChanged()) { return; }
         
         GetTilePosition();
@@ -61,7 +62,7 @@ public class TilesUpdate : MonoBehaviour
             for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
             {
                 var position = new Vector3Int(x, y, 0);
-                var tile = _tilemap.GetTile(position);
+                var tile = _updateTilemap.GetTile(position);
                 currentTilemapState[position] = tile;
             }
         }
@@ -83,8 +84,14 @@ public class TilesUpdate : MonoBehaviour
             for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
             {
                 var position = new Vector3Int(x, y, 0);
+                var tile = _updateTilemap.GetTile(position);
+                if (tile == null) { continue; }
+                
+                var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
+                var tilesBlock = _updateTilemap.GetTilesBlock(checkBound);
+                tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
+                if (tilesBlock.Length == 9) { return; }
             
-                var tile = _tilemap.GetTile(position);
                 var index = Array.FindIndex(tiles, t => t.tile == tile);
                 
                 if (index >= 0 && index < tiles.Length)
@@ -161,52 +168,57 @@ public class TilesUpdate : MonoBehaviour
             tileArray[i + clearTiles.Length] = tileData.tile;
         }
         
-        _tilemap.SetTiles(tilePositions, tileArray);
+        _updateTilemap.SetTiles(tilePositions, tileArray);
         
         // TODO: 動いているタイルの当たり判定を消す
-        foreach (var tilePosition in _updateTiles)
-        {
-            if (tileData.type == TileType.Water)
-            {
-                _tilemap.SetColliderType(tilePosition, Tile.ColliderType.None);
-            }
-            else
-            {
-                _tilemap.SetColliderType(tilePosition, Tile.ColliderType.Sprite);
-            }
-        }
+        // foreach (var tilePosition in _updateTiles)
+        // {
+        //     if (tileData.type == TileType.Water)
+        //     {
+        //         _tilemap.SetColliderType(tilePosition, Tile.ColliderType.None);
+        //     }
+        //     else
+        //     {
+        //         _tilemap.SetColliderType(tilePosition, Tile.ColliderType.Sprite);
+        //     }
+        // }
     }
 
     private void UpdateSand(Vector3Int position)
     {
-        var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
-        var tilesBlock = _tilemap.GetTilesBlock(checkBound);
+        var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 1, 1);
+        var tilesBlock = _updateTilemap.GetTilesBlock(checkBound);
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
-        if (tilesBlock.Length == 9) { return; }
+        if (tilesBlock.Length == 3)
+        {
+            _mapTilemap.SetTile(position, GetTileData(TileType.Sand).tile);
+            _updateTilemap.SetTile(position, null);
+            return;
+        }
         
         var below = position + Vector3Int.down;
         var belowLeft = position + new Vector3Int(-1, -1, 0);
         var belowRight = position + new Vector3Int(1, -1, 0);
         
-        if (!_tilemap.HasTile(below) && !CheckUpdateTilePosition(below))
+        if ((!_mapTilemap.HasTile(below) || !_updateTilemap.HasTile(below)) && !CheckUpdateTilePosition(below))
         {
             _clearTiles.Add(position);
             _updateTiles.Add(below);
         }
-        else if (!_tilemap.HasTile(belowLeft) || !_tilemap.HasTile(belowRight))
+        else if (!_mapTilemap.HasTile(belowLeft) || !_mapTilemap.HasTile(belowRight) || !_updateTilemap.HasTile(belowLeft) || !_updateTilemap.HasTile(belowRight))
         {
             var random = Random.Range(0, 2);
             switch (random)
             {
                 case 0:
-                    if (!_tilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft))
+                    if ((!_mapTilemap.HasTile(belowLeft) || !_updateTilemap.HasTile(belowLeft)) && !CheckUpdateTilePosition(belowLeft))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowLeft);
                     }
                     break;
                 case 1:
-                    if (!_tilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight))
+                    if ((!_mapTilemap.HasTile(belowRight) || !_updateTilemap.HasTile(belowRight)) && !CheckUpdateTilePosition(belowRight))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowRight);
@@ -219,7 +231,7 @@ public class TilesUpdate : MonoBehaviour
     private void UpdateWater(Vector3Int position)
     {
         var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
-        var tilesBlock = _tilemap.GetTilesBlock(checkBound);
+        var tilesBlock = _updateTilemap.GetTilesBlock(checkBound);
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
         if (tilesBlock.Length == 9) { return; }
         
@@ -229,25 +241,25 @@ public class TilesUpdate : MonoBehaviour
         var belowLeft = position + new Vector3Int(-1, -1, 0);
         var belowRight = position + new Vector3Int(1, -1, 0);
         
-        if (!_tilemap.HasTile(below) && !CheckUpdateTilePosition(below))
+        if (!_updateTilemap.HasTile(below) && !CheckUpdateTilePosition(below))
         {
             _clearTiles.Add(position);
             _updateTiles.Add(below);
         }
-        else if (!_tilemap.HasTile(belowLeft) || !_tilemap.HasTile(belowRight))
+        else if (!_updateTilemap.HasTile(belowLeft) || !_updateTilemap.HasTile(belowRight))
         {
             var random = Random.Range(0, 2);
             switch (random)
             {
                 case 0:
-                    if (!_tilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft))
+                    if (!_updateTilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowLeft);
                     }
                     break;
                 case 1:
-                    if (!_tilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight))
+                    if (!_updateTilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowRight);
@@ -255,14 +267,14 @@ public class TilesUpdate : MonoBehaviour
                     break;
             }
         }
-        else if (!_tilemap.HasTile(left) || !_tilemap.HasTile(right))
+        else if (!_updateTilemap.HasTile(left) || !_updateTilemap.HasTile(right))
         {
             var random = Random.Range(0, 2);
             switch (random)
             {
                 case 0:
                 {
-                    if (!_tilemap.HasTile(left) && !CheckUpdateTilePosition(left))
+                    if (!_updateTilemap.HasTile(left) && !CheckUpdateTilePosition(left))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(left);
@@ -271,7 +283,7 @@ public class TilesUpdate : MonoBehaviour
                 }
                 case 1:
                 {
-                    if (!_tilemap.HasTile(right) && !CheckUpdateTilePosition(right))
+                    if (!_updateTilemap.HasTile(right) && !CheckUpdateTilePosition(right))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(right);
@@ -294,13 +306,13 @@ public class TilesUpdate : MonoBehaviour
         if (GetTileData(TileType.Sand).tilePositions.Count == 0) { return; }
             
         var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
-        var tilesBlock = _tilemap.GetTilesBlock(checkBound);
+        var tilesBlock = _updateTilemap.GetTilesBlock(checkBound);
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
         if (tilesBlock.Length == 0) { return; }
 
         if (tilesBlock.Any(tileBase => tileBase == GetTileData(TileType.Water).tile))
         {
-            _tilemap.SetTile(position, GetTileData(TileType.Mud).tile);
+            _updateTilemap.SetTile(position, GetTileData(TileType.Mud).tile);
         }
     }
 
