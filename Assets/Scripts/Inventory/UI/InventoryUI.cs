@@ -9,19 +9,27 @@ public class InventoryUI : MonoBehaviour
     private Image itemIamge;
     [SerializeField]
     private Text itemAmount;
+    [SerializeField]
+    private Image backPanelImage;
 
+    private void Start()
+    {
+        CleanUp();
+    }
 
     public void UpdateUI(ItemInventory itemInventory)
     {
         itemIamge.color = Color.white;
         itemIamge.sprite = itemInventory.ItemData.itemIcom;
-            this.itemAmount.text = itemInventory.StackSize.ToString();
+        this.itemAmount.text = itemInventory.StackSize.ToString();
+        backPanelImage.color = Color.black;
     }
     public void CleanUp()
     {
         itemIamge.sprite = null;
         itemIamge.color = Color.clear;
         itemAmount.text = string.Empty;
+        backPanelImage.color = Color.clear;
     }
 
 }

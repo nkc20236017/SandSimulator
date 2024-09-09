@@ -17,9 +17,10 @@ public class DemoDI : LifetimeScope
 
     protected override void Configure(IContainerBuilder builder)
     {
-        builder.Register<InventoryService>(Lifetime.Singleton)
-            .As<IInventoryInputSignal>()
-            .As<IInventoryRemoveSignal>();
+        builder.Register<InventoryService>(Lifetime.Singleton);
+        builder.Register<ItemApplicationService>(Lifetime.Singleton)
+            .As<IItemInputSignal>()
+            .As<IItemRemoveSignal>();
         builder.RegisterEntryPoint<ItemPickupSignal>(Lifetime.Singleton)
             .As<IPickupSignal>();
         builder.Register<DataAccess>(Lifetime.Singleton)

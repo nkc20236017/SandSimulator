@@ -1,4 +1,4 @@
 ﻿public interface IOutPutInventoryUI
 {
-    void OutPut(string itemId);
+    void OutPut();
 }

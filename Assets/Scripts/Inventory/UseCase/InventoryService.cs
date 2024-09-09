@@ -1,38 +1,28 @@
 using System.Collections.Generic;
 using VContainer;
 
-public class InventoryService : IInventoryInputSignal , IInventoryRemoveSignal
+public class InventoryService 
 {
-    private IItemRepository itemRepository;
     private IOutPutInventoryUI inventoryUI;
     private IInventoryRepository inventoryRepository;
 
     [Inject]
-    public InventoryService(IItemRepository itemRepository, IOutPutInventoryUI inventoryUI,
+    public InventoryService(IOutPutInventoryUI inventoryUI,
         IInventoryRepository inventoryRepository)
     {
-        this.itemRepository = itemRepository;
         this.inventoryUI = inventoryUI;
         this.inventoryRepository = inventoryRepository;
     }
 
-    public void AddItem(string itemId)
+    public void AddItem(ItemData itemData)
     {
-        var item = itemRepository.FindItem(itemId);
-        inventoryRepository.AddToInventory(item);
-        OutputUI(itemId);
+        inventoryRepository.AddToInventory(itemData);
+        inventoryUI.OutPut();
     }
 
-    public void RemoveItem(string itemId)
+    public void RemoveItem(ItemData itemData)
     {
-        var item = itemRepository.FindItem(itemId);
-        inventoryRepository.RemoveFromInventory(item);
-        OutputUI(itemId);
+        inventoryRepository.RemoveFromInventory(itemData);
+        inventoryUI.OutPut();
     }
-
-    private void OutputUI(string itemId)
-    {
-        inventoryUI.OutPut(itemId);
-    }
-
 }

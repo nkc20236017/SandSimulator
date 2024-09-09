@@ -14,7 +14,7 @@ public class InventoryPresenter : MonoBehaviour, IOutPutInventoryUI
         this.inventoryRepository = inventoryRepository;
     }
 
-    public void OutPut(string itemId)
+    public void OutPut()
     {
         var inventoryList = inventoryRepository.FindAll();
 

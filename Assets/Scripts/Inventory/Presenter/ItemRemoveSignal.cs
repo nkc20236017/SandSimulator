@@ -7,10 +7,10 @@ using VContainer.Unity;
 public class ItemRemoveSignal : IStartable, IRemoveSignal
 {
     public static ItemRemoveSignal Instance;
-    private readonly IInventoryRemoveSignal inventoryRemoveSignal;
+    private readonly IItemRemoveSignal inventoryRemoveSignal;
 
     [Inject]
-    public ItemRemoveSignal(IInventoryRemoveSignal inventoryRemoveSignal)
+    public ItemRemoveSignal(IItemRemoveSignal inventoryRemoveSignal)
     {
         this.inventoryRemoveSignal = inventoryRemoveSignal;
     }

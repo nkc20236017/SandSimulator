@@ -8,10 +8,10 @@ public class ItemPickupSignal : IPickupSignal,IStartable
 {
     public static ItemPickupSignal Instance;
 
-    private readonly IInventoryInputSignal inventoryInputSignal;
+    private readonly IItemInputSignal inventoryInputSignal;
 
     [Inject]
-    public ItemPickupSignal(IInventoryInputSignal inventoryInputSignal)
+    public ItemPickupSignal(IItemInputSignal inventoryInputSignal)
     {
         this.inventoryInputSignal = inventoryInputSignal;
     }
