@@ -9,7 +9,7 @@ public class SuckUp : MonoBehaviour
 {
     [Header("Tile Config")]
     [SerializeField] private Tilemap _tilemap;
-
+    
     [Header("Suction Config")]
     [SerializeField] private Transform pivot;
     [SerializeField] private float updateInterval;

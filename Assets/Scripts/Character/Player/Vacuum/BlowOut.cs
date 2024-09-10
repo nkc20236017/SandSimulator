@@ -106,7 +106,7 @@ public class BlowOut : MonoBehaviour
         
 		foreach (var tilePosition in bounds.allPositionsWithin)
 		{
-			Tilemap tilemap = null;
+			Tilemap tilemap;
 			if (updateTilemap.HasTile(tilePosition))
 			{
 				tilemap = updateTilemap;
