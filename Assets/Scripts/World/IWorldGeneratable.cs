@@ -1,4 +1,5 @@
+using WorldCreation;
 public interface IWorldGeneratable
 {
-    public void Execute(WorldLayer[] worldLayers);
+    public int[,] Execute(CaveLayer[] worldLayers);
 }

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using WorldCreation;
 
-public class CaveGenerater : IWorldGeneratable
+public class CaveGenerater// : IWorldGeneratable
 {
     private Tilemap _worldTilemap;
 
@@ -13,25 +14,31 @@ public class CaveGenerater : IWorldGeneratable
         _worldTilemap = worldTilemap;
     }
 
-    public void Execute(WorldLayer[] worldLayers)
+    public int[,] Execute(CaveLayer[] worldLayers, TerrainData terrain)
     {
-        foreach (WorldLayer layer in worldLayers)
+        int[,] blocks = new int[worldLayers[0].MaxImpactAreaPosition.x, worldLayers[0].MaxImpactAreaPosition.y];
+        int[,] layerBlocks = blocks;
+        foreach (CaveLayer layer in worldLayers)
         {
-            DeleteLayerBlock(layer);
+            terrain.SetHeights(0, 0, GetDeletedBlock(layer));
         }
+
+        return blocks;
     }
 
-    private void DeleteLayerBlock(WorldLayer layer)
+    private float[,] GetDeletedBlock(CaveLayer layer)
     {
         // 開始座標と終了座標を明示的に宣言
         Vector2Int StartPosition = layer.MinImpactAreaPosition;
-        Vector2Int EndPosition = layer.MinImpactAreaPosition + layer.MaxImpactAreaPosition;
+        Vector2Int EndPosition = layer.MaxImpactAreaPosition - layer.MinImpactAreaPosition;
 
         Vector2 randomSeed = new(Random.Range(0, layer.Seed.x), Random.Range(0, layer.Seed.y));
 
-        for (int x = StartPosition.x; x < EndPosition.x; x++)
+        float[,] blocks = new float[layer.MaxImpactAreaPosition.x, layer.MaxImpactAreaPosition.x];
+
+        for (int x = 0; x < EndPosition.x; x++)
         {
-            for (int y = StartPosition.y; y < EndPosition.y; y++)
+            for (int y = 0; y < EndPosition.y; y++)
             {
                 Vector3Int targetTile = new(x, y);
                 // 対象タイルが同じであれば次のタイル処理へ
@@ -43,11 +50,19 @@ public class CaveGenerater : IWorldGeneratable
                     y * layer.Frequency + randomSeed.y
                 );
 
-                if (layer.Extent < noise)
+                if (noise > 0.5)
+                {
+                    noise = 1 - noise;
+                }
+
+                blocks[x, y] = noise;
+
+                if (noise > layer.Extent)
                 {
                     _worldTilemap.SetTile(targetTile, layer.FillingTile);
                 }
             }
         }
+        return blocks;
     }
 }
