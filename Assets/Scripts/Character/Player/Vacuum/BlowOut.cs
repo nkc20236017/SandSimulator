@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using NaughtyAttributes;
@@ -9,7 +7,8 @@ using Random = UnityEngine.Random;
 public class BlowOut : MonoBehaviour
 {
 	[Header("Tile Config")]
-	[SerializeField] private Tilemap tilemap;
+	[SerializeField] private Tilemap updateTilemap;
+	[SerializeField] private Tilemap mapTilemap;
 	[SerializeField] private TileBase tile;
 	
 	[Header("BlowOut Config")]
@@ -26,6 +25,7 @@ public class BlowOut : MonoBehaviour
 	[SerializeField] private bool debug;
 	
 	private float _lastUpdateTime;
+	private PlayerMovement _playerMovement;
 	private Camera _camera;
 	private PlayerActions _playerActions;
 	private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
@@ -33,6 +33,8 @@ public class BlowOut : MonoBehaviour
 	private void Awake()
 	{
 		_playerActions = new PlayerActions();
+		
+		_playerMovement = GetComponentInParent<PlayerMovement>();
 	}
 
 	private void Start()
@@ -40,18 +42,19 @@ public class BlowOut : MonoBehaviour
 		_camera = Camera.main;
 		_lastUpdateTime = Time.time;
 		
-		VacuumActions.SpittingOut.canceled += _ => _lastUpdateTime = Time.time;
+		VacuumActions.SpittingOut.started += _ => _playerMovement.IsMoveFlip = false;
+		VacuumActions.SpittingOut.canceled += _ => CancelBlowOut();
 	}
 
 	private void Update()
 	{
 		if (VacuumActions.SpittingOut.IsPressed())
 		{
-			SpittingOutTiles();
+			BlowOutTiles();
 		}
 	}
 
-	private void SpittingOutTiles()
+	private void BlowOutTiles()
 	{
 		if (Time.time - _lastUpdateTime > interval)
 		{
@@ -63,13 +66,14 @@ public class BlowOut : MonoBehaviour
 			}
 		}
 
-		UpdateTile();
+		// UpdateTile();
+		UpTiles();
 	}
 	
 	private void GenerateTile()
 	{
 		var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-		var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPosition);
+		var centerCell = (Vector3)updateTilemap.WorldToCell(mouseWorldPosition);
 
 		var direction = centerCell - pivot.position;
 		var angle = Mathf.Atan2(direction.y, direction.x);
@@ -85,16 +89,63 @@ public class BlowOut : MonoBehaviour
 			var randomX = Random.Range(newCell1.x, newCell2.x);
 			var randomY = Random.Range(newCell1.y, newCell2.y);
 			var randomPosition = new Vector3(randomX, randomY, 0);
-			var randomCell = tilemap.WorldToCell(randomPosition);
-			tilemap.SetTile(randomCell, tile);
+			var randomCell = updateTilemap.WorldToCell(randomPosition);
+			updateTilemap.SetTile(randomCell, tile);
 			// tilemap.SetColliderType(randomCell, Tile.ColliderType.None);
+		}
+	}
+
+	private void UpTiles()
+	{
+		var bounds = new BoundsInt(updateTilemap.WorldToCell(pivot.position) - new Vector3Int((int)radius, (int)radius, 0), new Vector3Int((int)radius * 2, (int)radius * 2, 1));
+		var getTilesBlock = updateTilemap.GetTilesBlock(bounds);
+		var getTilesBlock2 = mapTilemap.GetTilesBlock(bounds);
+		getTilesBlock = getTilesBlock.Concat(getTilesBlock2).ToArray();
+		getTilesBlock = getTilesBlock.Where(x => x != null).ToArray();
+		if (getTilesBlock.Length == 0) { return; }
+        
+		foreach (var tilePosition in bounds.allPositionsWithin)
+		{
+			Tilemap tilemap = null;
+			if (updateTilemap.HasTile(tilePosition))
+			{
+				tilemap = updateTilemap;
+			}
+			else if (mapTilemap.HasTile(tilePosition))
+			{
+				tilemap = mapTilemap;
+			}
+			else
+			{
+				continue;
+			}
+            
+			var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+			var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPosition);
+
+			var direction1 = (Vector3)tilemap.WorldToCell(tilePosition) - tilemap.WorldToCell(pivot.position);
+			var direction2 = (Vector3)tilemap.WorldToCell(centerCell) - tilemap.WorldToCell(pivot.position);
+			var angle = Vector3.Angle(direction1, direction2);
+
+			var distance = Vector3.Distance(tilemap.GetCellCenterWorld(tilePosition), pivot.position);
+
+			if (angle <= 30 && distance <= radius)
+			{
+				var direction = (Vector3)tilemap.WorldToCell(tilePosition) - tilemap.WorldToCell(pivot.position);
+				var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized);
+				if (tilemap.HasTile(newTilePosition)) { continue; }
+            
+				var tile = tilemap.GetTile(tilePosition);
+				tilemap.SetTile(newTilePosition, tile);
+				tilemap.SetTile(tilePosition, null);
+			}
 		}
 	}
 	
 	private void UpdateTile()
 	{
 		var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-		var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPosition);
+		var centerCell = (Vector3)updateTilemap.WorldToCell(mouseWorldPosition);
 
 		var direction = centerCell - pivot.position;
 		var angle = Mathf.Atan2(direction.y, direction.x);
@@ -116,24 +167,64 @@ public class BlowOut : MonoBehaviour
 		var c = a + newDirection3;
 		var d = b + newDirection3;
 		
-		var bounds = new BoundsInt((int)Mathf.Min(a.x, b.x, c.x, d.x), (int)Mathf.Min(a.y, b.y, c.y, d.y), 0, (int)Mathf.Abs(a.x - b.x), (int)Mathf.Abs(a.y - b.y), 1);
-		foreach (var position in bounds.allPositionsWithin)
+		var max = new Vector2(Mathf.Max(a.x, b.x, c.x, d.x), Mathf.Max(a.y, b.y, c.y, d.y));
+		var min = new Vector2(Mathf.Min(a.x, b.x, c.x, d.x), Mathf.Min(a.y, b.y, c.y, d.y));
+
+		var angleAC = Mathf.Atan2(c.y - a.y, c.x - a.x);
+		var angleBD = Mathf.Atan2(d.y - b.y, d.x - b.x);
+		
+		angleAC = Mathf.Abs(angleAC);
+		angleAC *= Mathf.Rad2Deg;
+		
+		angleBD = Mathf.Abs(angleBD);
+		angleBD *= Mathf.Rad2Deg;
+
+		for (y = min.y; y <= max.y; y++)
 		{
-			Debug.Log("1");
-			var tileData = tilemap.GetTile(position);
-			if (tileData == null) { continue; }
+			for (var x = min.x; x < max.x; x++)
+			{
+				var position = Vector3Int.RoundToInt(new Vector3(x, y, 0));
+				if (!updateTilemap.HasTile(position) && !mapTilemap.HasTile(position)) { continue; }
+				
+				var tileToPivotDistance = Vector3.Distance(pivot.position, position);
+				if (tileToPivotDistance > radius) { continue; }
+				
+				// 座標a, b, c, dの四角の内側にあるかどうかを判定する
+				var angleAP = Mathf.Atan2(position.y - a.y, position.x - a.x);
+				var angleBP = Mathf.Atan2(position.y - b.y, position.x - b.x);
+				var angleCP = Mathf.Atan2(position.y - c.y, position.x - c.x);
+				var angleDP = Mathf.Atan2(position.y - d.y, position.x - d.x);
+				
+				angleAP = Mathf.Abs(angleAP);
+				angleAP *= Mathf.Rad2Deg;
+				
+				angleBP = Mathf.Abs(angleBP);
+				angleBP *= Mathf.Rad2Deg;
+				
+				angleCP = Mathf.Abs(angleCP);
+				angleCP *= Mathf.Rad2Deg;
+				
+				angleDP = Mathf.Abs(angleDP);
+				angleDP *= Mathf.Rad2Deg;
 
-			Debug.Log("2");
-			var newPosition = Vector3Int.RoundToInt((pivot.position - position).normalized);
-			var newTilePosition = position + newPosition;
-			if (tilemap.HasTile(newTilePosition)) { continue; }
+				if (angleAP < angleAC && angleBP < angleBD && angleCP < angleAC && angleDP < angleBD)
+				{
+					var newTilePosition = Vector3Int.RoundToInt(position + (pivot.position - centerCell).normalized * 2);
+					if (updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(newTilePosition)) { continue; }
 
-			Debug.Log("3");
-			tilemap.SetTile(newTilePosition, tileData);
-			tilemap.SetTile(position, null);
-			Debug.DrawLine(tilemap.GetCellCenterWorld(position), tilemap.GetCellCenterWorld(newTilePosition), Color.red, 1f);
-			// tilemap.SetColliderType(newTilePosition, Tile.ColliderType.None);
+					Debug.DrawLine(newTilePosition, position, Color.red, 0.1f);
+					updateTilemap.SetTile(newTilePosition, tile);
+					updateTilemap.SetTile(position, null);
+					mapTilemap.SetTile(position, null);
+				}
+			}
 		}
+	}
+	
+	private void CancelBlowOut()
+	{
+		_lastUpdateTime = Time.time;
+		_playerMovement.IsMoveFlip = true;
 	}
 
 	private void OnDrawGizmos()
@@ -150,7 +241,9 @@ public class BlowOut : MonoBehaviour
 		if (camera == null) { return; }
 		
 		var mouseWorldPosition = camera.ScreenToWorldPoint(Input.mousePosition);
-		var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPosition);
+		if (updateTilemap == null) { return; }
+		
+		var centerCell = (Vector3)updateTilemap.WorldToCell(mouseWorldPosition);
 
 		var direction = centerCell - pivot.position;
 		

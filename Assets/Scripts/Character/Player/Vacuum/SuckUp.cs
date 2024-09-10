@@ -24,7 +24,8 @@ public class SuckUp : MonoBehaviour
     [SerializeField] private bool matchTheSizeOfTheCollider;
 
     private float _lastUpdateTime;
-    private Camera _mainCamera;
+    private PlayerMovement _playerMovement;
+    private Camera _camera;
     private PlayerActions _playerActions;
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
 
@@ -33,13 +34,16 @@ public class SuckUp : MonoBehaviour
     private void Awake()
     {
         _playerActions = new PlayerActions();
+
+        _playerMovement = GetComponentInParent<PlayerMovement>();
     }
 
     private void Start()
     {
-        _mainCamera = Camera.main;
+        _camera = Camera.main;
         
-        VacuumActions.Absorption.canceled += _ => Cancel();
+        VacuumActions.Absorption.started += _ => _playerMovement.IsMoveFlip = false;
+        VacuumActions.Absorption.canceled += _ => CancelSuckUp();
     }
 
     private void Update()
@@ -57,19 +61,20 @@ public class SuckUp : MonoBehaviour
         if (Time.time - _lastUpdateTime < updateInterval) { return; }
             
         _lastUpdateTime = Time.time;
-        GetAbsorbedTilePositions();
-        AbsorbTiles();
+        GetSuckUpTilePositions();
+        SuckUpTiles();
     }
 
-    private void Cancel()
+    private void CancelSuckUp()
     {
         SuckUpTilePositions.Clear();
         _lastUpdateTime = Time.time;
+        _playerMovement.IsMoveFlip = true;
     }
 
     private void RotateToCursorDirection()
     {
-        var mouseWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
         var direction = mouseWorldPosition - pivot.position;
         var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         if (pivot.parent.localScale.x < 0)
@@ -80,7 +85,7 @@ public class SuckUp : MonoBehaviour
         pivot.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
     }
 
-    private void GetAbsorbedTilePositions()
+    private void GetSuckUpTilePositions()
     {
         SuckUpTilePositions.Clear();
         var bounds = new BoundsInt(_tilemap.WorldToCell(pivot.position) - new Vector3Int((int)_suctionDistance, (int)_suctionDistance, 0), new Vector3Int((int)_suctionDistance * 2, (int)_suctionDistance * 2, 1));
@@ -92,7 +97,7 @@ public class SuckUp : MonoBehaviour
         {
             if (_tilemap.GetTile(tilePosition) == null) { continue; }
             
-            var mouseWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             var centerCell = (Vector3)_tilemap.WorldToCell(mouseWorldPosition);
 
             var direction1 = (Vector3)_tilemap.WorldToCell(tilePosition) - _tilemap.WorldToCell(pivot.position);
@@ -114,7 +119,7 @@ public class SuckUp : MonoBehaviour
         }
     }
     
-    private void AbsorbTiles()
+    private void SuckUpTiles()
     {
         SuckUpTilePositions = SuckUpTilePositions.OrderBy(_ => Random.value).ToList();
 

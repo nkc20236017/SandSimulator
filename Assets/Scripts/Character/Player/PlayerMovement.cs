@@ -18,8 +18,11 @@ public class PlayerMovement : MonoBehaviour
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private SpriteRenderer _spriteRenderer;
+	private Camera _camera;
 	private PlayerActions _playerActions;
 	private PlayerActions.MovementActions MovementActions => _playerActions.Movement;
+	
+	public bool IsMoveFlip { get; set; } = true;
 
 	private void Awake()
 	{
@@ -32,6 +35,8 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Start()
 	{
+		_camera = Camera.main;
+		
 		MovementActions.Jump.started += _ => Jump();
 		MovementActions.Jump.canceled += _ => JumpCancel();
 		
@@ -105,12 +110,27 @@ public class PlayerMovement : MonoBehaviour
 	
 	private void Flip()
 	{
-		_spriteRenderer.flipX = _moveDirection.x switch
+		if (IsMoveFlip)
 		{
-				> 0 => false,
-				< 0 => true,
-				_ => _spriteRenderer.flipX,
-		};
+			_spriteRenderer.flipX = _moveDirection.x switch
+			{
+					> 0 => false,
+					< 0 => true,
+					_ => _spriteRenderer.flipX,
+			};
+		}
+		else
+		{
+			var worldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+			if (transform.position.x < worldPosition.x)
+			{
+				_spriteRenderer.flipX = false;
+			}
+			else if (transform.position.x > worldPosition.x)
+			{
+				_spriteRenderer.flipX = true;
+			}
+		}
 	}
 	
 	public void SetSpeed(float speed)
