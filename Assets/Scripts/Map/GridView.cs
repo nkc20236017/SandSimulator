@@ -11,10 +11,10 @@ public class GridView : MonoBehaviour
 		if (!viewGrid) { return; }
 		if (worldSize.x == 0 || worldSize.y == 0) { return; }
 		
-		var startX = -worldSize.x;
-		var endX = worldSize.x;
-		var startY = -worldSize.y;
-		var endY = worldSize.y;
+		var startX = -worldSize.x / 2;
+		var endX = worldSize.x / 2;
+		var startY = -worldSize.y / 2;
+		var endY = worldSize.y / 2;
 
 		for (var x = startX; x <= endX; x++)
 		{
