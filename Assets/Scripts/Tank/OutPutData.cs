@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class OutPutData 
 {
-    public readonly float sandVaule;
-    public readonly float madVaule;
-    public readonly int maxVaule;
-    public readonly float totalVaule;
+    public readonly float itemRatio;
+    public readonly float totalRatio;
+    public readonly ItemType itemType;
 
-    public OutPutData(float sandVaule, float madVaule, float totalVaule)
+    public OutPutData(float itemRatio, float totalRatio, ItemType itemType)
     {
-        this.sandVaule = sandVaule;
-        this.madVaule = madVaule;
-        this.totalVaule = totalVaule;
+        this.itemRatio = itemRatio;
+        this.totalRatio = totalRatio;
+        this.itemType = itemType;
     }
 }

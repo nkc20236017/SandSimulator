@@ -1,11 +1,13 @@
+using Codice.Client.GameUI.Update;
 using UnityEngine;
 
 public class TankUI : MonoBehaviour, IOutPutTank
 {
     [SerializeField]
-    private RectTransform sandTransform;
+    private TankImage sandTransform;
     [SerializeField]
-    private RectTransform madeTransform;
+    private TankImage madeTransform;
+
     [SerializeField]
     private RectTransform totaleTransform;
     [SerializeField]
@@ -15,10 +17,17 @@ public class TankUI : MonoBehaviour, IOutPutTank
 
     public void OutputTank(OutPutData outPutData)
     {
-        var totaleSize = outPutData.totalVaule * maxTransfom.sizeDelta.y;
+        var totaleSize = outPutData.totalRatio * maxTransfom.sizeDelta.y;
         totaleTransform.sizeDelta = new Vector2(totaleTransform.sizeDelta.x, totaleSize);
-        sandTransform.sizeDelta = new Vector2(sandTransform.sizeDelta.x, outPutData.sandVaule * totaleSize);
-        madeTransform.sizeDelta = new Vector2(madeTransform.sizeDelta.x, outPutData.madVaule * totaleSize);
+
+        if (outPutData.itemType == ItemType.Sand)
+        {
+            sandTransform.Setup(ItemType.Sand,outPutData.itemRatio * totaleSize);
+        }
+        else if(outPutData.itemType == ItemType.Mad)
+        {
+            madeTransform.Setup(ItemType.Mad, outPutData.itemRatio * totaleSize);
+        }
 
     }
 
