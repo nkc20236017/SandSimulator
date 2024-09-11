@@ -55,42 +55,24 @@ public class ItemTank : IInputTank
             {
                 currentItemAmount--;
                 itemTankDictionary.Remove(itemType);
+                TankCalculation(vaule);
             }
         }
         else
         {
             currentItemAmount--;
             vaule.ItemRemove();
+            TankCalculation(vaule);
         }
     }
 
-    float sandVaule;
-    float madVaule;
     public void TankCalculation(ItemData itemData)
     {
 
         float totalValue = currentItemAmount;
 
         float totalRatio = totalValue / MaxTank;
-        float itemRatio = itemData.ItemAmount / MaxTank;
-
-        //foreach (KeyValuePair<ItemType, ItemData> pair in itemTankDictionary)
-        //{
-        //    if (pair.Key == ItemType.Sand)
-        //    {
-        //        sandVaule = pair.Value.ItemAmount;
-        //    }
-        //    if (pair.Key == ItemType.Mad)
-        //    {
-        //        madVaule = pair.Value.ItemAmount;
-        //    }
-        //}
-        //float totalValue = sandVaule + madVaule;
-        //var totalRatio = totalValue / MaxTank;
-        //var sandRatio = sandVaule / totalValue;
-        //var madRatio = madVaule / totalValue;
-
-        //var outputTank = new OutPutData(sandRatio, madRatio, totalRatio);
+        float itemRatio = itemData.ItemAmount / totalValue;
 
         var outputTank = new OutPutData(itemRatio,totalRatio,itemData.itemType);
 

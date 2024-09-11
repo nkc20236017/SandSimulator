@@ -9,11 +9,11 @@ public class TankTest
         IOutPutTank tankOutPut = new TankUITest();
         IInputTank inputTank = new ItemTank(tankOutPut, 100);
 
-        for (int i = 0; i < 300; i++)
-        {
             inputTank.InputAddTank(ItemType.Sand);
-        }
+        
 
+            inputTank.InputRemoveTank(ItemType.Sand);
+      
     }
 }
 

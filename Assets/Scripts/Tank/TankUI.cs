@@ -1,12 +1,13 @@
-using Codice.Client.GameUI.Update;
 using UnityEngine;
 
 public class TankUI : MonoBehaviour, IOutPutTank
 {
+
     [SerializeField]
-    private TankImage sandTransform;
+    private GameObject tankImagePrefab;
+
     [SerializeField]
-    private TankImage madeTransform;
+    private TankImage[] tankImages;
 
     [SerializeField]
     private RectTransform totaleTransform;
@@ -20,14 +21,19 @@ public class TankUI : MonoBehaviour, IOutPutTank
         var totaleSize = outPutData.totalRatio * maxTransfom.sizeDelta.y;
         totaleTransform.sizeDelta = new Vector2(totaleTransform.sizeDelta.x, totaleSize);
 
-        if (outPutData.itemType == ItemType.Sand)
+        tankImages = GetComponentsInChildren<TankImage>();
+
+        for (int i = 0; i < tankImages.Length; i++)
         {
-            sandTransform.Setup(ItemType.Sand,outPutData.itemRatio * totaleSize);
+            if (tankImages[i].itemType == outPutData.itemType)
+            {
+                tankImages[i].TankUpdate(outPutData.itemType, outPutData.itemRatio * totaleSize);
+                return;
+            }
         }
-        else if(outPutData.itemType == ItemType.Mad)
-        {
-            madeTransform.Setup(ItemType.Mad, outPutData.itemRatio * totaleSize);
-        }
+        var stankObject = Instantiate(tankImagePrefab, totaleTransform);
+        stankObject.GetComponent<TankImage>().TankUpdate(outPutData.itemType,
+            outPutData.itemRatio * totaleSize);
 
     }
 
@@ -46,6 +52,11 @@ public class TankUI : MonoBehaviour, IOutPutTank
         if (Input.GetKeyDown(KeyCode.A))
         {
             itemTank.InputAddTank(ItemType.Mad);
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            itemTank.InputRemoveTank(ItemType.Sand);
         }
 
     }
