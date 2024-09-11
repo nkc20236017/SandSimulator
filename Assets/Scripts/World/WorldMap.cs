@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -95,38 +96,93 @@ namespace WorldCreation
         [Header("standard worldwide")]
         [SerializeField]    // 世界の最大サイズ
         private Vector2Int worldScale;
-        // 分割の実装となった場合に使用
-        /*[Header("分割数"), SerializeField]
-        private Vector2Int chunk;*/
+        public Vector2Int WorldScale => worldScale;
+        [SerializeField]    // 1チャンクの大きさ
+        private Vector2Int oneChunkSize;
+        public Vector2Int OneChunkSize => oneChunkSize;
         [Tooltip("左のほうが深く、右に行くにつれて浅くなる。\n色は考慮しないため自由。色が馴染んでいる部分は地層の変化も緩やかになります")]
+        [SerializeField, Range(0, 1f)]    // 地層の変化具合のグラデーション
+        private float[] layerRatios;
+        public float[] LayerRatios => layerRatios;
         [SerializeField]
-        private Gradient layerGradient;
+        private float randomLimit;
+        public float RandomLimit => randomLimit;
+        [SerializeField]    // 地層の境界線の歪み
+        private float borderNoiseSize;
+        public float BorderNoiseSize => borderNoiseSize;
+
         [Space]
         [Header("each layer")]
-        [SerializeField]
+        [SerializeField]    // それぞれの地層の状態
         private WorldLayer[] worldLayers;
+        [SerializeField]
+        private int num;
 
 #if UNITY_EDITOR
+        private float[] layerRatiosTemp = new float[0];
+
         private void OnValidate()
         {
-            int layerNumber = layerGradient.colorKeys.Length / 2;
-            if (worldLayers.Length != layerNumber)
+            // 地層の数が一致しない場合に修正する
+            if (worldLayers.Length != layerRatios.Length)
             {
-                WorldLayer[] worldLayersTemp = new WorldLayer[layerNumber];
-                for (int i = 0; i < layerNumber; i++)
+                WorldLayer[] worldLayersTemp = new WorldLayer[layerRatios.Length];
+                for (int i = 0; i < layerRatios.Length; i++)
                 {
                     if (worldLayers.Length <= i) { break; }
                     worldLayersTemp[i] = worldLayers[i];
                 }
                 worldLayers = worldLayersTemp;
             }
-        }
-        private void SetMarginSizeHeight(PrimevalObject primevalObject)
-        {
-            if (primevalObject.MarginShape == MarginShape.Circle)
+
+            if (layerRatiosTemp.Length == 0)
             {
-                primevalObject.MarginSizeHeight = 0;
+                layerRatiosTemp = layerRatios;
             }
+            // 変化していなければ処理を終了
+            if (layerRatios.SequenceEqual(layerRatiosTemp)) { return; }
+            float ratioTotal = layerRatios.Sum();
+            if (Mathf.Approximately(1, ratioTotal) == true) { return; }
+
+            // 変化したら変化した場所を取得する
+            int changedIndex = -1;
+            for (int i = 0; i < layerRatios.Length; i++)
+            {
+                if (Mathf.Approximately(layerRatios[i], layerRatiosTemp[i]) == false)
+                {
+                    changedIndex = i;
+                    break;
+                }
+            }
+            // 配列の追加による変化だった場合は終了する
+            if (changedIndex == -1) { return; }
+
+            // 合計値の平均を取得
+            float otherTotal = ratioTotal - layerRatios[changedIndex];
+            float ratioAverage = otherTotal / layerRatios.Length - 1;
+
+            // 地層の割合が合計で1になるように調整する
+            if (ratioTotal > 1)
+            {
+                // 1より大きければ他の値を下げる
+                for (int i = 0; i < layerRatios.Length; i++)
+                {
+                    if (changedIndex == i) { continue; }
+                    layerRatios[i] -= ratioAverage;
+                }
+            }
+            else if (ratioTotal < 1)
+            {
+                // 1より小さければ他の値を平均値にする
+                for (int i = 0; i < layerRatios.Length; i++)
+                {
+                    if (changedIndex == i) { continue; }
+                    layerRatios[i] = ratioAverage;
+                }
+            }
+
+            // 変更後の値を保存
+            layerRatiosTemp = layerRatios;
         }
 #endif
     }
