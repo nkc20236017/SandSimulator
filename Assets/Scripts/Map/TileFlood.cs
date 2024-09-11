@@ -8,23 +8,24 @@ public class TileFlood : MonoBehaviour
     [SerializeField] private Tilemap tilemap;
     [SerializeField] private Tilemap updateTilemap;
     [SerializeField] private TileBase tile;
-    [SerializeField] Vector2Int chunkSize = new(84, 45);
+    [SerializeField] Vector2Int chunkSize = new(260, 150);
 
     [Header("Flood Config")]
     [SerializeField] private int detectTileCount;
     [SerializeField] private float updateInterval;
 
     private float _lastUpdateTime;
-    private TileBase _currentTile;
     private List<Vector3Int> _chunkPositions = new();
-    private List<Vector3Int> _currentTilePositions = new();
-    private List<Vector3Int> _floodingTilePosition = new();
-    private HashSet<Vector3Int> _visitedPositions = new();
-    private Queue<Vector3Int> _positionsToFlood = new();
-
-    public List<Vector3Int> FloodingTilePositions { get; private set; } = new();
+    private List<Vector3Int> _floodingTilePositions = new();
+    private HashSet<Vector3Int> _usedTilePositions = new();
+    private Dictionary<Vector3Int, TileBase> _previousTilemapState = new();
 
     private void Start()
+    {
+        Initialization();
+    }
+
+    private void Initialization()
     {
         for (var y = -chunkSize.y / 2; y < chunkSize.y / 2; y++)
         {
@@ -34,73 +35,96 @@ public class TileFlood : MonoBehaviour
                 _chunkPositions.Add(position);
             }
         }
-
-        _currentTilePositions = _chunkPositions;
     }
 
     private void Update()
     {
-        if (!(Time.time - _lastUpdateTime > updateInterval)) { return; }
+        if (UpdateFloodingTiles()) { return; }
 
-        _lastUpdateTime = Time.time;
-        if (tilemap.GetUsedTilesCount() == 0) { return; }
-
-        while (_currentTilePositions.Count > 0)
-        {
-            _visitedPositions.Clear();
-            _positionsToFlood.Enqueue(_currentTilePositions[0]);
-
-            while (_positionsToFlood.Count > 0)
-            {
-                var position = _positionsToFlood.Dequeue();
-                Flood(position);
-            }
-
-            if (_floodingTilePosition.Count == 0)
-            {
-                _currentTilePositions.RemoveAt(0);
-                return;
-            }
-
-            if (_floodingTilePosition.Count <= detectTileCount)
-            {
-                FloodingTilePositions.AddRange(_floodingTilePosition);
-            }
-
-            _currentTilePositions.RemoveAll(position => _floodingTilePosition.Contains(position));
-            _floodingTilePosition.Clear();
-        }
-
-        _currentTile = null;
-        _currentTilePositions = _chunkPositions;
-        tilemap.SetTiles(FloodingTilePositions.ToArray(), null);
-        var tileArray = new TileBase[FloodingTilePositions.Count];
-        for (var i = 0; i < FloodingTilePositions.Count; i++)
-        {
-            tileArray[i] = tile;
-        }
-        updateTilemap.SetTiles(FloodingTilePositions.ToArray(), tileArray);
+        UpdateTilemaps();
     }
 
-    private void Flood(Vector3Int position)
+    private bool UpdateFloodingTiles()
     {
-        if (_visitedPositions.Contains(position)) { return; }
-        _visitedPositions.Add(position);
+        if (!(Time.time - _lastUpdateTime > updateInterval)) { return true; }
 
-        if (_currentTile != null)
+        _lastUpdateTime = Time.time;
+        if (tilemap.GetUsedTilesCount() == 0) { return true; }
+        if (!HasTilemapChanged()) { return true; }
+
+        foreach (var chunkPosition in _chunkPositions)
         {
-            if (tilemap.GetTile(position) != _currentTile) { return; }
+            Flood(chunkPosition);
+            if (_usedTilePositions.Count <= detectTileCount)
+            {
+                _floodingTilePositions.AddRange(_usedTilePositions);
+            }
+            _usedTilePositions.Clear();
         }
-        else
+
+        return false;
+    }
+
+    private void Flood(Vector3Int startPosition)
+    {
+        var queue = new Queue<Vector3Int>();
+        queue.Enqueue(startPosition);
+
+        while (queue.Count > 0)
         {
-            _currentTile = tilemap.GetTile(position);
+            var position = queue.Dequeue();
+            if (_usedTilePositions.Contains(position)) { continue; }
+            if (tilemap.GetTile(position) != tile) { continue; }
+            if (_usedTilePositions.Count > detectTileCount) { break; }
+
+            _usedTilePositions.Add(position);
+
+            queue.Enqueue(position + Vector3Int.up);
+            queue.Enqueue(position + Vector3Int.down);
+            queue.Enqueue(position + Vector3Int.left);
+            queue.Enqueue(position + Vector3Int.right);
         }
+    }
 
-        _floodingTilePosition.Add(position);
+    private bool HasTilemapChanged()
+    {
+        for (var y = -chunkSize.y / 2; y < chunkSize.y / 2; y++)
+        {
+            for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
+            {
+                var position = new Vector3Int(x, y, 0);
+                var tileBase = tilemap.GetTile(position);
+                if (_previousTilemapState.TryGetValue(position, out var previousTile))
+                {
+                    if (previousTile != tileBase)
+                    {
+                        _previousTilemapState[position] = tileBase;
+                        return true;
+                    }
+                }
+                else
+                {
+                    _previousTilemapState[position] = tileBase;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-        _positionsToFlood.Enqueue(position + Vector3Int.left);
-        _positionsToFlood.Enqueue(position + Vector3Int.right);
-        _positionsToFlood.Enqueue(position + Vector3Int.up);
-        _positionsToFlood.Enqueue(position + Vector3Int.down);
+    private void UpdateTilemaps()
+    {
+        var tilePos = new Vector3Int[_floodingTilePositions.Count];
+        var mapTileArray = new TileBase[_floodingTilePositions.Count];
+        var updateTileArray = new TileBase[_floodingTilePositions.Count];
+        for (var i = 0; i < _floodingTilePositions.Count; i++)
+        {
+            tilePos[i] = _floodingTilePositions[i];
+            mapTileArray[i] = null;
+            updateTileArray[i] = tile;
+        }
+        tilemap.SetTiles(tilePos, mapTileArray);
+        updateTilemap.SetTiles(tilePos, updateTileArray);
+        _floodingTilePositions.Clear();
     }
 }
