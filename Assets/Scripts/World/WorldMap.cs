@@ -134,14 +134,26 @@ namespace WorldCreation
                 }
                 worldLayers = worldLayersTemp;
             }
+            Debug.Log($"{layerRatiosTemp.Length}:{layerRatios.Length}");
 
-            if (layerRatiosTemp.Length == 0)
+            if (layerRatiosTemp.Length != layerRatios.Length)
             {
-                layerRatiosTemp = layerRatios;
+                Debug.Log("temp作成");
+                layerRatiosTemp = new float[layerRatios.Length];
             }
             // 変化していなければ処理を終了
-            if (layerRatios.SequenceEqual(layerRatiosTemp)) { return; }
+            for (int i = 0; i < layerRatios.Length; i++)
+            {
+                Debug.Log($"layerRatios:{layerRatios[i]}\nlayerRatiosTemp:{layerRatiosTemp[i]}");
+            }
+            if (layerRatios.SequenceEqual(layerRatiosTemp))
+            {
+                Debug.Log("変化なし");
+                return;
+            }
+
             float ratioTotal = layerRatios.Sum();
+            Debug.Log($"{ratioTotal}");
             if (Mathf.Approximately(1, ratioTotal) == true) { return; }
 
             // 変化したら変化した場所を取得する
@@ -154,12 +166,15 @@ namespace WorldCreation
                     break;
                 }
             }
-            // 配列の追加による変化だった場合は終了する
-            if (changedIndex == -1) { return; }
+            // 配列の追加による変化だった場合新しく作成された要素を残りの数字にする
+            if (changedIndex == -1)
+            {
+                return;
+            }
 
             // 合計値の平均を取得
             float otherTotal = ratioTotal - layerRatios[changedIndex];
-            float ratioAverage = otherTotal / layerRatios.Length - 1;
+            float ratioAverage = otherTotal / (layerRatios.Length - 1);
 
             // 地層の割合が合計で1になるように調整する
             if (ratioTotal > 1)
@@ -182,7 +197,10 @@ namespace WorldCreation
             }
 
             // 変更後の値を保存
-            layerRatiosTemp = layerRatios;
+            for (int i = 0; i < layerRatios.Length; i++)
+            {
+                layerRatiosTemp[i] = layerRatios[i];
+            }
         }
 #endif
     }

@@ -14,6 +14,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldScale: {x: 640, y: 390}
   oneChunkSize: {x: 64, y: 39}
-  layerGradient: []
-  borderNoiseSize: 0
-  worldLayers: []
+  layerRatios:
+  - 0.302
+  - 0.254
+  randomLimit: 1000
+  borderNoiseSize: 42.3
+  worldLayers:
+  - materialTiles:
+    - {fileID: 0}
+    primevalOres:
+    - priority: 0
+      modelObject: {fileID: 0}
+      minExistence: 0
+      maxExistence: 0
+      probability: 0
+      marginShape: 0
+      marginSizeWidth: 0
+      marginSizeHeight: 0
+    primevalEnemies:
+    - priority: 0
+      modelObject: {fileID: 0}
+      minExistence: 0
+      maxExistence: 0
+      probability: 0
+      marginShape: 0
+      marginSizeWidth: 0
+      marginSizeHeight: 0
+    primevalDungeons:
+    - priority: 0
+      modelObject: {fileID: 0}
+      minExistence: 0
+      maxExistence: 0
+      probability: 0
+      marginShape: 0
+      marginSizeWidth: 0
+      marginSizeHeight: 0
+  - materialTiles: []
+    primevalOres: []
+    primevalEnemies: []
+    primevalDungeons: []
+  num: 16
