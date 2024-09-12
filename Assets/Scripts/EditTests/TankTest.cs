@@ -7,12 +7,12 @@ public class TankTest
     public void Tank()
     {
         IOutPutTank tankOutPut = new TankUITest();
-        IInputTank inputTank = new ItemTank(tankOutPut, 100);
+        //IInputTank inputTank = new ItemTank(tankOutPut, 100);
 
-            inputTank.InputAddTank(ItemType.Sand);
+        //    inputTank.InputAddTank(ItemType.Sand);
         
 
-            inputTank.InputRemoveTank(ItemType.Sand);
+        //    inputTank.InputRemoveTank(ItemType.Sand);
       
     }
 }

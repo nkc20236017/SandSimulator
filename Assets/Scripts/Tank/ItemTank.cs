@@ -3,30 +3,34 @@ using UnityEngine;
 
 public class ItemTank : IInputTank
 {
-    private Dictionary<ItemType, ItemData> itemTankDictionary = new();
+    private ITankRepository tankRepository;
+    private Dictionary<MineralData, MineralTank> itemTankDictionary = new();
     private IOutPutTank outPutTank;
     private readonly float MaxTank;
     private int currentItemAmount;
 
-    public ItemTank(IOutPutTank outPutTank, int maxTank)
+    public ItemTank(IOutPutTank outPutTank, int maxTank, ITankRepository tankRepository)
     {
         this.outPutTank = outPutTank;
         this.MaxTank = maxTank;
+        this.tankRepository = tankRepository;
     }
 
     public void InputAddTank(ItemType type)
     {
-        AddItem(type);
+        currentItemAmount++;
+        var mineralItem = tankRepository.Find(type);
+        AddItem(mineralItem);
     }
 
     public void InputRemoveTank(ItemType type)
     {
-        RemoveItem(type);
+        var mineralItem = tankRepository.Find(type);
+        RemoveItem(mineralItem);
     }
 
-    public void AddItem(ItemType itemType)
+    public void AddItem(MineralData mineralData)
     {
-        currentItemAmount++;
 
         if (currentItemAmount > MaxTank)
         {
@@ -34,49 +38,52 @@ public class ItemTank : IInputTank
             return;
         }
 
-        if (itemTankDictionary.TryGetValue(itemType, out ItemData vaule))
+        if (itemTankDictionary.TryGetValue(mineralData, out MineralTank vaule))
         {
-            vaule.ItemAdd();
+            vaule.MineralAdd();
             TankCalculation(vaule);
         }
         else
         {
-            ItemData itemData = new ItemData(itemType);
-            itemTankDictionary.Add(itemType, itemData);
+            MineralTank itemData = new MineralTank(mineralData);
+            itemTankDictionary.Add(mineralData, itemData);
             TankCalculation(itemData);
         }
     }
 
-    public void RemoveItem(ItemType itemType)
+    public void RemoveItem(MineralData mineralData)
     {
-        if (itemTankDictionary.TryGetValue(itemType, out ItemData vaule))
+        if (itemTankDictionary.TryGetValue(mineralData, out MineralTank vaule))
         {
-            if (vaule.ItemAmount <= 1)
+            if (vaule.mineralAmount <= 1)
             {
-                currentItemAmount--;
-                itemTankDictionary.Remove(itemType);
-                TankCalculation(vaule);
+                Debug.Log("アイテムリストから削除");
+                itemTankDictionary.Remove(mineralData);
             }
-        }
-        else
-        {
-            currentItemAmount--;
-            vaule.ItemRemove();
+            else
+            {
+                vaule.MineralRemove();
+            }
             TankCalculation(vaule);
+        currentItemAmount--;
         }
+
     }
 
-    public void TankCalculation(ItemData itemData)
+    public void TankCalculation(MineralTank itemData)
     {
 
         float totalValue = currentItemAmount;
 
         float totalRatio = totalValue / MaxTank;
-        float itemRatio = itemData.ItemAmount / totalValue;
+        float itemRatio = itemData.mineralAmount / totalValue;
 
-        var outputTank = new OutPutData(itemRatio,totalRatio,itemData.itemType);
+        var outputTank = new OutPutData(itemRatio, totalRatio, itemData.mineralData.itemType
+            ,itemData.mineralData.sprite);
 
         outPutTank.OutputTank(outputTank);
+
+        Debug.Log("アイテムの量"+totalValue);
 
     }
 
