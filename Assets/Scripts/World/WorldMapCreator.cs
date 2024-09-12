@@ -21,6 +21,8 @@ namespace WorldCreation
 
         private void Generate()
         {
+            int[,] worldTiles = new int[worldMap.WorldSize.x, worldMap.WorldSize.y];
+
             int layerHeight = worldMap.WorldSize.y;
             for (int i = 0; i < worldMap.LayerRatios.Length; i++)
             {
@@ -37,7 +39,7 @@ namespace WorldCreation
                 .Select(point => (Vector3)(Vector2)point)
                 .ToArray();
 
-                
+
             }
         }
 

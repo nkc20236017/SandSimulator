@@ -102,11 +102,6 @@ namespace WorldCreation.Preview
             Gizmos.DrawLineList(points);
         }
 
-        public void LayerBorderSizeView()
-        {
-
-        }
-
         /// <summary>
         /// ÉåÉCÉÑÅ[ÇÃã´äEÇï\é¶
         /// </summary>
@@ -128,10 +123,10 @@ namespace WorldCreation.Preview
                 .Select(point => (Vector3)(Vector2)point)
                 .ToArray();
 
-                Gizmos.color = worldMap.WorldLayers[i].DebugLayerColor;
+                Gizmos.color = worldMap.WorldLayers[i + 1].DebugLayerColor;
                 Gizmos.DrawLineStrip(border, false);
 
-                Color layerColor = worldMap.WorldLayers[i].DebugLayerColor;
+                Color layerColor = worldMap.WorldLayers[i + 1].DebugLayerColor;
                 layerColor.a = GUIDELINE_ALPHA;
 
                 Gizmos.color = layerColor;

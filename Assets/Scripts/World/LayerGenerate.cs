@@ -11,14 +11,17 @@ namespace WorldCreation
             _seed = seed;
         }
 
-        public int[,] Fill(Vector2Int maxWorldSize)
+        public void Execute(ref int[,] worldTile, WorldMap worldMap)
         {
-            for (int x = 0; x < maxWorldSize.x; x++)
+
+
+            for (int x = 0; x < worldMap.WorldSize.x; x++)
             {
+                for (int i = 0; i < worldMap.WorldSize.y; i++)
+                {
 
+                }
             }
-
-            return default;
         }
 
         public Vector2Int[] GetBorder(int maxWorldWidth, int altitude, float noisePower, int randomLimit, float amplitude)

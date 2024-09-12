@@ -131,10 +131,10 @@ namespace WorldCreation
         private void OnValidate()
         {
             // ’n‘w‚Ì”‚ªˆê’v‚µ‚È‚¢ê‡‚ÉC³‚·‚é
-            if (worldLayers.Length != layerRatios.Length)
+            if (worldLayers.Length != layerRatios.Length + 1)
             {
-                WorldLayer[] worldLayersTemp = new WorldLayer[layerRatios.Length];
-                for (int i = 0; i < layerRatios.Length; i++)
+                WorldLayer[] worldLayersTemp = new WorldLayer[layerRatios.Length + 1];
+                for (int i = 0; i < layerRatios.Length + 1; i++)
                 {
                     if (worldLayers.Length <= i) { break; }
                     worldLayersTemp[i] = worldLayers[i];
