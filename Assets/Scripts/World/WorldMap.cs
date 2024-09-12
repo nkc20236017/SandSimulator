@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -103,11 +104,6 @@ namespace WorldCreation
         [SerializeField]    // 1チャンクの大きさ
         private Vector2Int oneChunkSize;
         public Vector2Int OneChunkSize => oneChunkSize;
-        [Tooltip("左のほうが深く、右に行くにつれて浅くなる。\n色は考慮しないため自由。色が馴染んでいる部分は地層の変化も緩やかになります")]
-        [SerializeField]    // 地層の割合
-        [Range(0f, 1f)]
-        private float[] layerRatios;
-        public float[] LayerRatios => layerRatios;
         [SerializeField]    // ランダム値を生成する時の最大値
         private float randomLimit;
         public float RandomLimit => randomLimit;
@@ -118,6 +114,10 @@ namespace WorldCreation
 
         [Space]
         [Header("each layer")]
+        [SerializeField]    // 地層の割合
+        [Range(0f, 1f)]
+        private float[] layerRatios;
+        public float[] LayerRatios => layerRatios;
         [SerializeField]    // それぞれの地層の状態
         private WorldLayer[] worldLayers;
         public WorldLayer[] WorldLayers => worldLayers;
@@ -182,8 +182,6 @@ namespace WorldCreation
             // 配列の追加による変化だった場合新しく作成された要素を残りの数字にする
             if (changedIndex == -1)
             {
-                Debug.Log(ratioTotal);
-
                 float layerRespite = 1 - (ratioTotal - layerRatios[layerRatios.Length - 1]);
                 if (0 <= layerRespite && layerRespite <= 1)
                 {
@@ -194,15 +192,18 @@ namespace WorldCreation
 
             // 合計値の平均を取得
             float changedRespite = 1 - layerRatios[changedIndex];
-            int ignore = layerRatios.Where(_ => Mathf.Approximately(0, _)).ToArray().Length + 1;
+            int ignore = layerRatios
+                .Where(_ => Mathf.Approximately(0, _))
+                .ToArray()
+                .Length + 1;
             float otherTotal = 1 - ratioTotal;
             float changedQuantity = otherTotal / (layerRatios.Length - ignore);
 
             // 1より大きければ他の値を下げる
             for (int i = 0; i < layerRatios.Length; i++)
             {
-                // 変更された要素は調節しない
-                if (changedIndex == i) { continue; }
+                // 変更された要素かロックされている要素は調節しない
+                if (changedIndex >= i) { continue; }
                 layerRatios[i] += changedQuantity;
                 layerRatios[i] = Mathf.Clamp01(layerRatios[i]);
             }

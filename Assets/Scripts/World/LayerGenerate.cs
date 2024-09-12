@@ -13,7 +13,8 @@ namespace WorldCreation
 
         public void Execute(ref int[,] worldTile, WorldMap worldMap)
         {
-
+            // æ‚Éˆê”Ôã‚Ì‘w‚ÌF‚Å“h‚è‚Â‚Ô‚·
+            // worldMap.WorldLayers[0].MaterialTiles
 
             for (int x = 0; x < worldMap.WorldSize.x; x++)
             {
