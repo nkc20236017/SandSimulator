@@ -8,10 +8,10 @@ public class SuckUp : MonoBehaviour
 {
     [Header("Tile Config")]
     [SerializeField] private Tilemap _tilemap;
+    [SerializeField] private BlockDatas blockDatas;
     
     [Header("Suction Config")]
     [SerializeField] private Transform pivot;
-    [SerializeField] private float updateInterval;
     [SerializeField, Range(0f, 180f)] private float _suctionAngle;
     [SerializeField, Min(0f)] private float _suctionDistance;
     [SerializeField, Min(0f)] private float _deleteDistance;
@@ -22,7 +22,7 @@ public class SuckUp : MonoBehaviour
     [Header("Delete Config")]
     [SerializeField] private bool matchTheSizeOfTheCollider;
 
-    private float _lastUpdateTime;
+    private int _numberExecutions;
     private PlayerMovement _playerMovement;
     private Camera _camera;
     private PlayerActions _playerActions;
@@ -40,6 +40,7 @@ public class SuckUp : MonoBehaviour
     private void Start()
     {
         _camera = Camera.main;
+        _numberExecutions = 0;
         
         VacuumActions.Absorption.started += _ => _playerMovement.IsMoveFlip = false;
         VacuumActions.Absorption.canceled += _ => CancelSuckUp();
@@ -52,14 +53,12 @@ public class SuckUp : MonoBehaviour
         if (VacuumActions.Absorption.IsPressed())
         {
             Performed();
+            _numberExecutions++;
         }
     }
 
     private void Performed()
     {
-        if (Time.time - _lastUpdateTime < updateInterval) { return; }
-            
-        _lastUpdateTime = Time.time;
         GetSuckUpTilePositions();
         SuckUpTiles();
     }
@@ -67,8 +66,8 @@ public class SuckUp : MonoBehaviour
     private void CancelSuckUp()
     {
         SuckUpTilePositions.Clear();
-        _lastUpdateTime = Time.time;
         _playerMovement.IsMoveFlip = true;
+        _numberExecutions = 0;
     }
 
     private void RotateToCursorDirection()
@@ -129,6 +128,11 @@ public class SuckUp : MonoBehaviour
             if (_tilemap.HasTile(newTilePosition)) { continue; }
             
             var tile = _tilemap.GetTile(tilePosition);
+            var isContinue = blockDatas.TileDatas
+                    .Where(tileData => tileData.tile == tile)
+                    .Any(tileData => _numberExecutions % tileData.weight != 0);
+            if (isContinue) { continue; }
+            
             _tilemap.SetTile(newTilePosition, tile);
             _tilemap.SetTile(tilePosition, null);
             

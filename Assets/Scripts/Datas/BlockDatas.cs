@@ -23,7 +23,12 @@ public class BlockDatas : ScriptableObject
 [Serializable]
 public class TileData
 {
+	[Header("Tile Config")]
+	[SerializeField] private string name;
 	public BlockType type;
 	public TileBase tile;
+	// [TextArea] public string description;
+	[Min(1)] public int weight;
+	
 	[HideInInspector] public List<Vector3Int> tilePositions = new();
 }

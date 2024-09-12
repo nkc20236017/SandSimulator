@@ -13,12 +13,19 @@ MonoBehaviour:
   m_Name: BlockDatas
   m_EditorClassIdentifier: 
   tileDatas:
-  - type: 0
+  - name: "\u7802"
+    type: 0
     tile: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
-    tilePositions: []
-  - type: 1
+    weight: 1
+    tilePositions:
+    - {x: 1, y: 4, z: 0}
+  - name: "\u6CE5"
+    type: 1
     tile: {fileID: 11400000, guid: f66babbb8ecba55418398bf81080dca8, type: 2}
+    weight: 30
     tilePositions: []
-  - type: 2
+  - name: "\u6C34"
+    type: 3
     tile: {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
+    weight: 1
     tilePositions: []

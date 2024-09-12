@@ -10,7 +10,7 @@ public class TilesUpdate : MonoBehaviour
     [Header("Config")]
     [SerializeField] private Tilemap _updateTilemap;
     [SerializeField] private Tilemap _mapTilemap;
-    [SerializeField] private TileData[] tiles;
+    [SerializeField] private BlockDatas blockDatas;
     [SerializeField] private float updateInterval = 0.01f;
     [SerializeField] private Vector2Int chunkSize = new(84, 45);
     
@@ -27,7 +27,7 @@ public class TilesUpdate : MonoBehaviour
     
     private void Start()
     {
-        tiles.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
+        blockDatas.TileDatas.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
     }
 
     private void Update()
@@ -41,7 +41,7 @@ public class TilesUpdate : MonoBehaviour
 
     private void GetTilePosition()
     {
-        foreach (var tile in tiles.Where(tile => tile.tilePositions.Count > 0))
+        foreach (var tile in blockDatas.TileDatas.Where(tile => tile.tilePositions.Count > 0))
         {
             tile.tilePositions.Clear();
         }
@@ -54,21 +54,21 @@ public class TilesUpdate : MonoBehaviour
                 var tile = _updateTilemap.GetTile(position);
                 if (tile == null) { continue; }
             
-                var index = Array.FindIndex(tiles, t => t.tile == tile);
-                if (index >= 0 && index < tiles.Length)
+                var index = Array.FindIndex(blockDatas.TileDatas, t => t.tile == tile);
+                if (index >= 0 && index < blockDatas.TileDatas.Length)
                 {
-                    tiles[index].tilePositions.Add(position);
+                    blockDatas.TileDatas[index].tilePositions.Add(position);
                 }
             }
         }
-        if (tiles.All(tile => tile.tilePositions.Count == 0)) { return; }
+        if (blockDatas.TileDatas.All(tile => tile.tilePositions.Count == 0)) { return; }
         
         CheckUpdateTiles();
     }
 
     private void CheckUpdateTiles()
     {
-        foreach (var tileData in tiles.Where(tile => tile.tilePositions.Count > 0))
+        foreach (var tileData in blockDatas.TileDatas.Where(tile => tile.tilePositions.Count > 0))
         {
             _clearTiles.Clear();
             _updateTiles.Clear();
@@ -83,21 +83,16 @@ public class TilesUpdate : MonoBehaviour
                         {
                             UpdateSand(position);
                         }
-
                         if (canUpdateSandToMud)
                         {
                             SandToMud(position, tileData);
                         }
-                        break;
-                    case BlockType.Mud:
                         break;
                     case BlockType.Water:
                         if (canUpdateWater)
                         {
                             UpdateWater(position);
                         }
-                        break;
-                    case BlockType.Stone:
                         break;
                     case BlockType.Lava:
                         break;
@@ -281,6 +276,6 @@ public class TilesUpdate : MonoBehaviour
 
     private TileData GetTileData(BlockType type)
     {
-        return (from tile in tiles where tile.type == type select tile).FirstOrDefault();
+        return (from tile in blockDatas.TileDatas where tile.type == type select tile).FirstOrDefault();
     }
 }
