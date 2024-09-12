@@ -41,6 +41,9 @@ namespace WorldCreation
     [Serializable]
     public struct WorldLayer
     {
+        [SerializeField]
+        private Color debugLayerColor;
+        public Color DebugLayerColor => debugLayerColor;
         [SerializeField]    // この地層を構成する材質
         private TileBase[] materialTiles;
         public TileBase[] MaterialTiles => materialTiles;
@@ -96,27 +99,31 @@ namespace WorldCreation
         [Header("standard worldwide")]
         [SerializeField]    // 世界の最大サイズ
         private Vector2Int worldScale;
-        public Vector2Int WorldScale => worldScale;
+        public Vector2Int WorldSize => worldScale;
         [SerializeField]    // 1チャンクの大きさ
         private Vector2Int oneChunkSize;
         public Vector2Int OneChunkSize => oneChunkSize;
         [Tooltip("左のほうが深く、右に行くにつれて浅くなる。\n色は考慮しないため自由。色が馴染んでいる部分は地層の変化も緩やかになります")]
-        [SerializeField, Range(0, 1f)]    // 地層の変化具合のグラデーション
+        [SerializeField]    // 地層の割合
+        [Range(0f, 1f)]
         private float[] layerRatios;
         public float[] LayerRatios => layerRatios;
-        [SerializeField]
+        [SerializeField]    // ランダム値を生成する時の最大値
         private float randomLimit;
         public float RandomLimit => randomLimit;
-        [SerializeField]    // 地層の境界線の歪み
-        private float borderNoiseSize;
-        public float BorderNoiseSize => borderNoiseSize;
+        [SerializeField]    // ランダム値の振れ幅
+        [Range(0f, 1f)]
+        private float amplitude;
+        public float Amplitude => amplitude;
 
         [Space]
         [Header("each layer")]
         [SerializeField]    // それぞれの地層の状態
         private WorldLayer[] worldLayers;
-        [SerializeField]
-        private int num;
+        public WorldLayer[] WorldLayers => worldLayers;
+        [SerializeField]    // 地層の境界線の歪み
+        private float borderNoiseSize;
+        public float BorderNoiseSize => borderNoiseSize;
 
 #if UNITY_EDITOR
         private float[] layerRatiosTemp = new float[0];
@@ -134,27 +141,33 @@ namespace WorldCreation
                 }
                 worldLayers = worldLayersTemp;
             }
-            Debug.Log($"{layerRatiosTemp.Length}:{layerRatios.Length}");
 
-            if (layerRatiosTemp.Length != layerRatios.Length)
-            {
-                Debug.Log("temp作成");
-                layerRatiosTemp = new float[layerRatios.Length];
-            }
+            // 地層の割合を調整する
+            /*
+             * 割合であるため以降のマジックナンバー「1」は100%を指す
+             */
             // 変化していなければ処理を終了
-            for (int i = 0; i < layerRatios.Length; i++)
+            if (layerRatios.Length == 0)
             {
-                Debug.Log($"layerRatios:{layerRatios[i]}\nlayerRatiosTemp:{layerRatiosTemp[i]}");
+                layerRatiosTemp = new float[0];
+                return;
             }
-            if (layerRatios.SequenceEqual(layerRatiosTemp))
+            if (layerRatiosTemp.Length != 0 && layerRatios.SequenceEqual(layerRatiosTemp))
             {
-                Debug.Log("変化なし");
                 return;
             }
 
+            if (layerRatiosTemp.Length != layerRatios.Length)
+            {
+                layerRatiosTemp = layerRatios.ToArray();
+            }
+
             float ratioTotal = layerRatios.Sum();
-            Debug.Log($"{ratioTotal}");
-            if (Mathf.Approximately(1, ratioTotal) == true) { return; }
+            // 合計がほぼ1であれば終了
+            if (Mathf.Approximately(1, ratioTotal) == true)
+            {
+                return;
+            }
 
             // 変化したら変化した場所を取得する
             int changedIndex = -1;
@@ -169,38 +182,32 @@ namespace WorldCreation
             // 配列の追加による変化だった場合新しく作成された要素を残りの数字にする
             if (changedIndex == -1)
             {
+                Debug.Log(ratioTotal);
+
+                float layerRespite = 1 - (ratioTotal - layerRatios[layerRatios.Length - 1]);
+                if (0 <= layerRespite && layerRespite <= 1)
+                {
+                    layerRatios[layerRatios.Length - 1] = layerRespite;
+                }
                 return;
             }
 
             // 合計値の平均を取得
-            float otherTotal = ratioTotal - layerRatios[changedIndex];
-            float ratioAverage = otherTotal / (layerRatios.Length - 1);
+            float changedRespite = 1 - layerRatios[changedIndex];
+            int ignore = layerRatios.Where(_ => Mathf.Approximately(0, _)).ToArray().Length + 1;
+            float otherTotal = 1 - ratioTotal;
+            float changedQuantity = otherTotal / (layerRatios.Length - ignore);
 
-            // 地層の割合が合計で1になるように調整する
-            if (ratioTotal > 1)
-            {
-                // 1より大きければ他の値を下げる
-                for (int i = 0; i < layerRatios.Length; i++)
-                {
-                    if (changedIndex == i) { continue; }
-                    layerRatios[i] -= ratioAverage;
-                }
-            }
-            else if (ratioTotal < 1)
-            {
-                // 1より小さければ他の値を平均値にする
-                for (int i = 0; i < layerRatios.Length; i++)
-                {
-                    if (changedIndex == i) { continue; }
-                    layerRatios[i] = ratioAverage;
-                }
-            }
-
-            // 変更後の値を保存
+            // 1より大きければ他の値を下げる
             for (int i = 0; i < layerRatios.Length; i++)
             {
-                layerRatiosTemp[i] = layerRatios[i];
+                // 変更された要素は調節しない
+                if (changedIndex == i) { continue; }
+                layerRatios[i] += changedQuantity;
+                layerRatios[i] = Mathf.Clamp01(layerRatios[i]);
             }
+
+            layerRatiosTemp = layerRatios.ToArray();
         }
 #endif
     }

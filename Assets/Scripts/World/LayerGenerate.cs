@@ -11,12 +11,23 @@ namespace WorldCreation
             _seed = seed;
         }
 
-        public Vector2Int[] GetBorder(int maxWorldWidth, int altitude, float noisePower, float randomLimit)
+        public int[,] Fill(Vector2Int maxWorldSize)
+        {
+            for (int x = 0; x < maxWorldSize.x; x++)
+            {
+
+            }
+
+            return default;
+        }
+
+        public Vector2Int[] GetBorder(int maxWorldWidth, int altitude, float noisePower, int randomLimit, float amplitude)
         {
             Vector2Int[] border = new Vector2Int[maxWorldWidth];
+            int seed = _seed * Random.Range(1, randomLimit);
             for (int x = 0; x < maxWorldWidth; x++)
             {
-                int noise = (int)(Mathf.PerlinNoise1D(x * 0.01f) * noisePower);
+                int noise = (int)(Mathf.PerlinNoise1D((x + seed) * amplitude) * noisePower);
                 border[x] = new Vector2Int(x, noise + altitude);
             }
 

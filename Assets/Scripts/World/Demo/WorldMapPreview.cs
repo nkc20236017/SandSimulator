@@ -19,6 +19,7 @@ namespace WorldCreation.Preview
 
         private LayerGenerate _layerGenerator;
         private int _seed;
+        private const float GUIDELINE_ALPHA = 0.25f;
 
         [ContextMenu("Regenerate")]
         public void Regenerate()
@@ -62,7 +63,7 @@ namespace WorldCreation.Preview
         public void WorldScaleView()
         {
             Gizmos.color = new Color(0.5f, 0.5f, 0, 1f);
-            Vector3 size = (Vector2)worldMap.WorldScale;
+            Vector3 size = (Vector2)worldMap.WorldSize;
             Vector3 center = Vector3.Scale(size, new(0.5f, 0.5f, 0));
             Gizmos.DrawWireCube(center, size);
         }
@@ -73,13 +74,13 @@ namespace WorldCreation.Preview
         public void ChunkSizeView()
         {
             Gizmos.color = Color.blue;
-            Vector3 worldScale = (Vector2)worldMap.WorldScale;
+            Vector3 worldScale = (Vector2)worldMap.WorldSize;
             Vector3 size = (Vector2)worldMap.OneChunkSize;
             Vector3 anchor = size * 0.5f;
             Vector3 center = Vector3.zero;
             int split
-                = worldMap.WorldScale.x * (worldMap.OneChunkSize.x / 2)
-                + worldMap.WorldScale.y * (worldMap.OneChunkSize.y / 2);
+                = worldMap.WorldSize.x * (worldMap.OneChunkSize.x / 2)
+                + worldMap.WorldSize.y * (worldMap.OneChunkSize.y / 2);
             Vector3[] points = new Vector3[split * 2];
 
             for (int i = 0; i < points.Length / 4; i += 4)
@@ -101,20 +102,50 @@ namespace WorldCreation.Preview
             Gizmos.DrawLineList(points);
         }
 
+        public void LayerBorderSizeView()
+        {
+
+        }
+
+        /// <summary>
+        /// ÉåÉCÉÑÅ[ÇÃã´äEÇï\é¶
+        /// </summary>
         public void LayerBorderView()
         {
-            Gizmos.color = Color.red;
-            Vector3[] border = _layerGenerator.GetBorder
-            (
-                worldMap.WorldScale.x,
-                50,
-                worldMap.BorderNoiseSize,
-                worldMap.RandomLimit
-            )
-            .Select(point => (Vector3)(Vector2)point)
-            .ToArray();
+            int layerHeight = worldMap.WorldSize.y;
+            for (int i = 0; i < worldMap.LayerRatios.Length; i++)
+            {
+                layerHeight -= (int)(layerHeight * worldMap.LayerRatios[i]);
 
-            Gizmos.DrawLineStrip(border, false);
+                Vector3[] border = _layerGenerator.GetBorder
+                (
+                    worldMap.WorldSize.x,
+                    layerHeight,
+                    worldMap.BorderNoiseSize,
+                    (int)worldMap.RandomLimit,
+                    worldMap.Amplitude
+                )
+                .Select(point => (Vector3)(Vector2)point)
+                .ToArray();
+
+                Gizmos.color = worldMap.WorldLayers[i].DebugLayerColor;
+                Gizmos.DrawLineStrip(border, false);
+
+                Color layerColor = worldMap.WorldLayers[i].DebugLayerColor;
+                layerColor.a = GUIDELINE_ALPHA;
+
+                Gizmos.color = layerColor;
+                Gizmos.DrawLine
+                (
+                    new(0, layerHeight + worldMap.BorderNoiseSize),
+                    new(worldMap.WorldSize.x, layerHeight + worldMap.BorderNoiseSize)
+                );
+                Gizmos.DrawLine
+                (
+                    new(0, layerHeight),
+                    new(worldMap.WorldSize.x, layerHeight)
+                );
+            }
         }
     }
 }
