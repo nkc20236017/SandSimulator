@@ -28,7 +28,7 @@ public class ChunkData : MonoBehaviour
 		return hasChanged;
 	}
 	
-	public TileData GetTileData(TileType type)
+	public TileData GetTileData(BlockType type)
 	{
 		return (from tile in tiles where tile.type == type select tile).FirstOrDefault();
 	}

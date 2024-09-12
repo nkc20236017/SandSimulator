@@ -5,15 +5,6 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public enum TileType
-{
-    Sand,
-    Mud,
-    Water,
-    Fire,
-    Smoke
-}
-
 public class TilesUpdate : MonoBehaviour
 {
     [Header("Config")]
@@ -87,7 +78,7 @@ public class TilesUpdate : MonoBehaviour
             {
                 switch (tileData.type)
                 {
-                    case TileType.Sand:
+                    case BlockType.Sand:
                         if (canUpdateSand)
                         {
                             UpdateSand(position);
@@ -98,17 +89,17 @@ public class TilesUpdate : MonoBehaviour
                             SandToMud(position, tileData);
                         }
                         break;
-                    case TileType.Mud:
+                    case BlockType.Mud:
                         break;
-                    case TileType.Water:
+                    case BlockType.Water:
                         if (canUpdateWater)
                         {
                             UpdateWater(position);
                         }
                         break;
-                    case TileType.Fire:
+                    case BlockType.Stone:
                         break;
-                    case TileType.Smoke:
+                    case BlockType.Lava:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -163,7 +154,7 @@ public class TilesUpdate : MonoBehaviour
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
         if (tilesBlock.Length == 3)
         {
-            _mapTilemap.SetTile(position, GetTileData(TileType.Sand).tile);
+            _mapTilemap.SetTile(position, GetTileData(BlockType.Sand).tile);
             _clearTiles.Add(position);
             return;
         }
@@ -273,22 +264,22 @@ public class TilesUpdate : MonoBehaviour
 
     private void SandToMud(Vector3Int position, TileData tileData)
     {
-        if (tileData.type != TileType.Sand) { return; }
-        if (GetTileData(TileType.Water).tilePositions.Count == 0) { return; }
-        if (GetTileData(TileType.Sand).tilePositions.Count == 0) { return; }
+        if (tileData.type != BlockType.Sand) { return; }
+        if (GetTileData(BlockType.Water).tilePositions.Count == 0) { return; }
+        if (GetTileData(BlockType.Sand).tilePositions.Count == 0) { return; }
             
         var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
         var tilesBlock = _updateTilemap.GetTilesBlock(checkBound);
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
         if (tilesBlock.Length == 0) { return; }
 
-        if (tilesBlock.Any(tileBase => tileBase == GetTileData(TileType.Water).tile))
+        if (tilesBlock.Any(tileBase => tileBase == GetTileData(BlockType.Water).tile))
         {
-            _updateTilemap.SetTile(position, GetTileData(TileType.Mud).tile);
+            _updateTilemap.SetTile(position, GetTileData(BlockType.Mud).tile);
         }
     }
 
-    private TileData GetTileData(TileType type)
+    private TileData GetTileData(BlockType type)
     {
         return (from tile in tiles where tile.type == type select tile).FirstOrDefault();
     }

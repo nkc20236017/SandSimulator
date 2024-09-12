@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -15,116 +16,96 @@ public class TileFlood : MonoBehaviour
     [SerializeField] private float updateInterval;
 
     private float _lastUpdateTime;
+    private List<Vector3Int> _currentChunkPositions = new();
     private List<Vector3Int> _chunkPositions = new();
-    private List<Vector3Int> _floodingTilePositions = new();
-    private HashSet<Vector3Int> _usedTilePositions = new();
-    private Dictionary<Vector3Int, TileBase> _previousTilemapState = new();
+    private List<Vector3Int> _floodTilePositions = new();
+    private List<Vector3Int> _updateTilePositions = new();
 
     private void Start()
     {
-        Initialization();
-    }
-
-    private void Initialization()
-    {
-        for (var y = -chunkSize.y / 2; y < chunkSize.y / 2; y++)
-        {
-            for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
-            {
-                var position = new Vector3Int(x, y, 0);
-                _chunkPositions.Add(position);
-            }
-        }
+        _chunkPositions = Initialization();
     }
 
     private void Update()
     {
-        if (UpdateFloodingTiles()) { return; }
-
-        UpdateTilemaps();
-    }
-
-    private bool UpdateFloodingTiles()
-    {
-        if (!(Time.time - _lastUpdateTime > updateInterval)) { return true; }
+        if (!(Time.time - _lastUpdateTime > updateInterval)) { return; }
 
         _lastUpdateTime = Time.time;
-        if (tilemap.GetUsedTilesCount() == 0) { return true; }
-        if (!HasTilemapChanged()) { return true; }
+        if (tilemap.GetUsedTilesCount() == 0) { return; }
 
-        foreach (var chunkPosition in _chunkPositions)
-        {
-            Flood(chunkPosition);
-            if (_usedTilePositions.Count <= detectTileCount)
-            {
-                _floodingTilePositions.AddRange(_usedTilePositions);
-            }
-            _usedTilePositions.Clear();
-        }
+        _currentChunkPositions = Initialization();
+        if (_chunkPositions.Equals(_currentChunkPositions)) { return; }
 
-        return false;
+        _chunkPositions = _currentChunkPositions;
+        _floodTilePositions.Clear();
+        _updateTilePositions.Clear();
+
+        AddFloodPositions();
+        UpdateTiles();
     }
 
-    private void Flood(Vector3Int startPosition)
+    private List<Vector3Int> Initialization()
     {
-        var queue = new Queue<Vector3Int>();
-        queue.Enqueue(startPosition);
-
-        while (queue.Count > 0)
-        {
-            var position = queue.Dequeue();
-            if (_usedTilePositions.Contains(position)) { continue; }
-            if (tilemap.GetTile(position) != tile) { continue; }
-            if (_usedTilePositions.Count > detectTileCount) { break; }
-
-            _usedTilePositions.Add(position);
-
-            queue.Enqueue(position + Vector3Int.up);
-            queue.Enqueue(position + Vector3Int.down);
-            queue.Enqueue(position + Vector3Int.left);
-            queue.Enqueue(position + Vector3Int.right);
-        }
-    }
-
-    private bool HasTilemapChanged()
-    {
+        var _tilePositions = new List<Vector3Int>();
         for (var y = -chunkSize.y / 2; y < chunkSize.y / 2; y++)
         {
             for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
             {
                 var position = new Vector3Int(x, y, 0);
-                var tileBase = tilemap.GetTile(position);
-                if (_previousTilemapState.TryGetValue(position, out var previousTile))
-                {
-                    if (previousTile != tileBase)
-                    {
-                        _previousTilemapState[position] = tileBase;
-                        return true;
-                    }
-                }
-                else
-                {
-                    _previousTilemapState[position] = tileBase;
-                    return true;
-                }
+                if (tilemap.GetTile(position) != tile) { continue; }
+
+                _tilePositions.Add(position);
             }
         }
-        return false;
+
+        return _tilePositions;
     }
 
-    private void UpdateTilemaps()
+    private void AddFloodPositions()
     {
-        var tilePos = new Vector3Int[_floodingTilePositions.Count];
-        var mapTileArray = new TileBase[_floodingTilePositions.Count];
-        var updateTileArray = new TileBase[_floodingTilePositions.Count];
-        for (var i = 0; i < _floodingTilePositions.Count; i++)
+        while (_currentChunkPositions.Count > 0)
         {
-            tilePos[i] = _floodingTilePositions[i];
-            mapTileArray[i] = null;
-            updateTileArray[i] = tile;
+            var position = _currentChunkPositions[0];
+            var thread = new Thread(() => DetectFloodThread(position), 100000);
+            thread.Start();
+            thread.Join();
+
+            if (_floodTilePositions.Count <= detectTileCount)
+            {
+                _updateTilePositions.AddRange(_floodTilePositions);
+            }
+
+            _currentChunkPositions.RemoveAll(pos => _floodTilePositions.Contains(pos));
+            _floodTilePositions.Clear();
         }
-        tilemap.SetTiles(tilePos, mapTileArray);
-        updateTilemap.SetTiles(tilePos, updateTileArray);
-        _floodingTilePositions.Clear();
+    }
+
+    private void DetectFloodThread(Vector3Int position)
+    {
+        var stack = new Stack<Vector3Int>();
+        stack.Push(position);
+
+        while (stack.Count > 0)
+        {
+            var current = stack.Pop();
+            if (_floodTilePositions.Contains(current)) { continue; }
+            if (!_chunkPositions.Contains(current)) { continue; }
+
+            _floodTilePositions.Add(current);
+
+            stack.Push(current + Vector3Int.up);
+            stack.Push(current + Vector3Int.down);
+            stack.Push(current + Vector3Int.left);
+            stack.Push(current + Vector3Int.right);
+        }
+    }
+
+    private void UpdateTiles()
+    {
+        foreach (var position in _updateTilePositions)
+        {
+            tilemap.SetTile(position, null);
+            updateTilemap.SetTile(position, tile);
+        }
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 public class TileGenerator : MonoBehaviour
 {
     [Header("Brush Config")]
-    [SerializeField] private TileType tileType;
+    [SerializeField] private BlockType tileType;
     [SerializeField] private int radius;
     
 	[Header("Tile Config")]
@@ -21,7 +21,7 @@ public class TileGenerator : MonoBehaviour
         _camera = Camera.main;
     }
     
-    private TileData GetTileData(TileType type)
+    private TileData GetTileData(BlockType type)
     {
         return (from tile in tiles where tile.type == type select tile).FirstOrDefault();
     }
@@ -56,12 +56,4 @@ public class TileGenerator : MonoBehaviour
     {
         return _camera.pixelRect.Contains(_camera.WorldToScreenPoint(tilemap.GetCellCenterWorld(pos)));
     }
-}
-
-[Serializable]
-public class TileData
-{
-	public TileType type;
-	public TileBase tile;
-    [HideInInspector] public List<Vector3Int> tilePositions = new();
 }
