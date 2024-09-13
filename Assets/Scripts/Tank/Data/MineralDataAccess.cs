@@ -9,7 +9,7 @@ public class MineralDataAccess : ITankRepository
         this.mineralDataBase = mineralDataBase;
     }
 
-    public MineralData Find(ItemType type)
+    public MineralData Find(MineralType type)
     {
         return mineralDataBase.data
             .Where(mineral => mineral.itemType == type)

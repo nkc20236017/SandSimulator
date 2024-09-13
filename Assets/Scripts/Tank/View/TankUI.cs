@@ -13,12 +13,6 @@ public class TankUI : MonoBehaviour, IOutPutTank
     private RectTransform totaleTransform;
     [SerializeField]
     private RectTransform maxTransfom;
-    [SerializeField]
-    private MineralDataBase MineralDataBase;
-
-    private ItemTank itemTank;
-
-    private ITankRepository tankRepository;
 
     public void OutputTank(OutPutData outPutData)
     {
@@ -39,31 +33,6 @@ public class TankUI : MonoBehaviour, IOutPutTank
         stankObject.GetComponent<TankImage>().Setup(outPutData.itemType,
             outPutData.itemRatio * totaleSize,outPutData.Sprite);
 
-
-    }
-
-    private void Start()
-    {
-        tankRepository = new MineralDataAccess(MineralDataBase);
-        itemTank = new(this, 100,tankRepository);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            itemTank.InputAddTank(ItemType.Sand);
-        }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            itemTank.InputAddTank(ItemType.Mad);
-        }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            itemTank.InputRemoveTank(ItemType.Sand);
-        }
 
     }
 

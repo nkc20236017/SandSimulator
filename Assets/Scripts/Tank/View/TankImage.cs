@@ -7,7 +7,7 @@ public class TankImage : MonoBehaviour
 {
     private RectTransform tankImage;
     private Image mineralImage;
-    public ItemType itemType {  get; private set; }
+    public MineralType itemType {  get; private set; }
 
     private void Awake()
     {
@@ -15,14 +15,14 @@ public class TankImage : MonoBehaviour
         mineralImage = GetComponent<Image>();
     }
 
-    public void Setup(ItemType itemType,float imageSize,Sprite sprite)
+    public void Setup(MineralType itemType,float imageSize,Sprite sprite)
     {
         this.itemType = itemType;
         tankImage.sizeDelta = new Vector2(tankImage.sizeDelta.x, imageSize);
         mineralImage.sprite = sprite;
     }
 
-    public void TankUpdate(ItemType itemType, float imageSize)
+    public void TankUpdate(MineralType itemType, float imageSize)
     {
         this.itemType = itemType;
         tankImage.sizeDelta = new Vector2(tankImage.sizeDelta.x, imageSize);

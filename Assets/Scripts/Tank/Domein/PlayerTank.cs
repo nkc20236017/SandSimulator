@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemTank : IInputTank
+public class PlayerTank : IInputTank
 {
     private ITankRepository tankRepository;
     private Dictionary<MineralData, MineralTank> itemTankDictionary = new();
@@ -9,21 +9,20 @@ public class ItemTank : IInputTank
     private readonly float MaxTank;
     private int currentItemAmount;
 
-    public ItemTank(IOutPutTank outPutTank, int maxTank, ITankRepository tankRepository)
+    public PlayerTank(IOutPutTank outPutTank, int maxTank, ITankRepository tankRepository)
     {
         this.outPutTank = outPutTank;
         this.MaxTank = maxTank;
         this.tankRepository = tankRepository;
     }
 
-    public void InputAddTank(ItemType type)
+    public void InputAddTank(MineralType type)
     {
-        currentItemAmount++;
         var mineralItem = tankRepository.Find(type);
         AddItem(mineralItem);
     }
 
-    public void InputRemoveTank(ItemType type)
+    public void InputRemoveTank(MineralType type)
     {
         var mineralItem = tankRepository.Find(type);
         RemoveItem(mineralItem);
@@ -32,12 +31,12 @@ public class ItemTank : IInputTank
     public void AddItem(MineralData mineralData)
     {
 
-        if (currentItemAmount > MaxTank)
+        if (currentItemAmount >= MaxTank)
         {
             Debug.Log("アイテムがいっぱいです");
             return;
         }
-
+        currentItemAmount++;
         if (itemTankDictionary.TryGetValue(mineralData, out MineralTank vaule))
         {
             vaule.MineralAdd();
@@ -82,9 +81,6 @@ public class ItemTank : IInputTank
             ,itemData.mineralData.sprite);
 
         outPutTank.OutputTank(outputTank);
-
-        Debug.Log("アイテムの量"+totalValue);
-
     }
 
 }

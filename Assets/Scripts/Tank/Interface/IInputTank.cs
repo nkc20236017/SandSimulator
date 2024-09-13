@@ -5,6 +5,6 @@ using UnityEngine;
 
 public interface IInputTank 
 {
-    void InputAddTank(ItemType type);
-    void InputRemoveTank(ItemType type);
+    void InputAddTank(MineralType type);
+    void InputRemoveTank(MineralType type);
 }

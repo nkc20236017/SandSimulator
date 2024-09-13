@@ -6,5 +6,5 @@ using UnityEngine;
 public class MineralData : ScriptableObject
 {
     public Sprite sprite;
-    public ItemType itemType;
+    public MineralType itemType;
 }
