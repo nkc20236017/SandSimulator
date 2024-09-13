@@ -1,58 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using NaughtyAttributes;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public enum BlockType
 {
-	Sand,
-	Mud,
-	Stone,
-	Ore,
-	Liquid
+    Sand,
+    Mud,
+    Stone,
+    Ore,
+    Liquid
 }
 
 public enum OreType
 {
-	Gurus,
-	Crystal,
-	Dynamism,
-	Malakud,
-	Prodect,
-	Emerald,
-	Natrum,
-	Kdot,
-	Diamond,
-	Bismuth,
-	MagicOre
+    Gurus,
+    Crystal,
+    Dynamism,
+    Malakud,
+    Prodect,
+    Emerald,
+    Natrum,
+    Kdot,
+    Diamond,
+    Bismuth,
+    MagicOre
 }
 
 public enum MagicOreType
 {
-	FlameStone,
-	WaterStone,
-	Thunderstone,
-	IceStone
+    FlameStone,
+    WaterStone,
+    Thunderstone,
+    IceStone
 }
 
 public enum LiquidType
 {
-	Water,
-	Lava
+    Water,
+    Lava
 }
 
 [CreateAssetMenu(fileName = "Block", menuName = "ScriptableObjects/Datas/Block")]
 public class Block : ScriptableObject
 {
-	public BlockType type;
-	public int id;
-	public string name;
-	public TileBase tile;
-	public int weight;
-	public Sprite sprite;
-	public int endurance;
-	public int price;
-	
-	[HideInInspector] public List<Vector3Int> tilePositions = new();
+    public BlockType type;
+    public int id;
+    public string name;
+    public TileBase tile;
+    public int weight;
+    public Sprite sprite;
+    public int endurance;
+    public int price;
+
+    [HideInInspector] public List<Vector3Int> tilePositions = new();
 }

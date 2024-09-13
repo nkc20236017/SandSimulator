@@ -1,18 +1,20 @@
 ﻿using System.Linq;
+using VContainer;
 
 public class MineralDataAccess : ITankRepository
 {
-    private MineralDataBase mineralDataBase;
+    private BlockDatas mineralDataBase;
 
-    public MineralDataAccess(MineralDataBase mineralDataBase)
+    [Inject]
+    public MineralDataAccess(BlockDatas mineralDataBase)
     {
         this.mineralDataBase = mineralDataBase;
     }
 
-    public MineralData Find(MineralType type)
+    public Block Find(BlockType type)
     {
-        return mineralDataBase.data
-            .Where(mineral => mineral.itemType == type)
+        return mineralDataBase.Block
+            .Where(mineral => mineral.type == type)
             .FirstOrDefault();
     }
 }

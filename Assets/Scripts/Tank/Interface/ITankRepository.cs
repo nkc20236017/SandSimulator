@@ -1,4 +1,4 @@
 ﻿public interface ITankRepository
 {
-    MineralData Find(MineralType type);
+    Block Find(BlockType type);
 }

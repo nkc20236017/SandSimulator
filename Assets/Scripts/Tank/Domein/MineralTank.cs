@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class MineralTank
 {
-    public MineralData mineralData;
+    public Block mineralData;
     public int mineralAmount;
 
-    public MineralTank(MineralData mineralData)
+    public MineralTank(Block mineralData)
     {
         this.mineralData = mineralData;
         mineralAmount = 1;

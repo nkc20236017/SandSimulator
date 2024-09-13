@@ -1,34 +1,35 @@
 using System.Collections.Generic;
 using UnityEngine;
+using VContainer;
 
 public class PlayerTank : IInputTank
 {
     private ITankRepository tankRepository;
-    private Dictionary<MineralData, MineralTank> itemTankDictionary = new();
+    private Dictionary<Block, MineralTank> itemTankDictionary = new();
     private IOutPutTank outPutTank;
-    private readonly float MaxTank;
+    private readonly float MaxTank =4000;
     private int currentItemAmount;
 
-    public PlayerTank(IOutPutTank outPutTank, int maxTank, ITankRepository tankRepository)
+    [Inject]
+    public PlayerTank(IOutPutTank outPutTank,  ITankRepository tankRepository)
     {
         this.outPutTank = outPutTank;
-        this.MaxTank = maxTank;
         this.tankRepository = tankRepository;
     }
 
-    public void InputAddTank(MineralType type)
+    public void InputAddTank(BlockType type)
     {
         var mineralItem = tankRepository.Find(type);
         AddItem(mineralItem);
     }
 
-    public void InputRemoveTank(MineralType type)
+    public void InputRemoveTank(BlockType type)
     {
         var mineralItem = tankRepository.Find(type);
         RemoveItem(mineralItem);
     }
 
-    public void AddItem(MineralData mineralData)
+    public void AddItem(Block mineralData)
     {
 
         if (currentItemAmount >= MaxTank)
@@ -50,7 +51,7 @@ public class PlayerTank : IInputTank
         }
     }
 
-    public void RemoveItem(MineralData mineralData)
+    public void RemoveItem(Block mineralData)
     {
         if (itemTankDictionary.TryGetValue(mineralData, out MineralTank vaule))
         {
@@ -58,13 +59,14 @@ public class PlayerTank : IInputTank
             {
                 Debug.Log("アイテムリストから削除");
                 itemTankDictionary.Remove(mineralData);
+                currentItemAmount--;
             }
             else
             {
                 vaule.MineralRemove();
+                currentItemAmount--;
             }
             TankCalculation(vaule);
-        currentItemAmount--;
         }
 
     }
@@ -77,9 +79,9 @@ public class PlayerTank : IInputTank
         float totalRatio = totalValue / MaxTank;
         float itemRatio = itemData.mineralAmount / totalValue;
 
-        var outputTank = new OutPutData(itemRatio, totalRatio, itemData.mineralData.itemType
+        var outputTank = new OutPutData(itemRatio, totalRatio, itemData.mineralData.type
             ,itemData.mineralData.sprite);
-
+        Debug.Log(totalValue);
         outPutTank.OutputTank(outputTank);
     }
 

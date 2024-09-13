@@ -1,49 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VContainer;
 
 public class DemoInput : MonoBehaviour
 {
 
-    private InputTank itemTank;
+    private IInputTank itemTank;
 
-    private ITankRepository tankRepository;
-
-    [SerializeField]
-    private MineralDataBase MineralDataBase;
-
-    [SerializeField]
-    private TankUI tankUI;
-
-    private void Start()
+    [Inject]
+    public void Inject(IInputTank itemTank)
     {
-        tankRepository = new MineralDataAccess(MineralDataBase);
-        var otemTank = new PlayerTank(tankUI, 100, tankRepository);
-        itemTank = new(otemTank);
+        this.itemTank = itemTank;
     }
 
-
-    private void Update()
+    public void Button()
     {
-        if (Input.GetKey(KeyCode.E))
-        {
-            Debug.Log("Input");
-            itemTank.AddTankCommand(MineralType.Sand);
-        }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            itemTank.AddTankCommand(MineralType.Mad);
-        }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            itemTank.RemoveTankCommand(MineralType.Sand);
-        }
-
+        itemTank.InputAddTank(BlockType.Sand);
     }
-
-
 
 
 }

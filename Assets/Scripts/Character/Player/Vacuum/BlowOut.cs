@@ -4,6 +4,7 @@ using UnityEngine.Tilemaps;
 using NaughtyAttributes;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
+using VContainer;
 
 public class BlowOut : MonoBehaviour
 {
@@ -31,6 +32,13 @@ public class BlowOut : MonoBehaviour
 	private Camera _camera;
 	private PlayerActions _playerActions;
 	private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
+	private IInputTank inputTank;
+
+	[Inject]
+	public void Inject(IInputTank inputTank)
+	{
+		this.inputTank = inputTank;
+	}
 
 	private void Awake()
 	{
@@ -93,6 +101,7 @@ public class BlowOut : MonoBehaviour
 			var randomPosition = new Vector3(randomX, randomY, 0);
 			var randomCell = updateTilemap.WorldToCell(randomPosition);
 			updateTilemap.SetTile(randomCell, blockDatas.GetBlock(blockType).tile);
+			inputTank.InputRemoveTank(blockType);
 			// tilemap.SetColliderType(randomCell, Tile.ColliderType.None);
 		}
 	}

@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
+using VContainer;
 using Random = UnityEngine.Random;
 
 public class SuckUp : MonoBehaviour
@@ -28,13 +29,19 @@ public class SuckUp : MonoBehaviour
     private Camera _camera;
     private PlayerActions _playerActions;
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
+    private IInputTank inputTank;
 
     public List<Vector3Int> SuckUpTilePositions { get; private set; } = new();
+
+    [Inject]//DIコンテナ
+    public void Inject(IInputTank inputTank)
+    {
+        this.inputTank = inputTank;
+    }
 
     private void Awake()
     {
         _playerActions = new PlayerActions();
-
         _playerMovement = GetComponentInParent<PlayerMovement>();
     }
 
@@ -139,6 +146,7 @@ public class SuckUp : MonoBehaviour
             
             if (Vector3.Distance(_tilemap.GetCellCenterWorld(newTilePosition), pivot.position) <= _deleteDistance)
             {
+                inputTank.InputAddTank(BlockType.Sand);//タンクに追加
                 _tilemap.SetTile(newTilePosition, null);
             }
         }
