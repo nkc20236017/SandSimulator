@@ -14,26 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldScale: {x: 640, y: 390}
   oneChunkSize: {x: 64, y: 39}
-  layerRatios:
-  - 0.259
-  - 0.2802832
-  - 0.46071678
   randomLimit: 176.9
   amplitude: 0.01
+  layerRatios:
+  - 0.238
+  - 0.377
+  - 0.485
+  - 0.777
   worldLayers:
-  - debugLayerColor: {r: 0.2166667, g: 1, b: 0, a: 1}
+  - debugLayerColor: {r: 1, g: 0.035849165, b: 0, a: 1}
     materialTiles: []
     primevalOres: []
     primevalEnemies: []
     primevalDungeons: []
-  - debugLayerColor: {r: 0, g: 1, b: 0.4700992, a: 1}
+  - debugLayerColor: {r: 0, g: 0.14668608, b: 1, a: 1}
     materialTiles: []
     primevalOres: []
     primevalEnemies: []
     primevalDungeons: []
-  - debugLayerColor: {r: 0.39382124, g: 1, b: 0, a: 1}
+  - debugLayerColor: {r: 0.03901863, g: 1, b: 0, a: 1}
     materialTiles: []
     primevalOres: []
     primevalEnemies: []
     primevalDungeons: []
-  borderNoiseSize: 15.86
+  - debugLayerColor: {r: 1, g: 0, b: 0, a: 1}
+    materialTiles: []
+    primevalOres: []
+    primevalEnemies: []
+    primevalDungeons: []
+  - debugLayerColor: {r: 1, g: 0, b: 0.8365736, a: 1}
+    materialTiles: []
+    primevalOres: []
+    primevalEnemies: []
+    primevalDungeons: []
+  borderNoiseSize: 58.36

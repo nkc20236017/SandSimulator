@@ -45,6 +45,7 @@ namespace WorldCreation.Preview
 
         private void OnDrawGizmos()
         {
+            if (Application.isPlaying) { return; }
             if (_layerGenerator == null)
             {
                 Regenerate();
@@ -54,6 +55,7 @@ namespace WorldCreation.Preview
 
         private void OnDrawGizmosSelected()
         {
+            if (Application.isPlaying) { return; }
             previewSelected?.Invoke();
         }
 

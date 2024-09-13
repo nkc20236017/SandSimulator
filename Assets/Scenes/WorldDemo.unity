@@ -123,67 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &590422752
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 590422754}
-  - component: {fileID: 590422753}
-  m_Layer: 0
-  m_Name: WorldGenerator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &590422753
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 590422752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62a92066e947b7a4bbb65c96a3d610a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  solo: -1
-  _worldLayers:
-  - fillingTile: {fileID: 0}
-    minImpactAreaPosition: {x: -51, y: -29}
-    maxImpactAreaPosition: {x: 1000, y: 1000}
-    seed: {x: 10000, y: 50000}
-    frequency: 0.005
-    extent: 0.445
-  - fillingTile: {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
-    minImpactAreaPosition: {x: -51, y: -29}
-    maxImpactAreaPosition: {x: 1000, y: 1000}
-    seed: {x: 10000, y: 50000}
-    frequency: 0.01
-    extent: 0.295
-  worldTilemap: {fileID: 0}
-  tileBase: {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
-  terrain: {fileID: 0}
---- !u!4 &590422754
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 590422752}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1185436032
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,6 +259,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1850257781
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1850257783}
+  - component: {fileID: 1850257782}
+  m_Layer: 0
+  m_Name: Grid
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!156049354 &1850257782
+Grid:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850257781}
+  m_Enabled: 1
+  m_CellSize: {x: 1, y: 1, z: 0}
+  m_CellGap: {x: 0, y: 0, z: 0}
+  m_CellLayout: 0
+  m_CellSwizzle: 0
+--- !u!4 &1850257783
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850257781}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1927889658
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,7 +315,7 @@ GameObject:
   - component: {fileID: 1927889661}
   - component: {fileID: 1927889659}
   m_Layer: 0
-  m_Name: WorldPreview
+  m_Name: WorldGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -420,12 +403,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b63645b6f251a784fbb0b4119ff90f0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldMap: {fileID: 11400000, guid: d3bea26fdfb133940bb933d384498db8, type: 2}
+  tileMapParent: {fileID: 1850257783}
+  tileMapPrefab: {fileID: 4281351336352850513, guid: 1d8ff621e4dfdf241a877aad79dc3ee6, type: 3}
   maxSeedValueDigit: 1000000
+  tileBaseDemo: {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1351555453}
-  - {fileID: 590422754}
   - {fileID: 1185436034}
   - {fileID: 1927889660}
+  - {fileID: 1850257783}
