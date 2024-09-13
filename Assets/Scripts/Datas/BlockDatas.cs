@@ -1,0 +1,16 @@
+﻿using System.Linq;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "BlockDatas", menuName = "ScriptableObjects/Datas/BlockDatas")]
+public class BlockDatas : ScriptableObject
+{
+	[SerializeField] private Block[] blocks;
+
+	public Block[] Block => blocks;
+	
+	public Block GetBlock(BlockType type)
+	{
+		return blocks.FirstOrDefault(block => block.type == type);
+	}
+}
+
