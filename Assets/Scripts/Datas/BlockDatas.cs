@@ -1,34 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Linq;
 using UnityEngine;
-using UnityEngine.Tilemaps;
-
-public enum BlockType
-{
-	Sand,
-	Mud,
-	Stone,
-	Water,
-	Lava
-}
 
 [CreateAssetMenu(fileName = "BlockDatas", menuName = "ScriptableObjects/Datas/BlockDatas")]
 public class BlockDatas : ScriptableObject
 {
-	[SerializeField] private TileData[] tileDatas;
+	[SerializeField] private Block[] blocks;
+
+	public Block[] Block => blocks;
 	
-	public TileData[] TileDatas => tileDatas;
+	public Block GetBlock(BlockType type)
+	{
+		return blocks.FirstOrDefault(block => block.type == type);
+	}
 }
 
-[Serializable]
-public class TileData
-{
-	[Header("Tile Config")]
-	[SerializeField] private string name;
-	public BlockType type;
-	public TileBase tile;
-	// [TextArea] public string description;
-	[Min(1)] public int weight;
-	
-	[HideInInspector] public List<Vector3Int> tilePositions = new();
-}

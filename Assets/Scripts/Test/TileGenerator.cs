@@ -12,7 +12,7 @@ public class TileGenerator : MonoBehaviour
     
 	[Header("Tile Config")]
 	[SerializeField] private Tilemap tilemap;
-    [SerializeField] private TileData[] tiles;
+    [SerializeField] private Block[] tiles;
     
     private Camera _camera;
 
@@ -21,7 +21,7 @@ public class TileGenerator : MonoBehaviour
         _camera = Camera.main;
     }
     
-    private TileData GetTileData(BlockType type)
+    private Block GetTileData(BlockType type)
     {
         return (from tile in tiles where tile.type == type select tile).FirstOrDefault();
     }

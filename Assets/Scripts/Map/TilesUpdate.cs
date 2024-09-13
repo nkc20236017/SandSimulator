@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -27,7 +28,7 @@ public class TilesUpdate : MonoBehaviour
     
     private void Start()
     {
-        blockDatas.TileDatas.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
+        blockDatas.Block.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
     }
 
     private void Update()
@@ -41,7 +42,7 @@ public class TilesUpdate : MonoBehaviour
 
     private void GetTilePosition()
     {
-        foreach (var tile in blockDatas.TileDatas.Where(tile => tile.tilePositions.Count > 0))
+        foreach (var tile in blockDatas.Block.Where(tile => tile.tilePositions.Count > 0))
         {
             tile.tilePositions.Clear();
         }
@@ -54,21 +55,21 @@ public class TilesUpdate : MonoBehaviour
                 var tile = _updateTilemap.GetTile(position);
                 if (tile == null) { continue; }
             
-                var index = Array.FindIndex(blockDatas.TileDatas, t => t.tile == tile);
-                if (index >= 0 && index < blockDatas.TileDatas.Length)
+                var index = Array.FindIndex(blockDatas.Block, t => t.tile == tile);
+                if (index >= 0 && index < blockDatas.Block.Length)
                 {
-                    blockDatas.TileDatas[index].tilePositions.Add(position);
+                    blockDatas.Block[index].tilePositions.Add(position);
                 }
             }
         }
-        if (blockDatas.TileDatas.All(tile => tile.tilePositions.Count == 0)) { return; }
+        if (blockDatas.Block.All(tile => tile.tilePositions.Count == 0)) { return; }
         
         CheckUpdateTiles();
     }
 
     private void CheckUpdateTiles()
     {
-        foreach (var tileData in blockDatas.TileDatas.Where(tile => tile.tilePositions.Count > 0))
+        foreach (var tileData in blockDatas.Block.Where(tile => tile.tilePositions.Count > 0))
         {
             _clearTiles.Clear();
             _updateTiles.Clear();
@@ -85,19 +86,15 @@ public class TilesUpdate : MonoBehaviour
                         }
                         if (canUpdateSandToMud)
                         {
-                            SandToMud(position, tileData);
+                            SandToMud(position);
                         }
                         break;
-                    case BlockType.Water:
+                    case BlockType.Liquid:
                         if (canUpdateWater)
                         {
                             UpdateWater(position);
                         }
                         break;
-                    case BlockType.Lava:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
             }
             
@@ -105,7 +102,7 @@ public class TilesUpdate : MonoBehaviour
         }
     }
 
-    private void UpdateTiles(TileData tileData)
+    private void UpdateTiles(Block tile)
     {
         if (_clearTiles.Count == 0 && _updateTiles.Count == 0) { return; }
         
@@ -121,7 +118,7 @@ public class TilesUpdate : MonoBehaviour
         for (var i = 0; i < updateTiles.Length; i++)
         {
             tilePositions[i + clearTiles.Length] = updateTiles[i];
-            tileArray[i + clearTiles.Length] = tileData.tile;
+            tileArray[i + clearTiles.Length] = tile.tile;
         }
         
         _updateTilemap.SetTiles(tilePositions, tileArray);
@@ -129,7 +126,7 @@ public class TilesUpdate : MonoBehaviour
         // TODO: 動いているタイルの当たり判定を消す
         // foreach (var tilePosition in _updateTiles)
         // {
-        //     if (tileData.type == TileType.Water)
+        //     if (tile.type == TileType.Water)
         //     {
         //         _tilemap.SetColliderType(tilePosition, Tile.ColliderType.None);
         //     }
@@ -149,7 +146,7 @@ public class TilesUpdate : MonoBehaviour
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
         if (tilesBlock.Length == 3)
         {
-            _mapTilemap.SetTile(position, GetTileData(BlockType.Sand).tile);
+            _mapTilemap.SetTile(position, blockDatas.GetBlock(BlockType.Sand).tile);
             _clearTiles.Add(position);
             return;
         }
@@ -199,25 +196,25 @@ public class TilesUpdate : MonoBehaviour
         var belowLeft = position + new Vector3Int(-1, -1, 0);
         var belowRight = position + new Vector3Int(1, -1, 0);
         
-        if (!_updateTilemap.HasTile(below) && !CheckUpdateTilePosition(below))
+        if (!_updateTilemap.HasTile(below) && !_mapTilemap.HasTile(below) && !CheckUpdateTilePosition(below))
         {
             _clearTiles.Add(position);
             _updateTiles.Add(below);
         }
-        else if (!_updateTilemap.HasTile(belowLeft) || !_updateTilemap.HasTile(belowRight))
+        else if (!_updateTilemap.HasTile(belowLeft) && !_mapTilemap.HasTile(belowLeft) || !_updateTilemap.HasTile(belowRight) && !_mapTilemap.HasTile(belowRight))
         {
             var random = Random.Range(0, 2);
             switch (random)
             {
                 case 0:
-                    if (!_updateTilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft))
+                    if (!_updateTilemap.HasTile(belowLeft) && !_mapTilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowLeft);
                     }
                     break;
                 case 1:
-                    if (!_updateTilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight))
+                    if (!_updateTilemap.HasTile(belowRight) && !_mapTilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowRight);
@@ -225,14 +222,14 @@ public class TilesUpdate : MonoBehaviour
                     break;
             }
         }
-        else if (!_updateTilemap.HasTile(left) || !_updateTilemap.HasTile(right))
+        else if (!_updateTilemap.HasTile(left) && !_mapTilemap.HasTile(left) || !_updateTilemap.HasTile(right) && !_mapTilemap.HasTile(right))
         {
             var random = Random.Range(0, 2);
             switch (random)
             {
                 case 0:
                 {
-                    if (!_updateTilemap.HasTile(left) && !CheckUpdateTilePosition(left))
+                    if (!_updateTilemap.HasTile(left) && !_mapTilemap.HasTile(left) && !CheckUpdateTilePosition(left))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(left);
@@ -241,7 +238,7 @@ public class TilesUpdate : MonoBehaviour
                 }
                 case 1:
                 {
-                    if (!_updateTilemap.HasTile(right) && !CheckUpdateTilePosition(right))
+                    if (!_updateTilemap.HasTile(right) && !_mapTilemap.HasTile(right) && !CheckUpdateTilePosition(right))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(right);
@@ -257,25 +254,19 @@ public class TilesUpdate : MonoBehaviour
         return _updateTiles.Any(updateTile => updateTile == position) || _clearTiles.Any(clearTile => clearTile == position);
     }
 
-    private void SandToMud(Vector3Int position, TileData tileData)
+    private void SandToMud(Vector3Int position)
     {
-        if (tileData.type != BlockType.Sand) { return; }
-        if (GetTileData(BlockType.Water).tilePositions.Count == 0) { return; }
-        if (GetTileData(BlockType.Sand).tilePositions.Count == 0) { return; }
-            
+        if (blockDatas.GetBlock(BlockType.Liquid).tilePositions.Count == 0) { return; }
+        if (blockDatas.GetBlock(BlockType.Sand).tilePositions.Count == 0) { return; }
+        
         var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
         var tilesBlock = _updateTilemap.GetTilesBlock(checkBound);
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
         if (tilesBlock.Length == 0) { return; }
 
-        if (tilesBlock.Any(tileBase => tileBase == GetTileData(BlockType.Water).tile))
+        if (tilesBlock.Any(tileBase => tileBase == blockDatas.GetBlock(BlockType.Liquid).tile))
         {
-            _updateTilemap.SetTile(position, GetTileData(BlockType.Mud).tile);
+            _mapTilemap.SetTile(position, blockDatas.GetBlock(BlockType.Mud).tile);
         }
-    }
-
-    private TileData GetTileData(BlockType type)
-    {
-        return (from tile in blockDatas.TileDatas where tile.type == type select tile).FirstOrDefault();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -128,7 +129,7 @@ public class SuckUp : MonoBehaviour
             if (_tilemap.HasTile(newTilePosition)) { continue; }
             
             var tile = _tilemap.GetTile(tilePosition);
-            var isContinue = blockDatas.TileDatas
+            var isContinue = blockDatas.Block
                     .Where(tileData => tileData.tile == tile)
                     .Any(tileData => _numberExecutions % tileData.weight != 0);
             if (isContinue) { continue; }

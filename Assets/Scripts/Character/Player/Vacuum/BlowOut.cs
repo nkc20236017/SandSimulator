@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using NaughtyAttributes;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class BlowOut : MonoBehaviour
@@ -9,9 +10,10 @@ public class BlowOut : MonoBehaviour
 	[Header("Tile Config")]
 	[SerializeField] private Tilemap updateTilemap;
 	[SerializeField] private Tilemap mapTilemap;
-	[SerializeField] private TileBase tile;
+	[SerializeField] private BlockDatas blockDatas;
 	
 	[Header("BlowOut Config")]
+	[SerializeField] private BlockType blockType;
 	[SerializeField] private Transform pivot;
 	[SerializeField, Min(0f)] private float radius;
 	[SerializeField, Min(0f)] private float distance;
@@ -90,7 +92,7 @@ public class BlowOut : MonoBehaviour
 			var randomY = Random.Range(newCell1.y, newCell2.y);
 			var randomPosition = new Vector3(randomX, randomY, 0);
 			var randomCell = updateTilemap.WorldToCell(randomPosition);
-			updateTilemap.SetTile(randomCell, tile);
+			updateTilemap.SetTile(randomCell, blockDatas.GetBlock(blockType).tile);
 			// tilemap.SetColliderType(randomCell, Tile.ColliderType.None);
 		}
 	}
@@ -133,10 +135,19 @@ public class BlowOut : MonoBehaviour
 			{
 				var direction = (Vector3)tilemap.WorldToCell(tilePosition) - tilemap.WorldToCell(pivot.position);
 				var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized);
-				if (tilemap.HasTile(newTilePosition)) { continue; }
+				if (updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(newTilePosition)) { continue; }
             
 				var tile = tilemap.GetTile(tilePosition);
-				tilemap.SetTile(newTilePosition, tile);
+				if (tile == null) { continue; }
+				
+				if (tile == blockDatas.GetBlock(BlockType.Sand).tile)
+				{
+					updateTilemap.SetTile(newTilePosition, tile);
+				}
+				else
+				{
+					mapTilemap.SetTile(newTilePosition, tile);
+				}
 				tilemap.SetTile(tilePosition, null);
 			}
 		}
@@ -213,7 +224,7 @@ public class BlowOut : MonoBehaviour
 					if (updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(newTilePosition)) { continue; }
 
 					Debug.DrawLine(newTilePosition, position, Color.red, 0.1f);
-					updateTilemap.SetTile(newTilePosition, tile);
+					updateTilemap.SetTile(newTilePosition, blockDatas.GetBlock(blockType).tile);
 					updateTilemap.SetTile(position, null);
 					mapTilemap.SetTile(position, null);
 				}
