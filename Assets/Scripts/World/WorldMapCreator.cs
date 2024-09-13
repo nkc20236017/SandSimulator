@@ -28,11 +28,15 @@ namespace WorldCreation
         private TileBase tileBaseDemo;
 
         private int _seed;
+        private bool _isQuitting;
         private LayerGenerate _layer;
         private Tilemap[] _tilemaps;
         private CancellationTokenSource _cancelTokenSource;
         private Vector2Int[] _chunkPositions;
-        private bool _isQuitting;
+        private IWorldGeneratable[] worldGenerator =
+        {
+
+        };
 
         private void Start()
         {
@@ -94,6 +98,7 @@ namespace WorldCreation
 
             TileBase[,] tileBases = new TileBase[worldMap.WorldSize.x, worldMap.WorldSize.y];
 
+            // 
             for (int y = 0; y < worldMap.WorldSize.y; y++)
             {
                 for (int x = 0; x < worldMap.WorldSize.x; x++)
@@ -102,6 +107,8 @@ namespace WorldCreation
                 }
             }
 
+
+            // 結果を元にタイルを生成する
             await Fill(tileBases, token);
 
             /*int[,] worldTiles = new int[worldMap.WorldSize.x, worldMap.WorldSize.y];
@@ -144,8 +151,8 @@ namespace WorldCreation
                     }
 
                 }
-                    // 1フレームの処理数を制限
-                    await UniTask.Yield(token).SuppressCancellationThrow();
+                // 1フレームの処理数を制限
+                await UniTask.Yield(token).SuppressCancellationThrow();
             }
         }
     }

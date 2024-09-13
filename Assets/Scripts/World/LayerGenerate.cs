@@ -1,28 +1,17 @@
+using Cysharp.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace WorldCreation
 {
-    public class LayerGenerate
+    public class LayerGenerate : IWorldGeneratable
     {
         private int _seed;
 
         public LayerGenerate(int seed)
         {
             _seed = seed;
-        }
-
-        public void Execute(ref int[,] worldTile, WorldMap worldMap)
-        {
-            // æ‚Éˆê”Ôã‚Ì‘w‚ÌF‚Å“h‚è‚Â‚Ô‚·
-            // worldMap.WorldLayers[0].MaterialTiles
-
-            for (int x = 0; x < worldMap.WorldSize.x; x++)
-            {
-                for (int i = 0; i < worldMap.WorldSize.y; i++)
-                {
-
-                }
-            }
         }
 
         public Vector2Int[] GetBorder(int maxWorldWidth, int altitude, float noisePower, int randomLimit, float amplitude)
@@ -36,6 +25,40 @@ namespace WorldCreation
             }
 
             return border;
+        }
+
+        public async UniTask<TileBase[,]> Execute(TileBase[,] worldTile, WorldMap worldMap, CancellationToken token)
+        {
+            // æ‚Éˆê”Ôã‚Ì‘w‚ÌF‚Å“h‚è‚Â‚Ô‚·
+            // worldMap.WorldLayers[0].MaterialTiles
+            for (int i = 0; i < worldMap.WorldLayers.Length; i++)
+            {
+                if (i == 0)
+                {
+
+                }
+            }
+
+            for (int x = 0; x < worldMap.WorldSize.x; x++)
+            {
+                for (int i = 0; i < worldMap.WorldSize.y; i++)
+                {
+
+                }
+            }
+            await UniTask.Yield();
+            return await UniTask.RunOnThreadPool(() => worldTile);
+        }
+
+        private void LayerFill(int maxWorldWidth, int layerBorderHeight, TileBase[] tiles, float[] tileWeights)
+        {
+            for (int x = 0; x < maxWorldWidth; x++)
+            {
+                for (int y = 0; y < layerBorderHeight; y++)
+                {
+
+                }
+            }
         }
     }
 }

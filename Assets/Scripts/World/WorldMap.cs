@@ -48,6 +48,10 @@ namespace WorldCreation
         [SerializeField]    // この地層を構成する材質
         private TileBase[] materialTiles;
         public TileBase[] MaterialTiles => materialTiles;
+        [SerializeField]
+        [Range(0, 1)]
+        private float[] tileWeight;
+        public float[] TileWeight => tileWeight;
         [SerializeField]    // この地層に生成される鉱石
         private PrimevalObject[] primevalOres;
         public PrimevalObject[] PrimevalOres => primevalOres;
@@ -118,19 +122,29 @@ namespace WorldCreation
         [Range(0f, 1f)]
         private float[] layerRatios;
         public float[] LayerRatios => layerRatios;
-        [SerializeField]    // それぞれの地層の状態
-        private WorldLayer[] worldLayers;
-        public WorldLayer[] WorldLayers => worldLayers;
         [SerializeField]    // 地層の境界線の歪み
         private float borderNoiseSize;
         public float BorderNoiseSize => borderNoiseSize;
+        [SerializeField]    // それぞれの地層の状態
+        private WorldLayer[] worldLayers;
+        public WorldLayer[] WorldLayers => worldLayers;
 
 #if UNITY_EDITOR
-        private float[] layerRatiosTemp = new float[0];
+        private float[] layerRatiosOld = new float[0];
+        private float[] weightSumOld = new float[0];
 
         private void OnValidate()
         {
-            // 地層の数が一致しない場合に修正する
+            DebugValidateNumberOfLayer();
+
+            DebugValidateLayerRatio();
+        }
+
+        /// <summary>
+        /// 地層の数が一致しない場合に修正する
+        /// </summary>
+        private void DebugValidateNumberOfLayer()
+        {
             if (worldLayers.Length != layerRatios.Length + 1)
             {
                 WorldLayer[] worldLayersTemp = new WorldLayer[layerRatios.Length + 1];
@@ -141,25 +155,30 @@ namespace WorldCreation
                 }
                 worldLayers = worldLayersTemp;
             }
+        }
 
-            // 地層の割合を調整する
+        /// <summary>
+        /// 地層の割合を100%に調整する
+        /// </summary>
+        private void DebugValidateLayerRatio()
+        {
             /*
              * 割合であるため以降のマジックナンバー「1」は100%を指す
              */
             // 変化していなければ処理を終了
-            if (layerRatios.Length == 0)
+            /*if (layerRatios.Length == 0)
             {
-                layerRatiosTemp = new float[0];
+                layerRatiosOld = new float[0];
                 return;
             }
-            if (layerRatiosTemp.Length != 0 && layerRatios.SequenceEqual(layerRatiosTemp))
+            if (layerRatiosOld.Length != 0 && layerRatios.SequenceEqual(layerRatiosOld))
             {
                 return;
             }
 
-            if (layerRatiosTemp.Length != layerRatios.Length)
+            if (layerRatiosOld.Length != layerRatios.Length)
             {
-                layerRatiosTemp = layerRatios.ToArray();
+                layerRatiosOld = layerRatios.ToArray();
             }
 
             float ratioTotal = layerRatios.Sum();
@@ -173,12 +192,17 @@ namespace WorldCreation
             int changedIndex = -1;
             for (int i = 0; i < layerRatios.Length; i++)
             {
-                if (Mathf.Approximately(layerRatios[i], layerRatiosTemp[i]) == false)
+                if (Mathf.Approximately(layerRatios[i], layerRatiosOld[i]) == false)
                 {
                     changedIndex = i;
                     break;
                 }
-            }
+            }*/
+
+            (int changedIndex, bool isChanged) = GetChangedValue(ref layerRatios, ref layerRatiosOld);
+            if (!isChanged) { return; }
+
+            float ratioTotal = layerRatios.Sum();
             // 配列の追加による変化だった場合新しく作成された要素を残りの数字にする
             if (changedIndex == -1)
             {
@@ -208,7 +232,64 @@ namespace WorldCreation
                 layerRatios[i] = Mathf.Clamp01(layerRatios[i]);
             }
 
-            layerRatiosTemp = layerRatios.ToArray();
+            layerRatiosOld = layerRatios.ToArray();
+        }
+
+        /// <summary>
+        /// タイルのランダム値の重みを100%に調整する
+        /// </summary>
+        private void DebugValidateTileWeight()
+        {
+            for (int i = 0; i < worldLayers.Length; i++)
+            {
+                WorldLayer layer = worldLayers[i];
+                float weightSum = layer.TileWeight.Sum();
+                // 合計が1であれば終了する
+                if (Mathf.Approximately(1, weightSum)) { return; }
+
+                // 変更された値を取得する
+
+            }
+        }
+
+        private (int value, bool isChanged) GetChangedValue(ref float[] current, ref float[] old)
+        {
+            // データが削除されていれば古いものを同期
+            if (current.Length == 0)
+            {
+                old = new float[0];
+                return (0, false);
+            }
+            // 現在と古いものがほぼ一緒であれば終了
+            if (old.Length != 0 && current.SequenceEqual(old))
+            {
+                return (0, false);
+            }
+            // 現在と過去の配列の長さが異なれば新規作成
+            if (old.Length != current.Length)
+            {
+                old = current.ToArray();
+            }
+
+            float ratioTotal = current.Sum();
+            // 合計がほぼ1であれば終了
+            if (Mathf.Approximately(1, ratioTotal) == true)
+            {
+                return (0, false);
+            }
+
+            // 変化したら変化した場所を取得する
+            int changedIndex = -1;
+            for (int i = 0; i < current.Length; i++)
+            {
+                if (Mathf.Approximately(current[i], old[i]) == false)
+                {
+                    changedIndex = i;
+                    break;
+                }
+            }
+
+            return (changedIndex, true);
         }
 #endif
     }

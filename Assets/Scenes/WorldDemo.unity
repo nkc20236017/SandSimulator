@@ -338,7 +338,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1927889659}
-        m_TargetAssemblyTypeName: WorldMapPreview, Assembly-CSharp
+        m_TargetAssemblyTypeName: WorldCreation.Preview.WorldMapPreview, Assembly-CSharp
         m_MethodName: WorldScaleView
         m_Mode: 1
         m_Arguments:

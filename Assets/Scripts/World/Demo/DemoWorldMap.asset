@@ -17,34 +17,72 @@ MonoBehaviour:
   randomLimit: 176.9
   amplitude: 0.01
   layerRatios:
-  - 0.238
-  - 0.377
-  - 0.485
-  - 0.777
+  - 0.201
+  - 0.30491373
+  - 0.411
+  - 0.535
+  borderNoiseSize: 0
   worldLayers:
   - debugLayerColor: {r: 1, g: 0.035849165, b: 0, a: 1}
-    materialTiles: []
-    primevalOres: []
-    primevalEnemies: []
-    primevalDungeons: []
+    materialTiles:
+    - {fileID: 0}
+    tileWeight: []
+    primevalOres:
+    - priority: 0
+      modelObject: {fileID: 0}
+      minExistence: 0
+      maxExistence: 0
+      probability: 0
+      marginShape: 0
+      marginSizeWidth: 0
+      marginSizeHeight: 0
+    - priority: 0
+      modelObject: {fileID: 0}
+      minExistence: 0
+      maxExistence: 0
+      probability: 0
+      marginShape: 0
+      marginSizeWidth: 0
+      marginSizeHeight: 0
+    primevalEnemies:
+    - priority: 0
+      modelObject: {fileID: 0}
+      minExistence: 0
+      maxExistence: 0
+      probability: 0
+      marginShape: 0
+      marginSizeWidth: 0
+      marginSizeHeight: 0
+    primevalDungeons:
+    - priority: 0
+      modelObject: {fileID: 0}
+      minExistence: 0
+      maxExistence: 0
+      probability: 0
+      marginShape: 0
+      marginSizeWidth: 0
+      marginSizeHeight: 0
   - debugLayerColor: {r: 0, g: 0.14668608, b: 1, a: 1}
     materialTiles: []
+    tileWeight: []
     primevalOres: []
     primevalEnemies: []
     primevalDungeons: []
   - debugLayerColor: {r: 0.03901863, g: 1, b: 0, a: 1}
     materialTiles: []
+    tileWeight: []
     primevalOres: []
     primevalEnemies: []
     primevalDungeons: []
   - debugLayerColor: {r: 1, g: 0, b: 0, a: 1}
     materialTiles: []
+    tileWeight: []
     primevalOres: []
     primevalEnemies: []
     primevalDungeons: []
   - debugLayerColor: {r: 1, g: 0, b: 0.8365736, a: 1}
     materialTiles: []
+    tileWeight: []
     primevalOres: []
     primevalEnemies: []
     primevalDungeons: []
-  borderNoiseSize: 58.36
