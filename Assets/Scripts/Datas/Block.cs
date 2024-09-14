@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -40,7 +41,7 @@ public enum LiquidType
     Lava
 }
 
-[CreateAssetMenu(fileName = "Block", menuName = "ScriptableObjects/Datas/Block")]
+[CreateAssetMenu(fileName = "New Block", menuName = "ScriptableObjects/Datas/New Block")]
 public class Block : ScriptableObject
 {
     public BlockType type;
@@ -48,7 +49,7 @@ public class Block : ScriptableObject
     public string name;
     public TileBase tile;
     public int weight;
-    public Sprite sprite;
+    [ShowAssetPreview] public Sprite sprite;
     public int endurance;
     public int price;
 

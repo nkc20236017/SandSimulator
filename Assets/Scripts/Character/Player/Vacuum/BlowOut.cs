@@ -2,9 +2,8 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using NaughtyAttributes;
-using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 using VContainer;
+using Random = UnityEngine.Random;
 
 public class BlowOut : MonoBehaviour
 {
@@ -15,6 +14,7 @@ public class BlowOut : MonoBehaviour
 	
 	[Header("BlowOut Config")]
 	[SerializeField] private BlockType blockType;
+	[SerializeField, ShowIf(nameof(blockType), BlockType.Ore)] private OreType oreType;
 	[SerializeField] private Transform pivot;
 	[SerializeField, Min(0f)] private float radius;
 	[SerializeField, Min(0f)] private float distance;
@@ -23,6 +23,7 @@ public class BlowOut : MonoBehaviour
 	[Header("Instantiation Config")]
 	[SerializeField] private float interval;
 	[SerializeField, MinMaxSlider(0, 10)] private Vector2Int generateTileCount;
+	[SerializeField] private BlowOutOre blowOutOrePrefab;
 	
 	[Header("Debug Config")]
 	[SerializeField] private bool debug;
@@ -30,9 +31,12 @@ public class BlowOut : MonoBehaviour
 	private float _lastUpdateTime;
 	private PlayerMovement _playerMovement;
 	private Camera _camera;
+	private SuckUp _suckUp;
 	private PlayerActions _playerActions;
 	private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
 	private IInputTank inputTank;
+	
+	public bool IsBlowOut { get; private set; }
 
 	[Inject]
 	public void Inject(IInputTank inputTank)
@@ -44,6 +48,7 @@ public class BlowOut : MonoBehaviour
 	{
 		_playerActions = new PlayerActions();
 		
+		_suckUp = GetComponent<SuckUp>();
 		_playerMovement = GetComponentInParent<PlayerMovement>();
 	}
 
@@ -58,8 +63,9 @@ public class BlowOut : MonoBehaviour
 
 	private void Update()
 	{
-		if (VacuumActions.SpittingOut.IsPressed())
+		if (VacuumActions.SpittingOut.IsPressed() && !_suckUp.IsSuckUp)
 		{
+			IsBlowOut = true;
 			BlowOutTiles();
 		}
 	}
@@ -68,12 +74,10 @@ public class BlowOut : MonoBehaviour
 	{
 		if (Time.time - _lastUpdateTime > interval)
 		{
+			if (blockType == BlockType.Liquid) { return; }
+			
 			_lastUpdateTime = Time.time;
-			var randomGenerateTileCount = Random.Range(generateTileCount.x, generateTileCount.y);
-			for (var i = 0; i < randomGenerateTileCount; i++)
-			{
-				GenerateTile();
-			}
+			GenerateTile();
 		}
 
 		// UpdateTile();
@@ -93,19 +97,32 @@ public class BlowOut : MonoBehaviour
 		var newCell1 = GetNewCell(angle - angle2, chordLength);
 		var newCell2 = GetNewCell(angle + angle2, chordLength);
 		
-		var random = Random.Range(generateTileCount.x, generateTileCount.y);
-		for (var i = 0; i < random; i++)
+		if (blockType == BlockType.Ore)
 		{
-			var randomX = Random.Range(newCell1.x, newCell2.x);
-			var randomY = Random.Range(newCell1.y, newCell2.y);
-			var randomPosition = new Vector3(randomX, randomY, 0);
-			var randomCell = updateTilemap.WorldToCell(randomPosition);
-			updateTilemap.SetTile(randomCell, blockDatas.GetBlock(blockType).tile);
-			inputTank.InputRemoveTank(blockType);
-			// tilemap.SetColliderType(randomCell, Tile.ColliderType.None);
+			var position = distance * direction.normalized + pivot.position;
+			var blowOutOre = Instantiate(blowOutOrePrefab, position, Quaternion.identity);
+			var ore = blockDatas.GetOre(oreType);
+			blowOutOre.SetOre(ore.attackPower, ore.weightPerSize[0], direction.normalized, ore.oreSprites[0]);
+			var oreObject = blowOutOre.GetComponent<OreObject>(); // TODO: 消す可能性（吐き出した鉱石の吸い込み）
+			oreObject.SetOre(ore); // TODO: 消す可能性（吐き出した鉱石の吸い込み）
+		}
+		else
+		{
+			var randomGenerateTileCount = Random.Range(generateTileCount.x, generateTileCount.y);
+			for (var i = 0; i < randomGenerateTileCount; i++)
+			{
+				var randomX = Random.Range(newCell1.x, newCell2.x);
+				var randomY = Random.Range(newCell1.y, newCell2.y);
+				var randomPosition = new Vector3(randomX, randomY, 0);
+				var randomCell = updateTilemap.WorldToCell(randomPosition);
+				updateTilemap.SetTile(randomCell, blockDatas.GetBlock(blockType).tile);
+				inputTank.InputRemoveTank(blockType);
+				// tilemap.SetColliderType(randomCell, Tile.ColliderType.None);
+			}
 		}
 	}
 
+	// 疑似吐き出し範囲
 	private void UpTiles()
 	{
 		var bounds = new BoundsInt(updateTilemap.WorldToCell(pivot.position) - new Vector3Int((int)radius, (int)radius, 0), new Vector3Int((int)radius * 2, (int)radius * 2, 1));
@@ -162,87 +179,89 @@ public class BlowOut : MonoBehaviour
 		}
 	}
 	
-	private void UpdateTile()
-	{
-		var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-		var centerCell = (Vector3)updateTilemap.WorldToCell(mouseWorldPosition);
-
-		var direction = centerCell - pivot.position;
-		var angle = Mathf.Atan2(direction.y, direction.x);
-		
-		var chordLength = Mathf.Sqrt(Mathf.Pow(distance, 2) + Mathf.Pow(range, 2));
-		var angle2 = Mathf.Acos(distance / chordLength);
-		var a = GetNewCell(angle - angle2, chordLength);
-		var b = GetNewCell(angle + angle2, chordLength);
-		
-		var chordLength2 = Mathf.Sqrt(Mathf.Pow(0, 2) + Mathf.Pow(range, 2));
-		var angle3 = Mathf.Acos(0 / chordLength2);
-		var h = radius * (1 - Mathf.Cos(angle3));
-		var y = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(range, 2)) - (radius - h) - distance;
-		
-		var newX3 = y * Mathf.Cos(angle);
-		var newY3 = y * Mathf.Sin(angle);
-		var newDirection3 = new Vector3(newX3, newY3, 0);
-		
-		var c = a + newDirection3;
-		var d = b + newDirection3;
-		
-		var max = new Vector2(Mathf.Max(a.x, b.x, c.x, d.x), Mathf.Max(a.y, b.y, c.y, d.y));
-		var min = new Vector2(Mathf.Min(a.x, b.x, c.x, d.x), Mathf.Min(a.y, b.y, c.y, d.y));
-
-		var angleAC = Mathf.Atan2(c.y - a.y, c.x - a.x);
-		var angleBD = Mathf.Atan2(d.y - b.y, d.x - b.x);
-		
-		angleAC = Mathf.Abs(angleAC);
-		angleAC *= Mathf.Rad2Deg;
-		
-		angleBD = Mathf.Abs(angleBD);
-		angleBD *= Mathf.Rad2Deg;
-
-		for (y = min.y; y <= max.y; y++)
-		{
-			for (var x = min.x; x < max.x; x++)
-			{
-				var position = Vector3Int.RoundToInt(new Vector3(x, y, 0));
-				if (!updateTilemap.HasTile(position) && !mapTilemap.HasTile(position)) { continue; }
-				
-				var tileToPivotDistance = Vector3.Distance(pivot.position, position);
-				if (tileToPivotDistance > radius) { continue; }
-				
-				// 座標a, b, c, dの四角の内側にあるかどうかを判定する
-				var angleAP = Mathf.Atan2(position.y - a.y, position.x - a.x);
-				var angleBP = Mathf.Atan2(position.y - b.y, position.x - b.x);
-				var angleCP = Mathf.Atan2(position.y - c.y, position.x - c.x);
-				var angleDP = Mathf.Atan2(position.y - d.y, position.x - d.x);
-				
-				angleAP = Mathf.Abs(angleAP);
-				angleAP *= Mathf.Rad2Deg;
-				
-				angleBP = Mathf.Abs(angleBP);
-				angleBP *= Mathf.Rad2Deg;
-				
-				angleCP = Mathf.Abs(angleCP);
-				angleCP *= Mathf.Rad2Deg;
-				
-				angleDP = Mathf.Abs(angleDP);
-				angleDP *= Mathf.Rad2Deg;
-
-				if (angleAP < angleAC && angleBP < angleBD && angleCP < angleAC && angleDP < angleBD)
-				{
-					var newTilePosition = Vector3Int.RoundToInt(position + (pivot.position - centerCell).normalized * 2);
-					if (updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(newTilePosition)) { continue; }
-
-					Debug.DrawLine(newTilePosition, position, Color.red, 0.1f);
-					updateTilemap.SetTile(newTilePosition, blockDatas.GetBlock(blockType).tile);
-					updateTilemap.SetTile(position, null);
-					mapTilemap.SetTile(position, null);
-				}
-			}
-		}
-	}
+	// TODO: 吐き出し範囲の修正
+	// private void UpdateTile()
+	// {
+	// 	var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+	// 	var centerCell = (Vector3)updateTilemap.WorldToCell(mouseWorldPosition);
+	//
+	// 	var direction = centerCell - pivot.position;
+	// 	var angle = Mathf.Atan2(direction.y, direction.x);
+	// 	
+	// 	var chordLength = Mathf.Sqrt(Mathf.Pow(distance, 2) + Mathf.Pow(range, 2));
+	// 	var angle2 = Mathf.Acos(distance / chordLength);
+	// 	var a = GetNewCell(angle - angle2, chordLength);
+	// 	var b = GetNewCell(angle + angle2, chordLength);
+	// 	
+	// 	var chordLength2 = Mathf.Sqrt(Mathf.Pow(0, 2) + Mathf.Pow(range, 2));
+	// 	var angle3 = Mathf.Acos(0 / chordLength2);
+	// 	var h = radius * (1 - Mathf.Cos(angle3));
+	// 	var y = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(range, 2)) - (radius - h) - distance;
+	// 	
+	// 	var newX3 = y * Mathf.Cos(angle);
+	// 	var newY3 = y * Mathf.Sin(angle);
+	// 	var newDirection3 = new Vector3(newX3, newY3, 0);
+	// 	
+	// 	var c = a + newDirection3;
+	// 	var d = b + newDirection3;
+	// 	
+	// 	var max = new Vector2(Mathf.Max(a.x, b.x, c.x, d.x), Mathf.Max(a.y, b.y, c.y, d.y));
+	// 	var min = new Vector2(Mathf.Min(a.x, b.x, c.x, d.x), Mathf.Min(a.y, b.y, c.y, d.y));
+	//
+	// 	var angleAC = Mathf.Atan2(c.y - a.y, c.x - a.x);
+	// 	var angleBD = Mathf.Atan2(d.y - b.y, d.x - b.x);
+	// 	
+	// 	angleAC = Mathf.Abs(angleAC);
+	// 	angleAC *= Mathf.Rad2Deg;
+	// 	
+	// 	angleBD = Mathf.Abs(angleBD);
+	// 	angleBD *= Mathf.Rad2Deg;
+	//
+	// 	for (y = min.y; y <= max.y; y++)
+	// 	{
+	// 		for (var x = min.x; x < max.x; x++)
+	// 		{
+	// 			var position = Vector3Int.RoundToInt(new Vector3(x, y, 0));
+	// 			if (!updateTilemap.HasTile(position) && !mapTilemap.HasTile(position)) { continue; }
+	// 			
+	// 			var tileToPivotDistance = Vector3.Distance(pivot.position, position);
+	// 			if (tileToPivotDistance > radius) { continue; }
+	// 			
+	// 			// 座標a, b, c, dの四角の内側にあるかどうかを判定する
+	// 			var angleAP = Mathf.Atan2(position.y - a.y, position.x - a.x);
+	// 			var angleBP = Mathf.Atan2(position.y - b.y, position.x - b.x);
+	// 			var angleCP = Mathf.Atan2(position.y - c.y, position.x - c.x);
+	// 			var angleDP = Mathf.Atan2(position.y - d.y, position.x - d.x);
+	// 			
+	// 			angleAP = Mathf.Abs(angleAP);
+	// 			angleAP *= Mathf.Rad2Deg;
+	// 			
+	// 			angleBP = Mathf.Abs(angleBP);
+	// 			angleBP *= Mathf.Rad2Deg;
+	// 			
+	// 			angleCP = Mathf.Abs(angleCP);
+	// 			angleCP *= Mathf.Rad2Deg;
+	// 			
+	// 			angleDP = Mathf.Abs(angleDP);
+	// 			angleDP *= Mathf.Rad2Deg;
+	//
+	// 			if (angleAP < angleAC && angleBP < angleBD && angleCP < angleAC && angleDP < angleBD)
+	// 			{
+	// 				var newTilePosition = Vector3Int.RoundToInt(position + (pivot.position - centerCell).normalized * 2);
+	// 				if (updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(newTilePosition)) { continue; }
+	//
+	// 				Debug.DrawLine(newTilePosition, position, Color.red, 0.1f);
+	// 				updateTilemap.SetTile(newTilePosition, blockDatas.GetBlock(blockType).tile);
+	// 				updateTilemap.SetTile(position, null);
+	// 				mapTilemap.SetTile(position, null);
+	// 			}
+	// 		}
+	// 	}
+	// }
 	
 	private void CancelBlowOut()
 	{
+		IsBlowOut = false;
 		_lastUpdateTime = Time.time;
 		_playerMovement.IsMoveFlip = true;
 	}

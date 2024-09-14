@@ -34,7 +34,7 @@ public class PlayerTank : IInputTank
 
         if (currentItemAmount >= MaxTank)
         {
-            Debug.Log("ƒAƒCƒeƒ€‚ª‚¢‚Á‚Ï‚¢‚Å‚·");
+            Debug.Log("ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï‚ï¿½ï¿½Å‚ï¿½");
             return;
         }
         currentItemAmount++;
@@ -57,7 +57,7 @@ public class PlayerTank : IInputTank
         {
             if (vaule.mineralAmount <= 1)
             {
-                Debug.Log("ƒAƒCƒeƒ€ƒŠƒXƒg‚©‚çíœ");
+                Debug.Log("ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½íœ");
                 itemTankDictionary.Remove(mineralData);
                 currentItemAmount--;
             }
@@ -81,7 +81,6 @@ public class PlayerTank : IInputTank
 
         var outputTank = new OutPutData(itemRatio, totalRatio, itemData.mineralData.type
             ,itemData.mineralData.sprite);
-        Debug.Log(totalValue);
         outPutTank.OutputTank(outputTank);
     }
 

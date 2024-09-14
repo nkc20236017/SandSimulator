@@ -18,5 +18,10 @@ public class BlockDatas : ScriptableObject
 	{
 		return blocks.FirstOrDefault(block => block.tile == tile);
 	}
+	
+	public Ore GetOre(OreType oreType)
+	{
+		return blocks.FirstOrDefault(block => block.type == BlockType.Ore && ((Ore) block).oreType == oreType) as Ore;
+	}
 }
 

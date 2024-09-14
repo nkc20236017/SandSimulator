@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using VContainer;
 using Random = UnityEngine.Random;
@@ -17,6 +16,7 @@ public class SuckUp : MonoBehaviour
     [SerializeField, Range(0f, 180f)] private float _suctionAngle;
     [SerializeField, Min(0f)] private float _suctionDistance;
     [SerializeField, Min(0f)] private float _deleteDistance;
+    [SerializeField] private LayerMask oreLayerMask;
 
     [Header("Debug Config")]
     [SerializeField] private bool _debugMode;
@@ -25,14 +25,17 @@ public class SuckUp : MonoBehaviour
     [SerializeField] private bool matchTheSizeOfTheCollider;
 
     private int _numberExecutions;
+    private List<Vector3Int> _suckUpTilePositions = new();
+    private List<OreObject> _suckUpOreObject = new();
     private PlayerMovement _playerMovement;
     private Camera _camera;
+    private BlowOut _blowOut;
     private PlayerActions _playerActions;
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
     private IInputTank inputTank;
-
-    public List<Vector3Int> SuckUpTilePositions { get; private set; } = new();
-
+    
+    public bool IsSuckUp { get; private set; }
+    
     [Inject]//DIコンテナ
     public void Inject(IInputTank inputTank)
     {
@@ -42,6 +45,8 @@ public class SuckUp : MonoBehaviour
     private void Awake()
     {
         _playerActions = new PlayerActions();
+        
+        _blowOut = GetComponent<BlowOut>();
         _playerMovement = GetComponentInParent<PlayerMovement>();
     }
 
@@ -58,8 +63,9 @@ public class SuckUp : MonoBehaviour
     {
         RotateToCursorDirection();
         
-        if (VacuumActions.Absorption.IsPressed())
+        if (VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
         {
+            IsSuckUp = true;
             Performed();
             _numberExecutions++;
         }
@@ -69,11 +75,13 @@ public class SuckUp : MonoBehaviour
     {
         GetSuckUpTilePositions();
         SuckUpTiles();
+        SuckUpOres();
     }
 
     private void CancelSuckUp()
     {
-        SuckUpTilePositions.Clear();
+        IsSuckUp = false;
+        _suckUpTilePositions.Clear();
         _playerMovement.IsMoveFlip = true;
         _numberExecutions = 0;
     }
@@ -93,7 +101,8 @@ public class SuckUp : MonoBehaviour
 
     private void GetSuckUpTilePositions()
     {
-        SuckUpTilePositions.Clear();
+        _suckUpTilePositions.Clear();
+        _suckUpOreObject.Clear();
         var bounds = new BoundsInt(_tilemap.WorldToCell(pivot.position) - new Vector3Int((int)_suctionDistance, (int)_suctionDistance, 0), new Vector3Int((int)_suctionDistance * 2, (int)_suctionDistance * 2, 1));
         var getTilesBlock = _tilemap.GetTilesBlock(bounds);
         getTilesBlock = getTilesBlock.Where(x => x != null).ToArray();
@@ -101,7 +110,7 @@ public class SuckUp : MonoBehaviour
         
         foreach (var tilePosition in bounds.allPositionsWithin)
         {
-            if (_tilemap.GetTile(tilePosition) == null) { continue; }
+            // if (_tilemap.GetTile(tilePosition) == null) { continue; }
             
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             var centerCell = (Vector3)_tilemap.WorldToCell(mouseWorldPosition);
@@ -114,22 +123,48 @@ public class SuckUp : MonoBehaviour
 
             if (angle <= _suctionAngle && distance <= _suctionDistance)
             {
+                DetectOre(_tilemap.GetCellCenterWorld(tilePosition));
+                
+                if (_tilemap.GetTile(tilePosition) == null) { continue; }
+                
                 if (distance <= _deleteDistance)
                 {
                     _tilemap.SetTile(tilePosition, null);
                     return;
                 }
                 
-                SuckUpTilePositions.Add(tilePosition);
+                _suckUpTilePositions.Add(tilePosition);
+            }
+        }
+    }
+    
+    private void DetectOre(Vector2 position)
+    {
+        var hitAll = Physics2D.OverlapPointAll(position, oreLayerMask);
+        if (hitAll.Length == 0) { return; }
+        
+        foreach (var hit in hitAll)
+        {
+            if (!hit.TryGetComponent<OreObject>(out var oreObject)) { continue; }
+            if (!hit.TryGetComponent<IDamagable>(out var target)) { continue; }
+            if (_suckUpOreObject.Contains(oreObject)) { continue; }
+            
+            _suckUpOreObject.Add(oreObject);
+            
+            if (_numberExecutions % oreObject.Ore.weightPerSize[oreObject.Size - 1] == 0)
+            {
+                target.TakeDamage(1);
             }
         }
     }
     
     private void SuckUpTiles()
     {
-        SuckUpTilePositions = SuckUpTilePositions.OrderBy(_ => Random.value).ToList();
+        if (_suckUpTilePositions.Count == 0) { return; }
+        
+        _suckUpTilePositions = _suckUpTilePositions.OrderBy(_ => Random.value).ToList();
 
-        foreach (var tilePosition in SuckUpTilePositions)
+        foreach (var tilePosition in _suckUpTilePositions)
         {
             var direction = (Vector3)_tilemap.WorldToCell(pivot.position) - _tilemap.WorldToCell(tilePosition);
             var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized);
@@ -148,6 +183,29 @@ public class SuckUp : MonoBehaviour
             {
                 inputTank.InputAddTank(BlockType.Sand);//タンクに追加
                 _tilemap.SetTile(newTilePosition, null);
+            }
+        }
+    }
+
+    private void SuckUpOres()
+    {
+        if (_suckUpOreObject.Count == 0) { return; }
+        
+        _suckUpOreObject = _suckUpOreObject.OrderBy(_ => Random.value).Where(x => x != null).ToList();
+
+        foreach (var oreObject in _suckUpOreObject.ToList())
+        {
+            if (!oreObject.CanSuckUp) { continue; }
+
+            var position = oreObject.transform.position;
+            var direction = pivot.position - position;
+            oreObject.transform.position = position + direction.normalized;
+            
+            if (Vector3.Distance(oreObject.transform.position, pivot.position) <= _deleteDistance)
+            {
+                // inputTank.InputAddTank(BlockType.Ore);//タンクに追加
+                _suckUpOreObject.Remove(oreObject);
+                Destroy(oreObject.gameObject);
             }
         }
     }

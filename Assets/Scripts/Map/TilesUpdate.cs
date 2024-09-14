@@ -122,19 +122,6 @@ public class TilesUpdate : MonoBehaviour
         }
         
         _updateTilemap.SetTiles(tilePositions, tileArray);
-        
-        // TODO: 動いているタイルの当たり判定を消す
-        // foreach (var tilePosition in _updateTiles)
-        // {
-        //     if (tile.type == TileType.Water)
-        //     {
-        //         _tilemap.SetColliderType(tilePosition, Tile.ColliderType.None);
-        //     }
-        //     else
-        //     {
-        //         _tilemap.SetColliderType(tilePosition, Tile.ColliderType.Sprite);
-        //     }
-        // }
     }
 
     private void UpdateSand(Vector3Int position)
