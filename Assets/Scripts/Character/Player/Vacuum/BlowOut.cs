@@ -16,9 +16,9 @@ public class BlowOut : MonoBehaviour
 	[SerializeField] private BlockType blockType;
 	[SerializeField, ShowIf(nameof(blockType), BlockType.Ore)] private OreType oreType;
 	[SerializeField] private Transform pivot;
-	[SerializeField, Min(0f)] private float radius;
-	[SerializeField, Min(0f)] private float distance;
-	[SerializeField, Min(0f)] private float range;
+	[SerializeField, Min(0f)] private float radius; // 吐き出し範囲
+	[SerializeField, Min(0f)] private float distance; // 吐き出し距離（現状意味ない）
+	[SerializeField, Min(0f)] private float range; // 吐き出し範囲の幅（現状意味ない）
 	
 	[Header("Instantiation Config")]
 	[SerializeField] private float interval;
@@ -28,6 +28,7 @@ public class BlowOut : MonoBehaviour
 	[Header("Debug Config")]
 	[SerializeField] private bool debug;
 	
+	private float _weight;
 	private float _lastUpdateTime;
 	private PlayerMovement _playerMovement;
 	private Camera _camera;
@@ -72,16 +73,23 @@ public class BlowOut : MonoBehaviour
 
 	private void BlowOutTiles()
 	{
-		if (Time.time - _lastUpdateTime > interval)
+		if (blockType == BlockType.Ore)
+		{
+			_weight = blockDatas.GetOre(oreType).weightPerSize[0] * 10;
+		}
+		else
+		{
+			_weight = blockDatas.GetBlock(blockType).weight;
+		}
+		if (Time.time - _lastUpdateTime > interval * _weight)
 		{
 			if (blockType == BlockType.Liquid) { return; }
 			
 			_lastUpdateTime = Time.time;
 			GenerateTile();
 		}
-
-		// UpdateTile();
-		UpTiles();
+		
+		UpdateTiles();
 	}
 	
 	private void GenerateTile()
@@ -103,8 +111,6 @@ public class BlowOut : MonoBehaviour
 			var blowOutOre = Instantiate(blowOutOrePrefab, position, Quaternion.identity);
 			var ore = blockDatas.GetOre(oreType);
 			blowOutOre.SetOre(ore.attackPower, ore.weightPerSize[0], direction.normalized, ore.oreSprites[0]);
-			var oreObject = blowOutOre.GetComponent<OreObject>(); // TODO: 消す可能性（吐き出した鉱石の吸い込み）
-			oreObject.SetOre(ore); // TODO: 消す可能性（吐き出した鉱石の吸い込み）
 		}
 		else
 		{
@@ -117,13 +123,12 @@ public class BlowOut : MonoBehaviour
 				var randomCell = updateTilemap.WorldToCell(randomPosition);
 				updateTilemap.SetTile(randomCell, blockDatas.GetBlock(blockType).tile);
 				inputTank.InputRemoveTank(blockType);
-				// tilemap.SetColliderType(randomCell, Tile.ColliderType.None);
 			}
 		}
 	}
 
 	// 疑似吐き出し範囲
-	private void UpTiles()
+	private void UpdateTiles()
 	{
 		var bounds = new BoundsInt(updateTilemap.WorldToCell(pivot.position) - new Vector3Int((int)radius, (int)radius, 0), new Vector3Int((int)radius * 2, (int)radius * 2, 1));
 		var getTilesBlock = updateTilemap.GetTilesBlock(bounds);
@@ -143,10 +148,7 @@ public class BlowOut : MonoBehaviour
 			{
 				tilemap = mapTilemap;
 			}
-			else
-			{
-				continue;
-			}
+			else { continue; }
             
 			var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
 			var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPosition);

@@ -50,7 +50,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 5
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -76,7 +76,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ore: {fileID: 11400000, guid: 6534895f1114d374a80f4e1c68535ad4, type: 2}
   setSize: 1
-  _currentEndurance: 20
 --- !u!61 &6600248509172754237
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -171,6 +170,6 @@ SpriteRenderer:
   m_Size: {x: 8, y: 8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0

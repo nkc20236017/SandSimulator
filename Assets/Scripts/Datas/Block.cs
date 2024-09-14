@@ -45,7 +45,7 @@ public enum LiquidType
 public class Block : ScriptableObject
 {
     public BlockType type;
-    public int id;
+    public string id;
     public string name;
     public TileBase tile;
     public int weight;

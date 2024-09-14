@@ -8,12 +8,11 @@ public class OreObject : MonoBehaviour, IDamagable
     [SerializeField, MinValue(1), MaxValue(3)] private int setSize;
 
     private int _currentEndurance;
-    private int _currentSize;
     private SpriteRenderer _spriteRenderer;
 
     public bool CanSuckUp { get; private set; }
     public Ore Ore => ore;
-    public int Size => _currentSize;
+    public int Size { get; private set; }
 
     private void Awake()
     {
@@ -29,11 +28,11 @@ public class OreObject : MonoBehaviour, IDamagable
 
     private void SetOreConfig(int size)
     {
-        _currentSize = size;
-        _currentEndurance = ore.endurancePerSize[_currentSize - 1];
+        Size = size;
+        _currentEndurance = ore.endurancePerSize[Size - 1];
         if (_spriteRenderer == null) { _spriteRenderer = GetComponent<SpriteRenderer>(); }
-        _spriteRenderer.sprite = ore.oreSprites[_currentSize - 1];
-        transform.localScale = Vector3.one * _currentSize;
+        _spriteRenderer.sprite = ore.oreSprites[Size - 1];
+        transform.localScale = Vector3.one * Size;
     }
 
     public void TakeDamage(int damage)
@@ -41,13 +40,12 @@ public class OreObject : MonoBehaviour, IDamagable
         if (CanSuckUp) { return; }
 
         _currentEndurance -= damage;
-        if (_currentSize > 1)
+        if (Size > 1)
         {
-            if (_currentEndurance <= ore.endurancePerSize[_currentSize - 2])
+            if (_currentEndurance <= ore.endurancePerSize[Size - 2])
             {
-                _currentSize--;
-                _spriteRenderer.sprite = ore.oreSprites[_currentSize - 1];
-                transform.localScale = Vector3.one * _currentSize;
+                Size--;
+                SetOreConfig(Size);
                 var destroyedOre = Instantiate(this, transform.position, Quaternion.identity);
                 destroyedOre.SetOreConfig(1);
                 destroyedOre.CanSuckUp = true;
@@ -55,13 +53,6 @@ public class OreObject : MonoBehaviour, IDamagable
         }
         if (_currentEndurance > 0) { return; }
 
-        CanSuckUp = true;
-    }
-    
-    public void SetOre(Ore ore) // TODO: 消す可能性（吐き出した鉱石の吸い込み）
-    {
-        this.ore = ore;
-        SetOreConfig(setSize);
         CanSuckUp = true;
     }
 }

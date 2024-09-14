@@ -13,9 +13,9 @@ public class SuckUp : MonoBehaviour
     
     [Header("Suction Config")]
     [SerializeField] private Transform pivot;
-    [SerializeField, Range(0f, 180f)] private float _suctionAngle;
-    [SerializeField, Min(0f)] private float _suctionDistance;
-    [SerializeField, Min(0f)] private float _deleteDistance;
+    [SerializeField, Range(0f, 180f)] private float _suctionAngle; // この角度以内のオブジェクトは吸い寄せられる
+    [SerializeField, Min(0f)] private float _suctionDistance; // この距離以内のオブジェクトは吸い寄せられる
+    [SerializeField, Min(0f)] private float _deleteDistance; // この距離以内のオブジェクトは削除される
     [SerializeField] private LayerMask oreLayerMask;
 
     [Header("Debug Config")]

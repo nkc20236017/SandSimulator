@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Crystal
   m_EditorClassIdentifier: 
   type: 3
-  id: 2201
+  id: 
   name: "\u30AF\u30EA\u30B9\u30BF\u30EB"
   tile: {fileID: 0}
   weight: 10

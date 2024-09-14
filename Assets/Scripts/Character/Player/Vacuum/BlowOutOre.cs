@@ -4,11 +4,12 @@ using UnityEngine;
 public class BlowOutOre : MonoBehaviour
 {
 	[SerializeField] private float _speed;
-	[SerializeField] private float invincibleTime; // TODO: 消す可能性（無敵時間）
+	[SerializeField] private float despawnTime = 300;
+	[SerializeField] private float invincibleTime;
 	
 	private int _attackPower;
-	private float _invincibleTimer; // TODO: 消す可能性（無敵時間）
-	private bool _isInvincible = true; // TODO: 消す可能性（無敵時間）
+	private float _invincibleTimer;
+	private bool _isInvincible = true;
 	private Vector2 _direction;
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
@@ -20,8 +21,13 @@ public class BlowOutOre : MonoBehaviour
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_spriteRenderer = GetComponent<SpriteRenderer>();
 	}
-	
-	private void Update() // TODO: 消す可能性（無敵時間）
+
+	private void Start()
+	{
+		Destroy(gameObject, despawnTime);
+	}
+
+	private void Update()
 	{
 		if (!_isInvincible) { return; }
 
@@ -35,7 +41,6 @@ public class BlowOutOre : MonoBehaviour
 	{
 		_attackPower = attackPower;
 		_speed /= gravity;
-		_rigidbody2D.gravityScale = gravity;
 		_direction = direction;
 		_spriteRenderer.sprite = sprite;
 		
@@ -56,10 +61,10 @@ public class BlowOutOre : MonoBehaviour
 		if (other.collider.TryGetComponent<IDamagable>(out var target))
 		{
 			target.TakeDamage(_attackPower);
-			Destroy(gameObject); // TODO: 消す可能性（無敵時間）
-			return; // TODO: 消す可能性（無敵時間）
+			Destroy(gameObject);
+			return;
 		}
-		if (_isInvincible) { return; } // TODO: 消す可能性（無敵時間）
+		if (_isInvincible) { return; }
 		
 		Destroy(gameObject);
 	}

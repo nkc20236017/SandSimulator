@@ -46,6 +46,7 @@ public class PlayerMovement : MonoBehaviour
 	private void FixedUpdate()
 	{
 		Movement();
+		OneBlockUp();
 	}
 	
 	private void Movement()
@@ -57,7 +58,6 @@ public class PlayerMovement : MonoBehaviour
 	{
 		InputMovement();
 		IsGround();
-		OneBlockUp();
 	}
 
 	private void InputMovement()
@@ -78,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		if (_rigidbody2D.velocity.y > 0)
 		{
-			_rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _rigidbody2D.velocity.y * 0.5f);
+			_rigidbody2D.velocity *= Vector2.up * 0.5f;
 		}
 	}
 	
@@ -87,24 +87,22 @@ public class PlayerMovement : MonoBehaviour
 		var x = _boxCollider2D.bounds.center.x;
 		var y = _boxCollider2D.bounds.min.y;
 		var position = new Vector2(x, y);
-		var hit = Physics2D.CircleCast(position, radius, Vector2.down, 0.1f, groundLayerMask);
+		var hit = isColliderRadius ? Physics2D.CircleCast(position, _boxCollider2D.size.x / 2 - 0.1f, Vector2.down, 0.1f, groundLayerMask) : Physics2D.CircleCast(position, radius, Vector2.down, 0.1f, groundLayerMask);
 		return hit.collider != null;
 	}
 	
 	private void OneBlockUp()
 	{
-		if (_rigidbody2D.velocity.y != 0) { return; }
-		if (_moveDirection == Vector2.zero) { return; }
+		if (_rigidbody2D.velocity.y is > 0.01f or < -0.01f) { return; }
+		if (_moveDirection.x == 0) { return; }
+		if (!IsGround()) { return; }
 
-		var x = _moveDirection.x > 0 ? _boxCollider2D.bounds.max.x : _boxCollider2D.bounds.min.x;
-		var position = new Vector2(x, _boxCollider2D.bounds.min.y);
+		var x = _moveDirection.x > 0 ? _boxCollider2D.bounds.max.x + 0.25f : _boxCollider2D.bounds.min.x - 0.25f;
+		var position = new Vector2(x, _boxCollider2D.bounds.min.y + 0.1f);
 		var cellPosition = tilemap.WorldToCell(position);
-		var directionPosition = cellPosition;
-		var variate = tilemap.GetTile(directionPosition);
-		var immediate = tilemap.GetTile(directionPosition + Vector3Int.up);
-		if (immediate == null && variate != null)
+		if (tilemap.HasTile(cellPosition) && !tilemap.HasTile(cellPosition + Vector3Int.up))
 		{
-			transform.position += new Vector3(_moveDirection.x * 0.01f, Vector3.up.y);
+			transform.position += new Vector3(0.1f, 1.1f, 0);
 		}
 	}
 	
@@ -132,16 +130,6 @@ public class PlayerMovement : MonoBehaviour
 			}
 		}
 	}
-	
-	public void SetSpeed(float speed)
-	{
-		_currentSpeed = speed;
-	}
-	
-	public void ResetSpeed()
-	{
-		_currentSpeed = speed;
-	}
 
 	private void OnDrawGizmos()
 	{
@@ -152,7 +140,7 @@ public class PlayerMovement : MonoBehaviour
 		var position = new Vector2(x, y);
 		if (isColliderRadius)
 		{
-			Gizmos.DrawWireSphere(position, boxCollider2D.size.x / 2);
+			Gizmos.DrawWireSphere(position, boxCollider2D.size.x / 2 - 0.1f);
 		}
 		else
 		{
@@ -160,14 +148,13 @@ public class PlayerMovement : MonoBehaviour
 		}
 		
 		Gizmos.color = Color.green;
-		if (_moveDirection == Vector2.zero) { return; }
+		if (_moveDirection.x == 0) { return; }
 		
-		x = _moveDirection.x > 0 ? boxCollider2D.bounds.max.x : boxCollider2D.bounds.min.x;
-		position = new Vector2(x, boxCollider2D.bounds.min.y);
+		x = _moveDirection.x > 0 ? boxCollider2D.bounds.max.x + 0.25f : boxCollider2D.bounds.min.x - 0.25f;
+		position = new Vector2(x, boxCollider2D.bounds.min.y + 0.1f);
 		var cellPosition = tilemap.WorldToCell(position);
-		var directionPosition = cellPosition + Vector3Int.RoundToInt(_moveDirection);
-		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(directionPosition), Vector3.one);
-		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(directionPosition + Vector3Int.up), Vector3.one);
+		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(cellPosition), new Vector3(1, 1, 0));
+		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(cellPosition + Vector3Int.up), new Vector3(1, 1, 0));
 	}
 	
 	private void OnEnable()

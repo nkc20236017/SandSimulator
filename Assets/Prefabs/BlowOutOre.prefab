@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2920249801988323023}
   - component: {fileID: 8186084011419548071}
   - component: {fileID: 2255327485247987650}
-  - component: {fileID: -8669433496782505821}
   m_Layer: 6
   m_Name: BlowOutOre
   m_TagString: Untagged
@@ -174,17 +173,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.0001, y: 0.0001}
   m_EdgeRadius: 0
---- !u!114 &-8669433496782505821
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1604891486411062820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65ac017e557948c992e3e868439edc15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ore: {fileID: 0}
-  setSize: 1
