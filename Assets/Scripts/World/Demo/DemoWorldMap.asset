@@ -19,14 +19,16 @@ MonoBehaviour:
   layerRatios:
   - 0.201
   - 0.30491373
-  - 0.411
-  - 0.535
+  - 0.455
+  - 0.429
   borderNoiseSize: 0
   worldLayers:
   - debugLayerColor: {r: 1, g: 0.035849165, b: 0, a: 1}
     materialTiles:
     - {fileID: 0}
-    tileWeight: []
+    tileWeight:
+    - 0.587
+    - 0.329
     primevalOres:
     - priority: 0
       modelObject: {fileID: 0}

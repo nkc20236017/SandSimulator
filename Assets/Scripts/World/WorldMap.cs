@@ -131,13 +131,15 @@ namespace WorldCreation
 
 #if UNITY_EDITOR
         private float[] layerRatiosOld = new float[0];
-        private float[] weightSumOld = new float[0];
+        private float[][] weightSumOld = new float[0][];
 
         private void OnValidate()
         {
             DebugValidateNumberOfLayer();
 
             DebugValidateLayerRatio();
+
+            DebugValidateTileWeight();
         }
 
         /// <summary>
@@ -162,43 +164,6 @@ namespace WorldCreation
         /// </summary>
         private void DebugValidateLayerRatio()
         {
-            /*
-             * 割合であるため以降のマジックナンバー「1」は100%を指す
-             */
-            // 変化していなければ処理を終了
-            /*if (layerRatios.Length == 0)
-            {
-                layerRatiosOld = new float[0];
-                return;
-            }
-            if (layerRatiosOld.Length != 0 && layerRatios.SequenceEqual(layerRatiosOld))
-            {
-                return;
-            }
-
-            if (layerRatiosOld.Length != layerRatios.Length)
-            {
-                layerRatiosOld = layerRatios.ToArray();
-            }
-
-            float ratioTotal = layerRatios.Sum();
-            // 合計がほぼ1であれば終了
-            if (Mathf.Approximately(1, ratioTotal) == true)
-            {
-                return;
-            }
-
-            // 変化したら変化した場所を取得する
-            int changedIndex = -1;
-            for (int i = 0; i < layerRatios.Length; i++)
-            {
-                if (Mathf.Approximately(layerRatios[i], layerRatiosOld[i]) == false)
-                {
-                    changedIndex = i;
-                    break;
-                }
-            }*/
-
             (int changedIndex, bool isChanged) = GetChangedValue(ref layerRatios, ref layerRatiosOld);
             if (!isChanged) { return; }
 
@@ -242,13 +207,26 @@ namespace WorldCreation
         {
             for (int i = 0; i < worldLayers.Length; i++)
             {
-                WorldLayer layer = worldLayers[i];
-                float weightSum = layer.TileWeight.Sum();
-                // 合計が1であれば終了する
-                if (Mathf.Approximately(1, weightSum)) { return; }
+                float weightSum = worldLayers[i].TileWeight.Sum();
+                // 合計が1以下であれば終了する
+                if (weightSum <= 1) { return; }
 
                 // 変更された値を取得する
+                float[] tileWeight = worldLayers[i].TileWeight;
+                (int changedIndex, bool isChanged) = GetChangedValue(ref tileWeight, ref weightSumOld[i]);
+                if (!isChanged) { continue; }
 
+                // 変化のある要素が見つからななかった場合
+                if (changedIndex == -1)
+                {
+                    continue;
+                }
+
+                // 変更された値が合計値から超えないよう制限する
+                float diff = Mathf.Abs(1 - weightSum);
+
+                worldLayers[i].TileWeight[changedIndex] -= diff;
+                weightSumOld[i] = worldLayers[i].TileWeight;
             }
         }
 
