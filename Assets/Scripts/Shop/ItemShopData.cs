@@ -7,11 +7,13 @@ public class ItemShopData
     public readonly int ItemPrice;
     public readonly string itemId;
     public readonly string itemName;
+    public readonly bool Soldout;
 
-    public ItemShopData(int itemPrice, string itemId, string itemName)
+    public ItemShopData(EquipmentData equipment)
     {
-        ItemPrice = itemPrice;
-        this.itemId = itemId;
-        this.itemName = itemName;
+        ItemPrice = equipment.ItemPrice;
+        itemId = equipment.ItemId;
+        itemName = equipment.ItemName;
+        Soldout = equipment.Soldout;
     }
 }
