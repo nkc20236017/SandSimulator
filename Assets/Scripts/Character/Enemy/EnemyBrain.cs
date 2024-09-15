@@ -20,17 +20,16 @@ public class EnemyBrain : MonoBehaviour
 	{
 		_currentState?.UpdateState(this);
 	}
-        
+	
 	public void ChangeState(string newStateID)
 	{
 		var newState = GetState(newStateID);
 		if (newState == null) { return; }
 		_currentState = newState;
 	}
-        
+	
 	private FsmState GetState(string newStateID)
 	{
 		return states.FirstOrDefault(state => state.ID == newStateID);
 	}
 }
-

@@ -6,41 +6,36 @@ public class LightingTile : MonoBehaviour
 	[Header("Config")]
 	[SerializeField] Tilemap mapTilemap;
 	[SerializeField] Tilemap backgroundTilemap;
-	[SerializeField] Tilemap propTilemap;
-	[SerializeField] TileBase tile;
 	[SerializeField] private int radius;
+	
+	[Header("Shadow")]
+	[SerializeField] private bool mapShadow;
+	[SerializeField] private bool backgroundShadow;
 
 	private void Update()
 	{
-		SetShadow();
+		if (mapShadow) { SetShadow(mapTilemap); }
+		if (backgroundShadow) { SetShadow(backgroundTilemap); }
 		SetLight();
 	}
 	
-	private void SetShadow()
+	private void SetShadow(Tilemap tilemap)
 	{
-		var bounds = mapTilemap.cellBounds.allPositionsWithin;
+		var bounds = tilemap.cellBounds.allPositionsWithin;
 		foreach (var bound in bounds)
 		{
-			if (mapTilemap.GetTile(bound) == null) { continue; }
+			if (tilemap.GetTile(bound) == null) { continue; }
 			
-			mapTilemap.SetColor(bound, Color.black);
+			tilemap.SetColor(bound, Color.black);
 		}
-		
-		// var backgroundBounds = backgroundTilemap.cellBounds.allPositionsWithin;
-		// foreach (var bound in backgroundBounds)
-		// {
-		// 	if (backgroundTilemap.GetTile(bound) == null) { continue; }
-		// 	
-		// 	backgroundTilemap.SetColor(bound, Color.black);
-		// }
 	}
 
 	private void SetLight()
 	{
-		var propBounds = propTilemap.cellBounds.allPositionsWithin;
+		var propBounds = mapTilemap.cellBounds.allPositionsWithin;
 		foreach (var propBound in propBounds)
 		{
-			if (propTilemap.GetTile(propBound) != tile) { continue; }
+			// if (mapTilemap.GetTile(propBound) != tile) { continue; }
 			
 			var mapBound = new Vector3Int(propBound.x, propBound.y, 0);
 			for (var y = -radius; y <= radius; y++)

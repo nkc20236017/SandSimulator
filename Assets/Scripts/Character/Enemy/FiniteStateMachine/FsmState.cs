@@ -15,7 +15,6 @@ public class FsmState
     
 	private void ExecuteActions()
 	{
-		// すべてのアクションを実行する
 		foreach (var action in Actions)
 		{
 			action.Action();
