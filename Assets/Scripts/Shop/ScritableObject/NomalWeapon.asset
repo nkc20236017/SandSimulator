@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a59b8447f6b21b4c83eb9bbac297d9b, type: 3}
+  m_Name: NomalWeapon
+  m_EditorClassIdentifier: 
+  EquipmentId: 8d5d0a91359d00b45a790af4fe747955
+  EquipmentName: "\u30CE\u30FC\u30DE\u30EB"
+  EquipmentSprite: {fileID: 1872050796, guid: b5c6f16e64297704da4647f4548e8ecf, type: 3}
+  EquipmentPrice: 1

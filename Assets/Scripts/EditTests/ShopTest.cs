@@ -5,43 +5,21 @@ using NUnit.Framework;
 
 public class ShopTest
 {
+    private DemoShopService demoShopService;
+
+    [OneTimeSetUp]
+    public void Setup()
+    {
+        //var DemoDataAccess = new MockEquipDataAccess();
+        //var DemoPlayerDataAccess = new MockPlayerDataAccess(new DemoPlayerData(10));
+        //demoShopService = new DemoShopService(DemoDataAccess,DemoPlayerDataAccess);
+    }
+
     [Test]
     public void ShopTests()
     {
-        var itemInventory = new ItemInventoy() ;
-        var shopRepository = new MockShopDataAccess();
-        var shopOutput = new MockShopUI();
-        var shopService = new ShopService(shopRepository,itemInventory,100,shopOutput);
-        shopService.ItemBuy("001");
+        var serviceData = demoShopService.GetShopServiceData("123");
+        Assert.AreEqual("ç≈ã≠ïêäÌ", serviceData.EquipName);
     }
 }
 
-public class MockShopDataAccess : IShopRepository
-{
-    public ItemShopData FindTrader(string itemId)
-    {
-        return null;
-    }
-
-    public int GetMoney()
-    {
-        return 0;
-    }
-}
-
-public class ItemInventoy : IItemInputSignal
-{
-    public void AddItem(string itemId)
-    {
-        Debug.Log("ÉAÉCÉeÉÄÇí«â¡ÇµÇΩÇ¢");
-    }
-}
-
-public class MockShopUI : IShopOutPut
-{
-    public void OutPut(OutputData outputData)
-    {
-        Debug.Log(outputData.PlayerMoney);
-        Debug.Log(outputData.CanBuy);
-    }
-}
