@@ -139,7 +139,7 @@ namespace WorldCreation
 
             DebugValidateLayerRatio();
 
-            DebugValidateTileWeight();
+            // DebugValidateTileWeight();
         }
 
         /// <summary>

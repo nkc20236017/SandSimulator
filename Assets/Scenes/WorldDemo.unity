@@ -313,7 +313,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1927889660}
   - component: {fileID: 1927889661}
-  - component: {fileID: 1927889659}
+  - component: {fileID: 1927889662}
   m_Layer: 0
   m_Name: WorldGenerator
   m_TagString: Untagged
@@ -321,61 +321,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1927889659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1927889658}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbb036d3c5e4a2d4db82bb6fc0e56bd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldMap: {fileID: 11400000, guid: d3bea26fdfb133940bb933d384498db8, type: 2}
-  previewAlways:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1927889659}
-        m_TargetAssemblyTypeName: WorldCreation.Preview.WorldMapPreview, Assembly-CSharp
-        m_MethodName: WorldScaleView
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
-      - m_Target: {fileID: 1927889659}
-        m_TargetAssemblyTypeName: WorldCreation.Preview.WorldMapPreview, Assembly-CSharp
-        m_MethodName: LayerBorderView
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
-  previewSelected:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1927889659}
-        m_TargetAssemblyTypeName: WorldCreation.Preview.WorldMapPreview, Assembly-CSharp
-        m_MethodName: ChunkSizeView
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
 --- !u!4 &1927889660
 Transform:
   m_ObjectHideFlags: 0
@@ -408,11 +353,54 @@ MonoBehaviour:
   tileMapPrefab: {fileID: 4281351336352850513, guid: 1d8ff621e4dfdf241a877aad79dc3ee6, type: 3}
   maxSeedValueDigit: 1000000
   tileBaseDemo: {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
+--- !u!114 &1927889662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1927889658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb036d3c5e4a2d4db82bb6fc0e56bd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldMap: {fileID: 11400000, guid: d3bea26fdfb133940bb933d384498db8, type: 2}
+  previewAlways:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1927889662}
+        m_TargetAssemblyTypeName: WorldCreation.Preview.WorldMapPreview, Assembly-CSharp
+        m_MethodName: WorldScaleView
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+      - m_Target: {fileID: 1927889662}
+        m_TargetAssemblyTypeName: WorldCreation.Preview.WorldMapPreview, Assembly-CSharp
+        m_MethodName: LayerBorderView
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  previewSelected:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1351555453}
   - {fileID: 1185436034}
-  - {fileID: 1927889660}
   - {fileID: 1850257783}
+  - {fileID: 1927889660}
