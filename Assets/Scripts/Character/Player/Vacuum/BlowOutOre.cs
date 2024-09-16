@@ -1,9 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BlowOutOre : MonoBehaviour
 {
 	[SerializeField] private float _speed;
+	[SerializeField] private float plusRadius;
 	[SerializeField] private float despawnTime = 300;
 	[SerializeField] private float invincibleTime;
 	
@@ -11,13 +11,13 @@ public class BlowOutOre : MonoBehaviour
 	private float _invincibleTimer;
 	private bool _isInvincible = true;
 	private Vector2 _direction;
-	private BoxCollider2D _boxCollider2D;
+	private CircleCollider2D _circleCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private SpriteRenderer _spriteRenderer;
 	
 	private void Awake()
 	{
-		_boxCollider2D = GetComponent<BoxCollider2D>();
+		_circleCollider2D = GetComponent<CircleCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_spriteRenderer = GetComponent<SpriteRenderer>();
 	}
@@ -44,7 +44,7 @@ public class BlowOutOre : MonoBehaviour
 		_direction = direction;
 		_spriteRenderer.sprite = sprite;
 		
-		_boxCollider2D.size = sprite.bounds.size;
+		_circleCollider2D.radius = sprite.bounds.size.x / 2 + plusRadius;
 
 		Movement();
 	}

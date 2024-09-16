@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -14,6 +13,7 @@ public class TilesUpdate : MonoBehaviour
     [SerializeField] private BlockDatas blockDatas;
     [SerializeField] private float updateInterval = 0.01f;
     [SerializeField] private Vector2Int chunkSize = new(84, 45);
+    [SerializeField] private LayerMask collisionLayerMask;
     
     [Header("Update Tile Config")]
     [SerializeField] private bool canUpdateSand;
@@ -131,9 +131,9 @@ public class TilesUpdate : MonoBehaviour
         var tilesBlock2 = _mapTilemap.GetTilesBlock(checkBound);
         var tilesBlock = tilesBlock1.Concat(tilesBlock2).ToArray();
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
-        if (tilesBlock.Length == 3)
+        if (tilesBlock.Length == 3 || Physics2D.OverlapBox(_updateTilemap.GetCellCenterWorld(position + Vector3Int.down), new Vector2(2.9f, 0.9f), 0, collisionLayerMask))
         {
-            _mapTilemap.SetTile(position, blockDatas.GetBlock(BlockType.Sand).tile);
+            _mapTilemap.SetTile(position, blockDatas.GetBlock(BlockType.Sand).tile); // TODO: プレイヤーの層の砂を取得する
             _clearTiles.Add(position);
             return;
         }
@@ -142,7 +142,7 @@ public class TilesUpdate : MonoBehaviour
         var belowLeft = position + new Vector3Int(-1, -1, 0);
         var belowRight = position + new Vector3Int(1, -1, 0);
         
-        if (!_mapTilemap.HasTile(below) && !_updateTilemap.HasTile(below) && !CheckUpdateTilePosition(below))
+        if (!CheckHasTile(below))
         {
             _clearTiles.Add(position);
             _updateTiles.Add(below);
@@ -153,14 +153,14 @@ public class TilesUpdate : MonoBehaviour
             switch (random)
             {
                 case 0:
-                    if (!_mapTilemap.HasTile(belowLeft) && !_updateTilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft))
+                    if (!CheckHasTile(belowLeft))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowLeft);
                     }
                     break;
                 case 1:
-                    if (!_mapTilemap.HasTile(belowRight) && !_updateTilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight))
+                    if (!CheckHasTile(belowRight))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowRight);
@@ -168,6 +168,18 @@ public class TilesUpdate : MonoBehaviour
                     break;
             }
         }
+    }
+
+    private bool CheckHasTile(Vector3Int position)
+    {
+        return _mapTilemap.HasTile(position) || _updateTilemap.HasTile(position) || CheckUpdateTilePosition(position) || IsCollision(position);
+    }
+    
+    private bool IsCollision(Vector3Int position)
+    {
+        var tilePosition = _updateTilemap.GetCellCenterWorld(position);
+        var hit = Physics2D.OverlapBox(tilePosition, new Vector2(0.9f, 0.9f), 0, collisionLayerMask);
+        return hit != null;
     }
 
     private void UpdateWater(Vector3Int position)

@@ -50,14 +50,14 @@ public class EnemyHealth : MonoBehaviour, IDamagable
             Destroy(gameObject, CurrentDespawnTime);
         }
 
-        // TODO: プレイヤーのレベルに合わせて敵を強化する
+        // TODO: 地層で強さが違う
     }
 
     private void Update()
     {
         // TODO: プレイヤーが死亡したらデスポーンする
         
-        // TODO: 敵の体力バーを追加する（ダメージを受けたら♥のUIを表示させる）
+        // TODO: 敵の体力バーを追加する（ダメージを受けたら♥のUIを表示させる） ━━━━━━━━　♥♥♥♥♥♥♥♥♥♥
         UpdateEnemyUI();
     }
 
@@ -98,7 +98,7 @@ public class EnemyHealth : MonoBehaviour, IDamagable
         _spriteRenderer.sortingOrder = -1;
         _enemyBrain.enabled = false;
         _rigidbody2D.bodyType = RigidbodyType2D.Static;
-        // TODO: アイテムドロップ
+        // TODO: アイテムドロップ（経験値結晶のみ）
         Destroy(gameObject);
     }
 }

@@ -10,6 +10,7 @@ public class SuckUp : MonoBehaviour
     [Header("Tile Config")]
     [SerializeField] private Tilemap _tilemap;
     [SerializeField] private BlockDatas blockDatas;
+    [SerializeField] private LayerMask blockLayerMask;
     
     [Header("Suction Config")]
     [SerializeField] private Transform pivot;
@@ -74,8 +75,10 @@ public class SuckUp : MonoBehaviour
     private void Performed()
     {
         GetSuckUpTilePositions();
-        SuckUpTiles();
         SuckUpOres();
+        if (_suckUpOreObject.Count > 0) { return; }
+        
+        SuckUpTiles();
     }
 
     private void CancelSuckUp()
@@ -110,8 +113,6 @@ public class SuckUp : MonoBehaviour
         
         foreach (var tilePosition in bounds.allPositionsWithin)
         {
-            // if (_tilemap.GetTile(tilePosition) == null) { continue; }
-            
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             var centerCell = (Vector3)_tilemap.WorldToCell(mouseWorldPosition);
 
@@ -124,6 +125,7 @@ public class SuckUp : MonoBehaviour
             if (angle <= _suctionAngle && distance <= _suctionDistance)
             {
                 DetectOre(_tilemap.GetCellCenterWorld(tilePosition));
+                if (_suckUpOreObject.Count > 0) { continue; }
                 
                 if (_tilemap.GetTile(tilePosition) == null) { continue; }
                 
@@ -145,6 +147,7 @@ public class SuckUp : MonoBehaviour
         
         foreach (var hit in hitAll)
         {
+            if (IsBlock(hit.transform.position)) { continue; }
             if (!hit.TryGetComponent<OreObject>(out var oreObject)) { continue; }
             if (!hit.TryGetComponent<IDamagable>(out var target)) { continue; }
             if (_suckUpOreObject.Contains(oreObject)) { continue; }
@@ -156,6 +159,12 @@ public class SuckUp : MonoBehaviour
                 target.TakeDamage(1);
             }
         }
+    }
+    
+    private bool IsBlock(Vector3 position)
+    {
+        var hit = Physics2D.Linecast(pivot.position, position, blockLayerMask);
+        return hit.collider != null;
     }
     
     private void SuckUpTiles()

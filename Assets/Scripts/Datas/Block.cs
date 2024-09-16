@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -9,7 +10,8 @@ public enum BlockType
     Mud,
     Stone,
     Ore,
-    Liquid
+    Liquid,
+    ExpCrystal
 }
 
 public enum OreType
@@ -48,10 +50,19 @@ public class Block : ScriptableObject
     public string id;
     public string name;
     public TileBase tile;
+    public StratumGeologyData[] stratumGeologyDatas;
     public int weight;
     [ShowAssetPreview] public Sprite sprite;
     public int endurance;
     public int price;
 
     [HideInInspector] public List<Vector3Int> tilePositions = new();
+}
+
+[Serializable]
+public class StratumGeologyData
+{
+    [SerializeField] private string stratumName;
+    public int depth;
+    public Color colors;
 }

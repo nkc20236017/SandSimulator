@@ -1,4 +1,5 @@
-﻿using NaughtyAttributes;
+﻿using System;
+using NaughtyAttributes;
 using UnityEngine;
 
 public enum EnemyType
@@ -10,17 +11,22 @@ public enum EnemyType
 public class Enemy : ScriptableObject
 {
 	public EnemyType type;
-	public int id;
+	public string id;
 	public string name;
 	[ShowAssetPreview] public Sprite sprite;
 	
 	[Header("Status")]
-	public int maxHp;
-	public int attack;
-	public int defense;
-	public int speed;
-	
-	[Header("Update Config")]
-	[MinMaxSlider(0, 100)] public Vector2 updateInterval;
+	public EnemyStatus[] status;
 }
 
+[Serializable]
+public class EnemyStatus
+{
+	[SerializeField] private string name;
+	public int depth;
+	
+	[Header("Status")]
+	public int hp;
+	public int attack;
+	public int speed;
+}

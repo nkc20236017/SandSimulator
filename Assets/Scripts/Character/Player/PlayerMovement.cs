@@ -82,15 +82,6 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 	
-	private bool IsGround()
-	{
-		var x = _boxCollider2D.bounds.center.x;
-		var y = _boxCollider2D.bounds.min.y;
-		var position = new Vector2(x, y);
-		var hit = isColliderRadius ? Physics2D.CircleCast(position, _boxCollider2D.size.x / 2 - 0.1f, Vector2.down, 0.1f, groundLayerMask) : Physics2D.CircleCast(position, radius, Vector2.down, 0.1f, groundLayerMask);
-		return hit.collider != null;
-	}
-	
 	private void OneBlockUp()
 	{
 		if (_rigidbody2D.velocity.y is > 0.01f or < -0.01f) { return; }
@@ -104,6 +95,15 @@ public class PlayerMovement : MonoBehaviour
 		{
 			transform.position += new Vector3(0.1f, 1.1f, 0);
 		}
+	}
+	
+	private bool IsGround()
+	{
+		var x = _boxCollider2D.bounds.center.x;
+		var y = _boxCollider2D.bounds.min.y;
+		var position = new Vector2(x, y);
+		var hit = isColliderRadius ? Physics2D.CircleCast(position, _boxCollider2D.size.x / 2 - 0.1f, Vector2.down, 0.1f, groundLayerMask) : Physics2D.CircleCast(position, radius, Vector2.down, 0.1f, groundLayerMask);
+		return hit.collider != null;
 	}
 	
 	private void Flip()

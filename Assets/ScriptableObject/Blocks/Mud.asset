@@ -16,6 +16,16 @@ MonoBehaviour:
   id: 1201
   name: "\u6CE5"
   tile: {fileID: 11400000, guid: f66babbb8ecba55418398bf81080dca8, type: 2}
+  stratumGeologyDatas:
+  - stratumName: "\uFF11\u5C64"
+    depth: 1
+    colors: {r: 1, g: 1, b: 1, a: 0}
+  - stratumName: "\uFF12\u5C64"
+    depth: 2
+    colors: {r: 0.735849, g: 0.54558223, b: 0.32627267, a: 0}
+  - stratumName: "\uFF13\u5C64"
+    depth: 3
+    colors: {r: 0.4490565, g: 0.3040664, b: 0.10421497, a: 0}
   weight: 6
   sprite: {fileID: -1845779357, guid: 7feacc40af44c5b4e94ec46cecba313d, type: 3}
   endurance: 0
