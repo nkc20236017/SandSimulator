@@ -7,13 +7,15 @@ using Random = UnityEngine.Random;
 
 public class TilesUpdate : MonoBehaviour
 {
-    [Header("Config")]
+    [Header("Datas Config")]
     [SerializeField] private Tilemap _updateTilemap;
     [SerializeField] private Tilemap _mapTilemap;
     [SerializeField] private BlockDatas blockDatas;
+    [SerializeField] private LayerMask collisionLayerMask;
+
+    [Header("Update Config")]
     [SerializeField] private float updateInterval = 0.01f;
     [SerializeField] private Vector2Int chunkSize = new(84, 45);
-    [SerializeField] private LayerMask collisionLayerMask;
     
     [Header("Update Tile Config")]
     [SerializeField] private bool canUpdateSand;

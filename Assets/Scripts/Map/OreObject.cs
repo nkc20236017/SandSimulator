@@ -8,10 +8,15 @@ public class OreObject : MonoBehaviour, IDamagable
     [SerializeField] private Ore ore;
     [SerializeField, MinValue(1), MaxValue(3)] private int setSize;
     [SerializeField] private Tilemap mapTilemap;
-    [SerializeField] private float fallDamageSpeed;
-
+    
+    [Header("Fall Ore Config")]
+    [SerializeField] private float fallDamageInterval;
+    [SerializeField] private float fundamentalDistance;
+    
     private int _currentEndurance;
+    private float _fallDamageTimer;
     private bool _canFall;
+    private bool _canDestroy;
     private CapsuleCollider2D _capsuleCollider2D;
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer _spriteRenderer;
@@ -24,7 +29,7 @@ public class OreObject : MonoBehaviour, IDamagable
     {
         _capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     private void Start()
@@ -46,20 +51,37 @@ public class OreObject : MonoBehaviour, IDamagable
     {
         Size = size;
         _currentEndurance = ore.endurancePerSize[Size - 1];
-        if (_spriteRenderer == null) { _spriteRenderer = GetComponent<SpriteRenderer>(); }
+        if (_spriteRenderer == null) { _spriteRenderer = GetComponentInChildren<SpriteRenderer>(); }
         _spriteRenderer.sprite = ore.oreSprites[Size - 1];
     }
 
     private void Update()
     {
-        // if (_canFall) { return; }
+        if (_rigidbody2D.velocity.y < 0)
+        {
+            _fallDamageTimer += Time.deltaTime;
+            if (_fallDamageTimer >= fallDamageInterval)
+            {
+                _canDestroy = true;
+            }
+        }
+        else
+        {
+            _fallDamageTimer = 0;
+        }
         
-        var position = new Vector3(_capsuleCollider2D.bounds.center.x, _capsuleCollider2D.bounds.min.y - 0.1f, 0);
+        if (_canFall) { return; }
+        
+        var size = Mathf.Max(_capsuleCollider2D.size.x, _capsuleCollider2D.size.y) / 2 + 0.9f;
+        var angle = (transform.eulerAngles.z + 270) * Mathf.Deg2Rad;
+        var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+        
+        var position = _capsuleCollider2D.bounds.center + (Vector3)direction.normalized * size;
         var cellPosition = mapTilemap.WorldToCell(position);
         if (mapTilemap.HasTile(cellPosition)) { return; }
         
         _canFall = true;
-        // _rigidbody2D.isKinematic = false;
+        _rigidbody2D.isKinematic = false;
     }
 
     public void TakeDamage(int damage)
@@ -87,7 +109,7 @@ public class OreObject : MonoBehaviour, IDamagable
     
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (_rigidbody2D.velocity.y > -fallDamageSpeed) { return; }
+        if (!_canDestroy) { return; }
         if (other.collider.CompareTag("Player")) { return; }
 		
         if (other.collider.TryGetComponent<IDamagable>(out var target))
@@ -95,7 +117,26 @@ public class OreObject : MonoBehaviour, IDamagable
             target.TakeDamage(Ore.attackPower);
             Destroy(gameObject);
         }
+        
+        // TODO: ［正規実装］魔鉱石が壊れると能力が発動する
 		
         Destroy(gameObject);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (mapTilemap == null) { return; }
+        
+        var capsuleCollider2D = GetComponent<CapsuleCollider2D>();
+        if (capsuleCollider2D == null) { return; }
+        
+        var size = Mathf.Max(capsuleCollider2D.size.x, capsuleCollider2D.size.y) / 2 + 0.9f;
+        var angle = (transform.eulerAngles.z + 270) * Mathf.Deg2Rad;
+        var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+        
+        var startPosition = capsuleCollider2D.bounds.center + (Vector3)direction.normalized * size;
+        
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(mapTilemap.GetCellCenterWorld(mapTilemap.WorldToCell(startPosition)), new Vector3(0.9f, 0.9f));
     }
 }
