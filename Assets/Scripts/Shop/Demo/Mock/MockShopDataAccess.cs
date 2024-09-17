@@ -26,7 +26,7 @@ public class MockShopDataAccess : IShopCommand
         }
 
         var shopData = shopDatas
-            .Where(shopData=>shopData.Equipment.EquipmentId ==id)
+            .Where(shopData=>shopData.Equipment.EquipId==id)
             .FirstOrDefault();
 
         return shopData.SoldOut;
@@ -37,7 +37,7 @@ public class MockShopDataAccess : IShopCommand
         var Equip = EquipRepository.FindData(id);
         shopDatas.Add(new ShopData(Equip));
         var shopData = shopDatas
-            .Where(shopData => shopData.Equipment.EquipmentId == id)
+            .Where(shopData => shopData.Equipment.EquipId == id)
             .FirstOrDefault();
 
         shopData.ShopBuy();

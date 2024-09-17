@@ -19,8 +19,8 @@ public class ShopDi : LifetimeScope
     {
         builder.Register<DemoShopService>(Lifetime.Singleton)
             .As<IInputShop>();
-        builder.Register<MockEquipDataAccess>(Lifetime.Singleton)
-            .As<IEquipRepository>();
+        //builder.Register<MockEquipDataAccess>(Lifetime.Singleton)
+        //    .As<IEquipRepository>();
         builder.Register<MockShopDataAccess>(Lifetime.Singleton)
             .As<IShopCommand>();
         builder.Register<MockPlayerDataAccess>(Lifetime.Singleton)

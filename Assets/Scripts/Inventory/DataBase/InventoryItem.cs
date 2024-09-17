@@ -1,9 +1,9 @@
-public class ItemInventory
+public class InventoryItem
 {
     public int StackSize { get; private set; }
     public readonly ItemData ItemData;
 
-    public ItemInventory(ItemData itemData)
+    public InventoryItem(ItemData itemData)
     {
         ItemData = itemData;
         StackSize = 1;

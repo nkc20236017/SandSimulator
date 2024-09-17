@@ -8,7 +8,7 @@ public class ShopInput : MonoBehaviour
     private IInputShop inputShop;
 
     [SerializeField]
-    private EquipmentData equipmentData;
+    private EquipData equipmentData;
 
     [Inject]
     public void Inject(IInputShop inputShop)
@@ -18,7 +18,7 @@ public class ShopInput : MonoBehaviour
 
     public void InputShop()
     {
-        inputShop.ShopBuy(equipmentData.EquipmentId);
+        inputShop.ShopBuy(equipmentData.EquipId);
     }
 
 }

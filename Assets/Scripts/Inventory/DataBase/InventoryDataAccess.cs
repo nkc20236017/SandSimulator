@@ -7,7 +7,7 @@ public class InventoryDataAccess : IInventoryRepository
 {
 
     private InventoryDataBase inventoryDataBase;
-    private Dictionary<ItemData, ItemInventory> inventoryDictionary;
+    private Dictionary<ItemData, InventoryItem> inventoryDictionary;
 
     [Inject]
     public InventoryDataAccess(InventoryDataBase inventoryDataBase)
@@ -24,14 +24,14 @@ public class InventoryDataAccess : IInventoryRepository
         }
         else
         {
-            inventory = new ItemInventory(item);
+            inventory = new InventoryItem(item);
             inventoryDictionary.Add(item, inventory);
         }
     }
 
-    public List<ItemInventory> FindAll()
+    public List<InventoryItem> FindAll()
     {
-        var inventoryList = new List<ItemInventory>();
+        var inventoryList = new List<InventoryItem>();
 
         foreach(var item in inventoryDictionary.Values)
         {

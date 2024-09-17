@@ -3,24 +3,21 @@ using VContainer;
 
 public class DemoShopService : IInputShop
 {
-    private IEquipRepository shopRepository;
+    private IEquipRepository equipRepository;
     private IDemoPlayeRepository demoPlayeRepository;
     private IShopCommand shopCommand;
     private IOutPutShop outPutShop;
+    private IEquip equip;
 
     [Inject]
     public DemoShopService(IEquipRepository shopRepository, IDemoPlayeRepository demoPlayeRepository
-        , IShopCommand shopCommand, IOutPutShop outPutShop)
+        , IShopCommand shopCommand, IOutPutShop outPutShop, IEquip equip)
     {
         this.demoPlayeRepository = demoPlayeRepository;
-        this.shopRepository = shopRepository;
+        this.equipRepository = shopRepository;
         this.shopCommand = shopCommand;
         this.outPutShop = outPutShop;
-    }
-
-    public ShopServiceData GetShopServiceData(string id)
-    {
-        return shopRepository.FindServiceData(id);
+        this.equip = equip;
     }
 
     public void ShopBuy(string equipId)
@@ -29,13 +26,14 @@ public class DemoShopService : IInputShop
 
         if (shopCommand.ShopBuyCheck(equipId) == true)
         {
+            equip.Equip(equipId);
             outputData = new OutPutData(equipId);
             outPutShop.Equip(outputData);
             Debug.Log("バキュームを装備します");
             return;
         }
         //Shopのデータ
-        var requestShopItem = shopRepository.FindServiceData(equipId);
+        var requestShopItem = equipRepository.FindData(equipId);
         var playerData = demoPlayeRepository.Find();
         if (playerData.PlayerMoney < requestShopItem.EquipPrice)
         {

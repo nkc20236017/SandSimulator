@@ -5,10 +5,10 @@ using UnityEngine;
 [System.Serializable]
 public class ShopData
 {
-    public EquipmentData Equipment;
-    public bool SoldOut { get; private set; }
+    public EquipData Equipment;
+    public bool SoldOut;
 
-    public ShopData(EquipmentData equipment)
+    public ShopData(EquipData equipment)
     {
         Equipment = equipment;
     }

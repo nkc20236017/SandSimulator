@@ -17,7 +17,7 @@ public class InventoryUI : MonoBehaviour
         CleanUp();
     }
 
-    public void UpdateUI(ItemInventory itemInventory)
+    public void UpdateUI(InventoryItem itemInventory)
     {
         itemIamge.color = Color.white;
         itemIamge.sprite = itemInventory.ItemData.itemIcom;
