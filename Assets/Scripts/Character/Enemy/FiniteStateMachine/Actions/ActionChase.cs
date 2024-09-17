@@ -7,4 +7,3 @@ public class ActionChase : FsmAction
 		throw new System.NotImplementedException();
 	}
 }
-

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -18,6 +19,7 @@ public class ActionWander : FsmAction
 	{
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
+		_enemyBrain = GetComponent<EnemyBrain>();
 		
 		var random = Random.Range(0, 2);
 		_moveDirection = random == 0 ? Vector3.left : Vector3.right;
@@ -98,10 +100,13 @@ public class ActionWander : FsmAction
 		// if (_moveDirection.x == 0) { return; }
 		
 		x = _moveDirection.x >= 0 ? boxCollider2D.bounds.max.x + 0.25f : boxCollider2D.bounds.min.x - 0.25f;
-		position = new Vector2(x, boxCollider2D.bounds.min.y - boxCollider2D.bounds.size.y);
-		var cellPosition = Vector3Int.RoundToInt(tilemap.WorldToCell(position));
-		var bounds = new BoundsInt(cellPosition, Vector3Int.RoundToInt(boxCollider2D.size));
-		Gizmos.color = tilemap.GetTilesBlock(bounds) == null ? Color.red : Color.green;
+		position = new Vector2(x, boxCollider2D.bounds.min.y - boxCollider2D.size.y - 1f);
+		var cellPosition = tilemap.WorldToCell(position);
+		var size = Vector3Int.CeilToInt(boxCollider2D.size);
+		var bounds = new BoundsInt(cellPosition.x, cellPosition.y + 1, 1, size.x, size.y, 1);
+		var isHole = tilemap.GetTilesBlock(bounds);
+		isHole = isHole.Where(tile => tile != null).ToArray();
+		Gizmos.color = isHole.Length > 0 ? Color.red : Color.green;
 		Gizmos.DrawWireCube(bounds.center, bounds.size);
 	}
 }
