@@ -4,10 +4,13 @@ using NaughtyAttributes;
 
 public class OreObject : MonoBehaviour, IDamagable
 {
+    [Header("Datas Config")]
+    [SerializeField] private Tilemap mapTilemap;
+    
     [Header("Ore Object Config")]
     [SerializeField] private Ore ore;
     [SerializeField, MinValue(1), MaxValue(3)] private int setSize;
-    [SerializeField] private Tilemap mapTilemap;
+    [SerializeField, MinValue(0), MaxValue(360)] private float angle;
     
     [Header("Fall Ore Config")]
     [SerializeField] private float fallDamageInterval;
@@ -44,7 +47,7 @@ public class OreObject : MonoBehaviour, IDamagable
     [Button]
     public void Setup()
     {
-        SetOreConfig(setSize);
+        SetOre(ore, setSize, angle);
     }
 
     private void SetOreConfig(int size)
@@ -82,6 +85,16 @@ public class OreObject : MonoBehaviour, IDamagable
         
         _canFall = true;
         _rigidbody2D.isKinematic = false;
+    }
+
+    public void SetOre(Ore ore, int size, float angle)
+    {
+        size = Mathf.Clamp(size, 1, 3);
+        angle = Mathf.Clamp(angle, 0, 360);
+        this.ore = ore;
+        transform.eulerAngles = new Vector3(0, 0, angle);
+        _rigidbody2D.isKinematic = true;
+        SetOreConfig(size);
     }
 
     public void TakeDamage(int damage)

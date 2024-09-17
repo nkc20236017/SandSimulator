@@ -12,23 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 999291114a034fdfbbf22ffffe6d11ad, type: 3}
   m_Name: Turtle
   m_EditorClassIdentifier: 
-  type: 0
+  type: 1
   id: 001Turtle
   name: "\u30AB\u30E1"
   sprite: {fileID: 689829767909478425, guid: d8afa02174a017f4e924a319680dc0ad, type: 3}
   status:
   - name: "\uFF11\u5C64"
     depth: 1
-    hp: 0
-    attack: 0
-    speed: 0
+    hp: 30
+    attack: 5
+    speed: 7
   - name: "\uFF12\u5C64"
     depth: 2
-    hp: 0
-    attack: 0
-    speed: 0
+    hp: 80
+    attack: 10
+    speed: 7
   - name: "\uFF13\u5C64"
     depth: 3
-    hp: 0
-    attack: 0
-    speed: 0
+    hp: 120
+    attack: 18
+    speed: 7

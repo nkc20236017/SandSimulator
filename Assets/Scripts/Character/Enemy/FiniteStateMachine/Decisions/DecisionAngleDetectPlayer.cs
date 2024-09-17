@@ -1,22 +1,28 @@
-﻿using System;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 using NaughtyAttributes;
 
 public class DecisionAngleDetectPlayer : FsmDecision
 {
 	[Header("Detection Config")]
 	[SerializeField] private Transform pivot;
-	[FormerlySerializedAs("range")] [SerializeField, MinValue(0)] private float radius;
+	[SerializeField, MinValue(0)] private float radius;
 	[SerializeField, MinValue(0), MaxValue(180)] private float angle;
 	[SerializeField, MinValue(0), MaxValue(360)] private float direction;
 	[SerializeField] private LayerMask playerLayerMask;
 	[SerializeField] private LayerMask obstacleLayerMask;
 	
+	[Header("Mark Config")]
+	[SerializeField] private SpriteRenderer markSpriteRenderer;
+	[SerializeField] private Sprite findMarkSprite;
+	[SerializeField] private Sprite lostMarkSprite;
+	[SerializeField] private float showMarkTime;
+	
 	[Header("Debug Config")]
 	[SerializeField] private bool debugMode;
 	
 	private bool _isPlayerDetected;
+	private Coroutine _markCoroutine;
 	private EnemyBrain _enemyBrain;
 
 	private void Awake()
@@ -33,38 +39,73 @@ public class DecisionAngleDetectPlayer : FsmDecision
 	{
 		// TODO: デバッグモードの時はプレイヤーを検知しないようにする
 		
-		var playerCollider = Physics2D.OverlapCircle(transform.position, radius, playerLayerMask);
-		if (playerCollider == null) { return false; }
-		
-		var player = playerCollider.transform;
-		var circumference = GetNewCell(-direction * Mathf.Deg2Rad, radius);
-		
-		var direction1 = circumference - pivot.position;
-		var direction2 = player.position - pivot.position;
-		
-		var circumferenceToPlayerAngle = Vector2.Angle(direction1, direction2);
-		if (circumferenceToPlayerAngle > angle) { return false; }
-
-		// TODO: プレイヤーが死んでいる場合はプレイヤーを検知しない（無視する）
-		if (IsObstaclePivot(player))
+		var playerCollider = Physics2D.OverlapCircle(pivot.position, radius, playerLayerMask);
+		if (playerCollider != null)
 		{
-			if (!_isPlayerDetected)
+			var player = playerCollider.transform;
+			var distance = (pivot.position - player.position).sqrMagnitude;
+			if (distance > radius * radius)
 			{
-				_isPlayerDetected = true;
-				// TODO: プレイヤーを見失ったアクションを付ける
-				// TODO: プレイヤーを見失った場合、見失った場所まで移動する
+				if (_isPlayerDetected)
+				{
+					_isPlayerDetected = false;
+					_enemyBrain.Player = null;
+					ShowMark(lostMarkSprite);
+				}
+				
+				return false;
+			}
+			
+			var circumference = GetNewCell(-direction * Mathf.Deg2Rad, radius);
+
+			var direction1 = circumference - pivot.position;
+			var direction2 = player.position - pivot.position;
+
+			var circumferenceToPlayerAngle = Vector2.Angle(direction1, direction2);
+			if (circumferenceToPlayerAngle <= angle)
+			{
+				if (IsObstaclePivot(player))
+				{
+					if (_isPlayerDetected)
+					{
+						_isPlayerDetected = false;
+						_enemyBrain.Player = null;
+						ShowMark(lostMarkSprite);
+						// TODO: プレイヤーを見失った場合、見失った場所まで移動する
+					}
+
+					return false;
+				}
+
+				if (!_isPlayerDetected)
+				{
+					_isPlayerDetected = true;
+					_enemyBrain.Player = player;
+					ShowMark(findMarkSprite);
+				}
+
+				return true;
+			}
+
+			// TODO: プレイヤーが死んでいる場合はプレイヤーを検知しない（無視する）
+			if (_isPlayerDetected && IsObstaclePivot(_enemyBrain.Player))
+			{
+				_enemyBrain.Player = null;
+				_isPlayerDetected = false;
+				ShowMark(lostMarkSprite);
 			}
 
 			return false;
 		}
-			
-		_enemyBrain.Player = player;
-		if (_isPlayerDetected)
+
+		if (_enemyBrain.Player != null && _isPlayerDetected)
 		{
+			_enemyBrain.Player = null;
 			_isPlayerDetected = false;
-			// TODO: プレイヤーを発見したアクションを付ける
+			ShowMark(lostMarkSprite);
 		}
-		return true;
+
+		return false;
 	}
 
 	private bool IsObstaclePivot(Transform target)
@@ -77,8 +118,28 @@ public class DecisionAngleDetectPlayer : FsmDecision
 	// {
 	// 	
 	// }
+	
+	private void ShowMark(Sprite mark)
+	{
+		markSpriteRenderer.gameObject.SetActive(true);
+		markSpriteRenderer.sprite = mark;
+		if (_markCoroutine != null)
+		{
+			StopCoroutine(_markCoroutine);
+		}
+		
+		_markCoroutine = StartCoroutine(HideMark());
+	}
+        
+	private IEnumerator HideMark()
+	{
+		yield return new WaitForSeconds(showMarkTime);
+        
+		markSpriteRenderer.sprite = null;
+		markSpriteRenderer.gameObject.SetActive(false);
+	}
 
-	private void OnDrawGizmosSelected()
+	private void OnDrawGizmos()
 	{
 		if (!debugMode) { return; }
 		if (pivot == null) { return; }
@@ -100,6 +161,11 @@ public class DecisionAngleDetectPlayer : FsmDecision
 		Gizmos.DrawLine(pivot.position, newCell2);
 		
 		// TODO: プレイヤーを検知した時のギズモ表示する
+		if (_enemyBrain == null) { return; }
+		if (_enemyBrain.Player == null) { return; }
+		
+		Gizmos.color = Color.red;
+		Gizmos.DrawLine(pivot.position, _enemyBrain.Player.position);
 	}
 	
 	private Vector3 GetNewCell(float f, float chordLength)

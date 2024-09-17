@@ -1,10 +1,13 @@
 ﻿using System;
-using NaughtyAttributes;
 using UnityEngine;
+using NaughtyAttributes;
 
 public enum EnemyType
 {
+	Mole,
 	Turtle,
+	Anmonite,
+	Wolf,
 }
 
 [CreateAssetMenu(fileName = "New Enemy", menuName = "ScriptableObjects/Datas/New Enemy")]

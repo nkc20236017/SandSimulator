@@ -3,17 +3,28 @@ using UnityEngine;
 
 public class EnemyBrain : MonoBehaviour
 {
-	[Header("Config")]
+	[Header("Enemy Config")]
+	[SerializeField] private Enemy enemy;
+	
+	[Header("Finite State Machine")]
 	[SerializeField] private string initState;
 	[SerializeField] private FsmState[] states;
     
 	private FsmState _currentState;
     
+	public Enemy Enemy { get; set; }
 	public Transform Player { get; set; }
     
 	private void Start()
 	{
+		SetEnemy(enemy);
+		
 		ChangeState(initState);
+	}
+	
+	public void SetEnemy(Enemy enemy)
+	{
+		Enemy = enemy;
 	}
 
 	private void Update()
