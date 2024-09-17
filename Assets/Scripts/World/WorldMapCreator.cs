@@ -7,27 +7,21 @@ using UnityEngine.Tilemaps;
 
 namespace WorldCreation
 {
-    public struct Chunk
-    {
-        public Vector2Int ChunkID { get; }
-
-    }
-
     public class WorldMapCreator : MonoBehaviour
     {
+        [SerializeField]
+        private int seed;
         [SerializeField]
         private WorldMap worldMap;
         [SerializeField]
         private Transform tileMapParent;
         [SerializeField]
         private GameObject tileMapPrefab;
-        [SerializeField]
-        private int maxSeedValueDigit;
         [Space]
         [SerializeField]
         private TileBase tileBaseDemo;
 
-        private int _seed;
+        private ManagedRandom randomization;
         private bool _isQuitting;
         private LayerGenerate _layer;
         private Tilemap[] _tilemaps;
@@ -40,9 +34,16 @@ namespace WorldCreation
 
         private void Start()
         {
+            if (seed == 0)
+            {
+                // seedが設定されていなければ新規で生成する
+                seed = Random.Range(0, int.MaxValue);
+            }
+
+            randomization = new(seed);
+
             // 初期化
-            _seed = CreateSeed();
-            _layer = new(_seed);
+            _layer = new(randomization.Range(0, 0));
             _cancelTokenSource = new();
 
             // 生成処理
@@ -56,13 +57,6 @@ namespace WorldCreation
             _isQuitting = true;
         }
 
-        public int CreateSeed()
-        {
-            int seed = Random.Range(0, maxSeedValueDigit);
-            Debug.Log($"生成されたシード値：{seed}");
-
-            return seed;
-        }
 
         private async void Generate(CancellationToken token)
         {

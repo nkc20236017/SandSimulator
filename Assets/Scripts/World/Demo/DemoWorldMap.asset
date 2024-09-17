@@ -17,11 +17,11 @@ MonoBehaviour:
   randomLimit: 176.9
   amplitude: 0.01
   layerRatios:
-  - 0.3148457
-  - 0.34584373
-  - 0.16137394
-  - 0.12653807
-  - 0.051398586
+  - 0.187
+  - 0.35
+  - 0.195
+  - 0.23812279
+  - 0.598
   borderNoiseSize: 28.26
   worldLayers:
   - debugLayerColor: {r: 1, g: 0.035849165, b: 0, a: 1}
@@ -84,6 +84,12 @@ MonoBehaviour:
     primevalEnemies: []
     primevalDungeons: []
   - debugLayerColor: {r: 1, g: 0, b: 0.8365736, a: 1}
+    materialTiles: []
+    tileWeight: []
+    primevalOres: []
+    primevalEnemies: []
+    primevalDungeons: []
+  - debugLayerColor: {r: 0, g: 0, b: 0, a: 0}
     materialTiles: []
     tileWeight: []
     primevalOres: []
