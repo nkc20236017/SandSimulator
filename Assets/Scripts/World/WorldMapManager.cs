@@ -51,5 +51,8 @@ public class WorldMapManager : MonoBehaviour, IChunkInformation, IWorldMapManage
         return result;
     }
 
-
+    public int GetLayer(Vector2 position)
+    {
+        throw new System.NotImplementedException();
+    }
 }
