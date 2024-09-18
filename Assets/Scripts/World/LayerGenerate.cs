@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 namespace WorldCreation
 {
-    public class LayerGenerate : IWorldGeneratable
+    public class LayerGenerate// : IWorldGeneratable
     {
         private int _seed;
 

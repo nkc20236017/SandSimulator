@@ -30,7 +30,7 @@ public class DemoVisualize : MonoBehaviour
         // worldGenerator.Execute(_worldLayers);
     }
 
-    [ContextMenu("World/Generate")]
+    [ContextMenu("World/GenerateAll")]
     public void Generate()
     {
         CaveLayer[] worldLayers = _worldLayers;

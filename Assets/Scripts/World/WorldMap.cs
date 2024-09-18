@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -46,18 +44,11 @@ namespace WorldCreation
         private Color debugLayerColor;
         public Color DebugLayerColor => debugLayerColor;
         [SerializeField]    // この地層を構成する材質
-        private TileBase[] materialTiles;
-        public TileBase[] MaterialTiles => materialTiles;
-        [SerializeField]
-        [Range(0, 1)]
-        private float[] tileWeight;
-        public float[] TileWeight => tileWeight;
+        private TileBase materialTile;
+        public TileBase MaterialTile => materialTile;
         [SerializeField]    // この地層に生成される鉱石
         private PrimevalObject[] primevalOres;
         public PrimevalObject[] PrimevalOres => primevalOres;
-        [SerializeField]    // この地層に存在する敵
-        private PrimevalObject[] primevalEnemies;
-        public PrimevalObject[] PrimevalEnemies => primevalEnemies;
         [SerializeField]    // この地層に存在するダンジョン
         private PrimevalObject[] primevalDungeons;
         public PrimevalObject[] PrimevalDungeons => primevalDungeons;
@@ -105,9 +96,12 @@ namespace WorldCreation
         [SerializeField]    // 世界の最大サイズ
         private Vector2Int worldScale;
         public Vector2Int WorldSize => worldScale;
-        [SerializeField]    // 1チャンクの大きさ
-        private Vector2Int oneChunkSize;
-        public Vector2Int OneChunkSize => oneChunkSize;
+        [SerializeField]    // 原点をずらす範囲の最小
+        private Vector2Int minOriginGapRange;
+        public Vector2Int MinOriginGapRange => minOriginGapRange;
+        [SerializeField]    // 原点をずらす範囲の最大
+        private Vector2Int maxOriginGapRange;
+        public Vector2Int MaxOriginGapRange => maxOriginGapRange;
         [SerializeField]    // ランダム値を生成する時の最大値
         private float randomLimit;
         public float RandomLimit => randomLimit;
@@ -115,6 +109,12 @@ namespace WorldCreation
         [Range(0f, 1f)]
         private float amplitude;
         public float Amplitude => amplitude;
+
+        [Space]
+        [Header("Chunk")]
+        [SerializeField]    // 1チャンクの大きさ
+        private Vector2Int oneChunkSize;
+        public Vector2Int OneChunkSize => oneChunkSize;
 
         [Space]
         [Header("each layer")]
@@ -129,9 +129,23 @@ namespace WorldCreation
         private WorldLayer[] worldLayers;
         public WorldLayer[] WorldLayers => worldLayers;
 
+        private Dictionary<int, TileBase> tileIDs;
+        public IReadOnlyDictionary<int, TileBase> TileIDs
+        {
+            get
+            {
+                tileIDs.Clear();
+                foreach (WorldLayer layer in worldLayers)
+                {
+                    tileIDs.Add(tileIDs.Count, layer.MaterialTile);
+                }
+
+                return tileIDs;
+            }
+        }
+
 #if UNITY_EDITOR
         private float[] layerRatiosOld = new float[0];
-        private float[][] weightSumOld = new float[0][];
 
         private void OnValidate()
         {
@@ -198,36 +212,6 @@ namespace WorldCreation
             }
 
             layerRatiosOld = layerRatios.ToArray();
-        }
-
-        /// <summary>
-        /// タイルのランダム値の重みを100%に調整する
-        /// </summary>
-        private void DebugValidateTileWeight()
-        {
-            for (int i = 0; i < worldLayers.Length; i++)
-            {
-                float weightSum = worldLayers[i].TileWeight.Sum();
-                // 合計が1以下であれば終了する
-                if (weightSum <= 1) { return; }
-
-                // 変更された値を取得する
-                float[] tileWeight = worldLayers[i].TileWeight;
-                (int changedIndex, bool isChanged) = GetChangedValue(ref tileWeight, ref weightSumOld[i]);
-                if (!isChanged) { continue; }
-
-                // 変化のある要素が見つからななかった場合
-                if (changedIndex == -1)
-                {
-                    continue;
-                }
-
-                // 変更された値が合計値から超えないよう制限する
-                float diff = Mathf.Abs(1 - weightSum);
-
-                worldLayers[i].TileWeight[changedIndex] -= diff;
-                weightSumOld[i] = worldLayers[i].TileWeight;
-            }
         }
 
         private (int value, bool isChanged) GetChangedValue(ref float[] current, ref float[] old)

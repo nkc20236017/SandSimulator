@@ -116,7 +116,7 @@ Tilemap:
       m_TileColorIndex: 2
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
-      m_AllTileFlags: 1073741825
+      m_AllTileFlags: 1
   m_AnimatedTiles: {}
   m_TileAssetArray:
   - m_RefCount: 1
@@ -149,11 +149,11 @@ Tilemap:
       e33: 1
   m_TileColorArray:
   - m_RefCount: 1
-    m_Data: {r: 0.05660379, g: 0.020505764, b: 0, a: 1}
+    m_Data: {r: 0.3433962, g: 0.3341711, b: 0.3284941, a: 1}
   - m_RefCount: 1
     m_Data: {r: 1, g: 0.8599645, b: 0, a: 1}
   - m_RefCount: 1
-    m_Data: {r: 0, g: 0.4044087, b: 1, a: 1}
+    m_Data: {r: 0, g: 0.4044087, b: 1, a: 0.7882353}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}

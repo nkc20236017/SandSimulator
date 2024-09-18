@@ -17,6 +17,7 @@ namespace WorldCreation.Preview
         [SerializeField]
         private UnityEvent previewSelected;
 
+        private ManagedRandom randomization;
         private LayerGenerate _layerGenerator;
         private int _seed;
         private const float GUIDELINE_ALPHA = 0.25f;
@@ -26,7 +27,7 @@ namespace WorldCreation.Preview
         {
             if (!Application.isPlaying)
             {
-                _seed = GetComponent<WorldMapCreator>().CreateSeed();
+                randomization = new(GetComponent<WorldMapCreator>().Seed);
                 _layerGenerator = new(_seed);
             }
         }
@@ -64,10 +65,65 @@ namespace WorldCreation.Preview
         /// </summary>
         public void WorldScaleView()
         {
+            Vector3 tileMapOrigin = new
+            (
+                randomization.Order(0, worldMap.MinOriginGapRange.x, worldMap.MaxOriginGapRange.x),
+                randomization.Order(1, worldMap.MinOriginGapRange.y, worldMap.MaxOriginGapRange.y),
+                0
+            );
+
             Gizmos.color = new Color(0.5f, 0.5f, 0, 1f);
             Vector3 size = (Vector2)worldMap.WorldSize;
-            Vector3 center = Vector3.Scale(size, new(0.5f, 0.5f, 0));
+            Vector3 center = Vector3.Scale(size, new(0.5f, 0.5f, 0)) + tileMapOrigin;
             Gizmos.DrawWireCube(center, size);
+        }
+
+        public void WorldOriginView()
+        {
+            Vector3[] xRange =
+            {
+                new Vector3(worldMap.MinOriginGapRange.x, 0, 0),
+                new Vector3(worldMap.MaxOriginGapRange.x, 0, 0),
+                new Vector3(worldMap.MinOriginGapRange.x, -10, 0),
+                new Vector3(worldMap.MinOriginGapRange.x, 10, 0),
+                new Vector3(worldMap.MaxOriginGapRange.x, -10, 0),
+                new Vector3(worldMap.MaxOriginGapRange.x, 10, 0)
+
+            };
+            Vector3[] yRange =
+            {
+                new Vector3(0, worldMap.MinOriginGapRange.y, 0),
+                new Vector3(0, worldMap.MaxOriginGapRange.y, 0),
+                new Vector3(-10, worldMap.MinOriginGapRange.y, 0),
+                new Vector3(10, worldMap.MinOriginGapRange.y, 0),
+                new Vector3(-10, worldMap.MaxOriginGapRange.y, 0),
+                new Vector3(10, worldMap.MaxOriginGapRange.y, 0)
+            };
+
+            Gizmos.color = new Color(0.25f, 0.25f, 0, 0.8f);
+            Gizmos.DrawLineList(xRange);
+            Gizmos.DrawLineList(yRange);
+
+            Gizmos.color = new Color(1, 1, 0, 0.8f);
+            // 範囲外テスト
+            if (worldMap.MinOriginGapRange.x > 0 || worldMap.MinOriginGapRange.y > 0)
+            {
+                Gizmos.color = Color.red;
+            }
+            if (worldMap.MinOriginGapRange.x + worldMap.WorldSize.x < 0 || worldMap.MinOriginGapRange.y + worldMap.WorldSize.y < 0)
+            {
+                Gizmos.color = Color.red;
+            }
+            if (worldMap.MaxOriginGapRange.x > 0 || worldMap.MaxOriginGapRange.y > 0)
+            {
+                Gizmos.color = Color.red;
+            }
+            if (worldMap.MaxOriginGapRange.x + worldMap.WorldSize.x < 0 || worldMap.MaxOriginGapRange.y + worldMap.WorldSize.y < 0)
+            {
+                Gizmos.color = Color.red;
+            }
+
+            Gizmos.DrawWireSphere(Vector3.zero, 10f);
         }
 
         /// <summary>

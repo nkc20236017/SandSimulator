@@ -4,5 +4,7 @@ using UnityEngine.Tilemaps;
 using WorldCreation;
 public interface IWorldGeneratable
 {
-    public UniTask<TileBase[,]> Execute(TileBase[,] worldTile, WorldMap worldMap, CancellationToken token);
+    public int ExecutionOrder { get; set; }
+
+    public UniTask<Chunk> Execute(Chunk chunk, WorldMap worldMap, CancellationToken token);
 }
