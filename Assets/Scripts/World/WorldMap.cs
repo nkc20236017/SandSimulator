@@ -44,8 +44,8 @@ namespace WorldCreation
         private Color debugLayerColor;
         public Color DebugLayerColor => debugLayerColor;
         [SerializeField]    // ‚±‚Ì’n‘w‚ð\¬‚·‚éÞŽ¿
-        private TileBase materialTile;
-        public TileBase MaterialTile => materialTile;
+        private int materialTileID;
+        public int MaterialTileID => materialTileID;
         [SerializeField]    // ‚±‚Ì’n‘w‚É¶¬‚³‚ê‚ézÎ
         private PrimevalObject[] primevalOres;
         public PrimevalObject[] PrimevalOres => primevalOres;
@@ -109,12 +109,18 @@ namespace WorldCreation
         [Range(0f, 1f)]
         private float amplitude;
         public float Amplitude => amplitude;
+        [SerializeField]
+        private TileBase[] blockList;
+        public TileBase[] BlockList => blockList;
 
         [Space]
         [Header("Chunk")]
         [SerializeField]    // 1ƒ`ƒƒƒ“ƒN‚Ì‘å‚«‚³
         private Vector2Int oneChunkSize;
         public Vector2Int OneChunkSize => oneChunkSize;
+        [SerializeField]
+        private int fillLimit;
+        public int FillLimit => fillLimit;
 
         [Space]
         [Header("each layer")]
@@ -123,26 +129,11 @@ namespace WorldCreation
         private float[] layerRatios;
         public float[] LayerRatios => layerRatios;
         [SerializeField]    // ’n‘w‚Ì‹«ŠEü‚Ì˜c‚Ý
-        private float borderNoiseSize;
-        public float BorderNoiseSize => borderNoiseSize;
+        private float borderDistortionPower;
+        public float BorderDistortionPower => borderDistortionPower;
         [SerializeField]    // ‚»‚ê‚¼‚ê‚Ì’n‘w‚Ìó‘Ô
         private WorldLayer[] worldLayers;
         public WorldLayer[] WorldLayers => worldLayers;
-
-        private Dictionary<int, TileBase> tileIDs;
-        public IReadOnlyDictionary<int, TileBase> TileIDs
-        {
-            get
-            {
-                tileIDs.Clear();
-                foreach (WorldLayer layer in worldLayers)
-                {
-                    tileIDs.Add(tileIDs.Count, layer.MaterialTile);
-                }
-
-                return tileIDs;
-            }
-        }
 
 #if UNITY_EDITOR
         private float[] layerRatiosOld = new float[0];

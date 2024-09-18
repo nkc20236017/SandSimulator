@@ -28,7 +28,7 @@ namespace WorldCreation.Preview
             if (!Application.isPlaying)
             {
                 randomization = new(GetComponent<WorldMapCreator>().Seed);
-                _layerGenerator = new(_seed);
+                _layerGenerator = new();
             }
         }
 
@@ -174,7 +174,7 @@ namespace WorldCreation.Preview
                 (
                     worldMap.WorldSize.x,
                     layerHeight,
-                    worldMap.BorderNoiseSize,
+                    worldMap.BorderDistortionPower,
                     (int)worldMap.RandomLimit,
                     worldMap.Amplitude
                 )
@@ -190,8 +190,8 @@ namespace WorldCreation.Preview
                 Gizmos.color = layerColor;
                 Gizmos.DrawLine
                 (
-                    new(0, layerHeight + worldMap.BorderNoiseSize),
-                    new(worldMap.WorldSize.x, layerHeight + worldMap.BorderNoiseSize)
+                    new(0, layerHeight + worldMap.BorderDistortionPower),
+                    new(worldMap.WorldSize.x, layerHeight + worldMap.BorderDistortionPower)
                 );
                 Gizmos.DrawLine
                 (

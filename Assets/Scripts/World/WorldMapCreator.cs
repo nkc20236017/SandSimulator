@@ -32,6 +32,7 @@ namespace WorldCreation
         private Chunk[,] _chunks;
         private IWorldGeneratable[] _worldGenerators =
         {
+            new LayerGenerate(),
             new ChunkLoader()
         };
 
@@ -46,7 +47,6 @@ namespace WorldCreation
             _randomization = new(seed);
 
             // 初期化
-            _layer = new(_randomization.Range(0, 0));
             _cancelTokenSource = new();
 
             // 生成処理
@@ -81,7 +81,13 @@ namespace WorldCreation
                     // チャンクを生成
                     GameObject tilemap = Instantiate(tilemapPrefab, origin, Quaternion.identity, tilemapParent);
 
-                    _chunks[x, y] = new Chunk(_randomization, tilemap.GetComponent<Tilemap>());
+                    _chunks[x, y] = new Chunk
+                    (
+                        _randomization,
+                        new(x, y),
+                        tilemap.GetComponent<Tilemap>(),
+                        new int[worldMap.OneChunkSize.x, worldMap.OneChunkSize.y]
+                    );
 
                     // 次のX座標を設定
                     origin.x += worldMap.OneChunkSize.x;
@@ -104,9 +110,9 @@ namespace WorldCreation
         private async void GenerateAll(CancellationToken token)
         {
             // 全てのチャンクを読み込む
-            for (int x = 0; x < _chunks.GetLength(0); x++)
+            for (int y = 0; y < _chunks.GetLength(0); y++)
             {
-                for (int y = 0; y < _chunks.GetLength(1); y++)
+                for (int x = 0; x < _chunks.GetLength(1); x++)
                 {
                     foreach (IWorldGeneratable worldGenerator in _worldGenerators)
                     {

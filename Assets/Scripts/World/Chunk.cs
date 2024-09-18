@@ -5,13 +5,17 @@ public struct Chunk
 {
     private ManagedRandom _randamization;
     private Tilemap _Tilemap;
+    private Vector2Int _position;
     private int[,] _cache;
 
-    public Chunk(ManagedRandom random, Tilemap tilemap)
+    public Vector2Int Position => _position;
+
+    public Chunk(ManagedRandom random, Vector2Int position, Tilemap tilemap, int[,] tile)
     {
         _randamization = random;
         _Tilemap = tilemap;
-        _cache = null;
+        _position = position;
+        _cache = tile;
     }
 
     public int GetNoise(int executionOrder)
