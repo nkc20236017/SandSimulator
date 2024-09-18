@@ -12,23 +12,22 @@ namespace WorldCreation
     public class WorldMapCreator : MonoBehaviour
     {
         [SerializeField]
-        private int seed;
+        private int seed;   // シード値
         public int Seed => seed;
-        [SerializeField]
+        [SerializeField]    // 
         private WorldMap worldMap;
         [SerializeField]
-        private Transform tileMapParent;
+        private Transform tilemapParent;
         [SerializeField]
-        private GameObject tileMapPrefab;
-        [Space]
+        private GameObject tilemapPrefab;
         [SerializeField]
-        private Transform point;
+        private GameObject worldMapManagerPrefab;
 
 
         private bool _isQuitting;
         private LayerGenerate _layer;
         private CancellationTokenSource _cancelTokenSource;
-        private Vector2 _tileMapOrigin;
+        private Vector2 _tilemapOrigin;
         private ManagedRandom _randomization;
         private Chunk[,] _chunks;
         private IWorldGeneratable[] _worldGenerators =
@@ -54,47 +53,6 @@ namespace WorldCreation
             Initalize();
             GenerateAll(_cancelTokenSource.Token);
         }
-        public Tilemap GetChunk(Vector2 position)
-        {
-            return GetChunk(position, Vector2Int.zero);
-        }
-
-        public Tilemap GetChunk(Vector2 position, Vector2Int chunkVector)
-        {
-            // 原点からの距離を求める
-            Vector2 originDistance = position - _tileMapOrigin;
-
-            // 差がマイナスであればエラーとする
-            if (originDistance.x < 0 || originDistance.y < 0)
-            {
-                return null;
-            }
-
-            Vector2Int splitedVector = new
-            (
-                (int)(originDistance.x / worldMap.OneChunkSize.x),
-                (int)(originDistance.y / worldMap.OneChunkSize.y)
-            );
-
-            // チャンクが存在すれば
-            Tilemap result;
-            try
-            {
-                result
-                   = _chunks[splitedVector.x + chunkVector.x, splitedVector.y + chunkVector.y].TileMap;
-            }
-            catch
-            {
-                result = null;
-            }
-
-            return result;
-        }
-
-        private void Update()
-        {
-            Debug.Log($"{GetChunk(point.position, Vector2Int.one)}", GetChunk(point.position, Vector2Int.one).gameObject);
-        }
 
         private void Initalize()
         {
@@ -113,7 +71,7 @@ namespace WorldCreation
                 _randomization.Range(worldMap.MinOriginGapRange.x, worldMap.MaxOriginGapRange.x),
                 _randomization.Range(worldMap.MinOriginGapRange.y, worldMap.MaxOriginGapRange.y)
             );
-            _tileMapOrigin = origin;
+            _tilemapOrigin = origin;
 
             // チャンク単位の座標を計算し、生成
             for (int y = 0; y < split.y; y++)
@@ -121,16 +79,16 @@ namespace WorldCreation
                 for (int x = 0; x < split.x; x++)
                 {
                     // チャンクを生成
-                    GameObject tileMap = Instantiate(tileMapPrefab, origin, Quaternion.identity, tileMapParent);
+                    GameObject tilemap = Instantiate(tilemapPrefab, origin, Quaternion.identity, tilemapParent);
 
-                    _chunks[x, y] = new Chunk(_randomization, tileMap.GetComponent<Tilemap>());
+                    _chunks[x, y] = new Chunk(_randomization, tilemap.GetComponent<Tilemap>());
 
                     // 次のX座標を設定
                     origin.x += worldMap.OneChunkSize.x;
                 }
 
                 // 次の座標を設定
-                origin.x = _tileMapOrigin.x;
+                origin.x = _tilemapOrigin.x;
                 origin.y += worldMap.OneChunkSize.y;
             }
         }
@@ -154,34 +112,15 @@ namespace WorldCreation
                     {
                         _chunks[x, y] = await worldGenerator.Execute(_chunks[x, y], worldMap, token);
                         worldGenerator.ExecutionOrder = _randomization.UsageCount;
+                        Debug.Log($"<color=#00ff00ff>{worldGenerator}の処理終了</color>");
                     }
                 }
             }
-        }
-        /*
-                private async UniTask Fill(TileBase[,] worldTile, CancellationToken token)
-                {
-                    for (int y = 0; y < worldMap.OneChunkSize.y; y++)
-                    {
-                        for (int x = 0; x < worldMap.OneChunkSize.x; x++)
-                        {
-                            for (int i = 0; i < _chunks.Length; i++)
-                            {
-                                if (_isQuitting)
-                                {
-                                    return;
-                                }
-                                _tilemaps[i].SetTile
-                                (
-                                    new Vector3Int(x, y),
-                                    worldTile[x, y]
-                                );
-                            }
 
-                        }
-                        // 1フレームの処理数を制限
-                        await UniTask.Yield(token).SuppressCancellationThrow();
-                    }
-                }*/
+            GameObject worldMapManager = Instantiate(worldMapManagerPrefab);
+            worldMapManager.GetComponent<IWorldMapManager>()
+                .Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
+            Debug.Log($"<color=#ffff00ff>マネージャーの生成完了</color>");
+        }
     }
 }

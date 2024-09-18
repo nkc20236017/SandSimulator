@@ -65,7 +65,7 @@ namespace WorldCreation.Preview
         /// </summary>
         public void WorldScaleView()
         {
-            Vector3 tileMapOrigin = new
+            Vector3 tilemapOrigin = new
             (
                 randomization.Order(0, worldMap.MinOriginGapRange.x, worldMap.MaxOriginGapRange.x),
                 randomization.Order(1, worldMap.MinOriginGapRange.y, worldMap.MaxOriginGapRange.y),
@@ -74,7 +74,7 @@ namespace WorldCreation.Preview
 
             Gizmos.color = new Color(0.5f, 0.5f, 0, 1f);
             Vector3 size = (Vector2)worldMap.WorldSize;
-            Vector3 center = Vector3.Scale(size, new(0.5f, 0.5f, 0)) + tileMapOrigin;
+            Vector3 center = Vector3.Scale(size, new(0.5f, 0.5f, 0)) + tilemapOrigin;
             Gizmos.DrawWireCube(center, size);
         }
 

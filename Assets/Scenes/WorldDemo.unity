@@ -390,9 +390,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seed: 1630
   worldMap: {fileID: 11400000, guid: d3bea26fdfb133940bb933d384498db8, type: 2}
-  tileMapParent: {fileID: 1850257783}
-  tileMapPrefab: {fileID: 4281351336352850513, guid: 1d8ff621e4dfdf241a877aad79dc3ee6, type: 3}
-  point: {fileID: 1811168256}
+  tilemapParent: {fileID: 1850257783}
+  tilemapPrefab: {fileID: 4281351336352850513, guid: 1d8ff621e4dfdf241a877aad79dc3ee6, type: 3}
+  worldMapManagerPrefab: {fileID: 4864080701464837153, guid: 7aebf57b1f0fa864aaad27561cc167ae, type: 3}
 --- !u!114 &1927889662
 MonoBehaviour:
   m_ObjectHideFlags: 0

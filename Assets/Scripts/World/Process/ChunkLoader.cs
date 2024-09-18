@@ -21,7 +21,6 @@ namespace WorldCreation
 
         async UniTask<Chunk> IWorldGeneratable.Execute(Chunk chunk, WorldMap worldMap, CancellationToken token)
         {
-            Debug.Log($"run");
             for (int y = 0; y < worldMap.OneChunkSize.y; y++)
             {
                 for (int x = 0; x < worldMap.OneChunkSize.x; x++)
