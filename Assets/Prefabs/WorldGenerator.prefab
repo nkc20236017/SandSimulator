@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4943378099846280640
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 699861024539554483}
+  - component: {fileID: 6385568336271638583}
+  - component: {fileID: 7946553276464248011}
+  m_Layer: 0
+  m_Name: WorldGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &699861024539554483
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4943378099846280640}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6385568336271638583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4943378099846280640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b63645b6f251a784fbb0b4119ff90f0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seed: 1630
+  worldMap: {fileID: 11400000, guid: d3bea26fdfb133940bb933d384498db8, type: 2}
+  tilemapParent: {fileID: 0}
+  tilemapPrefab: {fileID: 4281351336352850513, guid: 1d8ff621e4dfdf241a877aad79dc3ee6, type: 3}
+  worldMapManagerPrefab: {fileID: 4864080701464837153, guid: 7aebf57b1f0fa864aaad27561cc167ae, type: 3}
+--- !u!114 &7946553276464248011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4943378099846280640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb036d3c5e4a2d4db82bb6fc0e56bd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldMap: {fileID: 11400000, guid: d3bea26fdfb133940bb933d384498db8, type: 2}
+  previewAlways:
+    m_PersistentCalls:
+      m_Calls: []
+  previewSelected:
+    m_PersistentCalls:
+      m_Calls: []
