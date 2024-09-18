@@ -120,7 +120,7 @@ namespace WorldCreation
             GameObject worldMapManager = Instantiate(worldMapManagerPrefab);
             worldMapManager.GetComponent<IWorldMapManager>()
                 .Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
-            Debug.Log($"<color=#ffff00ff>マネージャーの生成完了</color>");
+            Debug.Log($"<color=#ffff00ff>WorldMapManagerの生成完了</color>");
         }
     }
 }
