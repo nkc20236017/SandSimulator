@@ -246,6 +246,7 @@ public class SuckUp : MonoBehaviour
         Gizmos.color = Color.green;
         var camera = Camera.main;
         if (camera == null) { return; }
+        if (_tilemap == null) { return; }
 
         var mouseWorldPosition = camera.ScreenToWorldPoint(Input.mousePosition);
         var centerCell = (Vector3)_tilemap.WorldToCell(mouseWorldPosition);

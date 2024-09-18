@@ -120,6 +120,8 @@ public class ActionWander : FsmAction
 
 	private void OnDrawGizmos()
 	{
+		if (tilemap == null) { return; }
+		
 		var boxCollider2D = GetComponent<BoxCollider2D>();
 		if (boxCollider2D == null) { return; }
 		
