@@ -8,7 +8,6 @@ using Random = UnityEngine.Random;
 public class TilesUpdate : MonoBehaviour
 {
     [Header("Datas Config")]
-    [SerializeField] private Tilemap _updateTilemap;
     [SerializeField] private Tilemap _mapTilemap;
     [SerializeField] private BlockDatas blockDatas;
     [SerializeField] private LayerMask collisionLayerMask;
@@ -23,11 +22,17 @@ public class TilesUpdate : MonoBehaviour
     [SerializeField] private bool canUpdateSandToMud;
     
     private float _lastUpdateTime;
+    private Tilemap _updateTilemap;
     private List<Vector3Int> _clearTiles = new();
     private List<Vector3Int> _updateTiles = new();
     
     private Dictionary<Vector3Int, TileBase> _previousTilemapState = new();
-    
+
+    private void Awake()
+    {
+        _updateTilemap = GetComponent<Tilemap>();
+    }
+
     private void Start()
     {
         blockDatas.Block.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());

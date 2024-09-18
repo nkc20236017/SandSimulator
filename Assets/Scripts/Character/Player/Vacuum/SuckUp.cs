@@ -8,7 +8,6 @@ using Random = UnityEngine.Random;
 public class SuckUp : MonoBehaviour
 {
     [Header("Tile Config")]
-    [SerializeField] private Tilemap _tilemap;
     [SerializeField] private BlockDatas blockDatas;
     [SerializeField] private LayerMask blockLayerMask;
     
@@ -26,6 +25,7 @@ public class SuckUp : MonoBehaviour
     [SerializeField] private bool matchTheSizeOfTheCollider;
 
     private int _numberExecutions;
+    private Tilemap _tilemap;
     private List<Vector3Int> _suckUpTilePositions = new();
     private List<OreObject> _suckUpOreObject = new();
     private PlayerMovement _playerMovement;
@@ -34,6 +34,7 @@ public class SuckUp : MonoBehaviour
     private PlayerActions _playerActions;
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
     private IInputTank inputTank;
+    private IChunkInformation _chunkInformation;
     
     public bool IsSuckUp { get; private set; }
     
@@ -49,6 +50,7 @@ public class SuckUp : MonoBehaviour
         
         _blowOut = GetComponent<BlowOut>();
         _playerMovement = GetComponentInParent<PlayerMovement>();
+        _chunkInformation = GetComponent<IChunkInformation>();
     }
 
     private void Start()
@@ -58,10 +60,13 @@ public class SuckUp : MonoBehaviour
         
         VacuumActions.Absorption.started += _ => _playerMovement.IsMoveFlip = false;
         VacuumActions.Absorption.canceled += _ => CancelSuckUp();
+
+        SetTilemap();
     }
 
     private void Update()
     {
+        SetTilemap();
         RotateToCursorDirection();
         
         if (VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
@@ -70,6 +75,10 @@ public class SuckUp : MonoBehaviour
             Performed();
             _numberExecutions++;
         }
+    }
+    private void SetTilemap()
+    {
+        _tilemap = _chunkInformation.GetChunk(transform.position);
     }
 
     private void Performed()

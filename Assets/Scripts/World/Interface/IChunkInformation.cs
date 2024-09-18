@@ -4,23 +4,23 @@ using UnityEngine.Tilemaps;
 public interface IChunkInformation
 {
     /// <summary>
-    /// Žw’è‚ÌÀ•W‚ªˆÊ’u‚µ‚Ä‚¢‚éÀ•W‚ðŽæ“¾‚·‚é
+    /// æŒ‡å®šã®åº§æ¨™ãŒä½ç½®ã—ã¦ã„ã‚‹åº§æ¨™ã‚’å–å¾—ã™ã‚‹
     /// </summary>
-    /// <param name="position">ƒ[ƒ‹ƒhÀ•W</param>
-    /// <returns>ƒ`ƒƒƒ“ƒN‚Ìƒ^ƒCƒ‹ƒ}ƒbƒvƒIƒuƒWƒFƒNƒg</returns>
+    /// <param name="position">ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™</param>
+    /// <returns>ãƒãƒ£ãƒ³ã‚¯ã®ã‚¿ã‚¤ãƒ«ãƒžãƒƒãƒ—ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ</returns>
     public Tilemap GetChunk(Vector2 position);
 
     /// <summary>
-    /// Žw’è‚ÌÀ•W‚ªˆÊ’u‚µ‚Ä‚¢‚éÀ•W‚ðŽæ“¾‚·‚é
+    /// æŒ‡å®šã®åº§æ¨™ãŒä½ç½®ã—ã¦ã„ã‚‹åº§æ¨™ã‚’å–å¾—ã™ã‚‹
     /// </summary>
-    /// <param name="position">ƒ[ƒ‹ƒhÀ•W</param>
-    /// <returns>ƒ`ƒƒƒ“ƒN‚Ìƒ^ƒCƒ‹ƒ}ƒbƒvƒIƒuƒWƒFƒNƒg</returns>
+    /// <param name="position">ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™</param>
+    /// <returns>ãƒãƒ£ãƒ³ã‚¯ã®ã‚¿ã‚¤ãƒ«ãƒžãƒƒãƒ—ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ</returns>
     public Tilemap GetChunk(Vector2 position, Vector2Int chunkVector);
 
     /// <summary>
-    /// Žw’è‚ÌÀ•W‚Ì‘w”Ô†‚ðŽæ“¾‚·‚é
+    /// æŒ‡å®šã®åº§æ¨™ã®å±¤ç•ªå·ã‚’å–å¾—ã™ã‚‹
     /// </summary>
-    /// <param name="position">ƒ[ƒ‹ƒhÀ•W</param>
-    /// <returns>‘w‚Ì”Ô†(ã‚ª0)</returns>
+    /// <param name="position">ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™</param>
+    /// <returns>å±¤ã®ç•ªå·(ä¸ŠãŒ0)</returns>
     public int GetLayer(Vector2 position);
 }

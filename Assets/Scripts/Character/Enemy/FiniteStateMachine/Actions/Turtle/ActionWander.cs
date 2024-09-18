@@ -6,7 +6,6 @@ using Random = UnityEngine.Random;
 public class ActionWander : FsmAction
 {
 	[Header("Datas Config")]
-	[SerializeField] private Tilemap tilemap;
 	[SerializeField] private LayerMask groundLayerMask;
 	
 	[Header("Ground Config")]
@@ -31,24 +30,35 @@ public class ActionWander : FsmAction
 	[SerializeField] private float invincibleTime;
 	
 	private Vector3 _moveDirection;
+	private Tilemap _tilemap;
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
+	private IChunkInformation _chunkInformation;
 
 	private void Start()
 	{
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();
+		_chunkInformation = GetComponent<IChunkInformation>();
 		
 		var random = Random.Range(0, 2);
 		_moveDirection = random == 0 ? Vector3.left : Vector3.right;
 		transform.localScale = new Vector3(_moveDirection.x, 1, 1);
+		
+		SetTilemap();
 	}
 
 	public override void Action()
 	{
+		SetTilemap();
 		Wander();
+	}
+	
+	private void SetTilemap()
+	{
+		_tilemap = _chunkInformation.GetChunk(transform.position);
 	}
 	
 	private void Wander()
@@ -66,8 +76,8 @@ public class ActionWander : FsmAction
 
 		var x = _moveDirection.x >= 0 ? _boxCollider2D.bounds.max.x + 0.25f : _boxCollider2D.bounds.min.x - 0.25f;
 		var position = new Vector2(x, _boxCollider2D.bounds.min.y + autoJumpHeight - 1);
-		var cellPosition = tilemap.WorldToCell(position);
-		if (tilemap.HasTile(cellPosition) && !tilemap.HasTile(cellPosition + Vector3Int.up))
+		var cellPosition = _tilemap.WorldToCell(position);
+		if (_tilemap.HasTile(cellPosition) && !_tilemap.HasTile(cellPosition + Vector3Int.up))
 		{
 			transform.position += new Vector3(0.25f, autoJumpHeight + 0.25f, 0);
 		}
@@ -97,9 +107,9 @@ public class ActionWander : FsmAction
 		
 		var x = _moveDirection.x >= 0 ? _boxCollider2D.bounds.max.x + _boxCollider2D.bounds.size.x / 2 + 0.25f : _boxCollider2D.bounds.min.x - _boxCollider2D.bounds.size.x / 2 - 0.25f;
 		var position = new Vector2(x, _boxCollider2D.bounds.min.y - _boxCollider2D.bounds.size.y / 2 - 0.1f);
-		var cellPosition = tilemap.WorldToCell(position);
+		var cellPosition = _tilemap.WorldToCell(position);
 		var bounds = new BoundsInt(cellPosition, Vector3Int.RoundToInt(_boxCollider2D.size));
-		return tilemap.GetTilesBlock(bounds) == null;
+		return _tilemap.GetTilesBlock(bounds) == null;
 	}
 
 	private bool IsWall()
@@ -109,8 +119,8 @@ public class ActionWander : FsmAction
 		
 		var x = _moveDirection.x >= 0 ? _boxCollider2D.bounds.max.x + 0.25f : _boxCollider2D.bounds.min.x - 0.25f;
 		var position = new Vector2(x, _boxCollider2D.bounds.min.y + wallHeight - 1);
-		var cellPosition = tilemap.WorldToCell(position);
-		return tilemap.HasTile(cellPosition);
+		var cellPosition = _tilemap.WorldToCell(position);
+		return _tilemap.HasTile(cellPosition);
 	}
 	
 	private void Movement()
@@ -120,7 +130,7 @@ public class ActionWander : FsmAction
 
 	private void OnDrawGizmos()
 	{
-		if (tilemap == null) { return; }
+		if (_tilemap == null) { return; }
 		
 		var boxCollider2D = GetComponent<BoxCollider2D>();
 		if (boxCollider2D == null) { return; }
@@ -135,16 +145,16 @@ public class ActionWander : FsmAction
 		
 		// ジャンプのギズモ表示
 		position = new Vector2(x, boxCollider2D.bounds.min.y + autoJumpHeight - 1);
-		var cellPosition = tilemap.WorldToCell(position);
-		Gizmos.color = tilemap.HasTile(cellPosition) && !tilemap.HasTile(cellPosition + Vector3Int.up) ? Color.red : Color.green;
-		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(cellPosition), Vector3.one);
+		var cellPosition = _tilemap.WorldToCell(position);
+		Gizmos.color = _tilemap.HasTile(cellPosition) && !_tilemap.HasTile(cellPosition + Vector3Int.up) ? Color.red : Color.green;
+		Gizmos.DrawWireCube(_tilemap.GetCellCenterWorld(cellPosition), Vector3.one);
 		
 		// 穴のギズモ表示
 		position = new Vector2(x, boxCollider2D.bounds.min.y - boxCollider2D.size.y);
-		cellPosition = tilemap.WorldToCell(position);
+		cellPosition = _tilemap.WorldToCell(position);
 		var size = Vector3Int.CeilToInt(boxCollider2D.size);
 		var bounds = new BoundsInt(cellPosition.x, cellPosition.y, 1, size.x, size.y, 1);
-		var isHole = tilemap.GetTilesBlock(bounds) == null;
+		var isHole = _tilemap.GetTilesBlock(bounds) == null;
 		Gizmos.color = isHole ? Color.red : Color.green;
 		Gizmos.DrawWireCube(bounds.center, bounds.size);
 		
@@ -152,8 +162,8 @@ public class ActionWander : FsmAction
 		
 		// 壁のギズモ表示
 		position = new Vector2(x, boxCollider2D.bounds.min.y + wallHeight - 1);
-		cellPosition = tilemap.WorldToCell(position);
-		Gizmos.color = tilemap.HasTile(cellPosition) ? Color.red : Color.green;
-		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(cellPosition), Vector3.one);
+		cellPosition = _tilemap.WorldToCell(position);
+		Gizmos.color = _tilemap.HasTile(cellPosition) ? Color.red : Color.green;
+		Gizmos.DrawWireCube(_tilemap.GetCellCenterWorld(cellPosition), Vector3.one);
 	}
 }

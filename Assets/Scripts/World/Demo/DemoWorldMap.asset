@@ -23,11 +23,11 @@ MonoBehaviour:
   - 0.35
   - 0.195
   - 0.23812279
-  - 0.157
+  - 0.029877245
   borderNoiseSize: 28.26
   worldLayers:
   - debugLayerColor: {r: 1, g: 0.035849165, b: 0, a: 1}
-    materialTile: {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
+    materialTile: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
     primevalOres:
     - priority: 0
       modelObject: {fileID: 0}
