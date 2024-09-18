@@ -269,7 +269,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3345953ce2167be4b954a6f374ea7062, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  equipmentData: {fileID: 11400000, guid: 8d5d0a91359d00b45a790af4fe747955, type: 2}
+  equipmentData: {fileID: 11400000, guid: c9e0cb8c21ba08740a9da18854cc4a52, type: 2}
 --- !u!1 &455501148
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,7 +414,7 @@ MonoBehaviour:
   shopPresenter: {fileID: 942720155}
   demoPlayerDataObject: {fileID: 11400000, guid: 297998ba708e6334c9eaf190465ec05b, type: 2}
   demoShopDataBase: {fileID: 11400000, guid: 2a34b7d53e081c74e835761a23e78ef7, type: 2}
-  equipmentDataBase: {fileID: 11400000, guid: 73e97b556f683b74b841f277df1b2d3f, type: 2}
+  equipmentDataBase: {fileID: 11400000, guid: 27249e72120ee364587de8b03c812d6a, type: 2}
 --- !u!1 &942720149
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,6 +531,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fec6e44b233f8d44b4d7097f8c239b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShopUIObject: {fileID: 0}
+  ShopImageParent: {fileID: 0}
 --- !u!1 &1209509324
 GameObject:
   m_ObjectHideFlags: 0

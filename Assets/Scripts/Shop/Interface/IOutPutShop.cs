@@ -1,6 +1,6 @@
 ﻿public interface IOutPutShop
 {
-    void Equip(OutPutData outPutData);
-    void NotBuy(OutPutData outPutData);
+    void EquipUI(OutPutData outPutData);
+    void NotBuyUI(OutPutData outPutData);
     void ShopUI(OutPutData outPutData);
 }

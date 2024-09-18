@@ -22,28 +22,31 @@ public class DemoShopService : IInputShop
 
     public void ShopBuy(string equipId)
     {
+        var requestShopItem = equipRepository.FindData(equipId);
+        var playerData = demoPlayeRepository.Find();
         OutPutData outputData;
+        var money = playerData.PlayerMoney;
 
         if (shopCommand.ShopBuyCheck(equipId) == true)
         {
             equip.Equip(equipId);
-            outputData = new OutPutData(equipId);
-            outPutShop.Equip(outputData);
+            outputData = new OutPutData(equipId,money);
+            outPutShop.EquipUI(outputData);
             Debug.Log("バキュームを装備します");
             return;
         }
         //Shopのデータ
-        var requestShopItem = equipRepository.FindData(equipId);
-        var playerData = demoPlayeRepository.Find();
         if (playerData.PlayerMoney < requestShopItem.EquipPrice)
         {
-            outputData = new OutPutData(equipId);
-            outPutShop.NotBuy(outputData);
+            outputData = new OutPutData(equipId, money);
+            outPutShop.NotBuyUI(outputData);
             Debug.Log("お金が足りません");
             return;
         }
 
-        outputData = new OutPutData(equipId);
+        money -= requestShopItem.EquipPrice;
+
+        outputData = new OutPutData(equipId,money);
         shopCommand.ShopBuyCommand(equipId);
         outPutShop.ShopUI(outputData);
 

@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "New EquipData",menuName = "Data/EquipData")]
 public class EquipData : ScriptableObject
 {
     public string EquipName;

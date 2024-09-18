@@ -1,28 +1,31 @@
+using System.Collections.Generic;
+
 public class EquipService : IEquip
 {
-    private IEquipRepository EquipRepository;
     private IModifiers modifiers;
+    private IPlayerEquipRepository playerEquipRepository;
 
-    public EquipService(IEquipRepository equipRepository, IModifiers modifiers)
+    public EquipService( IModifiers modifiers,
+        IPlayerEquipRepository playerEquipRepository)
     {
-        EquipRepository = equipRepository;
         this.modifiers = modifiers;
+        this.playerEquipRepository = playerEquipRepository;
     }
 
     public void Equip(string id)
     {
         var oldEquip = string.Empty;
-        var newEquip = EquipRepository.FindData(id);
-        if (newEquip.EquipId == id)
+        var newEquip = playerEquipRepository.FindEquipId(id);
+        if (newEquip.Id == id)
         {
-            oldEquip = newEquip.EquipId;
+            oldEquip = newEquip.Id;
         }
 
         if (oldEquip != string.Empty)
         {
             UnEquip(oldEquip);
         }
-        EquipRepository.AddEquip(id);
+        playerEquipRepository.AddEquip(id);
         modifiers.AddModifiers(id);
 
     }
@@ -31,7 +34,7 @@ public class EquipService : IEquip
 
     public void UnEquip(string id)
     {
-        EquipRepository.RemoveEquip(id);
+        playerEquipRepository.RemoveEquip(id);
         modifiers.RemoveModifiers(id);
     }
 }

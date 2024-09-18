@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class ShopDataAccess : MonoBehaviour
+public class ShopDataAccess : IShopRepository
 {
-    // Start is called before the first frame update
-    void Start()
+    private DemoShopDataBase DemoShopDataBase;
+
+    public ShopDataAccess(DemoShopDataBase demoShopDataBase)
     {
-        
+        this.DemoShopDataBase = demoShopDataBase;
     }
 
-    // Update is called once per frame
-    void Update()
+    public ShopData FindShopData(string Id)
     {
-        
+        return DemoShopDataBase.shopDatas
+            .Where(shopData => shopData.Equipment.EquipId == Id)
+            .FirstOrDefault();
     }
 }

@@ -1,0 +1,46 @@
+using Codice.Client.Common;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+public class PlayerEquipDataAccess : IPlayerEquipRepository
+{
+    private readonly PlayerEquipDataBase playerEquipDataBase;
+    private readonly IEquipRepository equipRepository;
+
+    public PlayerEquipDataAccess(PlayerEquipDataBase playerEquipDataBase
+        , IEquipRepository equipRepository)
+    {
+        this.playerEquipDataBase = playerEquipDataBase;
+        this.equipRepository = equipRepository;
+    }
+
+    public EquipData FindData(string equipId)
+    {
+        return playerEquipDataBase.equipData
+            .Where(equip => equip.EquipId == equipId )
+            .FirstOrDefault();
+    }
+
+    public void AddEquip(string equipId)
+    {
+        var equip = equipRepository.FindData(equipId);
+        playerEquipDataBase.equipData.Add(equip);
+    }
+
+    public void RemoveEquip(string equipId)
+    {
+        var equip = equipRepository.FindData(equipId);
+        playerEquipDataBase.equipData.Remove(equip);
+    }
+
+    public EquipId FindEquipId(string equipId)
+    {
+        var equip = playerEquipDataBase.equipData
+        .Where(equip => equip.EquipId == equipId)
+        .FirstOrDefault();
+
+        return new EquipId(equip.EquipId);
+    }
+}
