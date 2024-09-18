@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 5
   id: 
-  name: 
+  name: "\u7D4C\u9A13\u5024\u7D50\u6676"
   tile: {fileID: 0}
   stratumGeologyDatas: []
   weight: 0
