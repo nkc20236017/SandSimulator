@@ -176,7 +176,7 @@ namespace WorldCreation.Preview
                     layerHeight,
                     worldMap.BorderDistortionPower,
                     (int)worldMap.RandomLimit,
-                    worldMap.Amplitude
+                    worldMap.BorderAmplitude
                 )
                 .Select(point => (Vector3)(Vector2)point)
                 .ToArray();

@@ -107,8 +107,8 @@ namespace WorldCreation
         public float RandomLimit => randomLimit;
         [SerializeField]    // ƒ‰ƒ“ƒ_ƒ€’l‚ÌU‚ê•
         [Range(0f, 1f)]
-        private float amplitude;
-        public float Amplitude => amplitude;
+        private float borderAmplitude;
+        public float BorderAmplitude => borderAmplitude;
         [SerializeField]
         private TileBase[] blockList;
         public TileBase[] BlockList => blockList;

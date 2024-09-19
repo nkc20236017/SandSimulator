@@ -13,22 +13,22 @@ MonoBehaviour:
   m_Name: DemoWorldMap
   m_EditorClassIdentifier: 
   worldScale: {x: 640, y: 390}
-  minOriginGapRange: {x: -20, y: -19}
-  maxOriginGapRange: {x: -366, y: -120}
+  minOriginGapRange: {x: 0, y: 0}
+  maxOriginGapRange: {x: 0, y: 0}
   randomLimit: 176.9
-  amplitude: 0.01
+  borderAmplitude: 0.02
   blockList:
   - {fileID: 11400000, guid: f71c8f4de0d0c4c4ca5f4f79858b001b, type: 2}
   - {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
   - {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
-  - {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
+  - {fileID: 11400000, guid: 6485ccbf4f5813542a9e57e3e866a44f, type: 2}
   oneChunkSize: {x: 64, y: 39}
   fillLimit: 500
   layerRatios:
-  - 0.355
-  - 0.439
-  - 0.725
-  borderDistortionPower: 25.7
+  - 0.25
+  - 0.277
+  - 0.561
+  borderDistortionPower: 32.88
   worldLayers:
   - debugLayerColor: {r: 1, g: 0.035849165, b: 0, a: 1}
     materialTileID: 0

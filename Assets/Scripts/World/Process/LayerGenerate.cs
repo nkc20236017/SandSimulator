@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System;
+using UnityEditor.U2D.Aseprite;
 
 namespace WorldCreation
 {
@@ -13,6 +14,8 @@ namespace WorldCreation
         private int _executionOrder;
 
         private int[] _layerBorderRangeHeights; // 構造：[境界底辺0, 境界上限0, 境界底辺1, 境界上限1, ...]
+        private int[] _layerHeights;
+        private int[] _layerNoise;
 
         public int ExecutionOrder
         {
@@ -28,21 +31,28 @@ namespace WorldCreation
                 FindingLayerBorder(worldMap);
             }
 
-            int worldHeight = worldMap.OneChunkSize.y * chunk.Position.y;
-            // チャンクが地層の境界線にまたがっているか判定する
-            int layerPositionIndex = Array.IndexOf
+            // 現在のチャンクの下と上の座標を取得
+            int worldLowerHeight = worldMap.OneChunkSize.y * chunk.Position.y;
+            int worldUpperHeight = worldLowerHeight + (worldMap.OneChunkSize.y - 1);
+
+            // 地層をまたいでいる場所の取得
+            int[] straddles
+                = _layerBorderRangeHeights
+                .Where(y => worldLowerHeight <= y && y <= worldUpperHeight)
+                .ToArray();
+
+            // チャンクの下側がどの地層に存在しているか取得する
+            int layerIndex = Array.IndexOf
             (
-                _layerBorderRangeHeights
-                .Concat(new int[] { worldHeight })
+                _layerHeights
+                .Concat(new int[] { worldLowerHeight })
                 .OrderByDescending(y => y)
                 .ToArray(),
-                worldHeight
+                worldLowerHeight
             );
 
-
-
             // チャンクをまたいでいなければ地層のIDで塗りつぶす
-            if (layerPositionIndex % 2 == 0)
+            if (straddles.Length == 0)
             {
                 for (int y = 0; y < chunk.GetChunkLength(1); y++)
                 {
@@ -52,9 +62,41 @@ namespace WorldCreation
                         (
                             x,
                             y,
-                            worldMap.WorldLayers[layerPositionIndex / 2].MaterialTileID
+                            worldMap.WorldLayers[layerIndex].MaterialTileID
                         );
+                    }
+                }
 
+                return await UniTask.RunOnThreadPool(() => chunk);
+            }
+
+            // チャンクを跨いでいた場合地層の歪みを生成する
+            for (int y = 0; y < chunk.GetChunkLength(1); y++)
+            {
+                for (int x = 0; x < chunk.GetChunkLength(0); x++)
+                {
+                    int worldPosition = chunk.Position.x * worldMap.OneChunkSize.x + x;
+                    int borderHeight = GetBorder(chunk, worldMap, worldPosition, layerIndex - 1);
+
+                    if (borderHeight > y)
+                    {
+                        // 地層の境界より下であれば普通のタイル
+                        chunk.SetBlock
+                        (
+                            x,
+                            y,
+                            worldMap.WorldLayers[layerIndex].MaterialTileID
+                        );
+                    }
+                    else
+                    {
+                        // 地層の境界より下であれば次のタイル
+                        chunk.SetBlock
+                        (
+                            x,
+                            y,
+                            worldMap.WorldLayers[layerIndex - 1].MaterialTileID
+                        );
                     }
                 }
             }
@@ -75,37 +117,39 @@ namespace WorldCreation
             return border;
         }
 
-        public async UniTask<TileBase[,]> Execute(TileBase[,] worldTile, WorldMap worldMap, CancellationToken token)
+        private int GetBorder(Chunk chunk, WorldMap worldMap, int x, int layerNumber)
         {
-            // 先に一番上の層の色で塗りつぶす
-            // worldMap.WorldLayers[0].MaterialTiles
-            for (int i = 0; i < worldMap.WorldLayers.Length; i++)
+            if (_layerNoise == null)
             {
-                if (i == 0)
+                _layerNoise = new int[worldMap.LayerRatios.Length];
+                for (int i = 0; i < _layerNoise.Length; i++)
                 {
-
+                    _layerNoise[i] = chunk.GetNoise(_executionOrder + i) / 1000;
                 }
             }
-
-            for (int x = 0; x < worldMap.WorldSize.x; x++)
-            {
-                for (int i = 0; i < worldMap.WorldSize.y; i++)
-                {
-
-                }
-            }
-            await UniTask.Yield();
-            return await UniTask.RunOnThreadPool(() => worldTile);
+            
+            return (int)
+            (
+                Mathf.PerlinNoise1D((x + _layerNoise[layerNumber]) * worldMap.BorderAmplitude)
+                * worldMap.BorderDistortionPower
+            );
         }
 
         private void FindingLayerBorder(WorldMap worldMap)
         {
+            _layerHeights = new int[worldMap.LayerRatios.Length];
             _layerBorderRangeHeights = new int[worldMap.LayerRatios.Length * 2];
-            for (int i = 0; i < worldMap.LayerRatios.Length; i += 2)    // 一度に2つのデータを入れるため2上昇させる
+            int layerMaxRatio = worldMap.WorldSize.y;
+
+            for (int i = 0; i < worldMap.LayerRatios.Length; i++)    // 一度に2つのデータを入れるため2上昇させる
             {
-                _layerBorderRangeHeights[i] = (int)(worldMap.WorldSize.y * worldMap.LayerRatios[i]);
-                _layerBorderRangeHeights[i + 1] = _layerBorderRangeHeights[i] + (int)worldMap.BorderDistortionPower;
+                _layerBorderRangeHeights[i] = (int)(layerMaxRatio * (1 - worldMap.LayerRatios[i]));
+                _layerBorderRangeHeights[_layerBorderRangeHeights.Length - (i + 1)] = _layerBorderRangeHeights[i] + (int)worldMap.BorderDistortionPower;
+                _layerHeights[i] = _layerBorderRangeHeights[i] + (int)worldMap.BorderDistortionPower;
+
+                layerMaxRatio = _layerHeights[i];
             }
+            _layerBorderRangeHeights = _layerBorderRangeHeights.OrderBy(i => i).ToArray();
         }
     }
 }

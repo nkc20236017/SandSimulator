@@ -27,6 +27,10 @@ namespace WorldCreation
                 for (int x = 0; x < chunk.GetChunkLength(0); x++)
                 {
                     Vector2Int position = new Vector2Int(x, y);
+                    if (chunk.GetBlockID(position) == -1)
+                    {
+                        continue;
+                    }
                     chunk.TileMap.SetTile
                     (
                         (Vector3Int)position,

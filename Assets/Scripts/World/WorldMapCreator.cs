@@ -83,8 +83,9 @@ namespace WorldCreation
 
                     _chunks[x, y] = new Chunk
                     (
+                        // TODO: タイルマップの左下の座標を求める計算をする
                         _randomization,
-                        new(x, y),
+                        new Vector2Int(x, y),
                         tilemap.GetComponent<Tilemap>(),
                         new int[worldMap.OneChunkSize.x, worldMap.OneChunkSize.y]
                     );
@@ -116,8 +117,8 @@ namespace WorldCreation
                 {
                     foreach (IWorldGeneratable worldGenerator in _worldGenerators)
                     {
-                        _chunks[x, y] = await worldGenerator.Execute(_chunks[x, y], worldMap, token);
                         worldGenerator.ExecutionOrder = _randomization.UsageCount;
+                        _chunks[x, y] = await worldGenerator.Execute(_chunks[x, y], worldMap, token);
                         Debug.Log($"<color=#00ff00ff>{worldGenerator}の処理終了</color>");
                     }
                 }
