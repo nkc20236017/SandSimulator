@@ -28,4 +28,9 @@ public class TankImage : MonoBehaviour
         tankImage.sizeDelta = new Vector2(tankImage.sizeDelta.x, imageSize);
     }
 
+    public void SelectUI()
+    {
+
+    }
+
 }

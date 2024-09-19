@@ -122,7 +122,7 @@ public class BlowOut : MonoBehaviour
 				var randomPosition = new Vector3(randomX, randomY, 0);
 				var randomCell = updateTilemap.WorldToCell(randomPosition);
 				updateTilemap.SetTile(randomCell, blockDatas.GetBlock(blockType).tile);
-				inputTank.InputRemoveTank(blockType);
+				inputTank.FiringTank();
 			}
 		}
 	}

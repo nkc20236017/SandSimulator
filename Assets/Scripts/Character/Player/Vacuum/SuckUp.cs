@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 public class SuckUp : MonoBehaviour
 {
     [Header("Tile Config")]
+    [SerializeField] private Tilemap _tilemap;  // 後で変える
     [SerializeField] private BlockDatas blockDatas;
     [SerializeField] private LayerMask blockLayerMask;
     
@@ -25,7 +26,6 @@ public class SuckUp : MonoBehaviour
     [SerializeField] private bool matchTheSizeOfTheCollider;
 
     private int _numberExecutions;
-    private Tilemap _tilemap;
     private List<Vector3Int> _suckUpTilePositions = new();
     private List<OreObject> _suckUpOreObject = new();
     private PlayerMovement _playerMovement;
@@ -34,7 +34,6 @@ public class SuckUp : MonoBehaviour
     private PlayerActions _playerActions;
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
     private IInputTank inputTank;
-    private IChunkInformation _chunkInformation;
     
     public bool IsSuckUp { get; private set; }
     
@@ -50,7 +49,6 @@ public class SuckUp : MonoBehaviour
         
         _blowOut = GetComponent<BlowOut>();
         _playerMovement = GetComponentInParent<PlayerMovement>();
-        _chunkInformation = GetComponent<IChunkInformation>();
     }
 
     private void Start()
@@ -60,13 +58,10 @@ public class SuckUp : MonoBehaviour
         
         VacuumActions.Absorption.started += _ => _playerMovement.IsMoveFlip = false;
         VacuumActions.Absorption.canceled += _ => CancelSuckUp();
-
-        SetTilemap();
     }
 
     private void Update()
     {
-        SetTilemap();
         RotateToCursorDirection();
         
         if (VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
@@ -75,10 +70,6 @@ public class SuckUp : MonoBehaviour
             Performed();
             _numberExecutions++;
         }
-    }
-    private void SetTilemap()
-    {
-        _tilemap = _chunkInformation.GetChunk(transform.position);
     }
 
     private void Performed()
@@ -133,7 +124,7 @@ public class SuckUp : MonoBehaviour
 
             if (angle <= _suctionAngle && distance <= _suctionDistance)
             {
-                DetectOre(_tilemap.GetCellCenterWorld(tilePosition));
+                DetectOre(_tilemap.GetCellCenterWorld(tilePosition));   
                 if (_suckUpOreObject.Count > 0) { continue; }
                 
                 if (_tilemap.GetTile(tilePosition) == null) { continue; }
@@ -199,7 +190,7 @@ public class SuckUp : MonoBehaviour
             
             if (Vector3.Distance(_tilemap.GetCellCenterWorld(newTilePosition), pivot.position) <= _deleteDistance)
             {
-                inputTank.InputAddTank(BlockType.Sand);//タンクに追加
+                inputTank.InputAddTank(tile);//タンクに追加
                 _tilemap.SetTile(newTilePosition, null);
             }
         }
@@ -221,7 +212,7 @@ public class SuckUp : MonoBehaviour
             
             if (Vector3.Distance(oreObject.transform.position, pivot.position) <= _deleteDistance)
             {
-                // inputTank.InputAddTank(BlockType.Ore);//タンクに追加
+                inputTank.InputAddTank(BlockType.Ore);//タンクに追加
                 _suckUpOreObject.Remove(oreObject);
                 Destroy(oreObject.gameObject);
             }

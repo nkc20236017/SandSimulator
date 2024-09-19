@@ -14,9 +14,30 @@ public class DemoInput : MonoBehaviour
         this.itemTank = itemTank;
     }
 
-    public void Button()
+    private void Update()
     {
-        itemTank.InputAddTank(BlockType.Sand);
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            itemTank.SelectTank(BlockType.Sand);
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            itemTank.SelectTank(BlockType.Mud);
+        }
+
+        if (Input.GetKey(KeyCode.S))
+        {
+            itemTank.FiringTank();
+        }
+
+        if(Input.GetKey(KeyCode.A))
+        {
+            itemTank.InputAddTank(BlockType.Sand);
+            itemTank.InputAddTank(BlockType.Mud);
+        }
+
+
     }
 
 

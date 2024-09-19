@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using VContainer;
 
 public class PlayerTank : IInputTank
@@ -7,8 +8,9 @@ public class PlayerTank : IInputTank
     private ITankRepository tankRepository;
     private Dictionary<Block, MineralTank> itemTankDictionary = new();
     private IOutPutTank outPutTank;
-    private readonly float MaxTank =4000;
+    private readonly float MaxTank = 4000;
     private int currentItemAmount;
+    private BlockType currentBlockType;
 
     [Inject]
     public PlayerTank(IOutPutTank outPutTank,  ITankRepository tankRepository)
@@ -17,6 +19,11 @@ public class PlayerTank : IInputTank
         this.tankRepository = tankRepository;
     }
 
+    public void InputAddTank(TileBase tileBase)
+    {
+        var mineralItem = tankRepository.Find(tileBase);
+        AddItem(mineralItem);
+    }
     public void InputAddTank(BlockType type)
     {
         var mineralItem = tankRepository.Find(type);
@@ -57,7 +64,7 @@ public class PlayerTank : IInputTank
         {
             if (vaule.mineralAmount <= 1)
             {
-                Debug.Log("�A�C�e�����X�g����폜");
+                Debug.Log("タンクを削除");
                 itemTankDictionary.Remove(mineralData);
                 currentItemAmount--;
             }
@@ -84,4 +91,14 @@ public class PlayerTank : IInputTank
         outPutTank.OutputTank(outputTank);
     }
 
+    public void FiringTank()
+    {
+        var block = tankRepository.Find(currentBlockType);
+        RemoveItem(block);
+    }
+
+    public void SelectTank(BlockType blockType)
+    {
+        this.currentBlockType = blockType;
+    }
 }

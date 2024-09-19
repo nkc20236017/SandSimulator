@@ -6,6 +6,7 @@ using Random = UnityEngine.Random;
 public class ActionWander : FsmAction
 {
 	[Header("Datas Config")]
+	[SerializeField] private Tilemap _tilemap;
 	[SerializeField] private LayerMask groundLayerMask;
 	
 	[Header("Ground Config")]
@@ -30,35 +31,24 @@ public class ActionWander : FsmAction
 	[SerializeField] private float invincibleTime;
 	
 	private Vector3 _moveDirection;
-	private Tilemap _tilemap;
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
-	private IChunkInformation _chunkInformation;
 
 	private void Start()
 	{
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();
-		_chunkInformation = GetComponent<IChunkInformation>();
 		
 		var random = Random.Range(0, 2);
 		_moveDirection = random == 0 ? Vector3.left : Vector3.right;
 		transform.localScale = new Vector3(_moveDirection.x, 1, 1);
-		
-		SetTilemap();
 	}
 
 	public override void Action()
 	{
-		SetTilemap();
 		Wander();
-	}
-	
-	private void SetTilemap()
-	{
-		_tilemap = _chunkInformation.GetChunk(transform.position);
 	}
 	
 	private void Wander()

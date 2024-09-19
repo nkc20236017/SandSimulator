@@ -3,6 +3,8 @@ using UnityEngine.Tilemaps;
 
 public class PlayerMovement : MonoBehaviour
 {
+	[SerializeField] private Tilemap tilemap; // 後で変える
+
 	[Header("Movement Config")]
 	[SerializeField] private float speed;
 	[SerializeField] private float jumpForce;
@@ -14,13 +16,11 @@ public class PlayerMovement : MonoBehaviour
 
 	private float _currentSpeed;
 	private Vector2 _moveDirection;
-	private Tilemap tilemap;
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private SpriteRenderer _spriteRenderer;
 	private Camera _camera;
 	private PlayerActions _playerActions;
-	private IChunkInformation _chunkInformation;
 	
 	public bool IsMoveFlip { get; set; } = true;
 	private PlayerActions.MovementActions MovementActions => _playerActions.Movement;
@@ -32,7 +32,6 @@ public class PlayerMovement : MonoBehaviour
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-		_chunkInformation = GetComponent<IChunkInformation>();
 	}
 
 	private void Start()
@@ -43,8 +42,6 @@ public class PlayerMovement : MonoBehaviour
 		MovementActions.Jump.canceled += _ => JumpCancel();
 		
 		_currentSpeed = speed;
-
-		SetTilemap();
 	}
 
 	private void FixedUpdate()
@@ -60,14 +57,8 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Update()
 	{
-		SetTilemap();
 		InputMovement();
 		IsGround();
-	}
-
-	private void SetTilemap()
-	{
-		tilemap = _chunkInformation.GetChunk(transform.position);
 	}
 
 	private void InputMovement()
