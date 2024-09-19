@@ -1,4 +1,4 @@
 ﻿public interface IShopRepository
 {
-    ShopData FindShopData(string Id);                                                                                                                 
+    ShopData FindShopData(string Id);
 }

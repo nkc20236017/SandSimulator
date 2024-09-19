@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using VContainer;
 
 public class EquipService : IEquip
 {
     private IModifiers modifiers;
     private IPlayerEquipRepository playerEquipRepository;
 
+    [Inject]
     public EquipService( IModifiers modifiers,
         IPlayerEquipRepository playerEquipRepository)
     {

@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using VContainer;
 
 public class PlayerEquipDataAccess : IPlayerEquipRepository
 {
     private readonly PlayerEquipDataBase playerEquipDataBase;
     private readonly IEquipRepository equipRepository;
 
+    [Inject]
     public PlayerEquipDataAccess(PlayerEquipDataBase playerEquipDataBase
         , IEquipRepository equipRepository)
     {
@@ -37,9 +39,15 @@ public class PlayerEquipDataAccess : IPlayerEquipRepository
 
     public EquipId FindEquipId(string equipId)
     {
+
         var equip = playerEquipDataBase.equipData
         .Where(equip => equip.EquipId == equipId)
         .FirstOrDefault();
+
+        if(equip == null)
+        {
+            return new EquipId("–³‚µ");
+        }
 
         return new EquipId(equip.EquipId);
     }

@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7793af4a99b343c4cbfe049dda3072f1, type: 3}
   m_Name: New ShopDataBase
   m_EditorClassIdentifier: 
-  shopDatas: []
+  shopDatas:
+  - Equipment: {fileID: 11400000, guid: c9e0cb8c21ba08740a9da18854cc4a52, type: 2}
+    SoldOut: 0
