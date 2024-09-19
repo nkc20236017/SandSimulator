@@ -1,18 +1,17 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using WorldCreation;
 
-public class CaveGenerater// : IWorldGeneratable
+public class CaveGenerator : IWorldGeneratable
 {
     private Tilemap _worldTilemap;
 
-    public CaveGenerater(Tilemap worldTilemap)
-    {
-        _worldTilemap = worldTilemap;
-    }
+    public int ExecutionOrder { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     public int[,] Execute(CaveLayer[] worldLayers, TerrainData terrain)
     {
@@ -24,6 +23,11 @@ public class CaveGenerater// : IWorldGeneratable
         }
 
         return blocks;
+    }
+
+    public UniTask<Chunk> Execute(Chunk chunk, WorldMap worldMap, CancellationToken token)
+    {
+        throw new System.NotImplementedException();
     }
 
     private float[,] GetDeletedBlock(CaveLayer layer)

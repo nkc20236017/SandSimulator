@@ -8,7 +8,7 @@ using UnityEditor.U2D.Aseprite;
 
 namespace WorldCreation
 {
-    public class LayerGenerate : IWorldGeneratable
+    public class LayerGenerator : IWorldGeneratable
     {
         private int _seed;
         private int _executionOrder;
@@ -67,6 +67,7 @@ namespace WorldCreation
                     }
                 }
 
+                Debug.Log("<color=#00ff00ff>地層の生成処理終了</color>");
                 return await UniTask.RunOnThreadPool(() => chunk);
             }
 
@@ -75,10 +76,19 @@ namespace WorldCreation
             {
                 for (int x = 0; x < chunk.GetChunkLength(0); x++)
                 {
-                    int worldPosition = chunk.Position.x * worldMap.OneChunkSize.x + x;
-                    int borderHeight = GetBorder(chunk, worldMap, worldPosition, layerIndex - 1);
+                    Vector2Int worldPosition = new
+                    (
+                        chunk.Position.x * worldMap.OneChunkSize.x + x,
+                        chunk.Position.y * worldMap.OneChunkSize.y + y
+                    );
+                    int borderHeight = GetBorder(chunk, worldMap, worldPosition.x, layerIndex - 1);
 
-                    if (borderHeight > y)
+                    borderHeight
+                        = _layerHeights[layerIndex - 1]
+                        - (int)worldMap.BorderDistortionPower
+                        + borderHeight;
+
+                    if (borderHeight > worldPosition.y)
                     {
                         // 地層の境界より下であれば普通のタイル
                         chunk.SetBlock
@@ -101,6 +111,7 @@ namespace WorldCreation
                 }
             }
 
+            Debug.Log("<color=#00ff00ff>地層の生成処理終了</color>");
             return await UniTask.RunOnThreadPool(() => chunk);
         }
 
@@ -124,10 +135,10 @@ namespace WorldCreation
                 _layerNoise = new int[worldMap.LayerRatios.Length];
                 for (int i = 0; i < _layerNoise.Length; i++)
                 {
-                    _layerNoise[i] = chunk.GetNoise(_executionOrder + i) / 1000;
+                    _layerNoise[i] = chunk.GetNoise(_executionOrder + i) / 10000;    // 10000: floatに変換するときにオーバーフローするのを防ぐための補正値
                 }
             }
-            
+
             return (int)
             (
                 Mathf.PerlinNoise1D((x + _layerNoise[layerNumber]) * worldMap.BorderAmplitude)

@@ -17,16 +17,16 @@ public class DemoVisualize : MonoBehaviour
     private Terrain terrain;
     private TerrainData terrainData;
 
-    private CaveGenerater worldGenerator;
+    private CaveGenerator worldGenerator;
 
     private void OnValidate()
     {
-        worldGenerator = new CaveGenerater(worldTilemap);
+        worldGenerator = new CaveGenerator(worldTilemap);
     }
 
     private void Start()
     {
-        worldGenerator = new CaveGenerater(worldTilemap);
+        worldGenerator = new CaveGenerator(worldTilemap);
         // worldGenerator.Execute(_worldLayers);
     }
 

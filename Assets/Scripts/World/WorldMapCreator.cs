@@ -25,14 +25,14 @@ namespace WorldCreation
 
 
         private bool _isQuitting;
-        private LayerGenerate _layer;
+        private LayerGenerator _layer;
         private CancellationTokenSource _cancelTokenSource;
         private Vector2 _tilemapOrigin;
         private ManagedRandom _randomization;
         private Chunk[,] _chunks;
         private IWorldGeneratable[] _worldGenerators =
         {
-            new LayerGenerate(),
+            new LayerGenerator(),
             new ChunkLoader()
         };
 

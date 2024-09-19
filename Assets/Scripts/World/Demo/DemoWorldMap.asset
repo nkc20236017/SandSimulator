@@ -16,7 +16,7 @@ MonoBehaviour:
   minOriginGapRange: {x: 0, y: 0}
   maxOriginGapRange: {x: 0, y: 0}
   randomLimit: 176.9
-  borderAmplitude: 0.02
+  borderAmplitude: 0.03
   blockList:
   - {fileID: 11400000, guid: f71c8f4de0d0c4c4ca5f4f79858b001b, type: 2}
   - {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
@@ -28,7 +28,7 @@ MonoBehaviour:
   - 0.25
   - 0.277
   - 0.561
-  borderDistortionPower: 32.88
+  borderDistortionPower: 33.19
   worldLayers:
   - debugLayerColor: {r: 1, g: 0.035849165, b: 0, a: 1}
     materialTileID: 0

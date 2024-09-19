@@ -18,7 +18,7 @@ namespace WorldCreation.Preview
         private UnityEvent previewSelected;
 
         private ManagedRandom randomization;
-        private LayerGenerate _layerGenerator;
+        private LayerGenerator _layerGenerator;
         private int _seed;
         private const float GUIDELINE_ALPHA = 0.25f;
 
