@@ -135,6 +135,10 @@ namespace WorldCreation
         private WorldLayer[] worldLayers;
         public WorldLayer[] WorldLayers => worldLayers;
 
+        [SerializeField]
+        private CaveCombineData[] caveCombine;
+        public CaveCombineData[] CaveCombine => caveCombine;
+
 #if UNITY_EDITOR
         private float[] layerRatiosOld = new float[0];
 
@@ -143,8 +147,6 @@ namespace WorldCreation
             DebugValidateNumberOfLayer();
 
             DebugValidateLayerRatio();
-
-            // DebugValidateTileWeight();
         }
 
         /// <summary>

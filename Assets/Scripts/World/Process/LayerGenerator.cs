@@ -76,11 +76,7 @@ namespace WorldCreation
             {
                 for (int x = 0; x < chunk.GetChunkLength(0); x++)
                 {
-                    Vector2Int worldPosition = new
-                    (
-                        chunk.Position.x * worldMap.OneChunkSize.x + x,
-                        chunk.Position.y * worldMap.OneChunkSize.y + y
-                    );
+                    Vector2Int worldPosition = chunk.GetWorldPosition(x, y, worldMap.OneChunkSize);
                     int borderHeight = GetBorder(chunk, worldMap, worldPosition.x, layerIndex - 1);
 
                     borderHeight
@@ -121,7 +117,7 @@ namespace WorldCreation
             int seed = _seed * UnityEngine.Random.Range(1, randomLimit);
             for (int x = 0; x < maxWorldWidth; x++)
             {
-                int noise = (int)(Mathf.PerlinNoise1D((x + seed) * amplitude) * noisePower);
+                int noise = (int)(Mathf.PerlinNoise1D(x * amplitude + seed) * noisePower);
                 border[x] = new Vector2Int(x, noise + altitude);
             }
 
@@ -135,13 +131,13 @@ namespace WorldCreation
                 _layerNoise = new int[worldMap.LayerRatios.Length];
                 for (int i = 0; i < _layerNoise.Length; i++)
                 {
-                    _layerNoise[i] = chunk.GetNoise(_executionOrder + i) / 10000;    // 10000: floatに変換するときにオーバーフローするのを防ぐための補正値
+                    _layerNoise[i] = chunk.GetNoise(_executionOrder + i, Int16.MaxValue);
                 }
             }
 
             return (int)
             (
-                Mathf.PerlinNoise1D((x + _layerNoise[layerNumber]) * worldMap.BorderAmplitude)
+                Mathf.PerlinNoise1D(x * worldMap.BorderAmplitude + _layerNoise[layerNumber])
                 * worldMap.BorderDistortionPower
             );
         }

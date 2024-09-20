@@ -98,6 +98,10 @@ namespace WorldCreation
                 origin.x = _tilemapOrigin.x;
                 origin.y += worldMap.OneChunkSize.y;
             }
+            // Ÿ‚Ì—”‚É‡‚í‚¹‚é‚½‚ß‚É‹ó‚Ì—”‚ğ¶¬‚µ‚Ä‚¨‚­
+            _randomization.Range(0, 0);
+
+            Debug.Log($"<color=#00ff00ff>‰Šú‰»ˆ—Š®—¹</color>");
         }
 
         private void OnApplicationQuit()
@@ -119,7 +123,7 @@ namespace WorldCreation
                     {
                         worldGenerator.ExecutionOrder = _randomization.UsageCount;
                         _chunks[x, y] = await worldGenerator.Execute(_chunks[x, y], worldMap, token);
-                        Debug.Log($"<color=#00ff00ff>{worldGenerator}‚Ìˆ—I—¹</color>");
+
                     }
                 }
             }

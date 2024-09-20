@@ -1,5 +1,6 @@
 using UnityEngine.Tilemaps;
 using UnityEngine;
+using WorldCreation;
 
 public struct Chunk
 {
@@ -18,9 +19,9 @@ public struct Chunk
         _cache = tile;
     }
 
-    public int GetNoise(int executionOrder)
+    public int GetNoise(int executionOrder, int maxValue = int.MaxValue)
     {
-        return _randamization.Order(executionOrder, 0, int.MaxValue);
+        return _randamization.Order(executionOrder, 0, maxValue);
     }
 
     public Tilemap TileMap
@@ -57,5 +58,23 @@ public struct Chunk
     public int GetChunkLength(int dimension)
     {
         return _cache.GetLength(dimension);
+    }
+
+    public Vector2Int GetWorldPosition(int x, int y, Vector2Int chunkSize)
+    {
+        return new
+        (
+            _position.x * chunkSize.x + x,
+            _position.y * chunkSize.y + y
+        );
+    }
+
+    public Vector2Int GetWorldPosition(Vector2Int position, Vector2Int chunkSize)
+    {
+        return new
+        (
+            _position.x * chunkSize.x + position.x,
+            _position.y * chunkSize.y + position.y
+        );
     }
 }

@@ -1,8 +1,6 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.Threading;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using WorldCreation;
@@ -10,63 +8,82 @@ using WorldCreation;
 public class CaveGenerator : IWorldGeneratable
 {
     private Tilemap _worldTilemap;
+    private int _executionOrder;
+    private int[] _noise;
 
-    public int ExecutionOrder { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-
-    public int[,] Execute(CaveLayer[] worldLayers, TerrainData terrain)
+    public int ExecutionOrder
     {
-        int[,] blocks = new int[worldLayers[0].MaxImpactAreaPosition.x, worldLayers[0].MaxImpactAreaPosition.y];
-        int[,] layerBlocks = blocks;
-        foreach (CaveLayer layer in worldLayers)
+        get => _executionOrder;
+        set => _executionOrder = value;
+    }
+
+    public async UniTask<Chunk> Execute(Chunk chunk, WorldMap worldMap, CancellationToken token)
+    {
+        // 乱数を生成する
+        if (_noise == null)
         {
-            terrain.SetHeights(0, 0, GetDeletedBlock(layer));
+            _noise = new int[worldMap.CaveCombine.Length];
+            for (int i = 0; i < worldMap.CaveCombine.Length; i++)
+            {
+                _noise[i] = chunk.GetNoise(_executionOrder, Int16.MaxValue);
+            }
         }
 
-        return blocks;
-    }
+        int[,] grid = new int[chunk.GetChunkLength(0), chunk.GetChunkLength(1)];
 
-    public UniTask<Chunk> Execute(Chunk chunk, WorldMap worldMap, CancellationToken token)
-    {
-        throw new System.NotImplementedException();
-    }
+        // 空間は-1とする
 
-    private float[,] GetDeletedBlock(CaveLayer layer)
-    {
-        // 開始座標と終了座標を明示的に宣言
-        Vector2Int StartPosition = layer.MinImpactAreaPosition;
-        Vector2Int EndPosition = layer.MaxImpactAreaPosition - layer.MinImpactAreaPosition;
-
-        Vector2 randomSeed = new(Random.Range(0, layer.Seed.x), Random.Range(0, layer.Seed.y));
-
-        float[,] blocks = new float[layer.MaxImpactAreaPosition.x, layer.MaxImpactAreaPosition.x];
-
-        for (int x = 0; x < EndPosition.x; x++)
+        for (int i = 0; i < worldMap.CaveCombine.Length; i++)
         {
-            for (int y = 0; y < EndPosition.y; y++)
+            CaveCombineData caveCombine = worldMap.CaveCombine[i];
+
+            for (int y = 0; y < grid.GetLength(1); y++)
             {
-                Vector3Int targetTile = new(x, y);
-                // 対象タイルが同じであれば次のタイル処理へ
-                if (_worldTilemap.GetTile(targetTile) == layer.FillingTile) { continue; }
-
-                float noise = Mathf.PerlinNoise
-                (
-                    x * layer.Frequency + randomSeed.x,
-                    y * layer.Frequency + randomSeed.y
-                );
-
-                if (noise > 0.5)
+                for (int x = 0; x < grid.GetLength(0); x++)
                 {
-                    noise = 1 - noise;
-                }
+                    Vector2Int worldPosition = chunk.GetWorldPosition(x, y, worldMap.OneChunkSize);
+                    // 現在の座標にタイルが既にあったら次の座標へ移動する
+                    if (grid[x, y] != -1) { continue; }
 
-                blocks[x, y] = noise;
+                    // 現在の座標のノイズ値を取得
+                    float noisePower = Mathf.PerlinNoise
+                    (
+                        (worldPosition.x + _noise[i]) * caveCombine.Scale.x,
+                        (worldPosition.y + _noise[i]) * caveCombine.Scale.y
+                    );
 
-                if (noise > layer.Extent)
-                {
-                    _worldTilemap.SetTile(targetTile, layer.FillingTile);
+                    // 道の太さを決める
+                    if (noisePower > caveCombine.HollowSize)
+                    {
+                        noisePower = 1f - noisePower;
+                    }
+
+                    if (caveCombine.IsInvert)
+                    {
+                        grid[x, y] = (noisePower > caveCombine.ClodSize)
+                            ? -1
+                            : caveCombine.TileID;
+                    }
+                    else
+                    {
+                        grid[x, y] = (noisePower > caveCombine.ClodSize)
+                            ? caveCombine.TileID
+                            : -1;
+                    }
                 }
             }
         }
-        return blocks;
+
+        // 結果をチャンクに反映
+        for (int y = 0; y < chunk.GetChunkLength(1); y++)
+        {
+            for (int x = 0; x < chunk.GetChunkLength(0); x++)
+            {
+                chunk.SetBlock(x, y, grid[x, y]);
+            }
+        }
+
+        Debug.Log("<color=#00ff00ff>洞窟の処理終了</color>");
+        return await UniTask.RunOnThreadPool(() => chunk);
     }
 }
