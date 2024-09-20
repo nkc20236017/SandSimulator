@@ -37,7 +37,6 @@ namespace WorldCreation
             new ChunkLoader()
         };
 
-        [ContextMenu("Regenerate")]
         private void Start()
         {
             if (seed == 0)
@@ -53,6 +52,12 @@ namespace WorldCreation
 
             // ê∂ê¨èàóù
             Initalize();
+            GenerateAll(_cancelTokenSource.Token);
+        }
+
+        [ContextMenu("Regenerate")]
+        private void Regenerate()
+        {
             GenerateAll(_cancelTokenSource.Token);
         }
 

@@ -17,21 +17,22 @@ MonoBehaviour:
   maxOriginGapRange: {x: 0, y: 0}
   randomLimit: 176.9
   borderAmplitude: 0.03
-  blockList:
-  - {fileID: 11400000, guid: f71c8f4de0d0c4c4ca5f4f79858b001b, type: 2}
-  - {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
-  - {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
-  - {fileID: 11400000, guid: 6485ccbf4f5813542a9e57e3e866a44f, type: 2}
+  blocks:
+    useBlockList:
+    - {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
+    - {fileID: 11400000, guid: 6485ccbf4f5813542a9e57e3e866a44f, type: 2}
+    - {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
+    - {fileID: 11400000, guid: f71c8f4de0d0c4c4ca5f4f79858b001b, type: 2}
   oneChunkSize: {x: 64, y: 39}
-  fillLimit: 500
+  fillLimit: 1000
   layerRatios:
   - 0.25
-  - 0.277
-  - 0.561
+  - 0.117
+  - 0.61354965
   borderDistortionPower: 33.19
   worldLayers:
   - debugLayerColor: {r: 1, g: 0.035849165, b: 0, a: 1}
-    materialTileID: 0
+    materialTileID: {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
     primevalOres:
     - priority: 0
       modelObject: {fileID: 0}
@@ -59,16 +60,21 @@ MonoBehaviour:
       marginSizeWidth: 0
       marginSizeHeight: 0
   - debugLayerColor: {r: 0, g: 0.14668608, b: 1, a: 1}
-    materialTileID: 1
+    materialTileID: {fileID: 11400000, guid: 6485ccbf4f5813542a9e57e3e866a44f, type: 2}
     primevalOres: []
     primevalDungeons: []
   - debugLayerColor: {r: 0.03901863, g: 1, b: 0, a: 1}
-    materialTileID: 2
+    materialTileID: {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
     primevalOres: []
     primevalDungeons: []
   - debugLayerColor: {r: 1, g: 0, b: 0, a: 1}
-    materialTileID: 3
+    materialTileID: {fileID: 11400000, guid: f71c8f4de0d0c4c4ca5f4f79858b001b, type: 2}
     primevalOres: []
     primevalDungeons: []
-  caveCombine:
-  - {fileID: 11400000, guid: fd01748bf00794843a0873c2b6ca60b1, type: 2}
+  caveCombines:
+  - scale: {x: 1, y: 1}
+    clodSize: 0.463
+    hollowSize: 0.54
+    isBackfill: 1
+    isInvert: 0
+    backfillTileID: 0

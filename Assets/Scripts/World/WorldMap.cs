@@ -59,8 +59,8 @@ namespace WorldCreation
         public WorldLayer[] WorldLayers => worldLayers;
 
         [SerializeField]
-        private CaveCombineData[] caveCombine;
-        public CaveCombineData[] CaveCombine => caveCombine;
+        private CaveCombine[] caveCombines;
+        public CaveCombine[] CaveCombines => caveCombines;
 
 #if UNITY_EDITOR
         private float[] layerRatiosOld = new float[0];
