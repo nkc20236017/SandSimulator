@@ -7,6 +7,8 @@ using WorldCreation;
 
 public class CaveGenerator : IWorldGeneratable
 {
+    private const int VOID_ID = -1;
+
     private Tilemap _worldTilemap;
     private int _executionOrder;
     private int[] _noise;
@@ -29,9 +31,15 @@ public class CaveGenerator : IWorldGeneratable
             }
         }
 
+        // 初期化して-1にする
         int[,] grid = new int[chunk.GetChunkLength(0), chunk.GetChunkLength(1)];
-
-        // 空間は-1とする
+        for (int y = 0; y < grid.GetLength(1); y++)
+        {
+            for (int x = 0; x < grid.GetLength(0); x++)
+            {
+                grid[x, y] = -1;
+            }
+        }
 
         for (int i = 0; i < worldMap.CaveCombine.Length; i++)
         {
@@ -43,7 +51,7 @@ public class CaveGenerator : IWorldGeneratable
                 {
                     Vector2Int worldPosition = chunk.GetWorldPosition(x, y, worldMap.OneChunkSize);
                     // 現在の座標にタイルが既にあったら次の座標へ移動する
-                    if (grid[x, y] != -1) { continue; }
+                    if (grid[x, y] != 0) { continue; }
 
                     // 現在の座標のノイズ値を取得
                     float noisePower = Mathf.PerlinNoise
@@ -58,17 +66,29 @@ public class CaveGenerator : IWorldGeneratable
                         noisePower = 1f - noisePower;
                     }
 
+                    int fillBlockId = 0;
+                    if (caveCombine.IsBackfill && 0 <= caveCombine.BackfillTileID)
+                    {
+                        fillBlockId = caveCombine.BackfillTileID;
+                    }
+                    else if (caveCombine.IsBackfill)
+                    {
+                        TileBase material = worldMap.WorldLayers[chunk.GetLayerIndex(x, y)].MaterialTile;
+                        fillBlockId = worldMap.Blocks.GetBlockID(material);
+                    }
+
                     if (caveCombine.IsInvert)
                     {
+                        // 対象の場所を埋める場合は
                         grid[x, y] = (noisePower > caveCombine.ClodSize)
-                            ? -1
-                            : caveCombine.TileID;
+                            ? fillBlockId
+                            : VOID_ID;
                     }
                     else
                     {
                         grid[x, y] = (noisePower > caveCombine.ClodSize)
-                            ? caveCombine.TileID
-                            : -1;
+                            ? VOID_ID
+                            : fillBlockId;
                     }
                 }
             }
@@ -79,6 +99,8 @@ public class CaveGenerator : IWorldGeneratable
         {
             for (int x = 0; x < chunk.GetChunkLength(0); x++)
             {
+                if (grid[x, y] == VOID_ID) { continue; }
+
                 chunk.SetBlock(x, y, grid[x, y]);
             }
         }

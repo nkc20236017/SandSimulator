@@ -70,3 +70,5 @@ MonoBehaviour:
     materialTileID: 3
     primevalOres: []
     primevalDungeons: []
+  caveCombine:
+  - {fileID: 11400000, guid: fd01748bf00794843a0873c2b6ca60b1, type: 2}

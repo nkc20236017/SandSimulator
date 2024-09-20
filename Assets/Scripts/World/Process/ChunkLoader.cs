@@ -27,14 +27,14 @@ namespace WorldCreation
                 for (int x = 0; x < chunk.GetChunkLength(0); x++)
                 {
                     Vector2Int position = new Vector2Int(x, y);
-                    if (chunk.GetBlockID(position) == -1)
+                    if (chunk.GetBlockID(position) == 0)
                     {
                         continue;
                     }
                     chunk.TileMap.SetTile
                     (
                         (Vector3Int)position,
-                        worldMap.BlockList[chunk.GetBlockID(position)]
+                        worldMap.Blocks.GetBlock(chunk.GetBlockID(position))
                     );
 
                     limitter++;

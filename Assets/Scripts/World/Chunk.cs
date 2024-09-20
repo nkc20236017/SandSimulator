@@ -7,16 +7,18 @@ public struct Chunk
     private ManagedRandom _randamization;
     private Tilemap _Tilemap;
     private Vector2Int _position;
-    private int[,] _cache;
+    private int[,] _grid;
+    private int[,] _layerIndex;
 
     public Vector2Int Position => _position;
 
-    public Chunk(ManagedRandom random, Vector2Int position, Tilemap tilemap, int[,] tile)
+    public Chunk(ManagedRandom random, Vector2Int position, Tilemap tilemap, int[,] grid)
     {
         _randamization = random;
         _Tilemap = tilemap;
         _position = position;
-        _cache = tile;
+        _grid = grid;
+        _layerIndex = new int[grid.GetLength(0), grid.GetLength(1)];
     }
 
     public int GetNoise(int executionOrder, int maxValue = int.MaxValue)
@@ -38,26 +40,34 @@ public struct Chunk
 
     public int GetBlockID(Vector2Int position)
     {
-        return _cache[position.x, position.y];
+        return _grid[position.x, position.y];
     }
 
     public int GetBlockID(int x, int y)
     {
-        return _cache[x, y];
+        return _grid[x, y];
     }
 
     public void SetBlock(Vector2Int position, int id)
     {
-        _cache[position.x, position.y] = id;
+        _grid[position.x, position.y] = id;
     }
     public void SetBlock(int x, int y, int id)
     {
-        _cache[x, y] = id;
+        _grid[x, y] = id;
+    }
+    public void SetLayerIndex(int x, int y, int index)
+    {
+        _layerIndex[x, y] = index;
+    }
+    public int GetLayerIndex(int x, int y)
+    {
+        return _layerIndex[x, y];
     }
 
     public int GetChunkLength(int dimension)
     {
-        return _cache.GetLength(dimension);
+        return _grid.GetLength(dimension);
     }
 
     public Vector2Int GetWorldPosition(int x, int y, Vector2Int chunkSize)

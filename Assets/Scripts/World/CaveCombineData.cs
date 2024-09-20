@@ -12,10 +12,13 @@ public class CaveCombineData : ScriptableObject
     [SerializeField]
     private float hollowSize;
     public float HollowSize => hollowSize;
-    [SerializeField]    // 埋める対象を反転する
+    [SerializeField]    // ブロックで埋めるようにする
+    private bool isBackfill;
+    public bool IsBackfill => isBackfill;
+    [SerializeField]
     private bool isInvert;
     public bool IsInvert => isInvert;
     [SerializeField]    // タイルマップのID
-    private int tileID;
-    public int TileID => tileID;
+    private int backfillTileID = -1;
+    public int BackfillTileID => backfillTileID;
 }

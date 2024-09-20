@@ -15,12 +15,35 @@ public class WorldMapManager : MonoBehaviour, IChunkInformation, IWorldMapManage
         _tilemapOrigin = tilemapOrigin;
     }
 
-    public Tilemap GetChunk(Vector2 position)
+    Tilemap IChunkInformation.GetChunkTilemap(Vector2 position)
     {
-        return GetChunk(position, Vector2Int.zero);
+        return GetChunkTilemap(position, Vector2Int.zero);
     }
 
-    public Tilemap GetChunk(Vector2 position, Vector2Int chunkVector)
+    public Tilemap GetChunkTilemap(Vector2 position, Vector2Int chunkVector)
+    {
+        if (GetChunk(position, Vector2Int.zero) == null) { return null; }
+
+        Chunk chunk = (Chunk)GetChunk(position, Vector2Int.zero);
+
+        return chunk.TileMap;
+    }
+
+    public int GetLayer(Vector2 position)
+    {
+        Vector2Int gridPosition = new((int)position.x, (int)position.y);
+
+        if (GetChunk(position, Vector2Int.zero) == null)
+        {
+            return 0;
+        }
+
+        Chunk chunk = (Chunk)GetChunk(position, Vector2Int.zero);
+
+        return chunk.GetLayerIndex(gridPosition.x, gridPosition.y) + 1;
+    }
+
+    private Chunk? GetChunk(Vector2 position, Vector2Int chunkVector)
     {
         // 原点からの距離を求める
         Vector2 originDistance = position - _tilemapOrigin;
@@ -30,18 +53,19 @@ public class WorldMapManager : MonoBehaviour, IChunkInformation, IWorldMapManage
         {
             return null;
         }
+        // 1チャンク
         Vector2Int splitedVector = new
         (
             (int)(originDistance.x / _oneChunkSize.x),
             (int)(originDistance.y / _oneChunkSize.y)
         );
 
-        // チャンクが存在すれば
-        Tilemap result;
+        // チャンクが存在すればそれを返し、なければNull
+        Chunk? result;
         try
         {
             result
-               = _chunks[splitedVector.x + chunkVector.x, splitedVector.y + chunkVector.y].TileMap;
+               = _chunks[splitedVector.x + chunkVector.x, splitedVector.y + chunkVector.y];
         }
         catch
         {
@@ -49,10 +73,5 @@ public class WorldMapManager : MonoBehaviour, IChunkInformation, IWorldMapManage
         }
 
         return result;
-    }
-
-    public int GetLayer(Vector2 position)
-    {
-        throw new System.NotImplementedException();
     }
 }

@@ -33,9 +33,11 @@ namespace WorldCreation
         private IWorldGeneratable[] _worldGenerators =
         {
             new LayerGenerator(),
+            new CaveGenerator(),
             new ChunkLoader()
         };
 
+        [ContextMenu("Regenerate")]
         private void Start()
         {
             if (seed == 0)
@@ -127,6 +129,7 @@ namespace WorldCreation
                     }
                 }
             }
+
 
             GameObject worldMapManager = Instantiate(worldMapManagerPrefab);
             worldMapManager.GetComponent<IWorldMapManager>()

@@ -58,12 +58,16 @@ namespace WorldCreation
                 {
                     for (int x = 0; x < chunk.GetChunkLength(0); x++)
                     {
+                        TileBase material = worldMap.WorldLayers[layerIndex].MaterialTile;
                         chunk.SetBlock
                         (
                             x,
                             y,
-                            worldMap.WorldLayers[layerIndex].MaterialTileID
+                            worldMap.Blocks.GetBlockID(material)
                         );
+
+                        // チャンクの地層情報を書き込む
+                        chunk.SetLayerIndex(x, y, layerIndex);
                     }
                 }
 
@@ -84,25 +88,34 @@ namespace WorldCreation
                         - (int)worldMap.BorderDistortionPower
                         + borderHeight;
 
+                    TileBase material;
                     if (borderHeight > worldPosition.y)
                     {
                         // 地層の境界より下であれば普通のタイル
+                        material = worldMap.WorldLayers[layerIndex].MaterialTile;
                         chunk.SetBlock
                         (
                             x,
                             y,
-                            worldMap.WorldLayers[layerIndex].MaterialTileID
+                            worldMap.Blocks.GetBlockID(material)
                         );
+
+                        // チャンクの地層情報を書き込む
+                        chunk.SetLayerIndex(x, y, layerIndex);
                     }
                     else
                     {
+                        material = worldMap.WorldLayers[layerIndex - 1].MaterialTile;
                         // 地層の境界より下であれば次のタイル
                         chunk.SetBlock
                         (
                             x,
                             y,
-                            worldMap.WorldLayers[layerIndex - 1].MaterialTileID
+                            worldMap.Blocks.GetBlockID(material)
                         );
+
+                        // チャンクの地層情報を書き込む
+                        chunk.SetLayerIndex(x, y, layerIndex - 1);
                     }
                 }
             }

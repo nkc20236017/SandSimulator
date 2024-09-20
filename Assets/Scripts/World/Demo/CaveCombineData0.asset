@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1251971de85f25f418c91d93f886b98f, type: 3}
   m_Name: CaveCombineData0
   m_EditorClassIdentifier: 
-  scale: {x: 0, y: 0}
-  clodSize: 0
-  hollowSize: 0
+  scale: {x: 0.01, y: 0.01}
+  clodSize: 1
+  hollowSize: 1
+  isBackfill: 0
   isInvert: 0
-  tileID: 0
+  backfillTileID: -1
