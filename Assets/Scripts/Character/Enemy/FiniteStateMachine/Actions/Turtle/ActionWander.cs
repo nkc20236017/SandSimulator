@@ -50,28 +50,37 @@ public class ActionWander : FsmAction
 	
 	private void Wander()
 	{
-		OneBlockUp();
-		Flip();
+		AutoBlockJump();
 		Movement();
 	}
 	
-	private void OneBlockUp()
+	private void AutoBlockJump()
 	{
 		if (_rigidbody2D.velocity.y is > 0.01f or < -0.01f) { return; }
 		if (_moveDirection.x == 0) { return; }
 		if (!IsGround()) { return; }
-		if (IsWall()) { return; }
-		if (IsHeavenly()) { return; }
 
 		var x = _moveDirection.x >= 0 ? _boxCollider2D.bounds.max.x + 0.25f : _boxCollider2D.bounds.min.x - 0.25f;
-		for (var y = 0; y < autoJumpHeight; y++)
+		for (var y = 1; y <= autoJumpHeight; y++)
 		{
-			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
+			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
 			var cellPosition = _tilemap.WorldToCell(position);
-			if (!_tilemap.HasTile(cellPosition) || _tilemap.HasTile(cellPosition + Vector3Int.up)) { continue; }
+			if (_tilemap.HasTile(cellPosition))
+			{
+				if (IsWall(y) || IsHeavenly(y))
+				{
+					Flip();
+					return;
+				}
+				
+				transform.position += new Vector3(0.25f, y + 0.25f, 0);
+				return;
+			}
+		}
 
-			transform.position += new Vector3(0.25f, y + 1.25f, 0);
-			break;
+		if (IsWall(0))
+		{
+			Flip();
 		}
 	}
 	
@@ -84,19 +93,46 @@ public class ActionWander : FsmAction
 		return hit.collider != null;
 	}
 	
-	private bool IsHeavenly()
+	private bool IsWall(float minY)
 	{
-		var x = _boxCollider2D.bounds.center.x;
-		var y = _boxCollider2D.bounds.max.y;
-		var position = new Vector2(x, y);
-		var hit = matchTheColliderDirectionFall ? Physics2D.CircleCast(position, fallDirection.x, Vector2.up, fallDirection.y, groundLayerMask) : Physics2D.CircleCast(position, radius, Vector2.up, 0.1f, groundLayerMask);
-		return hit.collider == null;
+		if (_rigidbody2D.velocity.y is > 0.01f or < -0.01f) { return false; }
+		if (_moveDirection.x == 0) { return false; }
+		
+		var x = _moveDirection.x >= 0 ? _boxCollider2D.bounds.max.x + 0.25f : _boxCollider2D.bounds.min.x - 0.25f;
+		var maxY = _boxCollider2D.bounds.size.y - minY;
+		for (var y = minY; y <= maxY; y++)
+		{
+			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
+			var cellPosition = _tilemap.WorldToCell(position);
+			if (!_tilemap.HasTile(cellPosition)) { continue; }
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private bool IsHeavenly(float height)
+	{
+		var minX = _boxCollider2D.bounds.min.x - 0.25f;
+		var maxX = _boxCollider2D.bounds.max.x + 1.25f;
+		for (var y = 1; y <= height; y++)
+		{
+			for (var x = minX; x <= maxX; x++)
+			{
+				var position = new Vector2(x, _boxCollider2D.bounds.max.y + y);
+				var cellPosition = _tilemap.WorldToCell(position);
+				if (!_tilemap.HasTile(cellPosition)) { continue; }
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 	
 	private void Flip()
 	{
-		if (!IsHole() && !IsWall()) { return; }
-
 		_moveDirection = _moveDirection == Vector3.left ? Vector3.right : Vector3.left;
 		transform.localScale = new Vector3(_moveDirection.x, 1, 1);
 	}
@@ -111,25 +147,6 @@ public class ActionWander : FsmAction
 		var cellPosition = _tilemap.WorldToCell(position);
 		var bounds = new BoundsInt(cellPosition, Vector3Int.CeilToInt(_boxCollider2D.size));
 		return _tilemap.GetTilesBlock(bounds) == null;
-	}
-
-	private bool IsWall()
-	{
-		if (_rigidbody2D.velocity.y is > 0.01f or < -0.01f) { return false; }
-		if (_moveDirection.x == 0) { return false; }
-		
-		var x = _moveDirection.x >= 0 ? _boxCollider2D.bounds.max.x + 0.25f : _boxCollider2D.bounds.min.x - 0.25f;
-		var wallHeight = _boxCollider2D.bounds.size.y - (autoJump ? autoJumpHeight : 0);
-		for (var y = 0; y < wallHeight; y++)
-		{
-			var position = new Vector2(x, _boxCollider2D.bounds.min.y + (autoJump ? autoJumpHeight : 0) + y);
-			var cellPosition = _tilemap.WorldToCell(position);
-			if (!_tilemap.HasTile(cellPosition)) { continue; }
-			
-			return true;
-		}
-		
-		return false;
 	}
 	
 	private void Movement()
@@ -152,15 +169,6 @@ public class ActionWander : FsmAction
 		
 		x = _moveDirection.x >= 0 ? boxCollider2D.bounds.max.x + 0.25f : boxCollider2D.bounds.min.x - 0.25f;
 		
-		// ジャンプのギズモ表示
-		for (y = 0; y < autoJumpHeight; y++)
-		{
-			position = new Vector2(x, boxCollider2D.bounds.min.y + y);
-			var cellPosition0 = _tilemap.WorldToCell(position);
-			Gizmos.color = _tilemap.HasTile(cellPosition0) && !_tilemap.HasTile(cellPosition0 + Vector3Int.up) ? Color.red : Color.green;
-			Gizmos.DrawWireCube(_tilemap.GetCellCenterWorld(cellPosition0), Vector3.one);
-		}
-		
 		// 穴のギズモ表示
 		position = new Vector2(x, boxCollider2D.bounds.min.y - boxCollider2D.size.y);
 		var cellPosition = _tilemap.WorldToCell(position);
@@ -170,14 +178,35 @@ public class ActionWander : FsmAction
 		Gizmos.color = isHole ? Color.red : Color.green;
 		Gizmos.DrawWireCube(bounds.center, bounds.size);
 		
-		// 壁のギズモ表示
-		var height = boxCollider2D.bounds.size.y - (autoJump ? autoJumpHeight : 0);
-		for (y = 0; y < height; y++)
+		// ジャンプのギズモ表示
+		for (var minY = 0; minY < autoJumpHeight; minY++)
 		{
-			position = new Vector2(x, boxCollider2D.bounds.min.y + (autoJump ? autoJumpHeight : 0) + y);
-			cellPosition = _tilemap.WorldToCell(position);
-			Gizmos.color = _tilemap.HasTile(cellPosition) ? Color.magenta : Color.blue;
-			Gizmos.DrawWireCube(_tilemap.GetCellCenterWorld(cellPosition), Vector3.one);
+			for (y = minY + 1; y <= boxCollider2D.bounds.size.y - minY; y++)
+			{
+				position = new Vector2(x, boxCollider2D.bounds.min.y + y);
+				cellPosition = _tilemap.WorldToCell(position);
+				Gizmos.color = _tilemap.HasTile(cellPosition) ? Color.red : Color.blue;
+				Gizmos.DrawWireCube(_tilemap.GetCellCenterWorld(cellPosition), Vector3.one);
+			}
+			
+			position = new Vector2(x, boxCollider2D.bounds.min.y + minY);
+			var cellPosition0 = _tilemap.WorldToCell(position);
+			Gizmos.color = _tilemap.HasTile(cellPosition0) ? Color.red : Color.green;
+			Gizmos.DrawWireCube(_tilemap.GetCellCenterWorld(cellPosition0), Vector3.one);
 		}
+		
+		// // 天井のギズモ表示
+		// var minX = boxCollider2D.bounds.min.x - 0.25f;
+		// var maxX = boxCollider2D.bounds.max.x + 1.25f;
+		// for (y = 1; y <= autoJumpHeight; y++)
+		// {
+		// 	for (x = minX; x <= maxX; x++)
+		// 	{
+		// 		position = new Vector2(x, boxCollider2D.bounds.max.y + y);
+		// 		cellPosition = _tilemap.WorldToCell(position);
+		// 		Gizmos.color = _tilemap.HasTile(cellPosition) ? Color.yellow : Color.green;
+		// 		Gizmos.DrawWireCube(_tilemap.GetCellCenterWorld(cellPosition), Vector3.one);
+		// 	}
+		// }
 	}
 }
