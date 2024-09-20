@@ -114,11 +114,6 @@ public class DecisionAngleDetectPlayer : FsmDecision
 		return hit.collider != null;
 	}
 	
-	// private bool IsObstacleCollider(Transform target)
-	// {
-	// 	
-	// }
-	
 	private void ShowMark(Sprite mark)
 	{
 		markSpriteRenderer.gameObject.SetActive(true);
@@ -160,7 +155,6 @@ public class DecisionAngleDetectPlayer : FsmDecision
 		var newCell2 = GetNewCell(directionAngle + angleInRadians, radius);
 		Gizmos.DrawLine(pivot.position, newCell2);
 		
-		// TODO: プレイヤーを検知した時のギズモ表示する
 		if (_enemyBrain == null) { return; }
 		if (_enemyBrain.Player == null) { return; }
 		

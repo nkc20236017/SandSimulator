@@ -29,7 +29,8 @@ public class EnemyStatus
 	public int depth;
 	
 	[Header("Status")]
-	public int hp;
+	public int health;
+	public float speed;
 	public int attack;
-	public int speed;
+	public float attackSpeed;
 }
