@@ -55,7 +55,7 @@ namespace WorldCreation
             GenerateAll(_cancelTokenSource.Token);
         }
 
-        [ContextMenu("Regenerate")]
+        [ContextMenu("Refresh")]
         private void Regenerate()
         {
             GenerateAll(_cancelTokenSource.Token);

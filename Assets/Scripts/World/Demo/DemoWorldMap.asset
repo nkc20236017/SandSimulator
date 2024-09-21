@@ -26,9 +26,9 @@ MonoBehaviour:
   oneChunkSize: {x: 64, y: 39}
   fillLimit: 1000
   layerRatios:
-  - 0.25
-  - 0.117
-  - 0.61354965
+  - 0.229
+  - 0.2735
+  - 0.4975
   borderDistortionPower: 33.19
   worldLayers:
   - debugLayerColor: {r: 1, g: 0.035849165, b: 0, a: 1}
@@ -72,9 +72,9 @@ MonoBehaviour:
     primevalOres: []
     primevalDungeons: []
   caveCombines:
-  - scale: {x: 1, y: 1}
-    clodSize: 0.463
-    hollowSize: 0.54
-    isBackfill: 1
+  - scale: {x: 0.01, y: 0.01}
+    clodSize: 0.503
+    hollowSize: 0.431
+    isBackfill: 0
     isInvert: 0
     backfillTileID: 0
