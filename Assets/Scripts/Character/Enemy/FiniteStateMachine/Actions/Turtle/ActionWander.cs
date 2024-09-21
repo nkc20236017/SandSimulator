@@ -65,7 +65,7 @@ public class ActionWander : FsmAction
 		if (!IsGround()) { return; }
 
 		var x = _moveDirection.x >= 0 ? _boxCollider2D.bounds.max.x + 0.25f : _boxCollider2D.bounds.min.x - 0.25f;
-		var canflip = false;
+		var canFlip = false;
 		for (var y = 1; y <= autoJumpHeight; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
@@ -80,7 +80,7 @@ public class ActionWander : FsmAction
 					return;
 				}
 
-				canflip = true;
+				canFlip = true;
 				continue;
 			}
 
@@ -88,7 +88,7 @@ public class ActionWander : FsmAction
 			return;
 		}
 
-		if (IsWall(0) || canflip)
+		if (IsWall(0) || canFlip)
 		{
 			Flip();
 		}
@@ -159,7 +159,6 @@ public class ActionWander : FsmAction
 		var cellPosition = _tilemap.WorldToCell(position);
 		var size = Vector3Int.CeilToInt(_boxCollider2D.size);
 		var bounds = new BoundsInt(cellPosition.x, cellPosition.y, 1, size.x, size.y, 1);
-		var isHole = false;
 		foreach (var pos in bounds.allPositionsWithin)
 		{
 			if (!_tilemap.HasTile(_tilemap.WorldToCell(pos))) { continue; }

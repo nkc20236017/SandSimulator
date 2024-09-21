@@ -32,10 +32,11 @@ public class DecisionAngleDetectPlayer : FsmDecision
 
 	public override bool Decide()
 	{
-		return DetectPlayer();
+		DetectPlayer();
+		return _isPlayerDetected;
 	}
 	
-	private bool DetectPlayer()
+	private void DetectPlayer()
 	{
 		// TODO: デバッグモードの時はプレイヤーを検知しないようにする
 		
@@ -52,11 +53,12 @@ public class DecisionAngleDetectPlayer : FsmDecision
 					_enemyBrain.Player = null;
 					ShowMark(lostMarkSprite);
 				}
-				
-				return false;
+
+				return;
 			}
 			
-			var circumference = GetNewCell(-direction * Mathf.Deg2Rad, radius);
+			var inversion = transform.localScale.x > 0 ? 0 : 270;
+			var circumference = GetNewCell((-direction + inversion) * Mathf.Deg2Rad, radius);
 
 			var direction1 = circumference - pivot.position;
 			var direction2 = player.position - pivot.position;
@@ -74,7 +76,7 @@ public class DecisionAngleDetectPlayer : FsmDecision
 						// TODO: プレイヤーを見失った場合、見失った場所まで移動する
 					}
 
-					return false;
+					return;
 				}
 
 				if (!_isPlayerDetected)
@@ -84,7 +86,7 @@ public class DecisionAngleDetectPlayer : FsmDecision
 					ShowMark(findMarkSprite);
 				}
 
-				return true;
+				return;
 			}
 
 			// TODO: プレイヤーが死んでいる場合はプレイヤーを検知しない（無視する）
@@ -95,7 +97,7 @@ public class DecisionAngleDetectPlayer : FsmDecision
 				ShowMark(lostMarkSprite);
 			}
 
-			return false;
+			return;
 		}
 
 		if (_enemyBrain.Player != null && _isPlayerDetected)
@@ -104,8 +106,6 @@ public class DecisionAngleDetectPlayer : FsmDecision
 			_isPlayerDetected = false;
 			ShowMark(lostMarkSprite);
 		}
-
-		return false;
 	}
 
 	private bool IsObstaclePivot(Transform target)
@@ -143,7 +143,8 @@ public class DecisionAngleDetectPlayer : FsmDecision
 		Gizmos.DrawWireSphere(pivot.position, radius);
 		
 		Gizmos.color = Color.green;
-		var circumference = GetNewCell(-direction * Mathf.Deg2Rad, radius);
+		var inversion = transform.localScale.x > 0 ? 0 : 270;
+		var circumference = GetNewCell((-direction + inversion) * Mathf.Deg2Rad, radius);
 
 		var angleInRadians = angle * Mathf.Deg2Rad;
 		var direction2 = circumference - pivot.position;

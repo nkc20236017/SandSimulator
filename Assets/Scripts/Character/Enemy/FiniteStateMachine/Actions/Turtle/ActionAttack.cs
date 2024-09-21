@@ -6,6 +6,7 @@ public class ActionAttack : FsmAction
 	[SerializeField] private float attackInterval;
 	
 	private float _attackTimer;
+	private bool _isAttack = true;
 	private Vector3 _moveDirection;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
@@ -23,12 +24,24 @@ public class ActionAttack : FsmAction
 	
 	private void Attack()
 	{
-		Flip();
+		if (!_isAttack)
+		{
+			Flip();
+			_rigidbody2D.velocity = Vector2.zero;
+			
+			_attackTimer += Time.deltaTime;
+			if (_attackTimer < attackInterval) { return; }
+		
+			_attackTimer = 0f;
+			_isAttack = true;
+			return;
+		}
 		
 		_attackTimer += Time.deltaTime;
 		if (_attackTimer < attackInterval) { return; }
 		
 		_attackTimer = 0f;
+		_isAttack = false;
 		Movement();
 	}
 	
