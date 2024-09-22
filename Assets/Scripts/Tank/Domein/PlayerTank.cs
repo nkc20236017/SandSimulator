@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using VContainer;
@@ -13,21 +14,21 @@ public class PlayerTank : IInputTank
     private BlockType currentBlockType;
 
     [Inject]
-    public PlayerTank(IOutPutTank outPutTank,  ITankRepository tankRepository)
+    public PlayerTank(IOutPutTank outPutTank, ITankRepository tankRepository)
     {
         this.outPutTank = outPutTank;
         this.tankRepository = tankRepository;
     }
 
-    public void InputAddTank(TileBase tileBase)
+    public bool InputAddTank(TileBase tileBase)
     {
         var mineralItem = tankRepository.Find(tileBase);
-        AddItem(mineralItem);
+        return AddItem(mineralItem);
     }
-    public void InputAddTank(BlockType type)
+    public bool InputAddTank(BlockType type)
     {
         var mineralItem = tankRepository.Find(type);
-        AddItem(mineralItem);
+        return AddItem(mineralItem);
     }
 
     public void InputRemoveTank(BlockType type)
@@ -36,13 +37,13 @@ public class PlayerTank : IInputTank
         RemoveItem(mineralItem);
     }
 
-    public void AddItem(Block mineralData)
+    public bool AddItem(Block mineralData)
     {
 
         if (currentItemAmount >= MaxTank)
         {
             Debug.Log("�A�C�e���������ς��ł�");
-            return;
+            return true;
         }
         currentItemAmount++;
         if (itemTankDictionary.TryGetValue(mineralData, out MineralTank vaule))
@@ -56,6 +57,7 @@ public class PlayerTank : IInputTank
             itemTankDictionary.Add(mineralData, itemData);
             TankCalculation(itemData);
         }
+        return false;
     }
 
     public void RemoveItem(Block mineralData)
@@ -87,14 +89,28 @@ public class PlayerTank : IInputTank
         float itemRatio = itemData.mineralAmount / totalValue;
 
         var outputTank = new OutPutData(itemRatio, totalRatio, itemData.mineralData.type
-            ,itemData.mineralData.sprite);
+            , itemData.mineralData.sprite);
         outPutTank.OutputTank(outputTank);
     }
 
-    public void FiringTank()
+    public bool FiringTank()
     {
         var block = tankRepository.Find(currentBlockType);
         RemoveItem(block);
+
+        var item = itemTankDictionary.
+            Where(item => item.Key.type == block.type).
+            FirstOrDefault();
+
+        if (item.Key != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
     public void SelectTank(BlockType blockType)

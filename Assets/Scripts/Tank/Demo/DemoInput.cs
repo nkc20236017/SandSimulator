@@ -28,13 +28,27 @@ public class DemoInput : MonoBehaviour
 
         if (Input.GetKey(KeyCode.S))
         {
-            itemTank.FiringTank();
+            if (itemTank.FiringTank())
+            {
+                Debug.Log("èoÇµÇ‹Ç∑");
+            }
+            else
+            {
+                Debug.Log("èoÇ‹ÇπÇÒ");
+            }
+
         }
 
         if(Input.GetKey(KeyCode.A))
         {
-            itemTank.InputAddTank(BlockType.Sand);
-            itemTank.InputAddTank(BlockType.Mud);
+            if (itemTank.InputAddTank(BlockType.Sand))
+            {
+                Debug.Log("uppu");
+            }
+            else
+            {
+                Debug.Log("suikomi");
+            }
         }
 
 

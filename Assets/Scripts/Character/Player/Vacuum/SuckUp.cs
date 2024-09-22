@@ -77,7 +77,6 @@ public class SuckUp : MonoBehaviour
         GetSuckUpTilePositions();
         SuckUpOres();
         if (_suckUpOreObject.Count > 0) { return; }
-        
         SuckUpTiles();
     }
 
