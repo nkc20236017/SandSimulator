@@ -13,7 +13,7 @@ public class EnemyBrain : MonoBehaviour
     
 	private FsmState _currentState;
     
-	public int Width { get; private set; }
+	public Vector3 Direction { get; set; }
 	public Enemy Enemy { get; private set; }
 	public EnemyStatus Status { get; private set; }
 	public Transform Player { get; set; }
@@ -31,8 +31,7 @@ public class EnemyBrain : MonoBehaviour
 	public void SetEnemy(Enemy myEnemy, int width)
 	{
 		Enemy = myEnemy;
-		Width = width;
-		Status = Enemy.status[Width];
+		Status = myEnemy.status[width];
 		GetComponent<EnemyHealth>().CurrentHealth = Status.health;
 	}
 

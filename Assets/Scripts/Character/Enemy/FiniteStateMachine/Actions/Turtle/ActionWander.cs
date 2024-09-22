@@ -26,6 +26,11 @@ public class ActionWander : FsmAction
 	
 	[Header("InvincibleTime Config")]
 	[SerializeField] private float invincibleTime;
+	
+	[Header("Generate Ore Config")]
+	[SerializeField] private Turtle turtle;
+	[SerializeField] private Transform[] oreParents;
+	[SerializeField] private OreObject orePrefab;
 
 	private Vector3 _moveDirection;
 	private BoxCollider2D _boxCollider2D;
@@ -41,6 +46,22 @@ public class ActionWander : FsmAction
 		var random = Random.Range(0, 2);
 		_moveDirection = random == 0 ? Vector3.left : Vector3.right;
 		transform.localScale = new Vector3(_moveDirection.x, 1, 1);
+
+		GenerateOres();
+	}
+
+	private void GenerateOres()
+	{
+		var random = Random.Range(1, oreParents.Length);
+		for (var i = 0; i < random; i++)
+		{
+			var ore = Instantiate(orePrefab, oreParents[i]);
+			ore.CanFall = false;
+			ore.SetMapTilemap(_tilemap);
+			var randomSize = Random.Range(1, 4);
+			ore.SetOre(turtle.DropOre(), randomSize, 0);
+			oreParents[i].SetParent(ore.transform);
+		}
 	}
 
 	public override void Action()

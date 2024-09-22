@@ -32,6 +32,10 @@ public class DecisionAngleDetectPlayer : FsmDecision
 
 	public override bool Decide()
 	{
+		if (markSpriteRenderer.gameObject.activeSelf)
+		{
+			markSpriteRenderer.flipX = transform.localScale.x < 0;
+		}
 		DetectPlayer();
 		return _isPlayerDetected;
 	}

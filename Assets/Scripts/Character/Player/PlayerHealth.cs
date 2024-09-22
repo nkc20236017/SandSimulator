@@ -1,40 +1,40 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour, IDamagable
 {
-	[Header("Health Config")]
+	[SerializeField] private float invincibilityTime;
 	[SerializeField] private int maxHealth;
-	[SerializeField] private int defensiveStrength;
-	// [SerializeField] private float invincibilityTime;
+	[SerializeField] private int maxDefence;
 	
-	// private float _timer;
-	// private bool _isInvincible;
+	private float _timer;
+	private bool _isInvincible;
 	private int _currentHealth;
+	private int _currentDefence;
 
 	private void Start()
 	{
 		_currentHealth = maxHealth;
+		_currentDefence = maxDefence;
 	}
 
-	// private void Update()
-	// {
-	// 	if (!_isInvincible) { return; }
-	// 	
-	// 	_timer -= Time.deltaTime;
-	// 	if (_timer <= 0f)
-	// 	{
-	// 		_isInvincible = false;
-	// 	}
-	// }
+	private void Update()
+	{
+		if (!_isInvincible) { return; }
+		
+		_timer -= Time.deltaTime;
+		if (_timer <= 0f)
+		{
+			_isInvincible = false;
+		}
+	}
 
 	public void TakeDamage(int damage)
 	{
-		// if (_isInvincible) { return; }
-		//
-		// _timer = invincibilityTime;
-		// _isInvincible = true;
-		_currentHealth -= damage - defensiveStrength;
+		if (_isInvincible) { return; }
+		
+		_timer = invincibilityTime;
+		_isInvincible = true;
+		_currentHealth -= damage - _currentDefence;
 		if (_currentHealth > 0) { return; }
 
 		_currentHealth = 0;
@@ -48,7 +48,7 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 	
 	private void Die()
 	{
-		SceneManager.LoadScene("SampleScene");
+		// TODO: 死亡処理
 	}
 }
 

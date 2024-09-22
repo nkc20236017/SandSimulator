@@ -1,67 +1,117 @@
-﻿using UnityEngine;
+﻿using NaughtyAttributes;
+using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class ActionAttack : FsmAction
 {
-	[Header("Attack Config")]
-	[SerializeField] private float attackInterval;
+	[Header("Datas Config")]
+	[SerializeField] private Tilemap _tilemap;
 	
-	private float _attackTimer;
-	private bool _isAttack = true;
-	private Vector3 _moveDirection;
+	[Header("Auto Jump Config")]
+	[SerializeField] private bool autoJump;
+	[ShowIf(nameof(autoJump))]
+	[SerializeField] private int autoJumpHeight;
+	
+	[Header("Ground Config")]
+	[SerializeField] private bool matchTheColliderDirectionGround;
+	[HideIf(nameof(matchTheColliderDirectionGround))]
+	[SerializeField] private float radius;
+	[SerializeField] private LayerMask groundLayerMask;
+	
+	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
 
 	private void Awake()
 	{
+		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();
 	}
 
 	public override void Action()
 	{
-		Attack();
-	}
-	
-	private void Attack()
-	{
-		if (!_isAttack)
-		{
-			Flip();
-			_rigidbody2D.velocity = Vector2.zero;
-			
-			_attackTimer += Time.deltaTime;
-			if (_attackTimer < attackInterval) { return; }
-		
-			_attackTimer = 0f;
-			_isAttack = true;
-			return;
-		}
-		
-		_attackTimer += Time.deltaTime;
-		if (_attackTimer < attackInterval) { return; }
-		
-		_attackTimer = 0f;
-		_isAttack = false;
+		AutoBlockJump();
 		Movement();
 	}
 	
-	private void Flip()
-	{
-		var direction = _enemyBrain.Player.position - transform.position;
-		_moveDirection = direction.x >= 0 ? Vector3.right : Vector3.left;
-		transform.localScale = new Vector3(_moveDirection.x, 1, 1);
-	}
-
 	private void Movement()
 	{
-		_rigidbody2D.AddForce(_moveDirection * _enemyBrain.Status.attackSpeed, ForceMode2D.Impulse);
+		_rigidbody2D.velocity = new Vector2(_enemyBrain.Direction.x * _enemyBrain.Status.attackSpeed, _rigidbody2D.velocity.y);
 	}
-
-	private void OnTriggerEnter2D(Collider2D other)
+	
+	private void AutoBlockJump()
 	{
-		if (!other.CompareTag("Player")) { return; }
+		if (!autoJump) { return; }
+		if (_rigidbody2D.velocity.y is > 0.001f or < -0.001f) { return; }
+		if (_enemyBrain.Direction.x == 0) { return; }
+		if (!IsGround()) { return; }
 
-		other.GetComponent<PlayerHealth>().TakeDamage(_enemyBrain.Status.attack);
-		_rigidbody2D.velocity = Vector2.zero;
+		var x = _enemyBrain.Direction.x >= 0 ? _boxCollider2D.bounds.max.x + 0.25f : _boxCollider2D.bounds.min.x - 0.25f;
+		for (var y = 1; y <= autoJumpHeight; y++)
+		{
+			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
+			var cellPosition = _tilemap.WorldToCell(position);
+			if (!_tilemap.HasTile(cellPosition) || _tilemap.HasTile(cellPosition + Vector3Int.up)) { continue; }
+
+			if (IsWall(y) || IsHeavenly(y))
+			{
+				if (y == autoJumpHeight) { return; }
+
+				continue;
+			}
+
+			transform.position += new Vector3(0.1f, y + 0.1f, 0);
+			return;
+		}
+	}
+	
+	private bool IsGround()
+	{
+		if (_rigidbody2D.velocity.y is > 0.001f or < -0.001f) { return false; }
+		
+		var x = _boxCollider2D.bounds.center.x;
+		var y = _boxCollider2D.bounds.min.y;
+		var position = new Vector2(x, y);
+		var hit = matchTheColliderDirectionGround ? Physics2D.CircleCast(position, _boxCollider2D.size.x / 2 - 0.1f, Vector2.down, 0.1f, groundLayerMask) : Physics2D.CircleCast(position, radius, Vector2.down, 0.1f, groundLayerMask);
+		return hit.collider != null;
+	}
+	
+	private bool IsWall(float minY)
+	{
+		if (_rigidbody2D.velocity.y is > 0.01f or < -0.01f) { return false; }
+		if (_enemyBrain.Direction.x == 0) { return false; }
+		
+		var x = _enemyBrain.Direction.x >= 0 ? _boxCollider2D.bounds.max.x + 0.25f : _boxCollider2D.bounds.min.x - 0.25f;
+		var maxY = _boxCollider2D.bounds.size.y - minY;
+		for (var y = minY + 1; y <= maxY; y++)
+		{
+			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
+			var cellPosition = _tilemap.WorldToCell(position);
+			if (!_tilemap.HasTile(cellPosition)) { continue; }
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private bool IsHeavenly(float height)
+	{
+		var minX = _boxCollider2D.bounds.min.x - 0.25f;
+		var maxX = _boxCollider2D.bounds.max.x + 1.25f;
+		for (var y = 1; y <= height; y++)
+		{
+			for (var x = minX; x <= maxX; x++)
+			{
+				var position = new Vector2(x, _boxCollider2D.bounds.max.y + y);
+				var cellPosition = _tilemap.WorldToCell(position);
+				if (!_tilemap.HasTile(cellPosition)) { continue; }
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

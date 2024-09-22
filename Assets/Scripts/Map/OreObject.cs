@@ -4,8 +4,6 @@ using NaughtyAttributes;
 
 public class OreObject : MonoBehaviour, IDamagable
 {
-    [Header("Datas Config")]
-    [SerializeField] private Tilemap mapTilemap;
     
     [Header("Ore Object Config")]
     [SerializeField] private Ore ore;
@@ -18,15 +16,17 @@ public class OreObject : MonoBehaviour, IDamagable
     
     private int _currentEndurance;
     private float _fallDamageTimer;
-    private bool _canFall;
+    private bool _isFall;
     private bool _canDestroy;
     private CapsuleCollider2D _capsuleCollider2D;
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer _spriteRenderer;
+    private Tilemap mapTilemap;
 
+    public int Size { get; private set; }
+    public bool CanFall { get; set; } = true;
     public bool CanSuckUp { get; private set; }
     public Ore Ore => ore;
-    public int Size { get; private set; }
 
     private void Awake()
     {
@@ -34,13 +34,10 @@ public class OreObject : MonoBehaviour, IDamagable
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
-
-    private void Start()
+    
+    public void SetMapTilemap(Tilemap tilemap)
     {
-        if (setSize == 1)
-        {
-            SetOreConfig(setSize);
-        }
+        mapTilemap = tilemap;
     }
 
     // Debug: プレイ中にsetSizeを変更してSetupボタンを押すことで、OreObjectのサイズを変更できる
@@ -73,7 +70,8 @@ public class OreObject : MonoBehaviour, IDamagable
             _fallDamageTimer = 0;
         }
         
-        if (_canFall) { return; }
+        if (!CanFall) { return; }
+        if (_isFall) { return; }
         
         var size = Mathf.Max(_capsuleCollider2D.size.x, _capsuleCollider2D.size.y) / 2 + 0.9f;
         var angle = (transform.eulerAngles.z + 270) * Mathf.Deg2Rad;
@@ -83,7 +81,7 @@ public class OreObject : MonoBehaviour, IDamagable
         var cellPosition = mapTilemap.WorldToCell(position);
         if (mapTilemap.HasTile(cellPosition)) { return; }
         
-        _canFall = true;
+        _isFall = true;
         _rigidbody2D.isKinematic = false;
     }
 
@@ -123,7 +121,6 @@ public class OreObject : MonoBehaviour, IDamagable
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (!_canDestroy) { return; }
-        if (other.collider.CompareTag("Player")) { return; }
 		
         if (other.collider.TryGetComponent<IDamagable>(out var target))
         {
