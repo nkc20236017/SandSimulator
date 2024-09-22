@@ -14,6 +14,8 @@ public class DemoDI : LifetimeScope
     private EquipDataBase equipmentDataBase;
     [SerializeField]
     private PlayerEquipDataBase playerEquipDataBase;
+    [SerializeField]
+    private InventoryPresenter inventoryPresenter;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -22,7 +24,7 @@ public class DemoDI : LifetimeScope
             .As<IEquip>();
         builder.Register<MyClass>(Lifetime.Singleton)
             .As<IModifiers>();
-        builder.Register<DemoShopService>(Lifetime.Singleton)
+        builder.Register<ShopService>(Lifetime.Singleton)
             .As<IInputShop>();
         builder.Register<MockShopDataAccess>(Lifetime.Singleton)
             .As<IShopCommand>();
@@ -34,6 +36,14 @@ public class DemoDI : LifetimeScope
             .As<IEquipRepository>();
         builder.Register<ShopDataAccess>(Lifetime.Singleton)
             .As<IShopRepository>();
+        builder.Register<ItemDataAccess>(Lifetime.Singleton)
+            .As<IItemRepository>();
+        builder.Register<InventoryService>(Lifetime.Singleton)
+            .As<IInputInventory>()
+            .As<IPlayerInventoryRepository>();
+        builder.Register<ItemApplicationService>(Lifetime.Singleton)
+            .As<IInventoryCommand>();
+
 
         builder.RegisterComponent(playerEquipDataBase);
         builder.RegisterComponent(demoPlayerDataObject);
@@ -41,6 +51,9 @@ public class DemoDI : LifetimeScope
         builder.RegisterComponent(demoShopDataBase);
         builder.RegisterComponent(shopPresenter)
             .As<IOutPutShop>();
+        builder.RegisterComponent(inventoryPresenter)
+            .As<IOutPutInventory>();
+
     }
 }
 

@@ -5,8 +5,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Shop",
-        "Inventory",
-        "Equip"
+        "Equip",
+        "Data"
     ],
     "includePlatforms": [
         "Editor"
