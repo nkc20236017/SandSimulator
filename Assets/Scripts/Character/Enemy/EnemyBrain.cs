@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyBrain : MonoBehaviour
@@ -12,19 +13,26 @@ public class EnemyBrain : MonoBehaviour
     
 	private FsmState _currentState;
     
-	public Enemy Enemy { get; set; }
+	public Vector3 Direction { get; set; }
+	public Enemy Enemy { get; private set; }
+	public EnemyStatus Status { get; private set; }
 	public Transform Player { get; set; }
-    
+
+	private void Awake()
+	{
+		SetEnemy(enemy, 0);
+	}
+
 	private void Start()
 	{
-		SetEnemy(enemy);
-		
 		ChangeState(initState);
 	}
 	
-	public void SetEnemy(Enemy enemy)
+	public void SetEnemy(Enemy myEnemy, int width)
 	{
-		Enemy = enemy;
+		Enemy = myEnemy;
+		Status = myEnemy.status[width];
+		GetComponent<EnemyHealth>().CurrentHealth = Status.health;
 	}
 
 	private void Update()

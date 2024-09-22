@@ -10,7 +10,7 @@ public enum EnemyType
 	Wolf,
 }
 
-[CreateAssetMenu(fileName = "New Enemy", menuName = "ScriptableObjects/Datas/New Enemy")]
+[CreateAssetMenu(fileName = "New Enemy", menuName = "ScriptableObjects/Datas/Enemies/New Enemy")]
 public class Enemy : ScriptableObject
 {
 	public EnemyType type;
@@ -29,7 +29,8 @@ public class EnemyStatus
 	public int depth;
 	
 	[Header("Status")]
-	public int hp;
+	public int health;
+	public float speed;
 	public int attack;
-	public int speed;
+	public float attackSpeed;
 }
