@@ -75,6 +75,10 @@ public class SuckUp : MonoBehaviour
     private void Performed()
     {
         GetSuckUpTilePositions();
+        if (inputTank.TamkMaxSignal())
+        {
+            return;
+        }
         SuckUpOres();
         if (_suckUpOreObject.Count > 0) { return; }
         SuckUpTiles();

@@ -12,6 +12,7 @@ public class PlayerTank : IInputTank
     private readonly float MaxTank = 4000;
     private int currentItemAmount;
     private BlockType currentBlockType;
+    private bool maxSignal;
 
     [Inject]
     public PlayerTank(IOutPutTank outPutTank, ITankRepository tankRepository)
@@ -20,15 +21,15 @@ public class PlayerTank : IInputTank
         this.tankRepository = tankRepository;
     }
 
-    public bool InputAddTank(TileBase tileBase)
+    public void InputAddTank(TileBase tileBase)
     {
         var mineralItem = tankRepository.Find(tileBase);
-        return AddItem(mineralItem);
+        AddItem(mineralItem);
     }
-    public bool InputAddTank(BlockType type)
+    public void InputAddTank(BlockType type)
     {
         var mineralItem = tankRepository.Find(type);
-        return AddItem(mineralItem);
+        AddItem(mineralItem);
     }
 
     public void InputRemoveTank(BlockType type)
@@ -37,13 +38,14 @@ public class PlayerTank : IInputTank
         RemoveItem(mineralItem);
     }
 
-    public bool AddItem(Block mineralData)
+    public void AddItem(Block mineralData)
     {
 
         if (currentItemAmount >= MaxTank)
         {
             Debug.Log("�A�C�e���������ς��ł�");
-            return true;
+            maxSignal = true;
+            return ;
         }
         currentItemAmount++;
         if (itemTankDictionary.TryGetValue(mineralData, out MineralTank vaule))
@@ -57,7 +59,7 @@ public class PlayerTank : IInputTank
             itemTankDictionary.Add(mineralData, itemData);
             TankCalculation(itemData);
         }
-        return false;
+        maxSignal = false;
     }
 
     public void RemoveItem(Block mineralData)
@@ -116,5 +118,10 @@ public class PlayerTank : IInputTank
     public void SelectTank(BlockType blockType)
     {
         this.currentBlockType = blockType;
+    }
+
+    public bool TamkMaxSignal()
+    {
+        return maxSignal;
     }
 }

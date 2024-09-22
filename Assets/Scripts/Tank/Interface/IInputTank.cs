@@ -6,8 +6,10 @@ using UnityEngine.Tilemaps;
 
 public interface IInputTank 
 {
-    bool InputAddTank(BlockType type);
+    void InputAddTank(BlockType type);
     bool FiringTank();
     void SelectTank(BlockType blockType);
-    bool InputAddTank(TileBase tileBase);
+    void InputAddTank(TileBase tileBase);
+    bool TamkMaxSignal();
+
 }

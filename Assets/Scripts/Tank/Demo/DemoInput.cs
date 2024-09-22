@@ -41,14 +41,7 @@ public class DemoInput : MonoBehaviour
 
         if(Input.GetKey(KeyCode.A))
         {
-            if (itemTank.InputAddTank(BlockType.Sand))
-            {
-                Debug.Log("uppu");
-            }
-            else
-            {
-                Debug.Log("suikomi");
-            }
+            itemTank.InputAddTank(BlockType.Sand);
         }
 
 
