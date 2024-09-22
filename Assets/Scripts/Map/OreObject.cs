@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 using NaughtyAttributes;
+using Random = UnityEngine.Random;
 
 public class OreObject : MonoBehaviour, IDamagable
 {
@@ -34,25 +35,12 @@ public class OreObject : MonoBehaviour, IDamagable
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
-    
-    public void SetMapTilemap(Tilemap tilemap)
-    {
-        mapTilemap = tilemap;
-    }
 
-    // Debug: プレイ中にsetSizeを変更してSetupボタンを押すことで、OreObjectのサイズを変更できる
-    [Button]
-    public void Setup()
+    private void Start()
     {
+        var randomSize = Random.Range(1, 4);
+        SetOreConfig(setSize);
         SetOre(ore, setSize, angle);
-    }
-
-    private void SetOreConfig(int size)
-    {
-        Size = size;
-        _currentEndurance = ore.endurancePerSize[Size - 1];
-        if (_spriteRenderer == null) { _spriteRenderer = GetComponentInChildren<SpriteRenderer>(); }
-        _spriteRenderer.sprite = ore.oreSprites[Size - 1];
     }
 
     private void Update()
@@ -116,6 +104,19 @@ public class OreObject : MonoBehaviour, IDamagable
 
         CanSuckUp = true;
         _rigidbody2D.isKinematic = false; 
+    }
+    
+    private void SetOreConfig(int size)
+    {
+        Size = size;
+        _currentEndurance = ore.endurancePerSize[Size - 1];
+        if (_spriteRenderer == null) { _spriteRenderer = GetComponentInChildren<SpriteRenderer>(); }
+        _spriteRenderer.sprite = ore.oreSprites[Size - 1];
+    }
+    
+    public void SetMapTilemap(Tilemap tilemap)
+    {
+        mapTilemap = tilemap;
     }
     
     private void OnCollisionEnter2D(Collision2D other)
