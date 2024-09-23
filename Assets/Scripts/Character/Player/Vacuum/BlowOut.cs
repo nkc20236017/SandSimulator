@@ -280,10 +280,10 @@ public class BlowOut : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(pivot.position, distance);
 
-        var camera = Camera.main;
-        if (camera == null) { return; }
+        var mainCamera = Camera.main;
+        if (mainCamera == null) { return; }
 
-        var mouseWorldPosition = camera.ScreenToWorldPoint(Input.mousePosition);
+        var mouseWorldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         if (updateTilemap == null) { return; }
 
         var centerCell = (Vector3)updateTilemap.WorldToCell(mouseWorldPosition);

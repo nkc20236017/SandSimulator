@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d1514134bc4fbd41bb739b1b9a49231, type: 3}
+  m_Script: {fileID: 11500000, guid: 8010f1f7be188104e90ffa582ddb3eee, type: 3}
   m_Name: Sand
   m_EditorClassIdentifier: 
-  m_DefaultSprite: {fileID: -1450161209, guid: 8e3e0692f42c9064299b43136cf86086, type: 3}
+  m_DefaultSprite: {fileID: 535653961, guid: 8e3e0692f42c9064299b43136cf86086, type: 3}
   m_DefaultGameObject: {fileID: 0}
   m_DefaultColliderType: 1
   m_TilingRules:
@@ -363,3 +363,7 @@ MonoBehaviour:
     - {x: 0, y: 1, z: 0}
     - {x: -1, y: 0, z: 0}
     m_RuleTransform: 0
+  alwaysConnect: 1
+  tilesToConnect:
+  - {fileID: 11400000, guid: f66babbb8ecba55418398bf81080dca8, type: 2}
+  checkSelf: 1
