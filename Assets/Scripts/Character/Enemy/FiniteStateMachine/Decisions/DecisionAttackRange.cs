@@ -2,7 +2,7 @@
 
 public class DecisionAttackRange : FsmDecision
 {
-	[Header("Decision Config")]
+	[Header("DecisionAttackTarget Config")]
 	[SerializeField] private float attackRange;
 	[SerializeField] private LayerMask playerLayerMask;
 	

@@ -3,7 +3,7 @@ using NaughtyAttributes;
 
 public class DecisionWidthDetectPlayer : MonoBehaviour
 {
-	[Header("Decision Config")]
+	[Header("DecisionAttackTarget Config")]
 	[SerializeField] private Transform pivot;
 	[SerializeField, MinValue(0)] private float radius;
 	[SerializeField, MinValue(0)] private float range;
