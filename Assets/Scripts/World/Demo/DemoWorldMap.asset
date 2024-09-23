@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08b35c36b51b9764fb1f7fb4896313b2, type: 3}
   m_Name: DemoWorldMap
   m_EditorClassIdentifier: 
-  worldScale: {x: 640, y: 390}
+  worldScale: {x: 2560, y: 1440}
   minOriginGapRange: {x: -20, y: -19}
   maxOriginGapRange: {x: -366, y: -120}
   randomLimit: 176.9
   amplitude: 0.01
-  oneChunkSize: {x: 64, y: 39}
+  oneChunkSize: {x: 256, y: 144}
   layerRatios:
   - 0.187
   - 0.35

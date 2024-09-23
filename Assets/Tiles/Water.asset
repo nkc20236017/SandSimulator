@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d1514134bc4fbd41bb739b1b9a49231, type: 3}
+  m_Script: {fileID: 11500000, guid: 8010f1f7be188104e90ffa582ddb3eee, type: 3}
   m_Name: Water
   m_EditorClassIdentifier: 
   m_DefaultSprite: {fileID: 668682857, guid: e4942c07e615b06429aa1a2efae8f902, type: 3}
@@ -332,3 +332,8 @@ MonoBehaviour:
     - {x: 0, y: -1, z: 0}
     - {x: 1, y: 0, z: 0}
     m_RuleTransform: 0
+  alwaysConnect: 1
+  tilesToConnect:
+  - {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
+  - {fileID: 11400000, guid: f66babbb8ecba55418398bf81080dca8, type: 2}
+  checkSelf: 1
