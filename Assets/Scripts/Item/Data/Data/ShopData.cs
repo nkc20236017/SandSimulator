@@ -18,4 +18,9 @@ public class ShopData
         SoldOut = true;
     }
 
+    public void ShopCler()
+    {
+        SoldOut = false;
+    }
+
 }

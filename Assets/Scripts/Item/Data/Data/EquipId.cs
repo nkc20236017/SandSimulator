@@ -8,10 +8,10 @@ public class EquipId
 
     public EquipId(string id)
     {
-        if(id == string.Empty)
-        {
-            throw new System.NullReferenceException(id + "不正な値です");
-        }
+        //if(id == string.Empty)
+        //{
+        //    throw new System.NullReferenceException(id + "不正な値です");
+        //}
 
         this.Id = id;
     }
