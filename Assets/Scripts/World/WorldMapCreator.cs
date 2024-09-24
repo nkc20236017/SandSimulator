@@ -25,13 +25,15 @@ namespace WorldCreation
 
 
         private bool _isQuitting;
-        private LayerGenerate _layer;
+        private LayerGenerator _layer;
         private CancellationTokenSource _cancelTokenSource;
         private Vector2 _tilemapOrigin;
         private ManagedRandom _randomization;
         private Chunk[,] _chunks;
         private IWorldGeneratable[] _worldGenerators =
         {
+            new LayerGenerator(),
+            new CaveGenerator(),
             new ChunkLoader()
         };
 
@@ -46,11 +48,16 @@ namespace WorldCreation
             _randomization = new(seed);
 
             // 初期化
-            _layer = new(_randomization.Range(0, 0));
             _cancelTokenSource = new();
 
             // 生成処理
             Initalize();
+            GenerateAll(_cancelTokenSource.Token);
+        }
+
+        [ContextMenu("Refresh")]
+        private void Regenerate()
+        {
             GenerateAll(_cancelTokenSource.Token);
         }
 
@@ -81,7 +88,14 @@ namespace WorldCreation
                     // チャンクを生成
                     GameObject tilemap = Instantiate(tilemapPrefab, origin, Quaternion.identity, tilemapParent);
 
-                    _chunks[x, y] = new Chunk(_randomization, tilemap.GetComponent<Tilemap>());
+                    _chunks[x, y] = new Chunk
+                    (
+                        // TODO: タイルマップの左下の座標を求める計算をする
+                        _randomization,
+                        new Vector2Int(x, y),
+                        tilemap.GetComponent<Tilemap>(),
+                        new int[worldMap.OneChunkSize.x, worldMap.OneChunkSize.y]
+                    );
 
                     // 次のX座標を設定
                     origin.x += worldMap.OneChunkSize.x;
@@ -91,6 +105,10 @@ namespace WorldCreation
                 origin.x = _tilemapOrigin.x;
                 origin.y += worldMap.OneChunkSize.y;
             }
+            // 次の乱数に合わせるために空の乱数を生成しておく
+            _randomization.Range(0, 0);
+
+            Debug.Log($"<color=#00ff00ff>初期化処理完了</color>");
         }
 
         private void OnApplicationQuit()
@@ -104,18 +122,19 @@ namespace WorldCreation
         private async void GenerateAll(CancellationToken token)
         {
             // 全てのチャンクを読み込む
-            for (int x = 0; x < _chunks.GetLength(0); x++)
+            for (int y = 0; y < _chunks.GetLength(0); y++)
             {
-                for (int y = 0; y < _chunks.GetLength(1); y++)
+                for (int x = 0; x < _chunks.GetLength(1); x++)
                 {
                     foreach (IWorldGeneratable worldGenerator in _worldGenerators)
                     {
-                        _chunks[x, y] = await worldGenerator.Execute(_chunks[x, y], worldMap, token);
                         worldGenerator.ExecutionOrder = _randomization.UsageCount;
-                        Debug.Log($"<color=#00ff00ff>{worldGenerator}の処理終了</color>");
+                        _chunks[x, y] = await worldGenerator.Execute(_chunks[x, y], worldMap, token);
+
                     }
                 }
             }
+
 
             GameObject worldMapManager = Instantiate(worldMapManagerPrefab);
             worldMapManager.GetComponent<IWorldMapManager>()

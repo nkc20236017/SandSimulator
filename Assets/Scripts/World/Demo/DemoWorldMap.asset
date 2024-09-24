@@ -12,22 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08b35c36b51b9764fb1f7fb4896313b2, type: 3}
   m_Name: DemoWorldMap
   m_EditorClassIdentifier: 
-  worldScale: {x: 2560, y: 1440}
-  minOriginGapRange: {x: -20, y: -19}
-  maxOriginGapRange: {x: -366, y: -120}
+  worldScale: {x: 640, y: 390}
+  minOriginGapRange: {x: 0, y: 0}
+  maxOriginGapRange: {x: 0, y: 0}
   randomLimit: 176.9
-  amplitude: 0.01
-  oneChunkSize: {x: 256, y: 144}
+  borderAmplitude: 0.03
+  blocks:
+    useBlockList:
+    - {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
+    - {fileID: 11400000, guid: 6485ccbf4f5813542a9e57e3e866a44f, type: 2}
+    - {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
+    - {fileID: 11400000, guid: f71c8f4de0d0c4c4ca5f4f79858b001b, type: 2}
+  oneChunkSize: {x: 64, y: 39}
+  fillLimit: 1000
   layerRatios:
-  - 0.187
-  - 0.35
-  - 0.195
-  - 0.23812279
-  - 0.029877245
-  borderNoiseSize: 28.26
+  - 0.229
+  - 0.2735
+  - 0.4975
+  borderDistortionPower: 33.19
   worldLayers:
   - debugLayerColor: {r: 1, g: 0.035849165, b: 0, a: 1}
-    materialTile: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
+    materialTileID: {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
     primevalOres:
     - priority: 0
       modelObject: {fileID: 0}
@@ -55,22 +60,21 @@ MonoBehaviour:
       marginSizeWidth: 0
       marginSizeHeight: 0
   - debugLayerColor: {r: 0, g: 0.14668608, b: 1, a: 1}
-    materialTile: {fileID: 0}
+    materialTileID: {fileID: 11400000, guid: 6485ccbf4f5813542a9e57e3e866a44f, type: 2}
     primevalOres: []
     primevalDungeons: []
   - debugLayerColor: {r: 0.03901863, g: 1, b: 0, a: 1}
-    materialTile: {fileID: 0}
+    materialTileID: {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
     primevalOres: []
     primevalDungeons: []
   - debugLayerColor: {r: 1, g: 0, b: 0, a: 1}
-    materialTile: {fileID: 0}
+    materialTileID: {fileID: 11400000, guid: f71c8f4de0d0c4c4ca5f4f79858b001b, type: 2}
     primevalOres: []
     primevalDungeons: []
-  - debugLayerColor: {r: 1, g: 0, b: 0.8365736, a: 1}
-    materialTile: {fileID: 0}
-    primevalOres: []
-    primevalDungeons: []
-  - debugLayerColor: {r: 0, g: 0, b: 0, a: 0}
-    materialTile: {fileID: 0}
-    primevalOres: []
-    primevalDungeons: []
+  caveCombines:
+  - scale: {x: 0.01, y: 0.01}
+    clodSize: 0.503
+    hollowSize: 0.431
+    isBackfill: 0
+    isInvert: 0
+    backfillTileID: 0

@@ -21,15 +21,29 @@ namespace WorldCreation
 
         async UniTask<Chunk> IWorldGeneratable.Execute(Chunk chunk, WorldMap worldMap, CancellationToken token)
         {
-            for (int y = 0; y < worldMap.OneChunkSize.y; y++)
+            int limitter = 0;
+            for (int y = 0; y < chunk.GetChunkLength(1); y++)
             {
-                for (int x = 0; x < worldMap.OneChunkSize.x; x++)
+                for (int x = 0; x < chunk.GetChunkLength(0); x++)
                 {
+                    Vector2Int position = new Vector2Int(x, y);
+                    if (chunk.GetBlockID(position) == 0)
+                    {
+                        continue;
+                    }
                     chunk.TileMap.SetTile
                     (
-                        new Vector3Int(x, y),
-                        worldMap.WorldLayers[0].MaterialTile
+                        (Vector3Int)position,
+                        worldMap.Blocks.GetBlock(chunk.GetBlockID(position))
                     );
+
+                    limitter++;
+
+                    if (worldMap.FillLimit < limitter)
+                    {
+                        await UniTask.NextFrame(token).SuppressCancellationThrow();
+                        limitter = 0;
+                    }
                 }
             }
 
