@@ -15,7 +15,6 @@ MonoBehaviour:
   worldScale: {x: 640, y: 390}
   minOriginGapRange: {x: 0, y: 0}
   maxOriginGapRange: {x: 0, y: 0}
-  randomLimit: 176.9
   borderAmplitude: 0.03
   blocks:
     useBlockList:
@@ -23,7 +22,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 6485ccbf4f5813542a9e57e3e866a44f, type: 2}
     - {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
     - {fileID: 11400000, guid: f71c8f4de0d0c4c4ca5f4f79858b001b, type: 2}
-  oneChunkSize: {x: 64, y: 39}
   fillLimit: 1000
   layerRatios:
   - 0.229
@@ -34,16 +32,14 @@ MonoBehaviour:
   - debugLayerColor: {r: 1, g: 0.035849165, b: 0, a: 1}
     materialTileID: {fileID: 11400000, guid: c11dc4c1e776745449ab59faad0487e7, type: 2}
     primevalOres:
-    - priority: 0
-      modelObject: {fileID: 0}
+    - modelObject: {fileID: 0}
       minExistence: 0
       maxExistence: 0
       probability: 0
       marginShape: 0
       marginSizeWidth: 0
       marginSizeHeight: 0
-    - priority: 0
-      modelObject: {fileID: 0}
+    - modelObject: {fileID: 0}
       minExistence: 0
       maxExistence: 0
       probability: 0
@@ -51,8 +47,7 @@ MonoBehaviour:
       marginSizeWidth: 0
       marginSizeHeight: 0
     primevalDungeons:
-    - priority: 0
-      modelObject: {fileID: 0}
+    - modelObject: {fileID: 0}
       minExistence: 0
       maxExistence: 0
       probability: 0
