@@ -25,9 +25,6 @@ namespace WorldCreation
         [SerializeField]    // 原点をずらす範囲の最大
         private Vector2Int maxOriginGapRange;
         public Vector2Int MaxOriginGapRange => maxOriginGapRange;
-        [SerializeField]    // ランダム値を生成する時の最大値
-        private float randomLimit;
-        public float RandomLimit => randomLimit;
         [SerializeField]    // ランダム値の振れ幅
         [Range(0f, 1f)]
         private float borderAmplitude;

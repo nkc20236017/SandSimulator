@@ -6,9 +6,6 @@ namespace WorldCreation
     [Serializable]
     public struct PrimevalObject
     {
-        [SerializeField]    // 生成する優先度
-        private float priority;
-        public float Priority => priority;
         [SerializeField]    // 生成するオブジェクト
         private GameObject modelObject;
         public GameObject ModelObject => modelObject;
@@ -29,10 +26,6 @@ namespace WorldCreation
         private float marginSizeWidth;
         [SerializeField]    // 生成余白の形状がboxの場合の高さ
         private float marginSizeHeight;
-        public float MarginSizeHeight
-        {
-            set => marginSizeHeight = value;
-        }
 
         public float MarginRadius => marginSizeWidth;
         public Vector2 MarginSize => new Vector2(marginSizeWidth, marginSizeHeight);
