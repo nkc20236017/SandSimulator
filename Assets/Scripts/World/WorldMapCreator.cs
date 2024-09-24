@@ -1,6 +1,3 @@
-using Cysharp.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -96,6 +93,9 @@ namespace WorldCreation
                         tilemap.GetComponent<Tilemap>(),
                         new int[worldMap.OneChunkSize.x, worldMap.OneChunkSize.y]
                     );
+
+                    TilemapRenderer renderer = tilemap.GetComponent<TilemapRenderer>();
+                    worldMap.OneChunkSize = new((int)renderer.chunkCullingBounds.x, (int)renderer.chunkCullingBounds.y);
 
                     // éüÇÃXç¿ïWÇê›íË
                     origin.x += worldMap.OneChunkSize.x;

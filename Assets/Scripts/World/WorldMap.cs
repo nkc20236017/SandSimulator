@@ -35,9 +35,12 @@ namespace WorldCreation
 
         [Space]
         [Header("Chunk")]
-        [SerializeField]    // 1ƒ`ƒƒƒ“ƒN‚Ì‘å‚«‚³
         private Vector2Int oneChunkSize;
-        public Vector2Int OneChunkSize => oneChunkSize;
+        public Vector2Int OneChunkSize
+        {
+            get => oneChunkSize;
+            set => oneChunkSize = value;
+        }
         [SerializeField]
         private int fillLimit;
         public int FillLimit => fillLimit;
