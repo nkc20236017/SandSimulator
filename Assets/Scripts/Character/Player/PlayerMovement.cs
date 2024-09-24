@@ -1,11 +1,9 @@
-﻿using NaughtyAttributes;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
+using NaughtyAttributes;
 
 public class PlayerMovement : MonoBehaviour
 {
-	[SerializeField] private Tilemap tilemap; // 後で変える
-
 	[Header("Movement Config")]
 	[SerializeField] private float speed;
 	[SerializeField] private float jumpForce;
@@ -27,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
 	private SpriteRenderer _spriteRenderer;
 	private Camera _camera;
 	private PlayerActions _playerActions;
+	private IChunkInformation _chunkInformation;
 	
 	public bool CanMove { get; set; } = true;
 	public bool IsMoveFlip { get; set; } = true;
@@ -43,6 +42,9 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Start()
 	{
+		var worldMapManager = FindObjectOfType<WorldMapManager>();
+		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+		
 		_camera = Camera.main;
 		
 		MovementActions.Jump.started += _ => Jump();
@@ -105,6 +107,7 @@ public class PlayerMovement : MonoBehaviour
 		for (var y = 1; y <= autoJumpHeight; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
+			var tilemap = _chunkInformation.GetChunk(position);
 			var cellPosition = tilemap.WorldToCell(position);
 			if (!tilemap.HasTile(cellPosition) || tilemap.HasTile(cellPosition + Vector3Int.up)) { continue; }
 
@@ -141,6 +144,7 @@ public class PlayerMovement : MonoBehaviour
 		for (var y = minY + 1; y <= maxY; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
+			var tilemap = _chunkInformation.GetChunk(position);
 			var cellPosition = tilemap.WorldToCell(position);
 			if (!tilemap.HasTile(cellPosition)) { continue; }
 			
@@ -159,6 +163,7 @@ public class PlayerMovement : MonoBehaviour
 			for (var x = minX; x <= maxX; x++)
 			{
 				var position = new Vector2(x, _boxCollider2D.bounds.max.y + y);
+				var tilemap = _chunkInformation.GetChunk(position);
 				var cellPosition = tilemap.WorldToCell(position);
 				if (!tilemap.HasTile(cellPosition)) { continue; }
 
@@ -223,15 +228,6 @@ public class PlayerMovement : MonoBehaviour
 		{
 			Gizmos.DrawWireSphere(position, radius);
 		}
-		
-		Gizmos.color = Color.green;
-		if (_moveDirection.x == 0) { return; }
-		
-		x = _moveDirection.x > 0 ? boxCollider2D.bounds.max.x + 0.25f : boxCollider2D.bounds.min.x - 0.25f;
-		position = new Vector2(x, boxCollider2D.bounds.min.y + 0.1f);
-		var cellPosition = tilemap.WorldToCell(position);
-		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(cellPosition), new Vector3(1, 1, 0));
-		Gizmos.DrawWireCube(tilemap.GetCellCenterWorld(cellPosition + Vector3Int.up), new Vector3(1, 1, 0));
 	}
 	
 	private void OnEnable()
