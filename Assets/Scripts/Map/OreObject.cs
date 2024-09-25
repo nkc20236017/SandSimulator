@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Tilemaps;
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
 
@@ -22,7 +21,7 @@ public class OreObject : MonoBehaviour, IDamagable
     private CapsuleCollider2D _capsuleCollider2D;
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer _spriteRenderer;
-    private Tilemap mapTilemap;
+    private IChunkInformation _chunkInformation;
 
     public int Size { get; private set; }
     public bool CanFall { get; set; } = true;
@@ -66,6 +65,9 @@ public class OreObject : MonoBehaviour, IDamagable
         var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
         
         var position = _capsuleCollider2D.bounds.center + (Vector3)direction.normalized * size;
+        var mapTilemap = _chunkInformation.GetChunkTilemap(position);
+        if (mapTilemap == null) { return; }
+        
         var cellPosition = mapTilemap.WorldToCell(position);
         if (mapTilemap.HasTile(cellPosition)) { return; }
         
@@ -114,11 +116,6 @@ public class OreObject : MonoBehaviour, IDamagable
         _spriteRenderer.sprite = ore.oreSprites[Size - 1];
     }
     
-    public void SetMapTilemap(Tilemap tilemap)
-    {
-        mapTilemap = tilemap;
-    }
-    
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (!_canDestroy) { return; }
@@ -133,21 +130,10 @@ public class OreObject : MonoBehaviour, IDamagable
 		
         Destroy(gameObject);
     }
-
-    private void OnDrawGizmosSelected()
+    
+    private void OnEnable()
     {
-        if (mapTilemap == null) { return; }
-        
-        var capsuleCollider2D = GetComponent<CapsuleCollider2D>();
-        if (capsuleCollider2D == null) { return; }
-        
-        var size = Mathf.Max(capsuleCollider2D.size.x, capsuleCollider2D.size.y) / 2 + 0.9f;
-        var angle = (transform.eulerAngles.z + 270) * Mathf.Deg2Rad;
-        var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-        
-        var startPosition = capsuleCollider2D.bounds.center + (Vector3)direction.normalized * size;
-        
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(mapTilemap.GetCellCenterWorld(mapTilemap.WorldToCell(startPosition)), new Vector3(0.9f, 0.9f));
+        var worldMapManager = FindObjectOfType<WorldMapManager>();
+        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
     }
 }

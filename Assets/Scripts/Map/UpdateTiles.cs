@@ -8,8 +8,6 @@ using Random = UnityEngine.Random;
 public class UpdateTile : MonoBehaviour
 {
     [Header("Datas Config")]
-    [SerializeField] private Tilemap _updateTilemap;
-    [SerializeField] private Tilemap _mapTilemap;
     [SerializeField] private BlockDatas blockDatas;
     [SerializeField] private LayerMask collisionLayerMask;
 
@@ -23,10 +21,17 @@ public class UpdateTile : MonoBehaviour
     [SerializeField] private bool canUpdateSandToMud;
     
     private float _lastUpdateTime;
+    private Tilemap _updateTilemap;
     private List<Vector3Int> _clearTiles = new();
     private List<Vector3Int> _updateTiles = new();
+    private IChunkInformation _chunkInformation;
     
     private Dictionary<Vector3Int, TileBase> _previousTilemapState = new();
+
+    private void Awake()
+    {
+        _updateTilemap = GetComponent<Tilemap>();
+    }
 
     private void Start()
     {
@@ -49,11 +54,18 @@ public class UpdateTile : MonoBehaviour
             tile.tilePositions.Clear();
         }
 
-        for (var y = -chunkSize.y / 2; y < chunkSize.y / 2; y++)
+        if (chunkSize == Vector2Int.zero)
         {
-            for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
+            var tilePositions = _updateTilemap.cellBounds.allPositionsWithin;
+            foreach (var position in tilePositions)
             {
-                var position = new Vector3Int(x, y, 0);
+                var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
+                if (tilemap == null)
+                {
+                    _updateTilemap.SetTile(position, null);
+                    continue;
+                }
+                
                 var tile = _updateTilemap.GetTile(position);
                 if (tile == null) { continue; }
             
@@ -61,6 +73,31 @@ public class UpdateTile : MonoBehaviour
                 if (index >= 0 && index < blockDatas.Block.Length)
                 {
                     blockDatas.Block[index].tilePositions.Add(position);
+                }
+            }
+        }
+        else
+        {
+            for (var y = -chunkSize.y / 2; y < chunkSize.y / 2; y++)
+            {
+                for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
+                {
+                    var position = new Vector3Int(x, y, 0);
+                    var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(x, y));
+                    if (tilemap == null)
+                    {
+                        _updateTilemap.SetTile(position, null);
+                        continue;
+                    }
+                
+                    var tile = _updateTilemap.GetTile(position);
+                    if (tile == null) { continue; }
+            
+                    var index = Array.FindIndex(blockDatas.Block, t => t.tile == tile);
+                    if (index >= 0 && index < blockDatas.Block.Length)
+                    {
+                        blockDatas.Block[index].tilePositions.Add(position);
+                    }
                 }
             }
         }
@@ -128,14 +165,34 @@ public class UpdateTile : MonoBehaviour
 
     private void UpdateSand(Vector3Int position)
     {
-        var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 1, 1);
-        var tilesBlock1 = _updateTilemap.GetTilesBlock(checkBound);
-        var tilesBlock2 = _mapTilemap.GetTilesBlock(checkBound);
-        var tilesBlock = tilesBlock1.Concat(tilesBlock2).ToArray();
-        tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
-        if (tilesBlock.Length == 3 || Physics2D.OverlapBox(_updateTilemap.GetCellCenterWorld(position + Vector3Int.down), new Vector2(2.9f, 0.9f), 0, collisionLayerMask))
+        var pos = new Vector2(position.x, position.y);
+        var mapTilemap = _chunkInformation.GetChunkTilemap(pos);
+        if (mapTilemap == null) { return; }
+
+        var worldPosition = mapTilemap.transform.InverseTransformPoint(position);
+        var localPosition = mapTilemap.WorldToCell(worldPosition);
+        
+        var hasTileCount = 0;
+        for (var i = -1; i <= 1; i++)
         {
-            _mapTilemap.SetTile(position, blockDatas.GetBlock(BlockType.Sand).tile); // TODO: プレイヤーの層の砂を取得する
+            var checkPosition = localPosition + new Vector3Int(i, -1, 0);
+            var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(checkPosition.x, checkPosition.y));
+            if (tilemap == null || tilemap.HasTile(checkPosition))
+            {
+                hasTileCount++;
+            }
+        }
+
+        if (hasTileCount == 3)
+        {
+            var block = blockDatas.GetBlock(BlockType.Sand);
+            mapTilemap.SetTile(localPosition, block.tile);
+            // TODO: 層ごとの色を設定する
+            // var tileLayer = _chunkInformation.GetLayer(pos);
+            // if (block.GetStratumGeologyData(tileLayer) != null)
+            // {
+            //     mapTilemap.SetColor(position, block.GetStratumGeologyData(tileLayer).color);
+            // }
             _clearTiles.Add(position);
             return;
         }
@@ -144,25 +201,29 @@ public class UpdateTile : MonoBehaviour
         var belowLeft = position + new Vector3Int(-1, -1, 0);
         var belowRight = position + new Vector3Int(1, -1, 0);
         
-        if (!CheckHasTile(below))
+        var belowTilemap = _chunkInformation.GetChunkTilemap(new Vector2(below.x, below.y));
+        var belowLeftTilemap = _chunkInformation.GetChunkTilemap(new Vector2(belowLeft.x, belowLeft.y));
+        var belowRightTilemap = _chunkInformation.GetChunkTilemap(new Vector2(belowRight.x, belowRight.y));
+        
+        if (belowTilemap != null && !CheckHasTile(belowTilemap, below))
         {
             _clearTiles.Add(position);
             _updateTiles.Add(below);
         }
-        else if (!_mapTilemap.HasTile(belowLeft) && !_updateTilemap.HasTile(belowLeft) || !_mapTilemap.HasTile(belowRight) && !_updateTilemap.HasTile(belowRight))
+        else if (belowLeftTilemap != null && !belowLeftTilemap.HasTile(belowLeft) && !_updateTilemap.HasTile(belowLeft) || belowRightTilemap != null && !belowRightTilemap.HasTile(belowRight) && !_updateTilemap.HasTile(belowRight))
         {
             var random = Random.Range(0, 2);
             switch (random)
             {
                 case 0:
-                    if (!CheckHasTile(belowLeft))
+                    if (belowLeftTilemap != null && !CheckHasTile(belowLeftTilemap, belowLeft))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowLeft);
                     }
                     break;
                 case 1:
-                    if (!CheckHasTile(belowRight))
+                    if (belowRightTilemap != null && !CheckHasTile(belowRightTilemap, belowRight))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowRight);
@@ -172,9 +233,9 @@ public class UpdateTile : MonoBehaviour
         }
     }
 
-    private bool CheckHasTile(Vector3Int position)
+    private bool CheckHasTile(Tilemap tilemap, Vector3Int position)
     {
-        return _mapTilemap.HasTile(position) || _updateTilemap.HasTile(position) || CheckUpdateTilePosition(position) || IsCollision(position);
+        return tilemap.HasTile(position) || _updateTilemap.HasTile(position) || CheckUpdateTilePosition(position) || IsCollision(position);
     }
     
     private bool IsCollision(Vector3Int position)
@@ -197,25 +258,31 @@ public class UpdateTile : MonoBehaviour
         var belowLeft = position + new Vector3Int(-1, -1, 0);
         var belowRight = position + new Vector3Int(1, -1, 0);
         
-        if (!_updateTilemap.HasTile(below) && !_mapTilemap.HasTile(below) && !CheckUpdateTilePosition(below))
+        var leftTilemap = _chunkInformation.GetChunkTilemap(new Vector2(left.x, left.y));
+        var rightTilemap = _chunkInformation.GetChunkTilemap(new Vector2(right.x, right.y));
+        var belowTilemap = _chunkInformation.GetChunkTilemap(new Vector2(below.x, below.y));
+        var belowLeftTilemap = _chunkInformation.GetChunkTilemap(new Vector2(belowLeft.x, belowLeft.y));
+        var belowRightTilemap = _chunkInformation.GetChunkTilemap(new Vector2(belowRight.x, belowRight.y));
+        
+        if (belowTilemap != null && !CheckHasTile(belowTilemap, below))
         {
             _clearTiles.Add(position);
             _updateTiles.Add(below);
         }
-        else if (!_updateTilemap.HasTile(belowLeft) && !_mapTilemap.HasTile(belowLeft) || !_updateTilemap.HasTile(belowRight) && !_mapTilemap.HasTile(belowRight))
+        else if (belowLeftTilemap != null && !_updateTilemap.HasTile(belowLeft) && !belowLeftTilemap.HasTile(belowLeft) || belowRightTilemap != null && !_updateTilemap.HasTile(belowRight) && !belowRightTilemap.HasTile(belowRight))
         {
             var random = Random.Range(0, 2);
             switch (random)
             {
                 case 0:
-                    if (!_updateTilemap.HasTile(belowLeft) && !_mapTilemap.HasTile(belowLeft) && !CheckUpdateTilePosition(belowLeft))
+                    if (belowLeftTilemap != null && !CheckHasTile(belowLeftTilemap, belowLeft))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowLeft);
                     }
                     break;
                 case 1:
-                    if (!_updateTilemap.HasTile(belowRight) && !_mapTilemap.HasTile(belowRight) && !CheckUpdateTilePosition(belowRight))
+                    if (belowRightTilemap != null && !CheckHasTile(belowRightTilemap, belowRight))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(belowRight);
@@ -223,14 +290,14 @@ public class UpdateTile : MonoBehaviour
                     break;
             }
         }
-        else if (!_updateTilemap.HasTile(left) && !_mapTilemap.HasTile(left) || !_updateTilemap.HasTile(right) && !_mapTilemap.HasTile(right))
+        else if (leftTilemap != null && !_updateTilemap.HasTile(left) && !leftTilemap.HasTile(left) || rightTilemap != null && !_updateTilemap.HasTile(right) && !rightTilemap.HasTile(right))
         {
             var random = Random.Range(0, 2);
             switch (random)
             {
                 case 0:
                 {
-                    if (!_updateTilemap.HasTile(left) && !_mapTilemap.HasTile(left) && !CheckUpdateTilePosition(left))
+                    if (leftTilemap != null && !CheckHasTile(leftTilemap, left))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(left);
@@ -239,7 +306,7 @@ public class UpdateTile : MonoBehaviour
                 }
                 case 1:
                 {
-                    if (!_updateTilemap.HasTile(right) && !_mapTilemap.HasTile(right) && !CheckUpdateTilePosition(right))
+                    if (rightTilemap != null && !CheckHasTile(rightTilemap, right))
                     {
                         _clearTiles.Add(position);
                         _updateTiles.Add(right);
@@ -265,9 +332,25 @@ public class UpdateTile : MonoBehaviour
         tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
         if (tilesBlock.Length == 0) { return; }
 
+        var pos = new Vector2(position.x, position.y);
+        var mapTilemap = _chunkInformation.GetChunkTilemap(pos);
+        if (mapTilemap == null) { return; }
+        
+        var tileLayer = _chunkInformation.GetLayer(pos);
         if (tilesBlock.Any(tileBase => tileBase == blockDatas.GetBlock(BlockType.Liquid).tile))
         {
-            _mapTilemap.SetTile(position, blockDatas.GetBlock(BlockType.Mud).tile);
+            var block = blockDatas.GetBlock(BlockType.Liquid);
+            mapTilemap.SetTile(position, block.tile);
+            
+            if (block.GetStratumGeologyData(tileLayer) == null) { return; }
+            var color = block.GetStratumGeologyData(tileLayer).color;
+            mapTilemap.SetColor(position, color);
         }
+    }
+
+    private void OnEnable()
+    {
+        var worldMapManager = FindObjectOfType<WorldMapManager>();
+        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
     }
 }

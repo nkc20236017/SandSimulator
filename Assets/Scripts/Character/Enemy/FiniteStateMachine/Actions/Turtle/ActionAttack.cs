@@ -1,12 +1,9 @@
-﻿using NaughtyAttributes;
+﻿using System;
 using UnityEngine;
-using UnityEngine.Tilemaps;
+using NaughtyAttributes;
 
 public class ActionAttack : FsmAction
 {
-	[Header("Datas Config")]
-	[SerializeField] private Tilemap _tilemap;
-	
 	[Header("Auto Jump Config")]
 	[SerializeField] private bool autoJump;
 	[ShowIf(nameof(autoJump))]
@@ -21,6 +18,7 @@ public class ActionAttack : FsmAction
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
+	private IChunkInformation _chunkInformation;
 
 	private void Awake()
 	{
@@ -51,8 +49,11 @@ public class ActionAttack : FsmAction
 		for (var y = 1; y <= autoJumpHeight; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
-			var cellPosition = _tilemap.WorldToCell(position);
-			if (!_tilemap.HasTile(cellPosition) || _tilemap.HasTile(cellPosition + Vector3Int.up)) { continue; }
+			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			if (tilemap == null) { continue; }
+			
+			var cellPosition = tilemap.WorldToCell(position);
+			if (!tilemap.HasTile(cellPosition) || tilemap.HasTile(cellPosition + Vector3Int.up)) { continue; }
 
 			if (IsWall(y) || IsHeavenly(y))
 			{
@@ -87,8 +88,11 @@ public class ActionAttack : FsmAction
 		for (var y = minY + 1; y <= maxY; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
-			var cellPosition = _tilemap.WorldToCell(position);
-			if (!_tilemap.HasTile(cellPosition)) { continue; }
+			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			if (tilemap == null) { continue; }
+			
+			var cellPosition = tilemap.WorldToCell(position);
+			if (!tilemap.HasTile(cellPosition)) { continue; }
 			
 			return true;
 		}
@@ -105,13 +109,22 @@ public class ActionAttack : FsmAction
 			for (var x = minX; x <= maxX; x++)
 			{
 				var position = new Vector2(x, _boxCollider2D.bounds.max.y + y);
-				var cellPosition = _tilemap.WorldToCell(position);
-				if (!_tilemap.HasTile(cellPosition)) { continue; }
+				var tilemap = _chunkInformation.GetChunkTilemap(position);
+				if (tilemap == null) { continue; }
+				
+				var cellPosition = tilemap.WorldToCell(position);
+				if (!tilemap.HasTile(cellPosition)) { continue; }
 
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	private void OnEnable()
+	{
+		var worldMapManager = FindObjectOfType<WorldMapManager>();
+		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
 	}
 }

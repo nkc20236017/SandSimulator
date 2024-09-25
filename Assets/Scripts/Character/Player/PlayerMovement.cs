@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Tilemaps;
 using NaughtyAttributes;
 
 public class PlayerMovement : MonoBehaviour
@@ -42,9 +41,6 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Start()
 	{
-		var worldMapManager = FindObjectOfType<WorldMapManager>();
-		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
-		
 		_camera = Camera.main;
 		
 		MovementActions.Jump.started += _ => Jump();
@@ -107,7 +103,9 @@ public class PlayerMovement : MonoBehaviour
 		for (var y = 1; y <= autoJumpHeight; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
-			var tilemap = _chunkInformation.GetChunk(position);
+			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			if (tilemap == null) { continue; }
+			
 			var cellPosition = tilemap.WorldToCell(position);
 			if (!tilemap.HasTile(cellPosition) || tilemap.HasTile(cellPosition + Vector3Int.up)) { continue; }
 
@@ -144,7 +142,9 @@ public class PlayerMovement : MonoBehaviour
 		for (var y = minY + 1; y <= maxY; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
-			var tilemap = _chunkInformation.GetChunk(position);
+			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			if (tilemap == null) { continue; }
+			
 			var cellPosition = tilemap.WorldToCell(position);
 			if (!tilemap.HasTile(cellPosition)) { continue; }
 			
@@ -163,7 +163,9 @@ public class PlayerMovement : MonoBehaviour
 			for (var x = minX; x <= maxX; x++)
 			{
 				var position = new Vector2(x, _boxCollider2D.bounds.max.y + y);
-				var tilemap = _chunkInformation.GetChunk(position);
+				var tilemap = _chunkInformation.GetChunkTilemap(position);
+				if (tilemap == null) { continue; }
+				
 				var cellPosition = tilemap.WorldToCell(position);
 				if (!tilemap.HasTile(cellPosition)) { continue; }
 
@@ -233,6 +235,9 @@ public class PlayerMovement : MonoBehaviour
 	private void OnEnable()
 	{
 		_playerActions.Enable();
+		
+		var worldMapManager = FindObjectOfType<WorldMapManager>();
+		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
 	}
 	
 	private void OnDisable()

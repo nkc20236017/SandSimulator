@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
-using UnityEngine.Tilemaps;
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
 
 public class ActionWander : FsmAction
 {
 	[Header("Datas Config")]
-	[SerializeField] private Tilemap _tilemap;
 	[SerializeField] private LayerMask groundLayerMask;
 	
 	[Header("Ground Config")]
@@ -36,6 +34,7 @@ public class ActionWander : FsmAction
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
+	private IChunkInformation _chunkInformation;
 
 	private void Start()
 	{
@@ -57,7 +56,6 @@ public class ActionWander : FsmAction
 		{
 			var ore = Instantiate(orePrefab, oreParents[i]);
 			ore.CanFall = false;
-			ore.SetMapTilemap(_tilemap);
 			var randomSize = Random.Range(1, 4);
 			ore.SetOre(turtle.DropOre(), randomSize, 0);
 			oreParents[i].SetParent(ore.transform);
@@ -90,8 +88,11 @@ public class ActionWander : FsmAction
 		for (var y = 1; y <= autoJumpHeight; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
-			var cellPosition = _tilemap.WorldToCell(position);
-			if (!_tilemap.HasTile(cellPosition) || _tilemap.HasTile(cellPosition + Vector3Int.up)) { continue; }
+			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			if (tilemap == null) { continue; }
+			
+			var cellPosition = tilemap.WorldToCell(position);
+			if (!tilemap.HasTile(cellPosition) || tilemap.HasTile(cellPosition + Vector3Int.up)) { continue; }
 
 			if (IsWall(y) || IsHeavenly(y))
 			{
@@ -136,8 +137,11 @@ public class ActionWander : FsmAction
 		for (var y = minY + 1; y <= maxY; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
-			var cellPosition = _tilemap.WorldToCell(position);
-			if (!_tilemap.HasTile(cellPosition)) { continue; }
+			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			if (tilemap == null) { continue; }
+			
+			var cellPosition = tilemap.WorldToCell(position);
+			if (!tilemap.HasTile(cellPosition)) { continue; }
 			
 			return true;
 		}
@@ -154,8 +158,11 @@ public class ActionWander : FsmAction
 			for (var x = minX; x <= maxX; x++)
 			{
 				var position = new Vector2(x, _boxCollider2D.bounds.max.y + y);
-				var cellPosition = _tilemap.WorldToCell(position);
-				if (!_tilemap.HasTile(cellPosition)) { continue; }
+				var tilemap = _chunkInformation.GetChunkTilemap(position);
+				if (tilemap == null) { continue; }
+				
+				var cellPosition = tilemap.WorldToCell(position);
+				if (!tilemap.HasTile(cellPosition)) { continue; }
 
 				return true;
 			}
@@ -177,12 +184,17 @@ public class ActionWander : FsmAction
 		
 		var x = _moveDirection.x >= 0 ? _boxCollider2D.bounds.max.x : _boxCollider2D.bounds.min.x - _boxCollider2D.size.x;
 		var position = new Vector2(x, _boxCollider2D.bounds.min.y - _boxCollider2D.size.y);
-		var cellPosition = _tilemap.WorldToCell(position);
+		var tilemap = _chunkInformation.GetChunkTilemap(position);
+		if (tilemap == null) { return false; }
+		
+		var cellPosition = tilemap.WorldToCell(position);
 		var size = Vector3Int.CeilToInt(_boxCollider2D.size);
 		var bounds = new BoundsInt(cellPosition.x, cellPosition.y, 1, size.x, size.y, 1);
 		foreach (var pos in bounds.allPositionsWithin)
 		{
-			if (!_tilemap.HasTile(_tilemap.WorldToCell(pos))) { continue; }
+			tilemap = _chunkInformation.GetChunkTilemap(new Vector2(pos.x, pos.y));
+			if (tilemap == null) { continue; }
+			if (!tilemap.HasTile(tilemap.WorldToCell(pos))) { continue; }
 
 			return false;
 		}
@@ -195,66 +207,9 @@ public class ActionWander : FsmAction
 		_rigidbody2D.velocity = new Vector2(_moveDirection.x * _enemyBrain.Status.speed, _rigidbody2D.velocity.y);
 	}
 
-	private void OnDrawGizmos()
+	private void OnEnable()
 	{
-		if (_tilemap == null) { return; }
-		
-		var boxCollider2D = GetComponent<BoxCollider2D>();
-		if (boxCollider2D == null) { return; }
-		
-		var x = boxCollider2D.bounds.center.x;
-		var y = boxCollider2D.bounds.min.y;
-		var position = new Vector2(x, y);
-		Gizmos.DrawWireSphere(position, boxCollider2D.size.x / 2 - 0.1f);
-		
-		// 穴のギズモ表示
-		x = _moveDirection.x >= 0 ? boxCollider2D.bounds.max.x : boxCollider2D.bounds.min.x - boxCollider2D.size.x;
-		position = new Vector2(x, boxCollider2D.bounds.min.y - boxCollider2D.size.y);
-		var cellPosition = _tilemap.WorldToCell(position);
-		var size = Vector3Int.CeilToInt(boxCollider2D.size);
-		var bounds = new BoundsInt(cellPosition.x, cellPosition.y, 1, size.x, size.y, 1);
-		var isHole = false;
-		foreach (var pos in bounds.allPositionsWithin)
-		{
-			if (!_tilemap.HasTile(_tilemap.WorldToCell(pos))) { continue; }
-			
-			isHole = true;
-			break;
-		}
-		Gizmos.color = isHole ? Color.red : Color.green;
-		Gizmos.DrawWireCube(bounds.center, bounds.size);
-		
-		x = _moveDirection.x >= 0 ? boxCollider2D.bounds.max.x + 0.25f : boxCollider2D.bounds.min.x - 0.25f;
-		
-		// ジャンプのギズモ表示
-		for (var minY = 0; minY < autoJumpHeight; minY++)
-		{
-			for (y = minY + 1; y <= boxCollider2D.bounds.size.y - minY; y++)
-			{
-				position = new Vector2(x, boxCollider2D.bounds.min.y + y);
-				cellPosition = _tilemap.WorldToCell(position);
-				Gizmos.color = _tilemap.HasTile(cellPosition) ? Color.red : Color.blue;
-				Gizmos.DrawWireCube(_tilemap.GetCellCenterWorld(cellPosition), Vector3.one);
-			}
-			
-			position = new Vector2(x, boxCollider2D.bounds.min.y + minY);
-			var cellPosition0 = _tilemap.WorldToCell(position);
-			Gizmos.color = _tilemap.HasTile(cellPosition0) ? Color.red : Color.green;
-			Gizmos.DrawWireCube(_tilemap.GetCellCenterWorld(cellPosition0), Vector3.one);
-		}
-		
-		// 天井のギズモ表示
-		var minX = boxCollider2D.bounds.min.x - 0.25f;
-		var maxX = boxCollider2D.bounds.max.x + 1.25f;
-		for (y = 1; y <= autoJumpHeight; y++)
-		{
-			for (x = minX; x <= maxX; x++)
-			{
-				position = new Vector2(x, boxCollider2D.bounds.max.y + y);
-				cellPosition = _tilemap.WorldToCell(position);
-				Gizmos.color = _tilemap.HasTile(cellPosition) ? Color.yellow : Color.green;
-				Gizmos.DrawWireCube(_tilemap.GetCellCenterWorld(cellPosition), Vector3.one);
-			}
-		}
+		var worldMapManager = FindObjectOfType<WorldMapManager>();
+		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
 	}
 }

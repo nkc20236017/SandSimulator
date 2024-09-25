@@ -1,7 +1,7 @@
-﻿using NaughtyAttributes;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using NaughtyAttributes;
 using VContainer;
 using Random = UnityEngine.Random;
 
@@ -9,7 +9,6 @@ public class BlowOut : MonoBehaviour
 {
     [Header("Tile Config")]
     [SerializeField] private Tilemap updateTilemap;
-    [SerializeField] private Tilemap mapTilemap;
     [SerializeField] private BlockDatas blockDatas;
 
     [Header("BlowOut Config")]
@@ -36,6 +35,7 @@ public class BlowOut : MonoBehaviour
     private PlayerActions _playerActions;
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
     private IInputTank inputTank;
+    private IChunkInformation _chunkInformation;
 
     public bool IsBlowOut { get; private set; }
 
@@ -133,20 +133,33 @@ public class BlowOut : MonoBehaviour
     private void UpdateTiles()
     {
         var bounds = new BoundsInt(updateTilemap.WorldToCell(pivot.position) - new Vector3Int((int)radius, (int)radius, 0), new Vector3Int((int)radius * 2, (int)radius * 2, 1));
+        
         var getTilesBlock = updateTilemap.GetTilesBlock(bounds);
-        var getTilesBlock2 = mapTilemap.GetTilesBlock(bounds);
-        getTilesBlock = getTilesBlock.Concat(getTilesBlock2).ToArray();
         getTilesBlock = getTilesBlock.Where(x => x != null).ToArray();
         if (getTilesBlock.Length == 0) { return; }
+        
+        var hasTile = false;
+        Tilemap mapTilemap;
+        foreach (var position in bounds.allPositionsWithin)
+        {
+            var pos = new Vector2(position.x, position.y);
+            mapTilemap = _chunkInformation.GetChunkTilemap(pos);
+            if (mapTilemap == null) { continue; }
+            if (!mapTilemap.HasTile(position)) { continue; }
+            
+            hasTile = true;
+        }
+        if (!hasTile) { return; }
 
         foreach (var tilePosition in bounds.allPositionsWithin)
         {
             Tilemap tilemap;
+            mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(tilePosition.x, tilePosition.y));
             if (updateTilemap.HasTile(tilePosition))
             {
                 tilemap = updateTilemap;
             }
-            else if (mapTilemap.HasTile(tilePosition))
+            else if (mapTilemap != null && mapTilemap.HasTile(tilePosition))
             {
                 tilemap = mapTilemap;
             }
@@ -333,6 +346,9 @@ public class BlowOut : MonoBehaviour
     private void OnEnable()
     {
         _playerActions.Enable();
+        
+        var worldMapManager = FindObjectOfType<WorldMapManager>();
+        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
     }
 
     private void OnDisable()

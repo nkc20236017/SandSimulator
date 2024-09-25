@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using VContainer;
 using Random = UnityEngine.Random;
 
 public class SuckUp : MonoBehaviour
 {
     [Header("Tile Config")]
-    [SerializeField] private Tilemap _tilemap;  // 後で変える
     [SerializeField] private BlockDatas blockDatas;
     [SerializeField] private LayerMask blockLayerMask;
     
@@ -34,6 +32,7 @@ public class SuckUp : MonoBehaviour
     private PlayerActions _playerActions;
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
     private IInputTank inputTank;
+    private IChunkInformation _chunkInformation;
     
     public bool IsSuckUp { get; private set; }
     
@@ -109,32 +108,46 @@ public class SuckUp : MonoBehaviour
     {
         _suckUpTilePositions.Clear();
         _suckUpOreObject.Clear();
-        var bounds = new BoundsInt(_tilemap.WorldToCell(pivot.position) - new Vector3Int((int)_suctionDistance, (int)_suctionDistance, 0), new Vector3Int((int)_suctionDistance * 2, (int)_suctionDistance * 2, 1));
-        var getTilesBlock = _tilemap.GetTilesBlock(bounds);
-        getTilesBlock = getTilesBlock.Where(x => x != null).ToArray();
-        if (getTilesBlock.Length == 0) { return; }
+        var mapTilemap = _chunkInformation.GetChunkTilemap(pivot.position);
+        if (mapTilemap == null) { return; }
+        
+        var bounds = new BoundsInt(mapTilemap.WorldToCell(pivot.position) - new Vector3Int((int)_suctionDistance, (int)_suctionDistance, 0), new Vector3Int((int)_suctionDistance * 2, (int)_suctionDistance * 2, 1));
+        var hasTile = false;
+        foreach (var position in bounds.allPositionsWithin)
+        {
+            var pos = new Vector2(position.x, position.y);
+            mapTilemap = _chunkInformation.GetChunkTilemap(pos);
+            if (mapTilemap == null) { continue; }
+            if (!mapTilemap.HasTile(position)) { continue; }
+            
+            hasTile = true;
+        }
+        if (!hasTile) { return; }
         
         foreach (var tilePosition in bounds.allPositionsWithin)
         {
+            var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(tilePosition.x, tilePosition.y));
+            if (tilemap == null) { continue; }
+            
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-            var centerCell = (Vector3)_tilemap.WorldToCell(mouseWorldPosition);
+            var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPosition);
 
-            var direction1 = (Vector3)_tilemap.WorldToCell(tilePosition) - _tilemap.WorldToCell(pivot.position);
-            var direction2 = (Vector3)_tilemap.WorldToCell(centerCell) - _tilemap.WorldToCell(pivot.position);
+            var direction1 = (Vector3)tilemap.WorldToCell(tilePosition) - tilemap.WorldToCell(pivot.position);
+            var direction2 = (Vector3)tilemap.WorldToCell(centerCell) - tilemap.WorldToCell(pivot.position);
             var angle = Vector3.Angle(direction1, direction2);
 
-            var distance = Vector3.Distance(_tilemap.GetCellCenterWorld(tilePosition), pivot.position);
+            var distance = Vector3.Distance(tilemap.GetCellCenterWorld(tilePosition), pivot.position);
 
             if (angle <= _suctionAngle && distance <= _suctionDistance)
             {
-                DetectOre(_tilemap.GetCellCenterWorld(tilePosition));   
+                DetectOre(tilemap.GetCellCenterWorld(tilePosition));   
                 if (_suckUpOreObject.Count > 0) { continue; }
                 
-                if (_tilemap.GetTile(tilePosition) == null) { continue; }
+                if (tilemap.GetTile(tilePosition) == null) { continue; }
                 
                 if (distance <= _deleteDistance)
                 {
-                    _tilemap.SetTile(tilePosition, null);
+                    tilemap.SetTile(tilePosition, null);
                     return;
                 }
                 
@@ -178,23 +191,26 @@ public class SuckUp : MonoBehaviour
 
         foreach (var tilePosition in _suckUpTilePositions)
         {
-            var direction = (Vector3)_tilemap.WorldToCell(pivot.position) - _tilemap.WorldToCell(tilePosition);
-            var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized);
-            if (_tilemap.HasTile(newTilePosition)) { continue; }
+            var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(tilePosition.x, tilePosition.y));
+            if (tilemap == null) { continue; }
             
-            var tile = _tilemap.GetTile(tilePosition);
+            var direction = (Vector3)tilemap.WorldToCell(pivot.position) - tilemap.WorldToCell(tilePosition);
+            var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized);
+            if (tilemap.HasTile(newTilePosition)) { continue; }
+            
+            var tile = tilemap.GetTile(tilePosition);
             var isContinue = blockDatas.Block
                     .Where(tileData => tileData.tile == tile)
                     .Any(tileData => _numberExecutions % tileData.weight != 0);
             if (isContinue) { continue; }
             
-            _tilemap.SetTile(newTilePosition, tile);
-            _tilemap.SetTile(tilePosition, null);
+            tilemap.SetTile(newTilePosition, tile);
+            tilemap.SetTile(tilePosition, null);
             
-            if (Vector3.Distance(_tilemap.GetCellCenterWorld(newTilePosition), pivot.position) <= _deleteDistance)
+            if (Vector3.Distance(tilemap.GetCellCenterWorld(newTilePosition), pivot.position) <= _deleteDistance)
             {
                 inputTank.InputAddTank(tile);//タンクに追加
-                _tilemap.SetTile(newTilePosition, null);
+                tilemap.SetTile(newTilePosition, null);
             }
         }
     }
@@ -249,13 +265,11 @@ public class SuckUp : MonoBehaviour
         Gizmos.color = Color.green;
         var camera = Camera.main;
         if (camera == null) { return; }
-        if (_tilemap == null) { return; }
 
         var mouseWorldPosition = camera.ScreenToWorldPoint(Input.mousePosition);
-        var centerCell = (Vector3)_tilemap.WorldToCell(mouseWorldPosition);
 
         var angleInRadians = _suctionAngle * Mathf.Deg2Rad;
-        var direction2 = centerCell - pivot.position;
+        var direction2 = mouseWorldPosition - pivot.position;
         var angle = Mathf.Atan2(direction2.y, direction2.x);
 
         var newCell1 = GetNewCell(angle - angleInRadians, _suctionDistance);
@@ -277,6 +291,9 @@ public class SuckUp : MonoBehaviour
     private void OnEnable()
     {
         _playerActions.Enable();
+        
+        var worldMapManager = FindObjectOfType<WorldMapManager>();
+        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
     }
     
     private void OnDisable()
