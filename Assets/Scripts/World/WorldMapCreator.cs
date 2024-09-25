@@ -84,6 +84,8 @@ namespace WorldCreation
                 {
                     // チャンクを生成
                     GameObject tilemap = Instantiate(tilemapPrefab, origin, Quaternion.identity, tilemapParent);
+                    // 名前をチャンクの番号にする
+                    tilemap.name = $"{tilemap.name} ({x}, {y})";
 
                     _chunks[x, y] = new Chunk
                     (
