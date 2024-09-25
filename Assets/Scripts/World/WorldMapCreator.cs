@@ -60,6 +60,9 @@ namespace WorldCreation
 
         private void Initalize()
         {
+            TilemapRenderer renderer = tilemapPrefab.GetComponent<TilemapRenderer>();
+            worldMap.OneChunkSize = new((int)renderer.chunkCullingBounds.x, (int)renderer.chunkCullingBounds.y);
+
             // チャンクアレイの範囲を決める
             Vector2Int split = new Vector2Int
             (
@@ -95,9 +98,6 @@ namespace WorldCreation
                         tilemap.GetComponent<Tilemap>(),
                         new int[worldMap.OneChunkSize.x, worldMap.OneChunkSize.y]
                     );
-
-                    TilemapRenderer renderer = tilemap.GetComponent<TilemapRenderer>();
-                    worldMap.OneChunkSize = new((int)renderer.chunkCullingBounds.x, (int)renderer.chunkCullingBounds.y);
 
                     // 次のX座標を設定
                     origin.x += worldMap.OneChunkSize.x;

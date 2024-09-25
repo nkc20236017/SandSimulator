@@ -4,6 +4,15 @@ using UnityEngine.Tilemaps;
 public interface IChunkInformation
 {
     /// <summary>
+    /// ワールド座標からチャンクの座標に変換します
+    /// </summary>
+    /// <param name="world"></param>
+    /// <returns></returns>
+    public Vector3Int WorldToChunk(Vector2 world);
+
+
+
+    /// <summary>
     /// 指定の座標が位置している座標を取得する
     /// </summary>
     /// <param name="position">ワールド座標</param>

@@ -74,4 +74,13 @@ public class WorldMapManager : MonoBehaviour, IChunkInformation, IWorldMapManage
 
         return result;
     }
+
+    Vector3Int IChunkInformation.WorldToChunk(Vector2 world)
+    {
+        Vector2Int originWorldInt = new Vector2Int((int)world.x, (int)world.y) - new Vector2Int((int)_tilemapOrigin.x, (int)_tilemapOrigin.y);
+
+        Vector2Int result = new(originWorldInt.x % _oneChunkSize.x, originWorldInt.y % _oneChunkSize.y);
+
+        return (Vector3Int)result;
+    }
 }
