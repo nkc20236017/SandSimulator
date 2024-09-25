@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using NaughtyAttributes;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using NaughtyAttributes;
 
 public enum BlockType
 {
@@ -57,6 +58,11 @@ public class Block : ScriptableObject
     public int price;
 
     [HideInInspector] public List<Vector3Int> tilePositions = new();
+    
+    public StratumGeologyData GetStratumGeologyData(int depth)
+    {
+        return stratumGeologyDatas.FirstOrDefault(stratumGeologyData => stratumGeologyData.depth == depth);
+    }
 }
 
 [Serializable]
@@ -64,5 +70,5 @@ public class StratumGeologyData
 {
     [SerializeField] private string stratumName;
     public int depth;
-    public Color colors;
+    public Color color;
 }

@@ -1,14 +1,14 @@
-﻿using UnityEngine;
-using UnityEngine.Tilemaps;
+﻿using System;
+using UnityEngine;
 
 public class DecisionAttackTarget : FsmDecision
 {
-	[SerializeField] private Tilemap _tilemap;
 	[SerializeField] private LayerMask targetLayerMask;
 	
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
+	private IChunkInformation _chunkInformation;
 	
 	private void Awake()
 	{
@@ -61,13 +61,22 @@ public class DecisionAttackTarget : FsmDecision
 		for (var y = minY + 1; y <= maxY; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
-			var cellPosition = _tilemap.WorldToCell(position);
-			if (!_tilemap.HasTile(cellPosition)) { continue; }
+			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			if (tilemap == null) { continue; }
+			
+			var cellPosition = tilemap.WorldToCell(position);
+			if (!tilemap.HasTile(cellPosition)) { continue; }
 			
 			return true;
 		}
 		
 		return false;
+	}
+
+	private void OnEnable()
+	{
+		var worldMapManager = FindObjectOfType<WorldMapManager>();
+		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
 	}
 }
 

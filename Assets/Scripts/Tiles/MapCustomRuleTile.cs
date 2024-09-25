@@ -5,17 +5,15 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu(fileName = "New MapCustomRuleTile", menuName = "Tiles/MapCustomRuleTile")]
 public class MapCustomRuleTile : RuleTile<MapCustomRuleTile.Neighbor> 
 {
-    public bool alwaysConnect;
+    public bool alwaysConnectTile;
     public TileBase[] tilesToConnect;
-    public bool checkSelf;
+    public bool alwaysConnectTilemap;
+    private IChunkInformation _chunkInformation;
 
     public class Neighbor : RuleTile.TilingRule.Neighbor
     {
         public const int This = 1;
         public const int NotThis = 2;
-        public const int Any = 3;
-        public const int Specified = 4;
-        public const int Nothing = 5;
     }
 
     public override bool RuleMatch(int neighbor, TileBase tile) 
@@ -24,9 +22,6 @@ public class MapCustomRuleTile : RuleTile<MapCustomRuleTile.Neighbor>
         {
             case Neighbor.This: return CheckThis(tile);
             case Neighbor.NotThis: return CheckNotThis(tile);
-            case Neighbor.Any: return CheckAny(tile);
-            case Neighbor.Specified: return CheckSpecified(tile);
-            case Neighbor.Nothing: return CheckNothing(tile);
         }
         
         return base.RuleMatch(neighbor, tile);
@@ -34,36 +29,16 @@ public class MapCustomRuleTile : RuleTile<MapCustomRuleTile.Neighbor>
     
     private bool CheckThis(TileBase tile)
     {
-        if (!alwaysConnect)
+        if (!alwaysConnectTile)
         {
             return tile == this;
         }
         
-        return tilesToConnect.Contains(tile) || tile == this;
+        return tile == this || tilesToConnect.Contains(tile);
     }
     
     private bool CheckNotThis(TileBase tile) 
     {
         return tile != this && !tilesToConnect.Contains(tile);
-    }
-    
-    private bool CheckAny(TileBase tile) 
-    {
-        if (checkSelf)
-        {
-            return tile != null;
-        }
-        
-        return tile != this && tile != null;
-    }
-    
-    private bool CheckSpecified(TileBase tile)
-    {
-        return tilesToConnect.Contains(tile);
-    }
-    
-    private bool CheckNothing(TileBase tile) 
-    {
-        return tile == null;
     }
 }
