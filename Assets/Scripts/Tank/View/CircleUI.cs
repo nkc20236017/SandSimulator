@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CircleUI : MonoBehaviour, IOutPutTank
+public class CircleUI : MonoBehaviour, IOutResultUI
 {
 
     [SerializeField]

@@ -6,7 +6,7 @@ public class TankTest
     [Test]
     public void Tank()
     {
-        IOutPutTank tankOutPut = new TankUITest();
+        IOutResultUI tankOutPut = new TankUITest();
         //IInputTank inputTank = new ItemTank(tankOutPut, 100);
 
         //    inputTank.InputAddTank(ItemType.Sand);
@@ -18,7 +18,7 @@ public class TankTest
 }
 
 
-public class TankUITest : IOutPutTank
+public class TankUITest : IOutResultUI
 {
     private float Maxhigt = 365;
     private float Totale;

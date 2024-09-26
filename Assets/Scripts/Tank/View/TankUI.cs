@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TankUI : MonoBehaviour, IOutPutTank
+public class TankUI : MonoBehaviour, IOutResultUI
 {
 
     [SerializeField]
