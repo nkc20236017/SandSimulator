@@ -1,14 +1,23 @@
 ﻿using UnityEngine;
 using NaughtyAttributes;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class OreObject : MonoBehaviour, IDamagable
 {
+    [Header("Datas Config")]
+    [SerializeField] private BlockDatas blockDatas;
     
     [Header("Ore Object Config")]
     [SerializeField] private Ore ore;
-    [SerializeField, MinValue(1), MaxValue(3)] private int setSize;
+    [SerializeField, MinValue(1), MaxValue(3)] private int size;
     [SerializeField, MinValue(0), MaxValue(360)] private float angle;
+
+    [Header("Random Config")]
+    [SerializeField] private bool isRandomOre;
+    [SerializeField] private bool isRandomSize;
+    [SerializeField] private bool isRandomAngle;
+    [SerializeField] private bool canObliqueAngle;
     
     [Header("Fall Ore Config")]
     [SerializeField] private float fallDamageInterval;
@@ -16,6 +25,7 @@ public class OreObject : MonoBehaviour, IDamagable
     
     private int _currentEndurance;
     private float _fallDamageTimer;
+    private bool _isChild;
     private bool _isFall;
     private bool _canDestroy;
     private CapsuleCollider2D _capsuleCollider2D;
@@ -37,9 +47,23 @@ public class OreObject : MonoBehaviour, IDamagable
 
     private void Start()
     {
-        var randomSize = Random.Range(1, 4);
-        SetOreConfig(setSize);
-        SetOre(ore, setSize, angle);
+        if (_isChild) { return; }
+        
+        if (isRandomOre)
+        {
+            ore = blockDatas.GetRandomOre();
+        }
+        if (isRandomSize)
+        {
+            size = Random.Range(1, 4);
+        }
+        if (isRandomAngle)
+        {
+            angle = Random.Range(0, 361);
+            var minAngle = canObliqueAngle ? 45 : 90;
+            angle = Mathf.Round(angle / minAngle) * minAngle;
+        }
+        SetOre(ore, size, angle);
     }
 
     private void Update()
@@ -68,21 +92,21 @@ public class OreObject : MonoBehaviour, IDamagable
         var mapTilemap = _chunkInformation.GetChunkTilemap(position);
         if (mapTilemap == null) { return; }
         
-        var cellPosition = mapTilemap.WorldToCell(position);
-        if (mapTilemap.HasTile(cellPosition)) { return; }
+        var localPosition = _chunkInformation.WorldToChunk(position);
+        if (mapTilemap.HasTile(localPosition)) { return; }
         
         _isFall = true;
         _rigidbody2D.isKinematic = false;
     }
 
-    public void SetOre(Ore ore, int size, float angle)
+    public void SetOre(Ore setOre, int setSize, float setAngle)
     {
-        size = Mathf.Clamp(size, 1, 3);
-        angle = Mathf.Clamp(angle, 0, 360);
-        this.ore = ore;
-        transform.eulerAngles = new Vector3(0, 0, angle);
+        ore = setOre;
+        setSize = Mathf.Clamp(setSize, 1, 3);
+        setAngle = Mathf.Clamp(setAngle, 0, 360);
+        transform.eulerAngles = new Vector3(0, 0, setAngle);
         _rigidbody2D.isKinematic = true;
-        SetOreConfig(size);
+        SetOreConfig(setSize);
     }
 
     public void TakeDamage(int damage)
@@ -97,6 +121,7 @@ public class OreObject : MonoBehaviour, IDamagable
                 Size--;
                 SetOreConfig(Size);
                 var destroyedOre = Instantiate(this, transform.position, Quaternion.identity);
+                destroyedOre._isChild = true;
                 destroyedOre.SetOreConfig(1);
                 destroyedOre.CanSuckUp = true;
                 destroyedOre._rigidbody2D.isKinematic = false;

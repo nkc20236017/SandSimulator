@@ -63,9 +63,9 @@ public class DecisionAttackTarget : FsmDecision
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
 			var tilemap = _chunkInformation.GetChunkTilemap(position);
 			if (tilemap == null) { continue; }
-			
-			var cellPosition = tilemap.WorldToCell(position);
-			if (!tilemap.HasTile(cellPosition)) { continue; }
+
+			var localPosition = _chunkInformation.WorldToChunk(position);
+			if (!tilemap.HasTile(localPosition)) { continue; }
 			
 			return true;
 		}

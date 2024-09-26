@@ -74,10 +74,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65ac017e557948c992e3e868439edc15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapTilemap: {fileID: 0}
+  blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
   ore: {fileID: 11400000, guid: 6534895f1114d374a80f4e1c68535ad4, type: 2}
   setSize: 1
   angle: 0
+  isRandomOre: 1
+  isRandomSize: 1
+  isRandomAngle: 1
+  canObliqueAngle: 0
   fallDamageInterval: 0.75
   fundamentalDistance: 0.5
 --- !u!70 &3408433744735999243

@@ -8,12 +8,13 @@ using Random = UnityEngine.Random;
 public class UpdateTile : MonoBehaviour
 {
     [Header("Datas Config")]
+    [SerializeField] private GameObject player;
     [SerializeField] private BlockDatas blockDatas;
     [SerializeField] private LayerMask collisionLayerMask;
 
     [Header("Update Config")]
     [SerializeField] private float updateInterval = 0.01f;
-    [SerializeField] private Vector2Int chunkSize = new(84, 45);
+    [SerializeField] private Vector2Int chunkSize = new(260, 150);
     
     [Header("Update Tile Config")]
     [SerializeField] private bool canUpdateSand;
@@ -25,8 +26,6 @@ public class UpdateTile : MonoBehaviour
     private List<Vector3Int> _clearTiles = new();
     private List<Vector3Int> _updateTiles = new();
     private IChunkInformation _chunkInformation;
-    
-    private Dictionary<Vector3Int, TileBase> _previousTilemapState = new();
 
     private void Awake()
     {
@@ -53,7 +52,7 @@ public class UpdateTile : MonoBehaviour
         {
             tile.tilePositions.Clear();
         }
-
+        
         if (chunkSize == Vector2Int.zero)
         {
             var tilePositions = _updateTilemap.cellBounds.allPositionsWithin;
@@ -82,14 +81,15 @@ public class UpdateTile : MonoBehaviour
             {
                 for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
                 {
-                    var position = new Vector3Int(x, y, 0);
+                    var position = Vector3Int.zero;
+                    position = player != null ? new Vector3Int(x + (int) player.transform.position.x, y + (int) player.transform.position.y, 0) : new Vector3Int(x, y, 0);
                     var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(x, y));
                     if (tilemap == null)
                     {
                         _updateTilemap.SetTile(position, null);
                         continue;
                     }
-                
+                    
                     var tile = _updateTilemap.GetTile(position);
                     if (tile == null) { continue; }
             
@@ -169,15 +169,15 @@ public class UpdateTile : MonoBehaviour
         var mapTilemap = _chunkInformation.GetChunkTilemap(pos);
         if (mapTilemap == null) { return; }
 
-        var worldPosition = mapTilemap.transform.InverseTransformPoint(position);
-        var localPosition = mapTilemap.WorldToCell(worldPosition);
+        var localPosition = _chunkInformation.WorldToChunk(pos);
         
         var hasTileCount = 0;
         for (var i = -1; i <= 1; i++)
         {
-            var checkPosition = localPosition + new Vector3Int(i, -1, 0);
+            var checkPosition = position + new Vector3Int(i, -1, 0);
             var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(checkPosition.x, checkPosition.y));
-            if (tilemap == null || tilemap.HasTile(checkPosition))
+            var checkLocalPosition = _chunkInformation.WorldToChunk(new Vector2(checkPosition.x, checkPosition.y));
+            if (tilemap == null || tilemap.HasTile(checkLocalPosition))
             {
                 hasTileCount++;
             }
@@ -235,7 +235,8 @@ public class UpdateTile : MonoBehaviour
 
     private bool CheckHasTile(Tilemap tilemap, Vector3Int position)
     {
-        return tilemap.HasTile(position) || _updateTilemap.HasTile(position) || CheckUpdateTilePosition(position) || IsCollision(position);
+        var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+        return tilemap.HasTile(localPosition) || _updateTilemap.HasTile(position) || CheckUpdateTilePosition(position) || IsCollision(position);
     }
     
     private bool IsCollision(Vector3Int position)
@@ -339,12 +340,14 @@ public class UpdateTile : MonoBehaviour
         var tileLayer = _chunkInformation.GetLayer(pos);
         if (tilesBlock.Any(tileBase => tileBase == blockDatas.GetBlock(BlockType.Liquid).tile))
         {
+            var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+            
             var block = blockDatas.GetBlock(BlockType.Liquid);
-            mapTilemap.SetTile(position, block.tile);
+            mapTilemap.SetTile(localPosition, block.tile);
             
             if (block.GetStratumGeologyData(tileLayer) == null) { return; }
             var color = block.GetStratumGeologyData(tileLayer).color;
-            mapTilemap.SetColor(position, color);
+            mapTilemap.SetColor(localPosition, color);
         }
     }
 

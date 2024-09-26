@@ -1,42 +1,98 @@
+using System.Collections.Generic;
+using SingularityGroup.HotReload;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Parabola : MonoBehaviour
 {
     [Header("Parabola Config")]
-    [SerializeField] private float maxDistance;
+    [SerializeField] private float interval;
+    [SerializeField] private float dotSize;
+    [SerializeField] private Transform pivot;
+    [SerializeField] private float startDistance;
+    [SerializeField] private GameObject dotPrefab;
     [SerializeField] private LayerMask groundLayerMask;
-    
-    private LineRenderer _lineRenderer;
+
+    private Vector3 _startPosition;
     private Camera _camera;
-    private Scene _predictionScene;
-    private PhysicsScene2D _physicsScene2D;
-    
-    private void Awake()
+    private GameObject[] _dots;
+    private Queue<GameObject> _dotPool = new();
+
+    private void Start()
     {
-        _lineRenderer = GetComponent<LineRenderer>();
-        
         _camera = Camera.main;
     }
     
-    public void CreatePhysicsScene(GameObject blowOutObject, Vector3 origin, Vector3 direction)
+    private void Update()
     {
-        var parameters = new CreateSceneParameters(LocalPhysicsMode.Physics3D);
-        _predictionScene = SceneManager.CreateScene("Parabola", parameters);
-        _physicsScene2D = _predictionScene.GetPhysicsScene2D();
-        
-        var simulationObject = Instantiate(blowOutObject, origin, Quaternion.identity);
-        simulationObject.GetComponent<Renderer>().enabled = false;
-        SceneManager.MoveGameObjectToScene(simulationObject, _predictionScene);
+        GenerateParabola();
     }
 
-    public void SimulateParabola(Vector3 origin, Vector3 direction)
+    public void GenerateParabola()
     {
-        var ghost = Instantiate(gameObject, origin, Quaternion.identity);
-        ghost.GetComponent<Renderer>().enabled = false;
-        SceneManager.MoveGameObjectToScene(ghost, _predictionScene);
+        DestroyParabola();
         
-        var rigidbody2D = ghost.GetComponent<Rigidbody2D>();
-        rigidbody2D.velocity = direction;
+        var startDirection = (_camera.ScreenToWorldPoint(Input.mousePosition) - pivot.position).normalized;
+        _startPosition = pivot.position + startDirection * startDistance;
+        
+        var groundHitPosition = GetGroundHitPosition();
+        var direction = (groundHitPosition - _startPosition).normalized;
+        var distance = Vector3.Distance(_startPosition, groundHitPosition);
+        var count = Mathf.CeilToInt(distance / interval);
+        _dots = new GameObject[count];
+        for (var i = 0; i < count; i++)
+        {
+            var position = _startPosition + direction * (interval * i);
+            _dots[i] = GetDot();
+            _dots[i].transform.position = position;
+            _dots[i].transform.localScale = Vector3.one * dotSize;
+            _dots[i].SetActive(true);
+        }
+    }
+
+    private void DestroyParabola()
+    {
+        if (_dots == null) { return; }
+
+        foreach (var dot in _dots)
+        {
+            ReturnDot(dot);
+        }
+    }
+
+    private Vector3 GetGroundHitPosition()
+    {
+        var ray = new Ray(_startPosition, (_camera.ScreenToWorldPoint(Input.mousePosition) - _startPosition).normalized);
+        var hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity, groundLayerMask);
+        if (hit.collider == null)
+        {
+            return ray.origin + ray.direction * 100;
+        }
+        
+        return hit.point;
+    }
+
+    private GameObject GetDot()
+    {
+        if (_dotPool.Count == 0)
+        {
+            AddDots(1);
+        }
+        return _dotPool.Dequeue();
+    }
+
+    private void ReturnDot(GameObject dot)
+    {
+        dot.SetActive(false);
+        _dotPool.Enqueue(dot);
+    }
+
+    private void AddDots(int count)
+    {
+        for (var i = 0; i < count; i++)
+        {
+            var newDot = Instantiate(dotPrefab, pivot, true);
+            newDot.SetActive(false);
+            _dotPool.Enqueue(newDot);
+        }
     }
 }

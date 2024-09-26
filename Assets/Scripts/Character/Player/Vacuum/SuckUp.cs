@@ -65,6 +65,7 @@ public class SuckUp : MonoBehaviour
         
         if (VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
         {
+            // TODO: ［効果音］吸い込み
             IsSuckUp = true;
             Performed();
             _numberExecutions++;
@@ -74,12 +75,11 @@ public class SuckUp : MonoBehaviour
     private void Performed()
     {
         GetSuckUpTilePositions();
-        if (inputTank.TamkMaxSignal())
-        {
-            return;
-        }
+        if (inputTank.TamkMaxSignal()) { return; }
+        
         SuckUpOres();
         if (_suckUpOreObject.Count > 0) { return; }
+        
         SuckUpTiles();
     }
 
@@ -111,47 +111,51 @@ public class SuckUp : MonoBehaviour
         var mapTilemap = _chunkInformation.GetChunkTilemap(pivot.position);
         if (mapTilemap == null) { return; }
         
-        var bounds = new BoundsInt(mapTilemap.WorldToCell(pivot.position) - new Vector3Int((int)_suctionDistance, (int)_suctionDistance, 0), new Vector3Int((int)_suctionDistance * 2, (int)_suctionDistance * 2, 1));
+        var bounds = new BoundsInt(Vector3Int.RoundToInt(pivot.position) - new Vector3Int((int)_suctionDistance, (int)_suctionDistance, 0), new Vector3Int((int)_suctionDistance * 2, (int)_suctionDistance * 2, 1));
         var hasTile = false;
         foreach (var position in bounds.allPositionsWithin)
         {
             var pos = new Vector2(position.x, position.y);
             mapTilemap = _chunkInformation.GetChunkTilemap(pos);
             if (mapTilemap == null) { continue; }
-            if (!mapTilemap.HasTile(position)) { continue; }
+            
+            var localPosition = _chunkInformation.WorldToChunk(pos);
+            if (!mapTilemap.HasTile(localPosition)) { continue; }
             
             hasTile = true;
         }
         if (!hasTile) { return; }
         
-        foreach (var tilePosition in bounds.allPositionsWithin)
+        foreach (var position in bounds.allPositionsWithin)
         {
-            var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(tilePosition.x, tilePosition.y));
+            var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
             if (tilemap == null) { continue; }
             
-            var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-            var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPosition);
+            var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+            if (!tilemap.HasTile(localPosition)) { continue; }
 
-            var direction1 = (Vector3)tilemap.WorldToCell(tilePosition) - tilemap.WorldToCell(pivot.position);
-            var direction2 = (Vector3)tilemap.WorldToCell(centerCell) - tilemap.WorldToCell(pivot.position);
+            var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+            
+            var direction1 = position - pivot.position;
+            var direction2 = mouseWorldPosition - pivot.position;
             var angle = Vector3.Angle(direction1, direction2);
 
-            var distance = Vector3.Distance(tilemap.GetCellCenterWorld(tilePosition), pivot.position);
-
+            var distance = Vector3.Distance(pivot.position, position);
             if (angle <= _suctionAngle && distance <= _suctionDistance)
             {
-                DetectOre(tilemap.GetCellCenterWorld(tilePosition));   
+                DetectOre(tilemap.GetCellCenterWorld(position));   
                 if (_suckUpOreObject.Count > 0) { continue; }
                 
-                if (tilemap.GetTile(tilePosition) == null) { continue; }
+                localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+                if (tilemap.GetTile(localPosition) == null) { continue; }
                 
                 if (distance <= _deleteDistance)
                 {
-                    tilemap.SetTile(tilePosition, null);
+                    tilemap.SetTile(localPosition, null);
                     return;
                 }
                 
-                _suckUpTilePositions.Add(tilePosition);
+                _suckUpTilePositions.Add(position);
             }
         }
     }
@@ -196,21 +200,25 @@ public class SuckUp : MonoBehaviour
             
             var direction = (Vector3)tilemap.WorldToCell(pivot.position) - tilemap.WorldToCell(tilePosition);
             var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized);
-            if (tilemap.HasTile(newTilePosition)) { continue; }
+           
+            var newTilemap = _chunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
+            var localNewTilePosition = _chunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
+            if (newTilemap.HasTile(localNewTilePosition)) { continue; }
             
-            var tile = tilemap.GetTile(tilePosition);
+            var localTilePosition = _chunkInformation.WorldToChunk(new Vector2(tilePosition.x, tilePosition.y));
+            var tile = tilemap.GetTile(localTilePosition);
             var isContinue = blockDatas.Block
                     .Where(tileData => tileData.tile == tile)
                     .Any(tileData => _numberExecutions % tileData.weight != 0);
             if (isContinue) { continue; }
             
-            tilemap.SetTile(newTilePosition, tile);
-            tilemap.SetTile(tilePosition, null);
+            newTilemap.SetTile(localNewTilePosition, tile);
+            tilemap.SetTile(localTilePosition, null);
             
-            if (Vector3.Distance(tilemap.GetCellCenterWorld(newTilePosition), pivot.position) <= _deleteDistance)
+            if ((newTilePosition - pivot.position).sqrMagnitude <= _deleteDistance * _deleteDistance)
             {
                 inputTank.InputAddTank(tile);//タンクに追加
-                tilemap.SetTile(newTilePosition, null);
+                newTilemap.SetTile(localNewTilePosition, null);
             }
         }
     }

@@ -35,6 +35,8 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 		_timer = invincibilityTime;
 		_isInvincible = true;
 		_currentHealth -= damage - _currentDefence;
+		// TODO: ［効果音］プレイヤーダメージ
+		// TODO: ［エフェクト］プレイヤーダメージ
 		if (_currentHealth > 0) { return; }
 
 		_currentHealth = 0;
@@ -48,7 +50,7 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 	
 	private void Die()
 	{
-		// TODO: 死亡処理
+		// TODO: プレイヤー死亡処理
 	}
 }
 
