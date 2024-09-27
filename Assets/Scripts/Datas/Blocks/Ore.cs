@@ -1,5 +1,5 @@
-﻿using NaughtyAttributes;
-using UnityEngine;
+﻿using UnityEngine;
+using NaughtyAttributes;
 
 [CreateAssetMenu(fileName = "New Ore", menuName = "ScriptableObjects/Datas/New Ore")]
 public class Ore : Block

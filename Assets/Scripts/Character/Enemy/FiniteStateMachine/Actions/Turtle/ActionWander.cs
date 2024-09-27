@@ -89,10 +89,13 @@ public class ActionWander : FsmAction
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
 			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			var tilemap2 = _chunkInformation.GetChunkTilemap(position + Vector2.up);
 			if (tilemap == null) { continue; }
+			if (tilemap2 == null) { continue; }
 			
-			var cellPosition = tilemap.WorldToCell(position);
-			if (!tilemap.HasTile(cellPosition) || tilemap.HasTile(cellPosition + Vector3Int.up)) { continue; }
+			var localPosition = _chunkInformation.WorldToChunk(position);
+			var localPosition2 = _chunkInformation.WorldToChunk(position + Vector2.up);
+			if (!tilemap.HasTile(localPosition) || tilemap2.HasTile(localPosition2)) { continue; }
 
 			if (IsWall(y) || IsHeavenly(y))
 			{
@@ -140,8 +143,8 @@ public class ActionWander : FsmAction
 			var tilemap = _chunkInformation.GetChunkTilemap(position);
 			if (tilemap == null) { continue; }
 			
-			var cellPosition = tilemap.WorldToCell(position);
-			if (!tilemap.HasTile(cellPosition)) { continue; }
+			var localPosition = _chunkInformation.WorldToChunk(position);
+			if (!tilemap.HasTile(localPosition)) { continue; }
 			
 			return true;
 		}
@@ -161,8 +164,8 @@ public class ActionWander : FsmAction
 				var tilemap = _chunkInformation.GetChunkTilemap(position);
 				if (tilemap == null) { continue; }
 				
-				var cellPosition = tilemap.WorldToCell(position);
-				if (!tilemap.HasTile(cellPosition)) { continue; }
+				var localPosition = _chunkInformation.WorldToChunk(position);
+				if (!tilemap.HasTile(localPosition)) { continue; }
 
 				return true;
 			}
@@ -194,7 +197,9 @@ public class ActionWander : FsmAction
 		{
 			tilemap = _chunkInformation.GetChunkTilemap(new Vector2(pos.x, pos.y));
 			if (tilemap == null) { continue; }
-			if (!tilemap.HasTile(tilemap.WorldToCell(pos))) { continue; }
+			
+			var localPosition = _chunkInformation.WorldToChunk(new Vector2(pos.x, pos.y));
+			if (!tilemap.HasTile(localPosition)) { continue; }
 
 			return false;
 		}

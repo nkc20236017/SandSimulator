@@ -8,7 +8,6 @@ public class MapCustomRuleTile : RuleTile<MapCustomRuleTile.Neighbor>
     public bool alwaysConnectTile;
     public TileBase[] tilesToConnect;
     public bool alwaysConnectTilemap;
-    private IChunkInformation _chunkInformation;
 
     public class Neighbor : RuleTile.TilingRule.Neighbor
     {

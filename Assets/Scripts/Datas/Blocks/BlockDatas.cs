@@ -23,5 +23,11 @@ public class BlockDatas : ScriptableObject
 	{
 		return blocks.FirstOrDefault(block => block.type == BlockType.Ore && ((Ore) block).oreType == oreType) as Ore;
 	}
+	
+	public Ore GetRandomOre()
+	{
+		var ores = blocks.Where(block => block.type == BlockType.Ore).ToArray();
+		return ores[Random.Range(0, ores.Length)] as Ore;
+	}
 }
 
