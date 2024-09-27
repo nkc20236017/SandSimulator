@@ -43,7 +43,10 @@ public class DemoInput : MonoBehaviour
         {
             itemTank.InputAddTank(BlockType.Sand);
         }
-
+        if(Input.GetKey(KeyCode.Q))
+        {
+            itemTank.InputAddTank(BlockType.Mud);
+        }
 
     }
 

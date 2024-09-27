@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TankUI : MonoBehaviour, IOutPutTank
+public class TankUI : MonoBehaviour, IOutResultUI
 {
 
     [SerializeField]
@@ -29,9 +29,17 @@ public class TankUI : MonoBehaviour, IOutPutTank
                 return;
             }
         }
+
+
+
+
+
+
         var stankObject = Instantiate(tankImagePrefab, totaleTransform);
         stankObject.GetComponent<TankImage>().Setup(outPutData.itemType,
-            outPutData.itemRatio * totaleSize,outPutData.Sprite);
+            outPutData.itemRatio * totaleSize, outPutData.Sprite);
+
+
     }
 
 }
