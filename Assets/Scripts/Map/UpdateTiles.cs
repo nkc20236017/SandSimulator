@@ -81,10 +81,10 @@ public class UpdateTile : MonoBehaviour
             {
                 for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
                 {
-                    var position = Vector3Int.zero;
-                    position = player != null ? new Vector3Int(x + (int) player.transform.position.x, y + (int) player.transform.position.y, 0) : new Vector3Int(x, y, 0);
-                    var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(x, y));
-                    if (tilemap == null)
+                    var position = new Vector3Int(x, y, 0) + (player != null ? Vector3Int.RoundToInt(player.transform.position) : Vector3Int.zero);
+                    var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(x, y) + (player != null ? player.transform.position : Vector2.zero));
+                    var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+                    if (tilemap == null || !tilemap.HasTile(localPosition))
                     {
                         _updateTilemap.SetTile(position, null);
                         continue;
@@ -92,7 +92,7 @@ public class UpdateTile : MonoBehaviour
                     
                     var tile = _updateTilemap.GetTile(position);
                     if (tile == null) { continue; }
-            
+                    
                     var index = Array.FindIndex(blockDatas.Block, t => t.tile == tile);
                     if (index >= 0 && index < blockDatas.Block.Length)
                     {

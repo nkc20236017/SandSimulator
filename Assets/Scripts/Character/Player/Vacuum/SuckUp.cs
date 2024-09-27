@@ -136,8 +136,8 @@ public class SuckUp : MonoBehaviour
 
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             
-            var direction1 = position - pivot.position;
-            var direction2 = mouseWorldPosition - pivot.position;
+            Vector2 direction1 = position - pivot.position;
+            Vector2 direction2 = mouseWorldPosition - pivot.position;
             var angle = Vector3.Angle(direction1, direction2);
 
             var distance = Vector3.Distance(pivot.position, position);

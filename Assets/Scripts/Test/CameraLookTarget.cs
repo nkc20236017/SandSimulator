@@ -6,7 +6,8 @@ public class CameraLookTarget : MonoBehaviour
 	
 	private void Update()
 	{
-		transform.LookAt(target);
+		if (target == null) { return; }
+		
+		transform.position = target.position + new Vector3(0, 0, -10);
 	}
 }
-

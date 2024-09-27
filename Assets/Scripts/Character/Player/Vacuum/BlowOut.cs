@@ -79,6 +79,7 @@ public class BlowOut : MonoBehaviour
         if (blockType == BlockType.Ore)
         {
             _weight = blockDatas.GetOre(oreType).weightPerSize[0] * 10;
+            _parabola.GenerateParabola();
         }
         else
         {

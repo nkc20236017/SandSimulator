@@ -21,11 +21,6 @@ public class Parabola : MonoBehaviour
     {
         _camera = Camera.main;
     }
-    
-    private void Update()
-    {
-        GenerateParabola();
-    }
 
     public void GenerateParabola()
     {
