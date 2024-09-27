@@ -8,8 +8,6 @@ public class TankScope : LifetimeScope
     private BlockDatas MineralDataBase;
     [SerializeField]
     private TankUI ui;
-    [SerializeField]
-    private CircleUI circle;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -18,7 +16,7 @@ public class TankScope : LifetimeScope
             .As<IInputTank>();
         builder.Register<MineralDataAccess>(Lifetime.Singleton)
             .As<ITankRepository>();
-        builder.RegisterComponent(circle)
+        builder.RegisterComponent(ui)
             .As<IOutputResultUI>();
     }
 }
