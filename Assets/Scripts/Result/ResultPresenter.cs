@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ResultPresenter : MonoBehaviour, IOutputResultUI
 {
     [SerializeField]
     private GameObject uiPrefab;
+
+    [SerializeField]
+    private Text totaleMoney;
 
     public void ResultUI(ResultOutPutData outPutData)
     {
@@ -18,6 +22,8 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
             uiObject.GetComponent<ResultUI>().SetUpUII(outPutData.mineralTank[i].mineralData.sprite
                 , outPutData.mineralTank[i].mineralAmount.ToString(),resultMoney.ToString());
         }
+
+        totaleMoney.text = outPutData.mineralTotaleAmount.ToString();
 
     }
 }
