@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Result/DIResult.cs.meta
 guid: 55daf096b5ff68b4798ad5fb534d7da3
+========
+guid: 2cb9eca739821b2479b3e5f62a57ec70
+>>>>>>>> animation:Assets/Scripts/UIAnimetion/SignboardContoroller.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
