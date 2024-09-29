@@ -10,12 +10,17 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     public void ResultUI(ResultOutPutData outPutData)
     {
 
+
+
+
         for (int i = 0; i < outPutData.mineralTank.Count; i++)
         {
 
+            Debug.Log(outPutData.mineralTank[i].mineralData.name);
+
             var resultMoney = outPutData.mineralTank[i].mineralAmount*outPutData.mineralTank[i].mineralData.price;
             var uiObject = Instantiate(uiPrefab,transform);
-            uiObject.GetComponent<ResultUI>().SetUpUII(outPutData.mineralTank[i].mineralData.sprite
+            uiObject.GetComponent<ResultUI>().SetUpUII(outPutData.mineralTank[i].mineralData.resultSprite
                 , outPutData.mineralTank[i].mineralAmount.ToString(),resultMoney.ToString());
         }
 

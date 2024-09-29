@@ -17,7 +17,7 @@ public class ResultUI : MonoBehaviour
     public void SetUpUII(Sprite sprite, string resultText,string moneyText)
     {
         Image.sprite = sprite;
-        this.resultText.text = resultText ;
+        this.resultText.text = "Å~"+resultText ;
         this.moneyText.text = moneyText;
     }
 

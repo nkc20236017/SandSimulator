@@ -11,6 +11,8 @@ public class DemoInput : MonoBehaviour
 
     [SerializeField]
     private Block block;
+    [SerializeField]
+    private Block block2;
 
     [Inject]
     public void Injct(IResultAction resultAction)
@@ -22,24 +24,31 @@ public class DemoInput : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.H))
         {
-            if(mineralTanks.TryGetValue(block, out MineralTank mineralTank))
-            {
-                mineralTank.MineralAdd();
-            Debug.Log("1");
-            }
-            else
-            {
-            Debug.Log("2");
-                mineralTanks.Add(block, new MineralTank(block));
-            }
+            AddItem(block);
+        }
+        if (Input.GetKey(KeyCode.G))
+        {
+            AddItem(block2);
         }
 
-        if(Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.V))
         {
             resultAction.ResultStart(mineralTanks);
         }
 
     }
 
-
+    private void AddItem(Block block2)
+    {
+        if (mineralTanks.TryGetValue(block2, out MineralTank mineralTank))
+        {
+            mineralTank.MineralAdd();
+            Debug.Log("1");
+        }
+        else
+        {
+            Debug.Log("2");
+            mineralTanks.Add(block2, new MineralTank(block));
+        }
+    }
 }
