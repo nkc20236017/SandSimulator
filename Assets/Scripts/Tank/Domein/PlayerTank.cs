@@ -90,8 +90,8 @@ public class PlayerTank : IInputTank
         float totalRatio = totalValue / MaxTank;
         float itemRatio = itemData.mineralAmount / totalValue;
 
-        var outputTank = new OutPutData(itemRatio, totalRatio, itemData.mineralData.type
-            , itemData.mineralData.sprite);
+        var outputTank = new OutPutResultData(itemRatio,totalRatio,itemData.mineralData.type
+            ,itemData.mineralData.sprite);
         outPutTank.OutputTank(outputTank);
     }
 

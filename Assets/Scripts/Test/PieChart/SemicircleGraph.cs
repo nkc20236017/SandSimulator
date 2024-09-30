@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class SemicircleGraph : MonoBehaviour
+public class SemicircleGraph : MonoBehaviour , IOutResultUI
 {
 	[Header("Data Config")]
 	[SerializeField] private BlockDatas blockDatas;
@@ -74,6 +74,11 @@ public class SemicircleGraph : MonoBehaviour
 			Destroy(child);
 		}
 	}
+
+    public void OutputTank(OutPutResultData outPutData)
+    {
+        
+    }
 }
 
 [Serializable]
