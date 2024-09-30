@@ -18,6 +18,7 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
 
         // 2. CancellationToken‚ðŽæ“¾  
         token = cts.Token;
+        cts.Cancel();
     }
 
     public async void ResultUI(ResultOutPutData outPutData)

@@ -19,7 +19,7 @@ public class ResultAnimationPresenter : MonoBehaviour
             var animationPaper = paperObject.GetComponent<ResultAnimationUI>();
             var mineral = outPutData.mineralTank[i];
             var mineralPrice = mineral.mineralData.price * mineral.mineralAmount;
-            animationPaper.SetUpUI(mineral.mineralData.sprite, mineral.mineralAmount.ToString(), mineralPrice.ToString());
+            animationPaper.SetUpUI(mineral.mineralData.resultSprite, mineral.mineralAmount.ToString(), mineralPrice.ToString());
             await animationPaper.AnimationEnterUI(cancellationToken);
             await animationPaper.AnimationStampUI(cancellationToken);
             await animationPaper.AnimationExitUI(cancellationToken);
