@@ -11,8 +11,8 @@ namespace WorldCreation
         public Vector2 Scale => scale;
         [SerializeField]    // ‰ò‚Æ‚È‚éêŠ‚Ì‘å‚«‚³
         [Range(0, 1)]
-        private float clodSize;
-        public float ClodSize => clodSize;
+        private float lumpSize;
+        public float LumpSize => lumpSize;
         [SerializeField]
         [Range(0, 1)]
         private float hollowSize;
