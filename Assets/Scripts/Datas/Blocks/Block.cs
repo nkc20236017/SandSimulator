@@ -55,6 +55,8 @@ public class Block : ScriptableObject
     public StratumGeologyData[] stratumGeologyDatas;
     public int weight;
     [ShowAssetPreview] public Sprite sprite;
+    [ShowAssetPreview]
+    public Sprite resultSprite;
     public int endurance;
     public int price;
 
