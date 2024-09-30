@@ -16,6 +16,7 @@ public class TankUI : MonoBehaviour, IOutResultUI
 
     public void OutputTank(OutPutData outPutData)
     {
+        Debug.Log("èoóÕ");
         var totaleSize = outPutData.totalRatio * maxTransfom.sizeDelta.y;
         totaleTransform.sizeDelta = new Vector2(totaleTransform.sizeDelta.x, totaleSize);
 

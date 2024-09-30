@@ -17,6 +17,6 @@ public class TankScope : LifetimeScope
         builder.Register<MineralDataAccess>(Lifetime.Singleton)
             .As<ITankRepository>();
         builder.RegisterComponent(ui)
-            .As<IOutputResultUI>();
+            .As<IOutResultUI>();
     }
 }
