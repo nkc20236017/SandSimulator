@@ -14,7 +14,7 @@ public class ResultUI : MonoBehaviour
     [SerializeField]
     private Image Image;
 
-    public void SetUpUII(Sprite sprite, string resultText,string moneyText)
+    public void SetUpUI(Sprite sprite, string resultText,string moneyText)
     {
         Image.sprite = sprite;
         this.resultText.text = "Å~"+resultText ;

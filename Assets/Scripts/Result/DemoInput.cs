@@ -43,12 +43,12 @@ public class DemoInput : MonoBehaviour
         if (mineralTanks.TryGetValue(block2, out MineralTank mineralTank))
         {
             mineralTank.MineralAdd();
-            Debug.Log("1");
+            Debug.Log("既存のアイテムの量を追加");
         }
         else
         {
-            Debug.Log("2");
-            mineralTanks.Add(block2, new MineralTank(block));
+            Debug.Log("新アイテムを追加");
+            mineralTanks.Add(block2, new MineralTank(block2));
         }
     }
 }

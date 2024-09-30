@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 8282690103906108001}
   - component: {fileID: 3064617123714374346}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: TankUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
