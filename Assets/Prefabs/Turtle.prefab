@@ -429,7 +429,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2907684393372657547
 Transform:
   m_ObjectHideFlags: 0
@@ -617,7 +617,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d99ea5506e24912914b95798dd71560, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tilemap: {fileID: 0}
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 8
@@ -646,7 +645,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee7f0116ffc94f21b938da678612eb0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tilemap: {fileID: 0}
   autoJump: 1
   autoJumpHeight: 2
   matchTheColliderDirectionGround: 1
@@ -691,7 +689,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efb91dabf9f24d5aaf1c9df7ea444597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tilemap: {fileID: 0}
   targetLayerMask:
     serializedVersion: 2
     m_Bits: 128
