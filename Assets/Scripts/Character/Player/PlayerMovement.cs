@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
 	private Vector2 _moveDirection;
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
+	private Animator _animator;
 	private SpriteRenderer _spriteRenderer;
 	private Camera _camera;
 	private PlayerActions _playerActions;
@@ -33,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
 	private void Awake()
 	{
 		_playerActions = new PlayerActions();
-
+		_animator = transform.Find("Model").GetComponent<Animator>();
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_spriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -52,6 +53,8 @@ public class PlayerMovement : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+		Animation();
+
 		if (!CanMove) { return; }
 
 		if (canAutoJump)
@@ -206,6 +209,19 @@ public class PlayerMovement : MonoBehaviour
 	{
 		_rigidbody2D.velocity = direction;
 		CanMove = false;
+	}
+
+	private void Animation()
+	{
+		if(_rigidbody2D.velocity.y != 0)
+		{
+            _animator.SetBool("isJump", true);
+        }
+		else
+		{
+            _animator.SetBool("isJump", false);
+            _animator.SetFloat("xVelocity", _rigidbody2D.velocity.x);
+        }
 	}
 
 	private void OnCollisionEnter2D(Collision2D other)
