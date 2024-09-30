@@ -49,6 +49,7 @@ public class ResultAnimationUI : MonoBehaviour
 
     public UniTask AnimationEnterUI(CancellationToken cancellationToken)
     {
+
         return rectTransform.DOAnchorPos(centerPoint, defaultSpeed)
             .ToUniTask(cancellationToken:cancellationToken);
     }
