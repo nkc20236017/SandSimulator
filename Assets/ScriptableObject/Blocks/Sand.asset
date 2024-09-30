@@ -19,17 +19,18 @@ MonoBehaviour:
   stratumGeologyDatas:
   - stratumName: "\uFF11\u5C64"
     depth: 1
-    colors: {r: 1, g: 1, b: 1, a: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
   - stratumName: "\uFF12\u5C64"
     depth: 2
-    colors: {r: 0.8792453, g: 0.52884424, b: 0.29031673, a: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
   - stratumName: "\uFF13\u5C64"
     depth: 3
-    colors: {r: 0.4113207, g: 0.23271254, b: 0.079935886, a: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
   weight: 1
-  sprite: {fileID: -2043635501, guid: 8e3e0692f42c9064299b43136cf86086, type: 3}
+  sprite: {fileID: -1194580231, guid: 8e3e0692f42c9064299b43136cf86086, type: 3}
+  resultSprite: {fileID: 2027378876, guid: 2a8b131a634d85c4384eb759909cafe6, type: 3}
   endurance: 0
-  price: 0
+  price: 2
   tilePositions:
   - {x: -55, y: 30, z: 0}
   - {x: -51, y: 35, z: 0}

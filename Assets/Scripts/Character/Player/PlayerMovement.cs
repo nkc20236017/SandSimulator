@@ -37,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+		Debug.Log(_boxCollider2D);
 	}
 
 	private void Start()
@@ -106,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
 			var tilemap = _chunkInformation.GetChunkTilemap(position);
 			if (tilemap == null) { continue; }
 			
-			var cellPosition = tilemap.WorldToCell(position);
+			var cellPosition = _chunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(cellPosition) || tilemap.HasTile(cellPosition + Vector3Int.up)) { continue; }
 
 			if (IsWall(y) || IsHeavenly(y))
@@ -145,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
 			var tilemap = _chunkInformation.GetChunkTilemap(position);
 			if (tilemap == null) { continue; }
 			
-			var cellPosition = tilemap.WorldToCell(position);
+			var cellPosition = _chunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(cellPosition)) { continue; }
 			
 			return true;
@@ -166,7 +167,7 @@ public class PlayerMovement : MonoBehaviour
 				var tilemap = _chunkInformation.GetChunkTilemap(position);
 				if (tilemap == null) { continue; }
 				
-				var cellPosition = tilemap.WorldToCell(position);
+				var cellPosition = _chunkInformation.WorldToChunk(position);
 				if (!tilemap.HasTile(cellPosition)) { continue; }
 
 				return true;

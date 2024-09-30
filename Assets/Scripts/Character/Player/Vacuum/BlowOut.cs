@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using NaughtyAttributes;
@@ -32,6 +33,7 @@ public class BlowOut : MonoBehaviour
     private PlayerMovement _playerMovement;
     private Camera _camera;
     private SuckUp _suckUp;
+    private Parabola _parabola;
     private PlayerActions _playerActions;
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
     private IInputTank inputTank;
@@ -50,6 +52,7 @@ public class BlowOut : MonoBehaviour
         _playerActions = new PlayerActions();
 
         _suckUp = GetComponent<SuckUp>();
+        _parabola = GetComponentInParent<Parabola>();
         _playerMovement = GetComponentInParent<PlayerMovement>();
     }
 
@@ -76,11 +79,13 @@ public class BlowOut : MonoBehaviour
         if (blockType == BlockType.Ore)
         {
             _weight = blockDatas.GetOre(oreType).weightPerSize[0] * 10;
+            _parabola.GenerateParabola();
         }
         else
         {
             _weight = blockDatas.GetBlock(blockType).weight;
         }
+        
         if (Time.time - _lastUpdateTime > interval * _weight)
         {
             if (blockType == BlockType.Liquid) { return; }
@@ -88,6 +93,7 @@ public class BlowOut : MonoBehaviour
             _lastUpdateTime = Time.time;
             if (inputTank.FiringTank())
             {
+                // TODO: ［効果音］吐き出し
                 GenerateTile();
             }
         }
@@ -140,47 +146,54 @@ public class BlowOut : MonoBehaviour
         
         var hasTile = false;
         Tilemap mapTilemap;
+        var positions = new List<Vector3Int>();
         foreach (var position in bounds.allPositionsWithin)
         {
+            positions.Add(position);
             var pos = new Vector2(position.x, position.y);
             mapTilemap = _chunkInformation.GetChunkTilemap(pos);
             if (mapTilemap == null) { continue; }
-            if (!mapTilemap.HasTile(position)) { continue; }
+            
+            var localPosition = _chunkInformation.WorldToChunk(pos);
+            if (!mapTilemap.HasTile(localPosition)) { continue; }
             
             hasTile = true;
         }
         if (!hasTile) { return; }
-
-        foreach (var tilePosition in bounds.allPositionsWithin)
+        
+        positions = positions.OrderBy(_ => Random.value).ToList();
+        foreach (var position in positions)
         {
             Tilemap tilemap;
-            mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(tilePosition.x, tilePosition.y));
-            if (updateTilemap.HasTile(tilePosition))
+            mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
+            var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+            if (updateTilemap.HasTile(position))
             {
                 tilemap = updateTilemap;
             }
-            else if (mapTilemap != null && mapTilemap.HasTile(tilePosition))
+            else if (mapTilemap != null && mapTilemap.HasTile(localPosition))
             {
                 tilemap = mapTilemap;
             }
             else { continue; }
 
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-            var centerCell = (Vector3)tilemap.WorldToCell(mouseWorldPosition);
 
-            var direction1 = (Vector3)tilemap.WorldToCell(tilePosition) - tilemap.WorldToCell(pivot.position);
-            var direction2 = (Vector3)tilemap.WorldToCell(centerCell) - tilemap.WorldToCell(pivot.position);
+            var direction1 = position - pivot.position;
+            var direction2 = mouseWorldPosition - pivot.position;
             var angle = Vector3.Angle(direction1, direction2);
 
-            var distance = Vector3.Distance(tilemap.GetCellCenterWorld(tilePosition), pivot.position);
+            var dis = Vector3.Distance(pivot.position, position);
 
-            if (angle <= 30 && distance <= radius)
+            if (angle <= 30 && dis <= radius)
             {
-                var direction = (Vector3)tilemap.WorldToCell(tilePosition) - tilemap.WorldToCell(pivot.position);
-                var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized);
-                if (updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(newTilePosition)) { continue; }
+                var newTilePosition = Vector3Int.RoundToInt(position + direction1.normalized);
+                var localNewTilePosition = _chunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
+                mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
+                if (mapTilemap == null) { continue; }
+                if (updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(localNewTilePosition)) { continue; }
 
-                var tile = tilemap.GetTile(tilePosition);
+                var tile = tilemap != updateTilemap ? tilemap.GetTile(localPosition) : tilemap.GetTile(position);
                 if (tile == null) { continue; }
 
                 if (tile == blockDatas.GetBlock(BlockType.Sand).tile)
@@ -189,9 +202,17 @@ public class BlowOut : MonoBehaviour
                 }
                 else
                 {
-                    mapTilemap.SetTile(newTilePosition, tile);
+                    mapTilemap.SetTile(localNewTilePosition, tile);
                 }
-                tilemap.SetTile(tilePosition, null);
+                
+                if (tilemap == updateTilemap)
+                {
+                    updateTilemap.SetTile(position, null);
+                }
+                else
+                {
+                    mapTilemap.SetTile(localPosition, null);
+                }
             }
         }
     }

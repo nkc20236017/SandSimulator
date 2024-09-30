@@ -45,7 +45,8 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     public void TakeDamage(int damage)
     {
         CurrentHealth -= damage;
-        // TODO: ダメージを受けた時効果音
+        // TODO: ［効果音］エネミーダメージ
+        // TODO: ［エフェクト］エネミーダメージ
         if (CurrentHealth > 0f) { return; }
 
         DisableEnemy();
@@ -58,6 +59,8 @@ public class EnemyHealth : MonoBehaviour, IDamagable
         _enemyBrain.enabled = false;
         _rigidbody2D.bodyType = RigidbodyType2D.Static;
         // TODO: アイテムドロップ（経験値結晶のみ）
+        // TODO: ［効果音］エネミー死亡
+        // TODO: ［エフェクト］エネミー死亡
         Destroy(gameObject);
     }
 }

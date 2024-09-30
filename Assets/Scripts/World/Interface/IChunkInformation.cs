@@ -4,38 +4,38 @@ using UnityEngine.Tilemaps;
 public interface IChunkInformation
 {
     /// <summary>
-    /// ƒ[ƒ‹ƒhÀ•W‚©‚çƒ`ƒƒƒ“ƒN‚ÌÀ•W‚É•ÏŠ·‚µ‚Ü‚·
+    /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‹ã‚‰ãƒãƒ£ãƒ³ã‚¯ã®åº§æ¨™ã«å¤‰æ›ã—ã¾ã™
     /// </summary>
     /// <param name="world"></param>
     /// <returns></returns>
     public Vector3Int WorldToChunk(Vector2 world);
 
     /// <summary>
-    /// ƒ`ƒƒƒ“ƒN‚ÌÀ•W‚©‚çƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·‚µ‚Ü‚·
+    /// ãƒãƒ£ãƒ³ã‚¯ã®åº§æ¨™ã‹ã‚‰ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ã—ã¾ã™
     /// </summary>
-    /// <param name="chunkIndex">ƒ`ƒƒƒ“ƒN‚ÌÀ•W</param>
-    /// <param name="tilePosition">ƒ`ƒƒƒ“ƒN“à‚Ìƒ^ƒCƒ‹‚ÌÀ•W</param>
+    /// <param name="chunkIndex">ãƒãƒ£ãƒ³ã‚¯ã®åº§æ¨™</param>
+    /// <param name="tilePosition">ãƒãƒ£ãƒ³ã‚¯å†…ã®ã‚¿ã‚¤ãƒ«ã®åº§æ¨™</param>
     /// <returns></returns>
     public Vector3 ChunkToWorld(Vector2Int chunkIndex, Vector3Int tilePosition);
 
     /// <summary>
-    /// Žw’è‚ÌÀ•W‚ªˆÊ’u‚µ‚Ä‚¢‚éÀ•W‚ðŽæ“¾‚·‚é
+    /// æŒ‡å®šã®åº§æ¨™ãŒä½ç½®ã—ã¦ã„ã‚‹åº§æ¨™ã‚’å–å¾—ã™ã‚‹
     /// </summary>
-    /// <param name="position">ƒ[ƒ‹ƒhÀ•W</param>
-    /// <returns>ƒ`ƒƒƒ“ƒN‚Ìƒ^ƒCƒ‹ƒ}ƒbƒvƒIƒuƒWƒFƒNƒg</returns>
+    /// <param name="position">ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™</param>
+    /// <returns>ãƒãƒ£ãƒ³ã‚¯ã®ã‚¿ã‚¤ãƒ«ãƒžãƒƒãƒ—ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ</returns>
     public Tilemap GetChunkTilemap(Vector2 position);
 
     /// <summary>
-    /// Žw’è‚ÌÀ•W‚ªˆÊ’u‚µ‚Ä‚¢‚éÀ•W‚ðŽæ“¾‚·‚é
+    /// æŒ‡å®šã®åº§æ¨™ãŒä½ç½®ã—ã¦ã„ã‚‹åº§æ¨™ã‚’å–å¾—ã™ã‚‹
     /// </summary>
-    /// <param name="position">ƒ[ƒ‹ƒhÀ•W</param>
-    /// <returns>ƒ`ƒƒƒ“ƒN‚Ìƒ^ƒCƒ‹ƒ}ƒbƒvƒIƒuƒWƒFƒNƒg</returns>
+    /// <param name="position">ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™</param>
+    /// <returns>ãƒãƒ£ãƒ³ã‚¯ã®ã‚¿ã‚¤ãƒ«ãƒžãƒƒãƒ—ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ</returns>
     public Tilemap GetChunkTilemap(Vector2 position, Vector2Int chunkVector);
 
     /// <summary>
-    /// Žw’è‚ÌÀ•W‚Ì‘w”Ô†‚ðŽæ“¾‚·‚é
+    /// æŒ‡å®šã®åº§æ¨™ã®å±¤ç•ªå·ã‚’å–å¾—ã™ã‚‹
     /// </summary>
-    /// <param name="position">ƒ[ƒ‹ƒhÀ•W</param>
-    /// <returns>‘w‚Ì”Ô†(ã‚ª1)</returns>
+    /// <param name="position">ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™</param>
+    /// <returns>å±¤ã®ç•ªå·(ä¸ŠãŒ1)</returns>
     public int GetLayer(Vector2 position);
 }

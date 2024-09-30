@@ -8,14 +8,14 @@ public class PlayerTank : IInputTank
 {
     private ITankRepository tankRepository;
     private Dictionary<Block, MineralTank> itemTankDictionary = new();
-    private IOutPutTank outPutTank;
+    private IOutResultUI outPutTank;
     private readonly float MaxTank = 4000;
     private int currentItemAmount;
     private BlockType currentBlockType;
     private bool maxSignal;
 
     [Inject]
-    public PlayerTank(IOutPutTank outPutTank, ITankRepository tankRepository)
+    public PlayerTank(IOutResultUI outPutTank, ITankRepository tankRepository)
     {
         this.outPutTank = outPutTank;
         this.tankRepository = tankRepository;
@@ -90,8 +90,8 @@ public class PlayerTank : IInputTank
         float totalRatio = totalValue / MaxTank;
         float itemRatio = itemData.mineralAmount / totalValue;
 
-        var outputTank = new OutPutData(itemRatio, totalRatio, itemData.mineralData.type
-            , itemData.mineralData.sprite);
+        var outputTank = new OutPutResultData(itemRatio,totalRatio,itemData.mineralData.type
+            ,itemData.mineralData.sprite);
         outPutTank.OutputTank(outputTank);
     }
 

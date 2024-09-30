@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98740e1d1e4c4a7c94db3ccfc8fe55ba, type: 3}
   m_Name: ExpCrystal
   m_EditorClassIdentifier: 
-  type: 5
+  type: 6
   id: 
   name: "\u7D4C\u9A13\u5024\u7D50\u6676"
   tile: {fileID: 0}
