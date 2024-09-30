@@ -78,9 +78,9 @@ MonoBehaviour:
   ore: {fileID: 11400000, guid: 6534895f1114d374a80f4e1c68535ad4, type: 2}
   size: 1
   angle: 0
-  isRandomOre: 1
-  isRandomSize: 1
-  isRandomAngle: 1
+  isRandomOre: 0
+  isRandomSize: 0
+  isRandomAngle: 0
   canObliqueAngle: 0
   fallDamageInterval: 0.75
   fundamentalDistance: 0.5
