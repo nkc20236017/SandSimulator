@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
@@ -25,6 +26,19 @@ namespace WorldCreation
         private GameObject tilemapPrefab;
         [SerializeField]
         private GameObject worldMapManagerPrefab;
+        [Space]
+        [SerializeField]
+        private GameObject startObject;
+        [SerializeField]
+        private GameObject player;
+        [SerializeField]
+        private Vector2 startPosition;
+        [SerializeField]
+        private GameObject goalObject;
+        [SerializeField]
+        private Vector2 goalPosition;
+        [SerializeField]
+        private int structureRadius;
 
         private bool _isQuitting;
         private LayerGenerator _layer;
@@ -181,6 +195,9 @@ namespace WorldCreation
 
             // 敵召喚
             EnemyGenerate();
+
+            // スタートとゴール召喚
+            StructureGenerate();
 
             GameObject worldMapManager = Instantiate(worldMapManagerPrefab);
             worldMapManager.GetComponent<IWorldMapManager>()
@@ -365,7 +382,102 @@ namespace WorldCreation
             return circularGrid.ToArray();
         }
 
-        public Vector2Int[] BlueNoise(int width, int height, int space, int seed)
+        private void StructureGenerate()
+        {
+            // スタート
+            int chunkX = (int)startPosition.x / worldMap.OneChunkSize.x;
+            int chunkY = (int)startPosition.y / worldMap.OneChunkSize.y;
+            chunkX = Mathf.Clamp(chunkX, 0, _chunks.GetLength(0) - 1);
+            chunkY = Mathf.Clamp(chunkY, 0, _chunks.GetLength(1) - 1);
+            Vector2Int withinChunkPosition
+                = _chunks[chunkX, chunkY].GetWithinChunkPosition(startPosition);
+            int id = _chunks[chunkX, chunkY].GetBlockID(withinChunkPosition);
+
+            Vector2Int center;
+            Vector2 start;
+
+            if (id == 0)
+            {
+                // 空中なら地面を探して設置
+                RaycastHit2D hit = Physics2D.Raycast(startPosition, Vector2.down, Mathf.Infinity, touchLayer);
+                center = new((int)hit.point.x, (int)hit.point.y + structureRadius);
+                start = hit.point;
+            }
+            else
+            {
+                center = new((int)startPosition.x, (int)startPosition.y + structureRadius);
+                start = startPosition;
+            }
+            Vector2Int[] circulePoints = GenerateCircularGrid(structureRadius, center);
+
+            foreach (Vector2Int circulePoint in circulePoints)
+            {
+                int circleX = circulePoint.x / worldMap.OneChunkSize.x;
+                int circleY = circulePoint.y / worldMap.OneChunkSize.y;
+                circleX = Mathf.Clamp(circleX, 0, _chunks.GetLength(0) - 1);
+                circleY = Mathf.Clamp(circleY, 0, _chunks.GetLength(1) - 1);
+                Vector2Int withinCirclePosition
+                    = _chunks[chunkX, chunkY].GetWithinChunkPosition(circulePoint);
+
+                _chunks[circleX, circleY].TileMap.SetTile
+                (
+                    (Vector3Int)withinCirclePosition,
+                    null
+                );
+            }
+
+            Instantiate(startObject, start, Quaternion.identity);
+            Instantiate(player, (Vector2)center, Quaternion.identity);
+
+            // ゴール
+            chunkX = (int)goalPosition.x / worldMap.OneChunkSize.x;
+            chunkY = (int)goalPosition.y / worldMap.OneChunkSize.y;
+            chunkX = Mathf.Clamp(chunkX, 0, _chunks.GetLength(0) - 1);
+            chunkY = Mathf.Clamp(chunkY, 0, _chunks.GetLength(1) - 1);
+            withinChunkPosition
+                = _chunks[chunkX, chunkY].GetWithinChunkPosition(goalPosition);
+            id = _chunks[chunkX, chunkY].GetBlockID(withinChunkPosition);
+
+            if (id == 0)
+            {
+                // 空中なら地面を探して設置
+                RaycastHit2D hit = Physics2D.Raycast(goalPosition, Vector2.down, Mathf.Infinity, touchLayer);
+                if (!hit)
+                {
+                    hit = Physics2D.Raycast(goalPosition, Vector2.right, Mathf.Infinity, touchLayer);
+                }
+                if (!hit)
+                {
+                    hit = Physics2D.Raycast(goalPosition, Vector2.left, Mathf.Infinity, touchLayer);
+                }
+                start = hit.point;
+            }
+            else
+            {
+                start = goalPosition;
+            }
+            circulePoints = GenerateCircularGrid(structureRadius, center);
+
+            foreach (Vector2Int circulePoint in circulePoints)
+            {
+                int circleX = circulePoint.x / worldMap.OneChunkSize.x;
+                int circleY = circulePoint.y / worldMap.OneChunkSize.y;
+                circleX = Mathf.Clamp(circleX, 0, _chunks.GetLength(0) - 1);
+                circleY = Mathf.Clamp(circleY, 0, _chunks.GetLength(1) - 1);
+                Vector2Int withinCirclePosition
+                    = _chunks[chunkX, chunkY].GetWithinChunkPosition(circulePoint);
+
+                _chunks[circleX, circleY].TileMap.SetTile
+                (
+                    (Vector3Int)withinCirclePosition,
+                    null
+                );
+            }
+
+            Instantiate(goalObject, start, Quaternion.identity);
+        }
+
+        private Vector2Int[] BlueNoise(int width, int height, int space, int seed)
         {
             System.Random random = new System.Random(seed);
             bool[,] grid = new bool[width, height];
