@@ -16,7 +16,7 @@ namespace WorldCreation
         [SerializeField]    // 
         private WorldMap worldMap;
         [SerializeField]
-        private LayerMask oreTouchLayer;
+        private LayerMask touchLayer;
         [SerializeField]
         private Ore[] oreData;
         [SerializeField]
@@ -32,12 +32,18 @@ namespace WorldCreation
         private Vector2 _tilemapOrigin;
         private ManagedRandom _randomization;
         private Chunk[,] _chunks;
+        private Chunk[,] _backgroundChunks;
         private IWorldGeneratable[] _worldGenerators =
         {
             new LayerGenerator(),
             new CaveGenerator(),
             // new OreGenerator(),
             // new TempWorldMapCreator(),
+            new ChunkLoader()
+        };
+        private IWorldGeneratable[] _backgroundGenerators =
+        {
+            new LayerGenerator(),
             new ChunkLoader()
         };
 
@@ -90,6 +96,7 @@ namespace WorldCreation
             );
 
             _chunks = new Chunk[split.x, split.y];
+            _backgroundChunks = new Chunk[split.x, split.y];
 
             // チャンクの生成原点を取得
             Vector2 origin = new
@@ -111,10 +118,17 @@ namespace WorldCreation
 
                     _chunks[x, y] = new Chunk
                     (
-                        // TODO: タイルマップの左下の座標を求める計算をする
                         _randomization,
                         new Vector2Int(x, y),
                         tilemap.GetComponent<Tilemap>(),
+                        new int[worldMap.OneChunkSize.x, worldMap.OneChunkSize.y]
+                    );
+
+                    _backgroundChunks[x, y] = new Chunk
+                    (
+                        _randomization,
+                        new Vector2Int(x, y),
+                        tilemap.transform.Find("Background").gameObject.GetComponent<Tilemap>(),
                         new int[worldMap.OneChunkSize.x, worldMap.OneChunkSize.y]
                     );
 
@@ -139,9 +153,9 @@ namespace WorldCreation
             _isQuitting = true;
         }
 
-
         private async void GenerateAll(CancellationToken token)
         {
+            int initalUsageCount = _randomization.UsageCount;
             // 全てのチャンクを読み込む
             for (int y = 0; y < _chunks.GetLength(0); y++)
             {
@@ -153,15 +167,56 @@ namespace WorldCreation
                         _chunks[x, y] = await worldGenerator.Execute(_chunks[x, y], worldMap, token);
 
                     }
+
+                    foreach (IWorldGeneratable backgourndGenerator in _backgroundGenerators)
+                    {
+                        backgourndGenerator.Initalize(_chunks[x, y], worldMap, initalUsageCount);
+                        _backgroundChunks[x, y] = await backgourndGenerator.Execute(_backgroundChunks[x, y], worldMap, token);
+                    }
                 }
             }
 
             // 鉱石生成
-            Vector2Int[] noisePoints = BlueNoise(worldMap.WorldSize.x, worldMap.WorldSize.y, seed, 0);
+            OreGenerate();
+
+            // 敵召喚
+            EnemyGenerate();
+
+            GameObject worldMapManager = Instantiate(worldMapManagerPrefab);
+            worldMapManager.GetComponent<IWorldMapManager>()
+                .Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
+
+            Debug.Log($"<color=#ffff00ff>WorldMapManagerの生成完了</color>");
+        }
+
+        private void EnemyGenerate()
+        {
+            Vector2Int[] noisePoints = BlueNoise(worldMap.WorldSize.x, worldMap.WorldSize.y, worldMap.EnemySpase, seed);
 
             foreach (Vector2Int noisePoint in noisePoints)
             {
-                if (Random.Range(0, 100) > worldMap.WorldLayers[0].PrimevalOres[0].Probability)
+                int chunkX = noisePoint.x / worldMap.OneChunkSize.x;
+                int chunkY = noisePoint.y / worldMap.OneChunkSize.y;
+                Vector2Int withinChunkPosition
+                    = _chunks[chunkX, chunkY].GetWithinChunkPosition(noisePoint);
+                int id = _chunks[chunkX, chunkY].GetBlockID(withinChunkPosition);
+                bool hit = Physics2D.Raycast(noisePoint, Vector2.down, 10, touchLayer);
+                if (id == 0 && hit)
+                {
+                    Instantiate(worldMap.EnemyPrefab, (Vector2)noisePoint, Quaternion.identity);
+                }
+            }
+        }
+
+        private void OreGenerate()
+        {
+            Vector2Int[] noisePoints = BlueNoise(worldMap.WorldSize.x, worldMap.WorldSize.y, worldMap.WorldLayers[0].PrimevalOres[0].Space, seed);
+
+            foreach (Vector2Int noisePoint in noisePoints)
+            {
+                int oreIndex = Random.Range(0, worldMap.WorldLayers[0].PrimevalOres.Length);
+
+                if (Random.Range(0, 100) > worldMap.WorldLayers[0].PrimevalOres[oreIndex].Probability)
                 {
                     continue;
                 }
@@ -173,31 +228,25 @@ namespace WorldCreation
                 if (id == 0)
                 {
                     // 空気中なら鉱石のオブジェクトを設置
-                    ExposedOreProcess(noisePoint);
+                    ExposedOreProcess(noisePoint, oreIndex);
                 }
                 else
                 {
-                    BuriedOreProcess(noisePoint);
+                    BuriedOreProcess(noisePoint, oreIndex);
                 }
             }
-
-            GameObject worldMapManager = Instantiate(worldMapManagerPrefab);
-            worldMapManager.GetComponent<IWorldMapManager>()
-                .Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
-
-            Debug.Log($"<color=#ffff00ff>WorldMapManagerの生成完了</color>");
         }
 
         /// <summary>
         /// 地上に生成される鉱石の処理
         /// </summary>
-        private void ExposedOreProcess(Vector2 spownPoint)
+        private void ExposedOreProcess(Vector2 spownPoint, int oreIndex)
         {
             // 生成位置から8方位へrayを飛ばし、一番近い点を求める
             RaycastHit2D nearest = default;
             for (int i = 0; i < directions.Length; i++)
             {
-                RaycastHit2D hit = Physics2D.Raycast(spownPoint, directions[i], Mathf.Infinity, oreTouchLayer);
+                RaycastHit2D hit = Physics2D.Raycast(spownPoint, directions[i], Mathf.Infinity, touchLayer);
                 float currentDistance = (hit.point - spownPoint).magnitude;
                 float nearestDistance = (nearest.point - spownPoint).magnitude;
                 if (nearest == default || currentDistance < nearestDistance)
@@ -245,7 +294,7 @@ namespace WorldCreation
             // 鉱石を設置する
             GameObject substanceOre = Instantiate
             (
-                worldMap.WorldLayers[0].PrimevalOres[0].ExposedOrePrefab,
+                worldMap.WorldLayers[0].PrimevalOres[oreIndex].ExposedOrePrefab,
                 nearest.point,
                 Quaternion.identity
             );
@@ -254,13 +303,13 @@ namespace WorldCreation
             if (substanceOre.TryGetComponent(out oreObject))
             {
                 // 初期データをセット
-                oreObject.SetOre(ore, size, angle);
+                // oreObject.SetOre(ore, size, angle);
             }
         }
 
-        private void BuriedOreProcess(Vector2Int spownPoint)
+        private void BuriedOreProcess(Vector2Int spownPoint, int oreIndex)
         {
-            PrimevalOre ore = worldMap.WorldLayers[0].PrimevalOres[0];
+            PrimevalOre ore = worldMap.WorldLayers[0].PrimevalOres[oreIndex];
             int lumpRadius = ore.BlockAmount + Random.Range(0, ore.BlockAmount);
             Vector2Int[] circulePoints = GenerateCircularGrid(lumpRadius, spownPoint);
 
@@ -290,7 +339,7 @@ namespace WorldCreation
                     _chunks[chunkX, chunkY].TileMap.SetTile
                     (
                         (Vector3Int)withinChunkPosition,
-                        worldMap.Blocks.GetBlock(worldMap.WorldLayers[0].PrimevalOres[0].BuriedOreID)
+                        worldMap.Blocks.GetBlock(worldMap.WorldLayers[0].PrimevalOres[oreIndex].BuriedOreID)
                     );
                 }
             }
@@ -316,7 +365,7 @@ namespace WorldCreation
             return circularGrid.ToArray();
         }
 
-        public Vector2Int[] BlueNoise(int width, int height, int seed, int oreNum)
+        public Vector2Int[] BlueNoise(int width, int height, int space, int seed)
         {
             System.Random random = new System.Random(seed);
             bool[,] grid = new bool[width, height];
@@ -335,18 +384,17 @@ namespace WorldCreation
                 Vector2Int point = activeList[index];
 
                 bool foundValidPoint = false;
-                PrimevalOre ore = worldMap.WorldLayers[0].PrimevalOres[oreNum]; ;
 
                 for (int i = 0; i < 30; i++) // 30回試行
                 {
                     float angle = (float)random.NextDouble() * Mathf.PI * 2;
-                    float distance = ore.Space + (float)random.NextDouble() * ore.Space;
+                    float distance = space + (float)random.NextDouble() * space;
                     Vector2Int newPoint = new Vector2Int(
                         Mathf.RoundToInt(point.x + Mathf.Cos(angle) * distance),
                         Mathf.RoundToInt(point.y + Mathf.Sin(angle) * distance)
                     );
 
-                    if (IsValidPoint(newPoint, width, height, grid, ore.Space))
+                    if (IsValidPoint(newPoint, width, height, grid, space))
                     {
                         grid[newPoint.x, newPoint.y] = true;
                         activeList.Add(newPoint);

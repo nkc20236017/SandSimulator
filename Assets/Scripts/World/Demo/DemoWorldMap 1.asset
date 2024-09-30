@@ -12,9 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08b35c36b51b9764fb1f7fb4896313b2, type: 3}
   m_Name: DemoWorldMap 1
   m_EditorClassIdentifier: 
-  map:
-  - 
-  layerTileID: 00000000
   worldScale: {x: 640, y: 390}
   minOriginGapRange: {x: 0, y: 0}
   maxOriginGapRange: {x: 0, y: 0}
@@ -37,14 +34,14 @@ MonoBehaviour:
     materialTileID: {fileID: 11400000, guid: f66babbb8ecba55418398bf81080dca8, type: 2}
     primevalOres:
     - exposedOrePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
-      buriedOreID: {fileID: 0}
+      buriedOreID: 0
       lumpAmount: 30
-      blockAmount: 0
-      probability: 3.6
-      space: 5
+      blockAmount: 5
+      probability: 80
+      space: 20
     primevalDungeons:
     - exposedOrePrefab: {fileID: 0}
-      buriedOreID: {fileID: 0}
+      buriedOreID: 0
       lumpAmount: 0
       blockAmount: 0
       probability: 0
@@ -53,7 +50,7 @@ MonoBehaviour:
     materialTileID: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
     primevalOres:
     - exposedOrePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
-      buriedOreID: {fileID: 0}
+      buriedOreID: 0
       lumpAmount: 30
       blockAmount: 0
       probability: 0
@@ -63,7 +60,7 @@ MonoBehaviour:
     materialTileID: {fileID: 11400000, guid: 75354da9db15b3f48bde02326a5e2e36, type: 2}
     primevalOres:
     - exposedOrePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
-      buriedOreID: {fileID: 0}
+      buriedOreID: 0
       lumpAmount: 30
       blockAmount: 0
       probability: 0
@@ -73,7 +70,7 @@ MonoBehaviour:
     materialTileID: {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
     primevalOres:
     - exposedOrePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
-      buriedOreID: {fileID: 0}
+      buriedOreID: 0
       lumpAmount: 30
       blockAmount: 0
       probability: 0
@@ -86,3 +83,5 @@ MonoBehaviour:
     isBackfill: 0
     isInvert: 0
     backfillTileID: 0
+  enemyPrefab: {fileID: 7974653131230986145, guid: 0aa6e47f839bbad4f992753059cbfc00, type: 3}
+  enemySpase: 30

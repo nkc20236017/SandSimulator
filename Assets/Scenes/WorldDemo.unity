@@ -324,6 +324,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1850257783}
     - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
+      propertyPath: touchLayer.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
       propertyPath: oreData.Array.size
       value: 2
       objectReference: {fileID: 0}

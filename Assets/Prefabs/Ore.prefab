@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8081630960034304208
 Transform:
   m_ObjectHideFlags: 0
@@ -74,7 +74,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65ac017e557948c992e3e868439edc15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapTilemap: {fileID: 0}
   ore: {fileID: 11400000, guid: 6534895f1114d374a80f4e1c68535ad4, type: 2}
   setSize: 1
   angle: 0
