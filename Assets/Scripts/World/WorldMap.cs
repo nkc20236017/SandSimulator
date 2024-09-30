@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using WorldCreation.Temp;
 
 namespace WorldCreation
 {
@@ -13,7 +14,7 @@ namespace WorldCreation
     }
 
     [CreateAssetMenu(fileName = "New world map", menuName = "Config/WorldMap")]
-    public sealed class WorldMap : ScriptableObject
+    public class WorldMap : TempWorldMap
     {
         [Header("standard worldwide")]
         [SerializeField]    // ê¢äEÇÃç≈ëÂÉTÉCÉY

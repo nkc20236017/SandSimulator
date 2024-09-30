@@ -316,9 +316,29 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
+      propertyPath: worldMap
+      value: 
+      objectReference: {fileID: 11400000, guid: 375e8424901c1a74e94589b5480cfbcf, type: 2}
+    - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
       propertyPath: tilemapParent
       value: 
       objectReference: {fileID: 1850257783}
+    - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
+      propertyPath: oreData.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
+      propertyPath: oreTouchLayer.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
+      propertyPath: oreData.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 6534895f1114d374a80f4e1c68535ad4, type: 2}
+    - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
+      propertyPath: oreData.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 57038a5954a186b44b29aa8ec540b5bb, type: 2}
     - target: {fileID: 7946553276464248011, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
       propertyPath: previewAlways.m_PersistentCalls.m_Calls.Array.size
       value: 3
