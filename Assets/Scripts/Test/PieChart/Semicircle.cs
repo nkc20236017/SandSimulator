@@ -3,12 +3,10 @@ using UnityEngine.UI;
 
 public class Semicircle : MonoBehaviour
 {
-	private BlockType _blockType;
-	private int _value;
 	private Image _image;
 	
-	public BlockType BlockType => _blockType;
-	public int Value => _value;
+	public Sprite Sprite => _image.sprite;
+	public float FillAmount => _image.fillAmount;
 
 	private void Awake()
 	{
@@ -23,32 +21,34 @@ public class Semicircle : MonoBehaviour
 	public void ClearPie()
 	{
 		gameObject.SetActive(false);
-		_blockType = BlockType.None;
-		_image.fillAmount = 0;
 		_image.sprite = null;
-		_value = 0;
+		_image.fillAmount = 0;
 	}
 
-	public void SetBlockType(BlockType blockType, Sprite sprite)
+	/// <summary>
+	/// 個別のブロックの設定
+	/// </summary>
+	/// <param name="sprite">ブロックの画像</param>
+	/// <param name="value">ブロックの割合</param>
+	public void SemicircleConfig(Sprite sprite, float value)
 	{
+		if (value <= 0)
+		{
+			ClearPie();
+			return;
+		}
+		
 		gameObject.SetActive(true);
-		_blockType = blockType;
 		_image.sprite = sprite;
-		_image.fillAmount = 0;
-	}
-	
-	public void SetValue(int value)
-	{
-		_value = value;
-	}
-	
-	public void SetRotation(float value)
-	{
-		transform.localRotation = Quaternion.Euler(0, 0, -value);
-	}
-	
-	public void SetFillAmount(float value)
-	{
 		_image.fillAmount = value;
+	}
+	
+	/// <summary>
+	/// 角度の設定
+	/// </summary>
+	/// <param name="angle">角度</param>
+	public void SetRotation(float angle)
+	{
+		transform.localRotation = Quaternion.Euler(0, 0, -angle);
 	}
 }

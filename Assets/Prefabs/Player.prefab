@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5093466217659978656
 Transform:
   m_ObjectHideFlags: 0
@@ -49,7 +49,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72b17675c0db47528cdff66700d32167, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilemap: {fileID: 0}
   speed: 12
   jumpForce: 30
   isColliderRadius: 1
@@ -374,7 +373,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f48989030049c8b609ce3e810157ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tilemap: {fileID: 0}
   blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
   blockLayerMask:
     serializedVersion: 2
@@ -401,7 +399,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updateTilemap: {fileID: 0}
-  mapTilemap: {fileID: 0}
   blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
   blockType: 0
   oreType: 1

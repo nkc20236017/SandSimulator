@@ -13,15 +13,20 @@ public class BlockDatas : ScriptableObject
 	{
 		return blocks.FirstOrDefault(block => block.type == type);
 	}
-
-	public Block GetBlock(TileBase tile)
+	
+	public Block GetBlock(Sprite sprite)
 	{
-		return blocks.FirstOrDefault(block => block.tile == tile);
+		return blocks.FirstOrDefault(block => block.sprite == sprite);
 	}
 	
 	public Ore GetOre(OreType oreType)
 	{
 		return blocks.FirstOrDefault(block => block.type == BlockType.Ore && ((Ore) block).oreType == oreType) as Ore;
+	}
+	
+	public Ore GetOre(Sprite sprite)
+	{
+		return blocks.FirstOrDefault(block => block.type == BlockType.Ore && block.sprite == sprite) as Ore;
 	}
 	
 	public Ore GetRandomOre()
@@ -30,4 +35,3 @@ public class BlockDatas : ScriptableObject
 		return ores[Random.Range(0, ores.Length)] as Ore;
 	}
 }
-

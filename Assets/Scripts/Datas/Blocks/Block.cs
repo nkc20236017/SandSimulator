@@ -28,6 +28,7 @@ public enum OreType
     Kdot,
     Diamond,
     Bismuth,
+    Ruby,
     MagicOre
 }
 
