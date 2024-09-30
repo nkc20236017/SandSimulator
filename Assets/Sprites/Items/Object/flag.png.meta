@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 77fb252403818fd4bbd0c39e023b0720
+guid: 49a2fde0198d0ca4baa5a9806ce9c1dd
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 2
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 64
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -94,24 +94,11 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
-    buildTarget: WebGL
-    maxTextureSize: 32
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
     buildTarget: Android
-    maxTextureSize: 64
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -123,85 +110,106 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cristal_0
+      name: flag_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 16
+        width: 60
+        height: 60
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -1, y: 8}
-        - {x: -4, y: 5}
-        - {x: -4, y: -1}
-        - {x: -7, y: -1}
-        - {x: -7, y: -5}
-        - {x: -4, y: -8}
-        - {x: 3, y: -8}
-        - {x: 7, y: -4}
-        - {x: 7, y: 0}
-        - {x: 3, y: 0}
-        - {x: 3, y: 5}
-        - {x: 0, y: 8}
-      physicsShape:
-      - - {x: -1, y: 8}
-        - {x: -4, y: 5}
-        - {x: -4, y: -1}
-        - {x: -7, y: -1}
-        - {x: -7, y: -5}
-        - {x: -4, y: -8}
-        - {x: 3, y: -8}
-        - {x: 7, y: -4}
-        - {x: 7, y: 0}
-        - {x: 3, y: 0}
-        - {x: 3, y: 5}
-        - {x: 0, y: 8}
+      outline: []
+      physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0a4b30e92ddc36e419517fbcdbe49cc2
-      internalID: -1872875998
+      spriteID: f3032a65e32bec342ac49c1579cf4b3a
+      internalID: -924703080
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cristal_1
+      name: flag_1
       rect:
         serializedVersion: 2
-        x: 16
+        x: 60
         y: 0
-        width: 16
-        height: 16
+        width: 60
+        height: 60
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -1, y: 7}
-        - {x: -2, y: 7}
-        - {x: -4, y: 5}
-        - {x: -4, y: 0}
-        - {x: -5, y: -1}
-        - {x: -5, y: -4}
-        - {x: -5, y: -5}
-        - {x: -6, y: -6}
-        - {x: -6, y: -8}
-        - {x: 4, y: -8}
-        - {x: 5, y: -7}
-        - {x: 5, y: -5}
-        - {x: 3, y: -3}
-        - {x: 7, y: 0}
-        - {x: 7, y: 4}
-        - {x: 3, y: 4}
-        - {x: 1, y: 2}
-        - {x: 1, y: 5}
+      outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 201d27aa64e846b4eb387340c95d794c
-      internalID: 1058440054
+      spriteID: 4d8a3074f77b7bc4e8474245911c8064
+      internalID: -1641220572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: flag_2
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 0
+        width: 60
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3afa6c2f5f570b46a2d66405dad1d55
+      internalID: 383463495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: flag_3
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 0
+        width: 60
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d24c926ecea70e47ba1564dba67c72a
+      internalID: 1019276789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: flag_4
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 0
+        width: 60
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b1b1d76c5092da42865d6fc5509667e
+      internalID: 845390195
       vertices: []
       indices: 
       edges: []
@@ -217,8 +225,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Cristal_0: -1872875998
-      Cristal_1: 1058440054
+      flag_0: -924703080
+      flag_1: -1641220572
+      flag_2: 383463495
+      flag_3: 1019276789
+      flag_4: 845390195
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8010f1f7be188104e90ffa582ddb3eee, type: 3}
   m_Name: Emerald
   m_EditorClassIdentifier: 
-  m_DefaultSprite: {fileID: -926241786, guid: a71a27ad1af6f2844b1be7aa8259e03d, type: 3}
+  m_DefaultSprite: {fileID: -568336130, guid: ee66ce713edc8674095352a2c3709e61, type: 3}
   m_DefaultGameObject: {fileID: 0}
   m_DefaultColliderType: 1
   m_TilingRules:
   - m_Id: 0
     m_Sprites:
-    - {fileID: -926241786, guid: a71a27ad1af6f2844b1be7aa8259e03d, type: 3}
-    - {fileID: 761944152, guid: a71a27ad1af6f2844b1be7aa8259e03d, type: 3}
-    - {fileID: -1992423047, guid: a71a27ad1af6f2844b1be7aa8259e03d, type: 3}
-    - {fileID: 558951046, guid: a71a27ad1af6f2844b1be7aa8259e03d, type: 3}
+    - {fileID: -568336130, guid: ee66ce713edc8674095352a2c3709e61, type: 3}
+    - {fileID: 1321784040, guid: ee66ce713edc8674095352a2c3709e61, type: 3}
+    - {fileID: 925457808, guid: ee66ce713edc8674095352a2c3709e61, type: 3}
+    - {fileID: 254954833, guid: ee66ce713edc8674095352a2c3709e61, type: 3}
     m_GameObject: {fileID: 0}
     m_MinAnimationSpeed: 1
     m_MaxAnimationSpeed: 1

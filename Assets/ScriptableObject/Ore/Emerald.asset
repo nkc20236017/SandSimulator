@@ -15,10 +15,11 @@ MonoBehaviour:
   type: 4
   id: 
   name: "\u30A8\u30E1\u30E9\u30EB\u30C9"
-  tile: {fileID: 0}
+  tile: {fileID: 11400000, guid: 5ee1c87e16eaf6649b1047108f471164, type: 2}
   stratumGeologyDatas: []
   weight: 10
   sprite: {fileID: 21300000, guid: 116ddf771d6c89444bc09c898fb804cb, type: 3}
+  resultSprite: {fileID: 0}
   endurance: 35
   price: 0
   tilePositions: []

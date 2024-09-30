@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 4
   id: 
-  name: "\u30A8\u30E1\u30E9\u30EB\u30C9"
-  tile: {fileID: 0}
+  name: "\u30EB\u30D3\u30FC"
+  tile: {fileID: 11400000, guid: 4c8f89a6aa38a7643add9c20c6a236c9, type: 2}
   stratumGeologyDatas: []
   weight: 10
   sprite: {fileID: 21300000, guid: c2c456d3d21d639498c48753e78cc74c, type: 3}
+  resultSprite: {fileID: 0}
   endurance: 35
   price: 0
   tilePositions: []
