@@ -38,6 +38,7 @@ public class PaperController : MonoBehaviour
 
     private void Start()
     {
+
         rectTransform.DOAnchorPos(centerPoint, defaultSpeed).OnComplete(OnStamp);
     }
 
