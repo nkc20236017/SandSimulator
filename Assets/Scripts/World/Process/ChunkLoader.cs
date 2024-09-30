@@ -13,10 +13,11 @@ namespace WorldCreation
     public class ChunkLoader : IWorldGeneratable
     {
         private int _executionOrder;
-        public int ExecutionOrder
+        public int ExecutionOrder => _executionOrder;
+
+        public void Initalize(Chunk chunk, WorldMap worldMap, int executionOrder)
         {
-            get => _executionOrder;
-            set => _executionOrder = value;
+            _executionOrder = executionOrder;
         }
 
         async UniTask<Chunk> IWorldGeneratable.Execute(Chunk chunk, WorldMap worldMap, CancellationToken token)

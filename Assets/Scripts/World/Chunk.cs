@@ -23,6 +23,7 @@ public struct Chunk
 
     public int GetNoise(int executionOrder, int maxValue = int.MaxValue)
     {
+        _randamization.Range(0, 0); // óêêîÇàÍìxégópÇ∑ÇÈ
         return _randamization.Order(executionOrder, 0, maxValue);
     }
 
@@ -85,6 +86,15 @@ public struct Chunk
         (
             _position.x * chunkSize.x + position.x,
             _position.y * chunkSize.y + position.y
+        );
+    }
+
+    public Vector2Int GetWithinChunkPosition(Vector2 position)
+    {
+        return new
+        (
+            (int)position.x % _grid.GetLength(0),
+            (int)position.y % _grid.GetLength(1)
         );
     }
 }

@@ -14,10 +14,10 @@ namespace WorldCreation
         private TileBase materialTileID;
         public TileBase MaterialTile => materialTileID;
         [SerializeField]    // ‚±‚Ì’n‘w‚É¶¬‚³‚ê‚ézÎ
-        private PrimevalObject[] primevalOres;
-        public PrimevalObject[] PrimevalOres => primevalOres;
+        private PrimevalOre[] primevalOres;
+        public PrimevalOre[] PrimevalOres => primevalOres;
         [SerializeField]    // ‚±‚Ì’n‘w‚É‘¶Ý‚·‚éƒ_ƒ“ƒWƒ‡ƒ“
-        private PrimevalObject[] primevalDungeons;
-        public PrimevalObject[] PrimevalDungeons => primevalDungeons;
+        private PrimevalOre[] primevalDungeons;
+        public PrimevalOre[] PrimevalDungeons => primevalDungeons;
     }
 }

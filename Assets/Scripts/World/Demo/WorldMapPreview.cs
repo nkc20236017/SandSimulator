@@ -22,7 +22,7 @@ namespace WorldCreation.Preview
         private LayerGenerator _layerGenerator;
         private const float GUIDELINE_ALPHA = 0.25f;
         private Vector3 _tilemapOrigin;
-        private List<List<Vector2Int>> clodFrames;
+        private List<List<Vector2Int>> lumpFrames;
 
         [ContextMenu("Refresh")]
         public void Refresh()
@@ -32,13 +32,13 @@ namespace WorldCreation.Preview
                 _randomization = new(GetComponent<WorldMapCreator>().Seed);
                 _layerGenerator = new();
 
-                if (clodFrames != null)
+                if (lumpFrames != null)
                 {
-                    currentClodIndex = 0;
-                    maxClodIndex = 0;
-                    clodPoints = null;
-                    clodFrames.Clear();
-                    clodFrames = null;
+                    currentLumpIndex = 0;
+                    maxLumpIndex = 0;
+                    lumpPoints = null;
+                    lumpFrames.Clear();
+                    lumpFrames = null;
                 }
             }
         }

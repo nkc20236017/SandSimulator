@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 08b35c36b51b9764fb1f7fb4896313b2, type: 3}
-  m_Name: DemoWorldMap
+  m_Name: DemoWorldMap 1
   m_EditorClassIdentifier: 
   map:
   - 
@@ -52,7 +52,7 @@ MonoBehaviour:
   - debugLayerColor: {r: 0, g: 0.14668608, b: 1, a: 1}
     materialTileID: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
     primevalOres:
-    - exposedOrePrefab: {fileID: 0}
+    - exposedOrePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
       buriedOreID: {fileID: 0}
       lumpAmount: 30
       blockAmount: 0
@@ -62,7 +62,7 @@ MonoBehaviour:
   - debugLayerColor: {r: 0.03901863, g: 1, b: 0, a: 1}
     materialTileID: {fileID: 11400000, guid: 75354da9db15b3f48bde02326a5e2e36, type: 2}
     primevalOres:
-    - exposedOrePrefab: {fileID: 0}
+    - exposedOrePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
       buriedOreID: {fileID: 0}
       lumpAmount: 30
       blockAmount: 0
@@ -72,7 +72,7 @@ MonoBehaviour:
   - debugLayerColor: {r: 1, g: 0, b: 0, a: 1}
     materialTileID: {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
     primevalOres:
-    - exposedOrePrefab: {fileID: 0}
+    - exposedOrePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
       buriedOreID: {fileID: 0}
       lumpAmount: 30
       blockAmount: 0
@@ -80,21 +80,9 @@ MonoBehaviour:
       space: 5
     primevalDungeons: []
   caveCombines:
-  - scale: {x: 0.015, y: 0.015}
-    lumpSize: 0.414
-    hollowSize: 1
-    isBackfill: 1
-    isInvert: 0
-    backfillTileID: 0
   - scale: {x: 0.01, y: 0.01}
-    lumpSize: 0.443
-    hollowSize: 1
-    isBackfill: 0
-    isInvert: 0
-    backfillTileID: 0
-  - scale: {x: 0.005, y: 0.01}
-    lumpSize: 0.264
-    hollowSize: 0.35
+    lumpSize: 0.374
+    hollowSize: 0.483
     isBackfill: 0
     isInvert: 0
     backfillTileID: 0
