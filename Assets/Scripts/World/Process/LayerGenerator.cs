@@ -17,20 +17,17 @@ namespace WorldCreation
         private int[] _layerHeights;
         private int[] _layerNoise;
 
-        public int ExecutionOrder
+        public int ExecutionOrder => _executionOrder;
+
+        public void Initalize(Chunk chunk, WorldMap worldMap, int executionOrder)
         {
-            get => _executionOrder;
-            set => _executionOrder = value;
+            _executionOrder = executionOrder;
+
+            FindingLayerBorder(worldMap);
         }
 
         public async UniTask<Chunk> Execute(Chunk chunk, WorldMap worldMap, CancellationToken token)
         {
-            // 地層の境界範囲が分からない場合は新規作成する
-            if (_layerBorderRangeHeights == null)
-            {
-                FindingLayerBorder(worldMap);
-            }
-
             // 現在のチャンクの下と上の座標を取得
             int worldLowerHeight = worldMap.OneChunkSize.y * chunk.Position.y;
             int worldUpperHeight = worldLowerHeight + (worldMap.OneChunkSize.y - 1);
@@ -148,7 +145,7 @@ namespace WorldCreation
             _layerBorderRangeHeights = new int[worldMap.LayerRatios.Length * 2];
             int layerMaxRatio = worldMap.WorldSize.y;
 
-            for (int i = 0; i < worldMap.LayerRatios.Length; i++)    // 一度に2つのデータを入れるため2上昇させる
+            for (int i = 0; i < worldMap.LayerRatios.Length; i++)
             {
                 _layerBorderRangeHeights[i] = (int)(layerMaxRatio * (1 - worldMap.LayerRatios[i]));
                 _layerBorderRangeHeights[_layerBorderRangeHeights.Length - (i + 1)] = _layerBorderRangeHeights[i] + (int)worldMap.BorderDistortionPower;

@@ -13,24 +13,21 @@ public class CaveGenerator : IWorldGeneratable
     private int _executionOrder;
     private int[] _noise;
 
-    public int ExecutionOrder
+    public int ExecutionOrder => _executionOrder;
+
+    public void Initalize(Chunk chunk, WorldMap worldMap, int executionOrder)
     {
-        get => _executionOrder;
-        set => _executionOrder = value;
+        _executionOrder = executionOrder;
+
+        _noise = new int[worldMap.CaveCombines.Length];
+        for (int i = 0; i < worldMap.CaveCombines.Length; i++)
+        {
+            _noise[i] = chunk.GetNoise(_executionOrder + i, Int16.MaxValue);
+        }
     }
 
     public async UniTask<Chunk> Execute(Chunk chunk, WorldMap worldMap, CancellationToken token)
     {
-        // 乱数を生成する
-        if (_noise == null)
-        {
-            _noise = new int[worldMap.CaveCombines.Length];
-            for (int i = 0; i < worldMap.CaveCombines.Length; i++)
-            {
-                _noise[i] = chunk.GetNoise(_executionOrder, Int16.MaxValue);
-            }
-        }
-
         // 初期化して空IDにする
         int[,] grid = new int[chunk.GetChunkLength(0), chunk.GetChunkLength(1)];
         for (int y = 0; y < grid.GetLength(1); y++)
@@ -51,8 +48,7 @@ public class CaveGenerator : IWorldGeneratable
                 {
                     Vector2Int worldPosition = chunk.GetWorldPosition(x, y, worldMap.OneChunkSize);
                     // 現在の座標にタイルが既にあったら次の座標へ移動する
-                    if (grid[x, y] != VOID_ID) { continue; }
-
+                    if (!caveCombine.IsBackfill && grid[x, y] != VOID_ID) { continue; }
 
                     // 現在の座標のノイズ値を取得
                     float noisePower = Mathf.PerlinNoise
@@ -60,7 +56,6 @@ public class CaveGenerator : IWorldGeneratable
                         (worldPosition.x + _noise[i]) * caveCombine.Scale.x,
                         (worldPosition.y + _noise[i]) * caveCombine.Scale.y
                     );
-
 
                     // 道の太さを決める
                     if (noisePower > caveCombine.HollowSize)
@@ -82,13 +77,13 @@ public class CaveGenerator : IWorldGeneratable
                     if (caveCombine.IsInvert)
                     {
                         // 対象の場所を埋める場合は
-                        grid[x, y] = (noisePower > caveCombine.ClodSize)
+                        grid[x, y] = (noisePower < caveCombine.LumpSize)
                             ? fillBlockId
                             : VOID_ID;
                     }
                     else
                     {
-                        grid[x, y] = (noisePower < caveCombine.ClodSize)
+                        grid[x, y] = (noisePower < caveCombine.LumpSize)
                             ? VOID_ID
                             : fillBlockId;
                     }

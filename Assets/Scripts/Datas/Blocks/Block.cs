@@ -7,6 +7,7 @@ using NaughtyAttributes;
 
 public enum BlockType
 {
+    None,
     Sand,
     Mud,
     Stone,
@@ -27,6 +28,7 @@ public enum OreType
     Kdot,
     Diamond,
     Bismuth,
+    Ruby,
     MagicOre
 }
 
@@ -54,6 +56,8 @@ public class Block : ScriptableObject
     public StratumGeologyData[] stratumGeologyDatas;
     public int weight;
     [ShowAssetPreview] public Sprite sprite;
+    [ShowAssetPreview]
+    public Sprite resultSprite;
     public int endurance;
     public int price;
 

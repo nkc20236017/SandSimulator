@@ -23,7 +23,7 @@ public class TankUITest : IOutResultUI
     private float Maxhigt = 365;
     private float Totale;
 
-    public void OutputTank(OutPutData outPutData)
+    public void OutputTank(OutPutResultData outPutData)
     {
         Totale = outPutData.totalRatio * Maxhigt;
 

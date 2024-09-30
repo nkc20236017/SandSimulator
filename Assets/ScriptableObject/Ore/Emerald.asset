@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed3ee7e5ba574701819d926c84d2a9af, type: 3}
+  m_Name: Emerald
+  m_EditorClassIdentifier: 
+  type: 4
+  id: 
+  name: "\u30A8\u30E1\u30E9\u30EB\u30C9"
+  tile: {fileID: 11400000, guid: 5ee1c87e16eaf6649b1047108f471164, type: 2}
+  stratumGeologyDatas: []
+  weight: 10
+  sprite: {fileID: 21300000, guid: 116ddf771d6c89444bc09c898fb804cb, type: 3}
+  resultSprite: {fileID: 0}
+  endurance: 35
+  price: 0
+  tilePositions: []
+  oreType: 5
+  attackPower: 10
+  weightPerSize: 0a0000001900000028000000
+  endurancePerSize: 230000003c00000078000000
+  oreSprites:
+  - {fileID: 21300000, guid: a91470ecf16897943a34a62ca1c0854d, type: 3}
+  - {fileID: 21300000, guid: c09c6a4aacd279e4aabc26cc75442f88, type: 3}
+  - {fileID: 21300000, guid: a35108038c4cf4841a38a292b27fb58f, type: 3}

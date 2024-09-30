@@ -14,7 +14,7 @@ public class TankUI : MonoBehaviour, IOutResultUI
     [SerializeField]
     private RectTransform maxTransfom;
 
-    public void OutputTank(OutPutData outPutData)
+    public void OutputTank(OutPutResultData outPutData)
     {
         var totaleSize = outPutData.totalRatio * maxTransfom.sizeDelta.y;
         totaleTransform.sizeDelta = new Vector2(totaleTransform.sizeDelta.x, totaleSize);
@@ -30,16 +30,8 @@ public class TankUI : MonoBehaviour, IOutResultUI
             }
         }
 
-
-
-
-
-
         var stankObject = Instantiate(tankImagePrefab, totaleTransform);
         stankObject.GetComponent<TankImage>().Setup(outPutData.itemType,
             outPutData.itemRatio * totaleSize, outPutData.Sprite);
-
-
     }
-
 }
