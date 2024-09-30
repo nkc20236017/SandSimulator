@@ -25,10 +25,6 @@ namespace WorldCreation
         private GameObject tilemapPrefab;
         [SerializeField]
         private GameObject worldMapManagerPrefab;
-        [SerializeField]
-        private UnityEvent onWorldReady;
-        public UnityEvent OnWorldReady => onWorldReady;
-
 
         private bool _isQuitting;
         private LayerGenerator _layer;
@@ -188,7 +184,6 @@ namespace WorldCreation
             GameObject worldMapManager = Instantiate(worldMapManagerPrefab);
             worldMapManager.GetComponent<IWorldMapManager>()
                 .Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
-            onWorldReady?.Invoke();
 
             Debug.Log($"<color=#ffff00ff>WorldMapManagerの生成完了</color>");
         }
@@ -260,7 +255,6 @@ namespace WorldCreation
             {
                 // 初期データをセット
                 oreObject.SetOre(ore, size, angle);
-                onWorldReady.AddListener(oreObject.OnEnable);
             }
         }
 
