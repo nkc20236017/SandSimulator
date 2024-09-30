@@ -30,16 +30,8 @@ public class TankUI : MonoBehaviour, IOutResultUI
             }
         }
 
-
-
-
-
-
         var stankObject = Instantiate(tankImagePrefab, totaleTransform);
         stankObject.GetComponent<TankImage>().Setup(outPutData.itemType,
             outPutData.itemRatio * totaleSize, outPutData.Sprite);
-
-
     }
-
 }

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using NaughtyAttributes;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class OreObject : MonoBehaviour, IDamagable

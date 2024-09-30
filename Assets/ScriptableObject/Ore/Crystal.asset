@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed3ee7e5ba574701819d926c84d2a9af, type: 3}
   m_Name: Crystal
   m_EditorClassIdentifier: 
-  type: 3
+  type: 4
   id: 
   name: "\u30AF\u30EA\u30B9\u30BF\u30EB"
   tile: {fileID: 0}

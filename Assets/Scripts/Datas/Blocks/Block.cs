@@ -7,6 +7,7 @@ using NaughtyAttributes;
 
 public enum BlockType
 {
+    None,
     Sand,
     Mud,
     Stone,
