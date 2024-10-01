@@ -8,7 +8,6 @@ using Random = UnityEngine.Random;
 public class UpdateTile : MonoBehaviour
 {
     [Header("Datas Config")]
-    [SerializeField] private GameObject player;
     [SerializeField] private BlockDatas blockDatas;
     [SerializeField] private LayerMask collisionLayerMask;
 
@@ -22,6 +21,7 @@ public class UpdateTile : MonoBehaviour
     [SerializeField] private bool canUpdateSandToMud;
     
     private float _lastUpdateTime;
+    private Transform _player;
     private Tilemap _updateTilemap;
     private List<Vector3Int> _clearTiles = new();
     private List<Vector3Int> _updateTiles = new();
@@ -35,6 +35,16 @@ public class UpdateTile : MonoBehaviour
     private void Start()
     {
         blockDatas.Block.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
+    }
+    
+    /// <summary>
+    /// プレイヤーの設定
+    /// プレイヤーを中心に更新する
+    /// </summary>
+    /// <param name="player">プレイヤー</param>
+    public void SetPlayer(Transform player)
+    {
+        _player = player;
     }
 
     private void Update()
@@ -81,8 +91,8 @@ public class UpdateTile : MonoBehaviour
             {
                 for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
                 {
-                    var position = new Vector3Int(x, y, 0) + (player != null ? Vector3Int.RoundToInt(player.transform.position) : Vector3Int.zero);
-                    var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(x, y) + (player != null ? player.transform.position : Vector2.zero));
+                    var position = new Vector3Int(x, y, 0) + (_player != null ? Vector3Int.RoundToInt(_player.transform.position) : Vector3Int.zero);
+                    var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(x, y) + (_player != null ? _player.transform.position : Vector2.zero));
                     var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
                     if (tilemap == null || !tilemap.HasTile(localPosition))
                     {
@@ -157,6 +167,11 @@ public class UpdateTile : MonoBehaviour
         for (var i = 0; i < updateTiles.Length; i++)
         {
             tilePositions[i + clearTiles.Length] = updateTiles[i];
+            var tileLayer = _chunkInformation.GetLayer(new Vector2(updateTiles[i].x, updateTiles[i].y));
+            if (tile.GetStratumGeologyData(tileLayer) != null)
+            {
+                _updateTilemap.SetColor(updateTiles[i], tile.GetStratumGeologyData(tileLayer).color);
+            }
             tileArray[i + clearTiles.Length] = tile.tile;
         }
         
@@ -187,12 +202,11 @@ public class UpdateTile : MonoBehaviour
         {
             var block = blockDatas.GetBlock(BlockType.Sand);
             mapTilemap.SetTile(localPosition, block.tile);
-            // TODO: 層ごとの色を設定する
-            // var tileLayer = _chunkInformation.GetLayer(pos);
-            // if (block.GetStratumGeologyData(tileLayer) != null)
-            // {
-            //     mapTilemap.SetColor(position, block.GetStratumGeologyData(tileLayer).color);
-            // }
+            var tileLayer = _chunkInformation.GetLayer(pos);
+            if (block.GetStratumGeologyData(tileLayer) != null)
+            {
+                mapTilemap.SetColor(position, block.GetStratumGeologyData(tileLayer).color);
+            }
             _clearTiles.Add(position);
             return;
         }

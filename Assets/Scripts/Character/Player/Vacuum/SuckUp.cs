@@ -74,12 +74,16 @@ public class SuckUp : MonoBehaviour
 
     private void Performed()
     {
-        GetSuckUpTilePositions();
         if (inputTank.TamkMaxSignal()) { return; }
         
+        // 吸い込み対象の座標取得
+        GetSuckUpTilePositions();
+        
+        // 鉱石の吸い込み
         SuckUpOres();
         if (_suckUpOreObject.Count > 0) { return; }
         
+        // タイルの吸い込み
         SuckUpTiles();
     }
 
@@ -213,6 +217,12 @@ public class SuckUp : MonoBehaviour
             if (isContinue) { continue; }
             
             newTilemap.SetTile(localNewTilePosition, tile);
+            // var tileLayer = _chunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
+            // var block = blockDatas.GetBlock(tile);
+            // if (block.GetStratumGeologyData(tileLayer) != null)
+            // {
+            //     newTilemap.SetColor(localNewTilePosition, block.GetStratumGeologyData(tileLayer).color);
+            // }
             tilemap.SetTile(localTilePosition, null);
             
             if ((newTilePosition - pivot.position).sqrMagnitude <= _deleteDistance * _deleteDistance)
