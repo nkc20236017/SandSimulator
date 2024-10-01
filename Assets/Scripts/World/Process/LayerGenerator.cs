@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System;
-using UnityEditor.U2D.Aseprite;
 
 namespace WorldCreation
 {

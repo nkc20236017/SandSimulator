@@ -1,9 +1,6 @@
-using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using VContainer;
@@ -483,7 +480,7 @@ namespace WorldCreation
             BlowOut blowOut = player.GetComponentInChildren<BlowOut>();
             SelectTank select = player.GetComponent<SelectTank>();
 
-            blowOut.SetTilemap(updateTilemap.gameObject.GetComponent<Tilemap>());
+            //blowOut.SetTilemap(updateTilemap.gameObject.GetComponent<Tilemap>());
 
             suckUp.Inject(inputTank);
             blowOut.Inject(inputTank);

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
@@ -35,7 +36,7 @@ public class RatioInspectorEditor : Editor
 
         serializedObject.ApplyModifiedProperties();
         SceneView.RepaintAll();
-        
+
     }
 
     private bool HasRatioAttribute(SerializedProperty property)
@@ -256,3 +257,4 @@ public class RatioInspectorEditor : Editor
         return normalizedValues.Select(v => Mathf.Lerp(min, max, v)).ToArray();
     }
 }
+#endif
