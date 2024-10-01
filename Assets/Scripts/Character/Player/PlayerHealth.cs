@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using MackySoft.Navigathena.SceneManagement;
+using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour, IDamagable
 {
@@ -55,7 +56,7 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 	
 	private void Die()
 	{
-		// TODO: プレイヤー死亡処理
+		GlobalSceneNavigator.Instance.Reload();
 	}
 }
 
