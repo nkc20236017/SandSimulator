@@ -37,34 +37,6 @@ public class OreObject : MonoBehaviour, IDamagable
     public bool CanSuckUp { get; private set; }
     public Ore Ore => ore;
 
-    private void Awake()
-    {
-        _capsuleCollider2D = GetComponent<CapsuleCollider2D>();
-        _rigidbody2D = GetComponent<Rigidbody2D>();
-        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-    }
-
-    private void Start()
-    {
-        if (_isChild) { return; }
-        
-        if (isRandomOre)
-        {
-            ore = blockDatas.GetRandomOre();
-        }
-        if (isRandomSize)
-        {
-            size = Random.Range(1, 4);
-        }
-        if (isRandomAngle)
-        {
-            angle = Random.Range(0, 361);
-            var minAngle = canObliqueAngle ? 45 : 90;
-            angle = Mathf.Round(angle / minAngle) * minAngle;
-        }
-        SetOre(ore, size, angle);
-    }
-
     private void Update()
     {
         if (_rigidbody2D.velocity.y < 0)
@@ -103,6 +75,7 @@ public class OreObject : MonoBehaviour, IDamagable
         ore = setOre;
         setSize = Mathf.Clamp(setSize, 1, 3);
         setAngle = Mathf.Clamp(setAngle, 0, 360);
+        Debug.Log(setAngle);
         transform.eulerAngles = new Vector3(0, 0, setAngle);
         SetOreConfig(setSize);
     }
@@ -158,5 +131,29 @@ public class OreObject : MonoBehaviour, IDamagable
     {
         var worldMapManager = FindObjectOfType<WorldMapManager>();
         _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        
+        _capsuleCollider2D = GetComponent<CapsuleCollider2D>();
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        
+        if (_isChild) { return; }
+        
+        if (isRandomOre)
+        {
+            ore = blockDatas.GetRandomOre();
+        }
+        if (isRandomSize)
+        {
+            size = Random.Range(1, 4);
+        }
+        if (isRandomAngle)
+        {
+            angle = Random.Range(0, 361);
+            var minAngle = canObliqueAngle ? 45 : 90;
+            angle = Mathf.Round(angle / minAngle) * minAngle;
+        }
+
+        Debug.Log(angle);
+        SetOre(ore, size, angle);
     }
 }
