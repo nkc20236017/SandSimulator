@@ -9,34 +9,44 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     private TotalResultPresenter resultPresenter;
     [SerializeField]
     private ResultAnimationPresenter animationPresenter;
+    [SerializeField]
+    private GameObject sceneButton;
 
     private CancellationToken token;
+    private CancellationTokenSource tokenSource;
+
 
     private void Start()
     {
-        var cts = new CancellationTokenSource();
+        tokenSource = new CancellationTokenSource();
 
-        // 2. CancellationToken‚ðŽæ“¾  
-        token = cts.Token;
-        cts.Cancel();
+        token = tokenSource.Token;
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            tokenSource.Cancel();
+        }
     }
 
     public async void ResultUI(ResultOutPutData outPutData)
     {
-
-
         resultPresenter.gameObject.SetActive(false);
         resultPresenter.TotalUI(outPutData);
         try
         {
             await animationPresenter.AnimationPaper(outPutData, token);
         }
-        catch(OperationCanceledException)
+        catch (OperationCanceledException)
         {
             animationPresenter.gameObject.SetActive(false);
             resultPresenter.gameObject.SetActive(true);
+            sceneButton.SetActive(true);
         }
         animationPresenter.gameObject.SetActive(false);
         resultPresenter.gameObject.SetActive(true);
+        sceneButton.SetActive(true);
     }
 }

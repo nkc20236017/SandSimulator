@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OutPutResultData 
+
+public class OutPutTankData 
 {
     //Tank‚ÌƒAƒCƒeƒ€‚ÌŠ„‡
     public readonly float itemRatio;
@@ -11,7 +12,7 @@ public class OutPutResultData
     public readonly BlockType itemType;
     public readonly Sprite Sprite;
 
-    public OutPutResultData(float itemRatio, float totalRatio, BlockType itemType,Sprite sprite)
+    public OutPutTankData(float itemRatio, float totalRatio, BlockType itemType,Sprite sprite)
     {
         this.Sprite = sprite;
         this.itemRatio = itemRatio;
