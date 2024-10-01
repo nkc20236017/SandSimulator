@@ -38,6 +38,15 @@ namespace WorldCreation
                         worldMap.Blocks.GetBlock(chunk.GetBlockID(position))
                     );
 
+                    if (chunk.TileMap.GetTile((Vector3Int)position) != null)
+                    {
+                        chunk.TileMap.SetColor
+                        (
+                            (Vector3Int)position,
+                            worldMap.WorldLayers[chunk.GetLayerIndex(x, y)].LayerColor
+                        );
+                    }
+
                     limitter++;
 
                     if (worldMap.FillLimit < limitter)

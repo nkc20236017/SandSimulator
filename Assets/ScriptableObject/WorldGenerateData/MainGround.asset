@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08b35c36b51b9764fb1f7fb4896313b2, type: 3}
+  m_Name: MainGround
+  m_EditorClassIdentifier: 
+  worldScale: {x: 0, y: 0}
+  minOriginGapRange: {x: 0, y: 0}
+  maxOriginGapRange: {x: 0, y: 0}
+  borderAmplitude: 0
+  blocks:
+    useBlockList: []
+  fillLimit: 0
+  layerRatios: []
+  borderDistortionPower: 0
+  worldLayers: []
+  caveCombines: []
+  enemyPrefab: {fileID: 0}
+  enemySpase: 0

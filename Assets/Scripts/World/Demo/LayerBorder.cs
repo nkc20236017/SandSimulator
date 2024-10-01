@@ -18,10 +18,10 @@ namespace WorldCreation.Preview
                 .Select(point => (Vector3)(Vector2)point)
                 .ToArray();
 
-                Gizmos.color = worldMap.WorldLayers[i + 1].DebugLayerColor;
+                Gizmos.color = worldMap.WorldLayers[i + 1].LayerColor;
                 Gizmos.DrawLineStrip(border, false);
 
-                Color layerColor = worldMap.WorldLayers[i + 1].DebugLayerColor;
+                Color layerColor = worldMap.WorldLayers[i + 1].LayerColor;
                 layerColor.a = GUIDELINE_ALPHA;
 
                 Gizmos.color = layerColor;

@@ -33,7 +33,9 @@ namespace WorldCreation
         [SerializeField]
         private GameObject startObject;
         [SerializeField]
-        private GameObject player;
+        private UpdateTile updateTilemapPrefab;
+        [SerializeField]
+        private GameObject playerPrefab;
         [SerializeField]
         private Vector2 startPosition;
         [SerializeField]
@@ -437,7 +439,8 @@ namespace WorldCreation
             }
 
             Instantiate(startObject, start, Quaternion.identity);
-            Instantiate(player, (Vector2)center, Quaternion.identity);
+            GameObject player = Instantiate(playerPrefab, (Vector2)center, Quaternion.identity);
+            UpdateTile updateTilemap = Instantiate(updateTilemapPrefab);
 
             // ÉSÅ[Éã
             chunkX = (int)goalPosition.x / worldMap.OneChunkSize.x;

@@ -8,8 +8,8 @@ namespace WorldCreation
     public struct WorldLayer
     {
         [SerializeField]
-        private Color debugLayerColor;
-        public Color DebugLayerColor => debugLayerColor;
+        private Color layerColor;
+        public Color LayerColor => layerColor;
         [SerializeField]    // ‚±‚Ì’n‘w‚ð\¬‚·‚éÞŽ¿
         private TileBase materialTileID;
         public TileBase MaterialTile => materialTileID;
