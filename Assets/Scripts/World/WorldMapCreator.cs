@@ -479,6 +479,7 @@ namespace WorldCreation
             select.Inject(inputTank);
 
             activeStanbyObject.Add(player);
+            activeStanbyObject.Add(updateTilemap.gameObject);
 
             // CameraSystem cameraSystem = Camera.main.transform.GetComponentInChildren<CameraSystem>();
             // cameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
