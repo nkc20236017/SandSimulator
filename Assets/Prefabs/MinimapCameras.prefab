@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7702893506924366785}
   - component: {fileID: 5003442847347938106}
   - component: {fileID: 8790889239050641938}
-  - component: {fileID: 7662924387546549779}
+  - component: {fileID: 7266713979781125808}
   m_Layer: 11
   m_Name: Virtual Camera
   m_TagString: Untagged
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 310456047740488622}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.936417, y: -1.4058142, z: -179.6684}
+  m_LocalPosition: {x: 2, y: 23, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -88,7 +88,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _virtualCamera: {fileID: 5003442847347938106}
   _boxCollider2D: {fileID: 0}
---- !u!114 &7662924387546549779
+--- !u!114 &7266713979781125808
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -97,14 +97,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 310456047740488622}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2fba25a5cd15594e8f050a11e386c80, type: 3}
+  m_Script: {fileID: 11500000, guid: f453f694addf4275988fac205bc91968, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ConfineMode: 0
-  m_BoundingVolume: {fileID: 0}
   m_BoundingShape2D: {fileID: 0}
-  m_ConfineScreenEdges: 1
   m_Damping: 0
+  m_MaxWindowSize: 0
 --- !u!1 &5088502284480830332
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,6 +242,7 @@ GameObject:
   - component: {fileID: 7997976605037333592}
   - component: {fileID: 1513204567804605867}
   - component: {fileID: 1924009805597797371}
+  - component: {fileID: 2101001527759654199}
   m_Layer: 0
   m_Name: MiniCamera
   m_TagString: Untagged
@@ -260,7 +259,7 @@ Transform:
   m_GameObject: {fileID: 9093175799158616631}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.00000047683716, y: -0.00000667572, z: -179.6684}
+  m_LocalPosition: {x: 2, y: 23, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -351,3 +350,19 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2101001527759654199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9093175799158616631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35975e29273044c5bb036abdc6101f7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  _minimapIcon: {fileID: 11400000, guid: 8571427fb855188448ba90ab67fa0fbc, type: 2}
+  _targetIconPrefab: {fileID: 7871713926053123297, guid: d7b8d5b8b9850a6439b17c308a8d5b3d, type: 3}
+  _minimapCamera: {fileID: 1513204567804605867}
