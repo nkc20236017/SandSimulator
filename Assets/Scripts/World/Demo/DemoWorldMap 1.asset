@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08b35c36b51b9764fb1f7fb4896313b2, type: 3}
+  m_Name: DemoWorldMap 1
+  m_EditorClassIdentifier: 
+  worldScale: {x: 640, y: 390}
+  minOriginGapRange: {x: 0, y: 0}
+  maxOriginGapRange: {x: 0, y: 0}
+  borderAmplitude: 0.03
+  blocks:
+    useBlockList:
+    - {fileID: 11400000, guid: f66babbb8ecba55418398bf81080dca8, type: 2}
+    - {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
+    - {fileID: 11400000, guid: 75354da9db15b3f48bde02326a5e2e36, type: 2}
+    - {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
+    - {fileID: 11400000, guid: 6485ccbf4f5813542a9e57e3e866a44f, type: 2}
+  fillLimit: 1000
+  layerRatios:
+  - 0.229
+  - 0.2735
+  - 0.4975
+  borderDistortionPower: 33.19
+  worldLayers:
+  - debugLayerColor: {r: 1, g: 0.035849165, b: 0, a: 1}
+    materialTileID: {fileID: 11400000, guid: f66babbb8ecba55418398bf81080dca8, type: 2}
+    primevalOres:
+    - exposedOrePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
+      buriedOreID: 1
+      lumpAmount: 30
+      blockAmount: 5
+      probability: 80
+      space: 20
+    primevalDungeons:
+    - exposedOrePrefab: {fileID: 0}
+      buriedOreID: 0
+      lumpAmount: 0
+      blockAmount: 0
+      probability: 0
+      space: 0
+  - debugLayerColor: {r: 0, g: 0.14668608, b: 1, a: 1}
+    materialTileID: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
+    primevalOres:
+    - exposedOrePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
+      buriedOreID: 0
+      lumpAmount: 30
+      blockAmount: 0
+      probability: 0
+      space: 5
+    primevalDungeons: []
+  - debugLayerColor: {r: 0.03901863, g: 1, b: 0, a: 1}
+    materialTileID: {fileID: 11400000, guid: 75354da9db15b3f48bde02326a5e2e36, type: 2}
+    primevalOres:
+    - exposedOrePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
+      buriedOreID: 0
+      lumpAmount: 30
+      blockAmount: 0
+      probability: 0
+      space: 5
+    primevalDungeons: []
+  - debugLayerColor: {r: 1, g: 0, b: 0, a: 1}
+    materialTileID: {fileID: 11400000, guid: 4d85e33859973a44b8bffabd7a411d16, type: 2}
+    primevalOres:
+    - exposedOrePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
+      buriedOreID: 0
+      lumpAmount: 30
+      blockAmount: 0
+      probability: 0
+      space: 5
+    primevalDungeons: []
+  caveCombines:
+  - scale: {x: 0.01, y: 0.01}
+    lumpSize: 0.374
+    hollowSize: 0.483
+    isBackfill: 0
+    isInvert: 0
+    backfillTileID: 0
+  enemyPrefab: {fileID: 7974653131230986145, guid: 0aa6e47f839bbad4f992753059cbfc00, type: 3}
+  enemySpase: 30

@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e3fd14be94f4713bbfa3aabada2b645, type: 3}
+  m_Name: Turtle
+  m_EditorClassIdentifier: 
+  type: 1
+  id: 
+  name: "\u30AB\u30E1"
+  sprite: {fileID: -8101743844157253416, guid: d8afa02174a017f4e924a319680dc0ad, type: 3}
+  status:
+  - name: "\uFF11\u5C64"
+    depth: 1
+    health: 50
+    speed: 7
+    attack: 10
+    attackSpeed: 100
+  - name: 
+    depth: 0
+    health: 0
+    speed: 0
+    attack: 0
+    attackSpeed: 0
+  - name: 
+    depth: 0
+    health: 0
+    speed: 0
+    attack: 0
+    attackSpeed: 0
+  turtleOres:
+  - ore: {fileID: 11400000, guid: 6534895f1114d374a80f4e1c68535ad4, type: 2}
+    rate: 30

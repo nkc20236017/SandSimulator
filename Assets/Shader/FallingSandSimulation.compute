@@ -1,0 +1,49 @@
+#pragma kernel CSMain
+
+RWTexture2D<float> Result;
+RWStructuredBuffer<float> SandBuffer;
+int Width;
+int Height;
+
+float random(float2 st)
+{
+    return frac(sin(dot(st.xy, float2(12.9898, 78.233))) * 43758.5453123);
+}
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= (uint)Width || id.y >= (uint)Height)
+        return;
+
+    int index = id.y * Width + id.x;
+    float sand = SandBuffer[index];
+
+    if (sand > 0.5)
+    {
+        if (id.y > 0)
+        {
+            int belowIndex = (id.y - 1) * Width + id.x;
+            if (SandBuffer[belowIndex] < 0.5)
+            {
+                SandBuffer[index] = 0;
+                SandBuffer[belowIndex] = 1;
+                return;
+            }
+        }
+
+        if (id.y > 0)
+        {
+            float r = random(float2(id.x, id.y));
+            int diagonalIndex = (id.y - 1) * Width + id.x + (r > 0.5 ? 1 : -1);
+            if (diagonalIndex >= 0 && diagonalIndex < Width * Height && SandBuffer[diagonalIndex] < 0.5)
+            {
+                SandBuffer[index] = 0;
+                SandBuffer[diagonalIndex] = 1;
+                return;
+            }
+        }
+    }
+
+    Result[id.xy] = sand;
+}
