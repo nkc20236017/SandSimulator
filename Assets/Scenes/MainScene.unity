@@ -861,7 +861,7 @@ PrefabInstance:
     - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
       propertyPath: goalObject
       value: 
-      objectReference: {fileID: 3576394769505373699, guid: 9d56360a157809e4bba7e9e93e4fd831, type: 3}
+      objectReference: {fileID: 5207776463582048546, guid: 9d56360a157809e4bba7e9e93e4fd831, type: 3}
     - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
       propertyPath: entoryPoint
       value: 
@@ -874,6 +874,22 @@ PrefabInstance:
       propertyPath: tilemapParent
       value: 
       objectReference: {fileID: 1850257783}
+    - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
+      propertyPath: goalPosition.x
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
+      propertyPath: goalPosition.y
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
+      propertyPath: startPosition.x
+      value: 170
+      objectReference: {fileID: 0}
+    - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
+      propertyPath: startPosition.y
+      value: 525
+      objectReference: {fileID: 0}
     - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
       propertyPath: structureRadius
       value: 10

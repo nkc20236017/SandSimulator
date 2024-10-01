@@ -67,7 +67,7 @@ MonoBehaviour:
     isInvert: 0
     backfillTileID: 0
   - scale: {x: 0.01, y: 0.01}
-    lumpSize: 0.482
+    lumpSize: 0.442
     hollowSize: 0.586
     isOrverride: 0
     isBackfill: 0
