@@ -5,7 +5,10 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 	[SerializeField] private float invincibilityTime;
 	[SerializeField] private int maxHealth;
 	[SerializeField] private int maxDefence;
-	
+	//PlayerのHealthのUI
+	[SerializeField]
+	private HealthUI healthUI;
+
 	private float _timer;
 	private bool _isInvincible;
 	private int _currentHealth;
@@ -15,6 +18,7 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 	{
 		_currentHealth = maxHealth;
 		_currentDefence = maxDefence;
+		healthUI.StartHealth(maxHealth);
 	}
 
 	private void Update()
@@ -37,6 +41,7 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 		_currentHealth -= damage - _currentDefence;
 		// TODO: ［効果音］プレイヤーダメージ
 		// TODO: ［エフェクト］プレイヤーダメージ
+		healthUI.UpdateHealth(_currentHealth);
 		if (_currentHealth > 0) { return; }
 
 		_currentHealth = 0;
