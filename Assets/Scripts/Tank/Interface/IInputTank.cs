@@ -8,7 +8,7 @@ public interface IInputTank
 {
     void InputAddTank(BlockType type);
     bool FiringTank();
-    void SelectTank(BlockType blockType);
+    void SelectTank(int selectIndex);
     void InputAddTank(TileBase tileBase);
     bool TamkMaxSignal();
 

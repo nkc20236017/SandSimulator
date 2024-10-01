@@ -116,9 +116,18 @@ public class PlayerTank : IInputTank ,IGameLoad
 
     }
 
-    public void SelectTank(BlockType blockType)
+    public void SelectTank(int select)
     {
-        this.currentBlockType = blockType;
+        int selectIndex = 0;
+        foreach(KeyValuePair<Block,MineralTank> pair in itemTankDictionary)
+        {
+            selectIndex++;
+            if(select == selectIndex)
+            {
+                this.currentBlockType = pair.Key.type;
+            }
+        }
+
     }
 
     public bool TamkMaxSignal()
