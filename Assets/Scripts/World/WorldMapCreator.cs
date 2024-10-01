@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -336,7 +337,7 @@ namespace WorldCreation
             GameObject substanceOre = Instantiate
             (
                 orePrefab,
-                nearest.point,
+                _chunks[0, 0].TileMap.WorldToCell(nearest.point),
                 Quaternion.identity
             );
 
