@@ -7,7 +7,6 @@ public class ExitGateObject : MonoBehaviour
 {
     private IGameLoad gameLoad;
 
-    [Inject]
     public void Inject(IGameLoad gameLoad)
     {
         this.gameLoad = gameLoad;

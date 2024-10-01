@@ -36,7 +36,6 @@ public class SuckUp : MonoBehaviour
     
     public bool IsSuckUp { get; private set; }
     
-    [Inject]//DIコンテナ
     public void Inject(IInputTank inputTank)
     {
         this.inputTank = inputTank;

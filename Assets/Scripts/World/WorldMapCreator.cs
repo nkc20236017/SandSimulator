@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using VContainer;
 
 // TODO: ëwÇÃéÊìæ
 
@@ -40,19 +41,23 @@ namespace WorldCreation
         [SerializeField]
         private Vector2 startPosition;
         [SerializeField]
-        private GameObject goalObject;
+        private ExitGateObject goalObject;
         [SerializeField]
         private Vector2 goalPosition;
         [SerializeField]
         private int structureRadius;
 
+
         private bool _isQuitting;
         private LayerGenerator _layer;
         private CancellationTokenSource _cancelTokenSource;
+        private List<GameObject> activeStanbyObject = new();
         private Vector2 _tilemapOrigin;
         private ManagedRandom _randomization;
         private Chunk[,] _chunks;
         private Chunk[,] _backgroundChunks;
+        private IInputTank inputTank;
+        private IGameLoad gameLoad;
         private IWorldGeneratable[] _worldGenerators =
         {
             new LayerGenerator(),
@@ -217,6 +222,11 @@ namespace WorldCreation
 
             entoryPoint.SetProgress(new(1f, "100%", "ê¢äEÇÃê∂ê¨Ç™äÆóπÇµÇ‹ÇµÇΩ"));
 
+            foreach (GameObject activateObject in activeStanbyObject)
+            {
+                activateObject.SetActive(true);
+            }
+
             Debug.Log($"<color=#ffff00ff>WorldMapManagerÇÃê∂ê¨äÆóπ</color>");
         }
 
@@ -234,7 +244,7 @@ namespace WorldCreation
                 bool hit = Physics2D.Raycast(noisePoint, Vector2.down, 10, touchLayer);
                 if (id == 0 && hit)
                 {
-                    Instantiate(worldMap.EnemyPrefab, (Vector2)noisePoint, Quaternion.identity);
+                    activeStanbyObject.Add(Instantiate(worldMap.EnemyPrefab, (Vector2)noisePoint, Quaternion.identity));
                 }
             }
         }
@@ -329,6 +339,8 @@ namespace WorldCreation
                 nearest.point,
                 Quaternion.identity
             );
+
+            activeStanbyObject.Add(substanceOre);
 
             OreObject oreObject;
             if (substanceOre.TryGetComponent(out oreObject))
@@ -458,6 +470,16 @@ namespace WorldCreation
             GameObject player = Instantiate(playerPrefab, (Vector2)center, Quaternion.identity);
             UpdateTile updateTilemap = Instantiate(updateTilemapPrefab);
             updateTilemap.SetPlayer(player.transform);
+            SuckUp suckUp = player.GetComponentInChildren<SuckUp>();
+            BlowOut blowOut = player.GetComponentInChildren<BlowOut>();
+            SelectTank select = player.GetComponent<SelectTank>();
+
+            suckUp.Inject(inputTank);
+            blowOut.Inject(inputTank);
+            select.Inject(inputTank);
+
+            activeStanbyObject.Add(player);
+
             // CameraSystem cameraSystem = Camera.main.transform.GetComponentInChildren<CameraSystem>();
             // cameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
 
@@ -506,7 +528,8 @@ namespace WorldCreation
                 );
             }
 
-            Instantiate(goalObject, start, Quaternion.identity);
+            ExitGateObject exitGateObject = Instantiate(goalObject, start, Quaternion.identity);
+            exitGateObject.Inject(gameLoad);
         }
 
         private Vector2Int[] BlueNoise(int width, int height, int space, int seed)
@@ -579,6 +602,13 @@ namespace WorldCreation
             }
 
             return true;
+        }
+
+        [Inject]
+        public void Inject(IInputTank inputTank, IGameLoad gameLoad)
+        {
+            this.inputTank = inputTank;
+            this.gameLoad = gameLoad;
         }
     }
 }

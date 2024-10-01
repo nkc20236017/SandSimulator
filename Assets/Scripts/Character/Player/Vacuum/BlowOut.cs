@@ -41,7 +41,6 @@ public class BlowOut : MonoBehaviour
 
     public bool IsBlowOut { get; private set; }
 
-    [Inject]
     public void Inject(IInputTank inputTank)
     {
         this.inputTank = inputTank;

@@ -25,7 +25,6 @@ public class SelectTank : MonoBehaviour
         playerInput.Disable();
     }
 
-    [Inject]
     public void Inject(IInputTank inputTank)
     {
         this.inputTank = inputTank;
