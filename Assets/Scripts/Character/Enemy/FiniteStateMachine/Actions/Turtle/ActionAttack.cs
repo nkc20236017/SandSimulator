@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using NaughtyAttributes;
 
 public class ActionAttack : FsmAction
@@ -20,15 +19,13 @@ public class ActionAttack : FsmAction
 	private EnemyBrain _enemyBrain;
 	private IChunkInformation _chunkInformation;
 
-	private void Awake()
-	{
-		_boxCollider2D = GetComponent<BoxCollider2D>();
-		_rigidbody2D = GetComponent<Rigidbody2D>();
-		_enemyBrain = GetComponent<EnemyBrain>();
-	}
-
 	public override void Action()
 	{
+		if (_rigidbody2D == null) { return; }
+		if (_boxCollider2D == null) { return; }
+		if (_enemyBrain == null) { return; }
+		if (_chunkInformation == null) { return; }
+		
 		AutoBlockJump();
 		Movement();
 	}
@@ -129,5 +126,26 @@ public class ActionAttack : FsmAction
 	{
 		var worldMapManager = FindObjectOfType<WorldMapManager>();
 		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+		
+		_boxCollider2D = GetComponent<BoxCollider2D>();
+		_rigidbody2D = GetComponent<Rigidbody2D>();
+		_enemyBrain = GetComponent<EnemyBrain>();
+		
+		if (_chunkInformation == null)
+		{
+			Debug.LogError("ChunkInformation is not found or not assigned.");
+		}
+		if (_boxCollider2D == null)
+		{
+			Debug.LogError("BoxCollider2D is not found or not assigned.");
+		}
+		if (_rigidbody2D == null)
+		{
+			Debug.LogError("Rigidbody2D is not found or not assigned.");
+		}
+		if (_enemyBrain == null)
+		{
+			Debug.LogError("EnemyBrain is not found or not assigned.");
+		}
 	}
 }

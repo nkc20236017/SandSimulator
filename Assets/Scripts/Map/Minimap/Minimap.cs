@@ -1,32 +1,76 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class Minimap : MonoBehaviour
 {
+	[Header("Minimap Camera")]
+	[SerializeField] private MinimapIcon _minimapIcon;
+	[SerializeField] private GameObject _targetIconPrefab;
 	[SerializeField] private Camera _minimapCamera;
 	
-	private GameObject[] _target;
+	private List<GameObject> _targets = new();
+	private List<GameObject> _targetIcons = new();
 
 	/// <summary>
-	/// アイコンを表示させるターゲットの設定
+	/// アイコンを表示させるターゲットを追加
 	/// </summary>
+	/// <param name="minimapIconType">アイコンの種類</param>
 	/// <param name="target">アイコンを表示させるターゲット</param>
-	public void SetTargets(params GameObject[] target)
+	public void AddTargetIcons(MinimapIconType minimapIconType, GameObject target)
 	{
-		_target = target;
+		Sprite icon = _minimapIcon.GetIcon(minimapIconType);
+		
+		_targets.Add(target);
+		var minimapIcon = Instantiate(_targetIconPrefab, target.transform);
+		minimapIcon.GetComponent<Canvas>().worldCamera = Camera.main;
+		minimapIcon.GetComponentInChildren<Image>().sprite = icon;
+		_targetIcons.Add(minimapIcon);
+	}
+	
+	/// <summary>
+	/// 全てのアイコンを削除
+	/// </summary>
+	private void AllClearMinimapIcon()
+	{
+		if (_targetIcons == null) { return; }
+		if (_targetIcons.Count == 0) { return; }
+		
+		foreach (var target in _targetIcons)
+		{
+			Destroy(target);
+		}
+		_targets.Clear();
+		_targetIcons.Clear();
 	}
 
 	private void Update()
 	{
-		if (_target == null) { return; }
-		if (_target.Length == 0) { return; }
+		if (_targetIcons == null) { return; }
+		if (_targetIcons.Count == 0) { return; }
 		
-		foreach (var target in _target)
+		foreach (var target in _targetIcons)
 		{
-			if (target == null) { continue; }
-			
-			if (!IsInCamera(target))
+			if (target == null)
 			{
-				
+				_targetIcons.Remove(target);
+				continue;
+			}
+
+			if (IsInCamera(_targets[_targetIcons.IndexOf(target)]))
+			{
+				var position = _targets[_targetIcons.IndexOf(target)].transform.position;
+				position.z = 0;
+				target.transform.position = position;
+			}
+			else
+			{
+				var direction = _targets[_targetIcons.IndexOf(target)].transform.position - _minimapCamera.transform.position;
+				var distance = Mathf.Min(_minimapCamera.orthographicSize, direction.magnitude);
+				var perpendicularDirection = new Vector3(-direction.y, direction.x);
+				var position = _minimapCamera.transform.position + direction + Vector2.Dot(perpendicularDirection, direction) * perpendicularDirection.normalized;
+				position.z = 0;
+				target.transform.position = position;
 			}
 		}
 	}
@@ -34,7 +78,6 @@ public class Minimap : MonoBehaviour
 	private bool IsInCamera(GameObject target)
 	{
 		var viewportPoint = _minimapCamera.WorldToViewportPoint(target.transform.position);
-		return viewportPoint.x >= -135 && viewportPoint.x <= 135 && viewportPoint.y >= -135 && viewportPoint.y <= 135;
+		return viewportPoint.x >= 0 && viewportPoint.x <= 1 && viewportPoint.y >= 0 && viewportPoint.y <= 1;
 	}
 }
-

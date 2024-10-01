@@ -36,19 +36,6 @@ public class ActionWander : FsmAction
 	private EnemyBrain _enemyBrain;
 	private IChunkInformation _chunkInformation;
 
-	private void Start()
-	{
-		_boxCollider2D = GetComponent<BoxCollider2D>();
-		_rigidbody2D = GetComponent<Rigidbody2D>();
-		_enemyBrain = GetComponent<EnemyBrain>();
-		
-		var random = Random.Range(0, 2);
-		_moveDirection = random == 0 ? Vector3.left : Vector3.right;
-		transform.localScale = new Vector3(_moveDirection.x, 1, 1);
-
-		GenerateOres();
-	}
-
 	private void GenerateOres()
 	{
 		var random = Random.Range(1, oreParents.Length);
@@ -69,6 +56,10 @@ public class ActionWander : FsmAction
 	
 	private void Wander()
 	{
+		if (_rigidbody2D == null) { return; }
+		if (_enemyBrain == null) { return; }
+		if (_chunkInformation == null) { return; }
+		
 		AutoBlockJump();
 		if (IsHole() && IsGround())
 		{
@@ -216,5 +207,15 @@ public class ActionWander : FsmAction
 	{
 		var worldMapManager = FindObjectOfType<WorldMapManager>();
 		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+		
+		_boxCollider2D = GetComponent<BoxCollider2D>();
+		_rigidbody2D = GetComponent<Rigidbody2D>();
+		_enemyBrain = GetComponent<EnemyBrain>();
+		
+		var random = Random.Range(0, 2);
+		_moveDirection = random == 0 ? Vector3.left : Vector3.right;
+		transform.localScale = new Vector3(_moveDirection.x, 1, 1);
+
+		GenerateOres();
 	}
 }
