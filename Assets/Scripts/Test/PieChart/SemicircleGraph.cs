@@ -62,7 +62,7 @@ public class SemicircleGraph : MonoBehaviour , IOutResultUI
 		}
 	}
 
-    public void OutputTank(OutPutResultData outPutData)
+    public void OutputTank(OutPutTankData outPutData)
     {
 	    var ratio = outPutData.itemRatio * outPutData.totalRatio / 2;
         SemicircleGraphConfig(outPutData.Sprite, ratio);
