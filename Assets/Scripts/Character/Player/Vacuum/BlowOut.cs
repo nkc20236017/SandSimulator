@@ -76,6 +76,8 @@ public class BlowOut : MonoBehaviour
 
     private void BlowOutTiles()
     {
+        if (blockType == BlockType.None) { return; }
+        
         if (blockType == BlockType.Ore)
         {
             _weight = blockDatas.GetOre(oreType).weightPerSize[0] * 10;
