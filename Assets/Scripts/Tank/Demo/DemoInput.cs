@@ -30,11 +30,6 @@ public class DemoInputItemTank : MonoBehaviour
             itemTank.SelectTank(BlockType.Mud);
         }
 
-        if(Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            gameEntoryPoint.SetProgress(new ProgressData(1f, "ÉçÅ[ÉhíÜ", "100%"));
-        }
-
         if (Input.GetKey(KeyCode.S))
         {
             if (itemTank.FiringTank())
