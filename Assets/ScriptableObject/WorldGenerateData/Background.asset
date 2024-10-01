@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08b35c36b51b9764fb1f7fb4896313b2, type: 3}
   m_Name: Background
   m_EditorClassIdentifier: 
-  worldScale: {x: 0, y: 0}
+  worldScale: {x: 640, y: 576}
   minOriginGapRange: {x: 0, y: 0}
   maxOriginGapRange: {x: 0, y: 0}
   borderAmplitude: 0.02
@@ -23,17 +23,17 @@ MonoBehaviour:
   layerRatios:
   - 0.25
   - 0.5
-  borderDistortionPower: 0
+  borderDistortionPower: 15
   worldLayers:
-  - layerColor: {r: 0, g: 0, b: 0, a: 0}
+  - layerColor: {r: 1, g: 1, b: 1, a: 1}
     materialTileID: {fileID: 11400000, guid: 75354da9db15b3f48bde02326a5e2e36, type: 2}
     primevalOres: []
     primevalDungeons: []
-  - layerColor: {r: 0, g: 0, b: 0, a: 0}
+  - layerColor: {r: 0.5566038, g: 0.5566038, b: 0.5566038, a: 1}
     materialTileID: {fileID: 11400000, guid: 75354da9db15b3f48bde02326a5e2e36, type: 2}
     primevalOres: []
     primevalDungeons: []
-  - layerColor: {r: 0, g: 0, b: 0, a: 0}
+  - layerColor: {r: 0, g: 0, b: 0, a: 1}
     materialTileID: {fileID: 11400000, guid: 75354da9db15b3f48bde02326a5e2e36, type: 2}
     primevalOres: []
     primevalDungeons: []

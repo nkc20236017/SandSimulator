@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Tilemaps;
 
 // TODO: ëwÇÃéÊìæ
@@ -377,7 +375,13 @@ namespace WorldCreation
                     _chunks[chunkX, chunkY].TileMap.SetTile
                     (
                         (Vector3Int)withinChunkPosition,
-                        worldMap.Blocks.GetBlock(worldMap.WorldLayers[0].PrimevalOres[oreIndex].BuriedOreID)
+                        worldMap.Blocks.GetBlock(ore.BuriedOreID)
+                    );
+
+                    _chunks[chunkX, chunkY].TileMap.SetColor
+                    (
+                        (Vector3Int)withinChunkPosition,
+                        UnityEngine.Color.white
                     );
                 }
 
@@ -454,8 +458,8 @@ namespace WorldCreation
             GameObject player = Instantiate(playerPrefab, (Vector2)center, Quaternion.identity);
             UpdateTile updateTilemap = Instantiate(updateTilemapPrefab);
             updateTilemap.SetPlayer(player.transform);
-            CameraSystem cameraSystem = Camera.main.transform.GetComponentInChildren<CameraSystem>();
-            cameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
+            // CameraSystem cameraSystem = Camera.main.transform.GetComponentInChildren<CameraSystem>();
+            // cameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
 
             // ÉSÅ[Éã
             chunkX = (int)goalPosition.x / worldMap.OneChunkSize.x;
