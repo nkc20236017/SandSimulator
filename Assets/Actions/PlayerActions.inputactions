@@ -92,6 +92,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "LeftSelect",
+                    "type": "Button",
+                    "id": "d096f75f-636d-4128-981b-d7fb4965702e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightSelect",
+                    "type": "Button",
+                    "id": "d3da2573-4191-4b07-8e13-c7c3c77bbc9a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -114,6 +132,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "SpittingOut",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a40e2c6c-4418-436f-82b6-eb421c3eb070",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftSelect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b0d55759-476e-415f-a07d-b77bc346aa17",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightSelect",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

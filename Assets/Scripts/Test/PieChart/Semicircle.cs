@@ -4,9 +4,10 @@ using UnityEngine.UI;
 public class Semicircle : MonoBehaviour
 {
 	private Image _image;
-	
+	private Vector2 defaltScale;
 	public Sprite Sprite => _image.sprite;
 	public float FillAmount => _image.fillAmount;
+	public BlockType blockType;
 
 	private void Awake()
 	{
@@ -15,6 +16,7 @@ public class Semicircle : MonoBehaviour
 
 	private void Start()
 	{
+		defaltScale = transform.localScale;
 		ClearPie();
 	}
 
@@ -30,7 +32,7 @@ public class Semicircle : MonoBehaviour
 	/// </summary>
 	/// <param name="sprite">ブロックの画像</param>
 	/// <param name="value">ブロックの割合</param>
-	public void SemicircleConfig(Sprite sprite, float value)
+	public void SemicircleConfig(Sprite sprite, float value ,BlockType blockType)
 	{
 		if (value <= 0)
 		{
@@ -41,6 +43,7 @@ public class Semicircle : MonoBehaviour
 		gameObject.SetActive(true);
 		_image.sprite = sprite;
 		_image.fillAmount = value;
+		this.blockType = blockType;
 	}
 	
 	/// <summary>
@@ -51,4 +54,16 @@ public class Semicircle : MonoBehaviour
 	{
 		transform.localRotation = Quaternion.Euler(0, 0, -angle);
 	}
+
+	//Imageのスケールアップ
+	public void SelectScaleUp()
+	{
+		_image.transform.localScale = new Vector2(1,1);
+	}
+
+	public void DefaltScale()
+	{
+		_image.transform.localScale = defaltScale;
+	}
+
 }
