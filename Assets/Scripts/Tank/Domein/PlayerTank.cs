@@ -6,12 +6,13 @@ using VContainer;
 
 public class PlayerTank : IInputTank ,IGameLoad
 {
+    private int selectIndex;
     private ITankRepository tankRepository;
     private ExitGate exitGate;
     private Dictionary<Block, MineralTank> itemTankDictionary = new();
     private IOutResultUI outPutTank;
     private readonly float MaxTank = 4000;
-    private int currentItemAmount;
+    private int currentItemAmount =1;
     private BlockType currentBlockType;
     private bool maxSignal;
 
@@ -119,12 +120,16 @@ public class PlayerTank : IInputTank ,IGameLoad
     public void SelectTank(int select)
     {
         int selectIndex = 0;
+
+        select = Mathf.Clamp(select, 0, itemTankDictionary.Keys.Count);
+
         foreach(KeyValuePair<Block,MineralTank> pair in itemTankDictionary)
         {
             selectIndex++;
             if(select == selectIndex)
             {
                 this.currentBlockType = pair.Key.type;
+                outPutTank.OutputSelectTank(new OutPutSelectData(currentBlockType));
             }
         }
 
@@ -139,5 +144,21 @@ public class PlayerTank : IInputTank ,IGameLoad
     {
         exitGate = new(itemTankDictionary);
         exitGate.ResultScene();
+    }
+
+    public void LeftSelectTank()
+    {
+        selectIndex = Mathf.Clamp(selectIndex,1,itemTankDictionary.Keys.Count);
+        selectIndex--;
+        SelectTank(selectIndex);
+        Debug.Log(selectIndex);
+    }
+
+    public void RightSelectTank()
+    {
+        selectIndex = Mathf.Clamp(selectIndex,1,itemTankDictionary.Keys.Count);
+        selectIndex++;
+        SelectTank(selectIndex);
+        Debug.Log(selectIndex);
     }
 }

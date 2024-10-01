@@ -21,12 +21,12 @@ public class DemoInputItemTank : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Alpha1))
         {
-            itemTank.SelectTank(1);
+            itemTank.LeftSelectTank();
         }
 
         if(Input.GetKeyDown(KeyCode.Alpha2))
         {
-            itemTank.SelectTank(2);
+            itemTank.RightSelectTank();
         }
 
         if (Input.GetKey(KeyCode.S))

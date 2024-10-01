@@ -44,15 +44,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectTank"",
-                    ""type"": ""Button"",
-                    ""id"": ""19fbb945-7bb8-4e13-afd7-575781c6015e"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -99,28 +90,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""23ef1edc-d56d-4770-910b-2b96996b5d60"",
-                    ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectTank"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""78dd080d-628b-4a64-99c9-b04f06bb366f"",
-                    ""path"": ""<Keyboard>/rightArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectTank"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -141,6 +110,24 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""name"": ""SpittingOut"",
                     ""type"": ""Button"",
                     ""id"": ""d554c1a6-0189-4d64-b510-241cb4c9db19"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftSelect"",
+                    ""type"": ""Button"",
+                    ""id"": ""d096f75f-636d-4128-981b-d7fb4965702e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightSelect"",
+                    ""type"": ""Button"",
+                    ""id"": ""d3da2573-4191-4b07-8e13-c7c3c77bbc9a"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -169,6 +156,28 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""SpittingOut"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a40e2c6c-4418-436f-82b6-eb421c3eb070"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b0d55759-476e-415f-a07d-b77bc346aa17"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -179,11 +188,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
         m_Movement_Move = m_Movement.FindAction("Move", throwIfNotFound: true);
         m_Movement_Jump = m_Movement.FindAction("Jump", throwIfNotFound: true);
-        m_Movement_SelectTank = m_Movement.FindAction("SelectTank", throwIfNotFound: true);
         // Vacuum
         m_Vacuum = asset.FindActionMap("Vacuum", throwIfNotFound: true);
         m_Vacuum_Absorption = m_Vacuum.FindAction("Absorption", throwIfNotFound: true);
         m_Vacuum_SpittingOut = m_Vacuum.FindAction("SpittingOut", throwIfNotFound: true);
+        m_Vacuum_LeftSelect = m_Vacuum.FindAction("LeftSelect", throwIfNotFound: true);
+        m_Vacuum_RightSelect = m_Vacuum.FindAction("RightSelect", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -247,14 +257,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private List<IMovementActions> m_MovementActionsCallbackInterfaces = new List<IMovementActions>();
     private readonly InputAction m_Movement_Move;
     private readonly InputAction m_Movement_Jump;
-    private readonly InputAction m_Movement_SelectTank;
     public struct MovementActions
     {
         private @PlayerActions m_Wrapper;
         public MovementActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Movement_Move;
         public InputAction @Jump => m_Wrapper.m_Movement_Jump;
-        public InputAction @SelectTank => m_Wrapper.m_Movement_SelectTank;
         public InputActionMap Get() { return m_Wrapper.m_Movement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -270,9 +278,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
-            @SelectTank.started += instance.OnSelectTank;
-            @SelectTank.performed += instance.OnSelectTank;
-            @SelectTank.canceled += instance.OnSelectTank;
         }
 
         private void UnregisterCallbacks(IMovementActions instance)
@@ -283,9 +288,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
-            @SelectTank.started -= instance.OnSelectTank;
-            @SelectTank.performed -= instance.OnSelectTank;
-            @SelectTank.canceled -= instance.OnSelectTank;
         }
 
         public void RemoveCallbacks(IMovementActions instance)
@@ -309,12 +311,16 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private List<IVacuumActions> m_VacuumActionsCallbackInterfaces = new List<IVacuumActions>();
     private readonly InputAction m_Vacuum_Absorption;
     private readonly InputAction m_Vacuum_SpittingOut;
+    private readonly InputAction m_Vacuum_LeftSelect;
+    private readonly InputAction m_Vacuum_RightSelect;
     public struct VacuumActions
     {
         private @PlayerActions m_Wrapper;
         public VacuumActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Absorption => m_Wrapper.m_Vacuum_Absorption;
         public InputAction @SpittingOut => m_Wrapper.m_Vacuum_SpittingOut;
+        public InputAction @LeftSelect => m_Wrapper.m_Vacuum_LeftSelect;
+        public InputAction @RightSelect => m_Wrapper.m_Vacuum_RightSelect;
         public InputActionMap Get() { return m_Wrapper.m_Vacuum; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -330,6 +336,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @SpittingOut.started += instance.OnSpittingOut;
             @SpittingOut.performed += instance.OnSpittingOut;
             @SpittingOut.canceled += instance.OnSpittingOut;
+            @LeftSelect.started += instance.OnLeftSelect;
+            @LeftSelect.performed += instance.OnLeftSelect;
+            @LeftSelect.canceled += instance.OnLeftSelect;
+            @RightSelect.started += instance.OnRightSelect;
+            @RightSelect.performed += instance.OnRightSelect;
+            @RightSelect.canceled += instance.OnRightSelect;
         }
 
         private void UnregisterCallbacks(IVacuumActions instance)
@@ -340,6 +352,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @SpittingOut.started -= instance.OnSpittingOut;
             @SpittingOut.performed -= instance.OnSpittingOut;
             @SpittingOut.canceled -= instance.OnSpittingOut;
+            @LeftSelect.started -= instance.OnLeftSelect;
+            @LeftSelect.performed -= instance.OnLeftSelect;
+            @LeftSelect.canceled -= instance.OnLeftSelect;
+            @RightSelect.started -= instance.OnRightSelect;
+            @RightSelect.performed -= instance.OnRightSelect;
+            @RightSelect.canceled -= instance.OnRightSelect;
         }
 
         public void RemoveCallbacks(IVacuumActions instance)
@@ -361,11 +379,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
-        void OnSelectTank(InputAction.CallbackContext context);
     }
     public interface IVacuumActions
     {
         void OnAbsorption(InputAction.CallbackContext context);
         void OnSpittingOut(InputAction.CallbackContext context);
+        void OnLeftSelect(InputAction.CallbackContext context);
+        void OnRightSelect(InputAction.CallbackContext context);
     }
 }

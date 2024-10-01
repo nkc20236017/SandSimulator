@@ -22,15 +22,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "SelectTank",
-                    "type": "Button",
-                    "id": "19fbb945-7bb8-4e13-afd7-575781c6015e",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -77,28 +68,6 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "23ef1edc-d56d-4770-910b-2b96996b5d60",
-                    "path": "<Keyboard>/leftArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SelectTank",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "78dd080d-628b-4a64-99c9-b04f06bb366f",
-                    "path": "<Keyboard>/rightArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SelectTank",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         },
@@ -119,6 +88,24 @@
                     "name": "SpittingOut",
                     "type": "Button",
                     "id": "d554c1a6-0189-4d64-b510-241cb4c9db19",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftSelect",
+                    "type": "Button",
+                    "id": "d096f75f-636d-4128-981b-d7fb4965702e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightSelect",
+                    "type": "Button",
+                    "id": "d3da2573-4191-4b07-8e13-c7c3c77bbc9a",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -145,6 +132,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "SpittingOut",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a40e2c6c-4418-436f-82b6-eb421c3eb070",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftSelect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b0d55759-476e-415f-a07d-b77bc346aa17",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightSelect",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
