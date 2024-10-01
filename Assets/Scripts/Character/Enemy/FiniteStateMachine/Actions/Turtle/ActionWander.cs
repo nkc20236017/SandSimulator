@@ -56,6 +56,10 @@ public class ActionWander : FsmAction
 	
 	private void Wander()
 	{
+		if (_rigidbody2D == null) { return; }
+		if (_enemyBrain == null) { return; }
+		if (_chunkInformation == null) { return; }
+		
 		AutoBlockJump();
 		if (IsHole() && IsGround())
 		{

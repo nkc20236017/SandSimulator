@@ -56,7 +56,7 @@ MonoBehaviour:
   entoryPoint: {fileID: 0}
   orePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
   startObject: {fileID: 0}
-  updateTilemapPrefab: {fileID: 0}
+  updateTilemapPrefab: {fileID: 2011397941330123504, guid: 1c0d188cd27f0a74f869f1055bfbbdb2, type: 3}
   playerPrefab: {fileID: 136167499057178077, guid: ef78aa1a1ed5fb24b8322613b684933d, type: 3}
   startPosition: {x: 300, y: 300}
   goalObject: {fileID: 0}
