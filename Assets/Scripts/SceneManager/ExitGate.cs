@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ExitGate 
+public class ExitGate
 {
     private readonly Dictionary<Block, MineralTank> resultDic;
     private ISceneIdentifier loadScene = new BuiltInSceneIdentifier("LoadScene");
