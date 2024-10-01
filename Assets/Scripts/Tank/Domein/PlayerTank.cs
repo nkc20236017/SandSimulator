@@ -161,4 +161,9 @@ public class PlayerTank : IInputTank ,IGameLoad
         SelectTank(selectIndex);
         Debug.Log(selectIndex);
     }
+
+    public BlockType GetSelectType()
+    {
+        return currentBlockType;
+    }
 }

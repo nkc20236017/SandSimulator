@@ -9,13 +9,12 @@ using Random = UnityEngine.Random;
 public class BlowOut : MonoBehaviour
 {
     [Header("Tile Config")]
+    [SerializeField] private Tilemap updateTilemap;
     [SerializeField] private BlockDatas blockDatas;
 
     [Header("BlowOut Config")]
-    // [SerializeField] 
-    private BlockType blockType;
-    // [SerializeField, ShowIf(nameof(blockType), BlockType.Ore)] 
-    private OreType oreType;
+    [SerializeField] private BlockType blockType;
+    [SerializeField, ShowIf(nameof(blockType), BlockType.Ore)] private OreType oreType;
     [SerializeField] private Transform pivot;
     [SerializeField, Min(0f)] private float radius; // 吐き出し範囲
     [SerializeField, Min(0f)] private float distance; // 吐き出し距離（現状意味ない）
@@ -31,7 +30,6 @@ public class BlowOut : MonoBehaviour
 
     private float _weight;
     private float _lastUpdateTime;
-    private Tilemap _updateTilemap;
     private PlayerMovement _playerMovement;
     private Camera _camera;
     private SuckUp _suckUp;
@@ -46,15 +44,6 @@ public class BlowOut : MonoBehaviour
     public void Inject(IInputTank inputTank)
     {
         this.inputTank = inputTank;
-    }
-    
-    /// <summary>
-    /// 吐き出し対象のTilemapを設定する
-    /// </summary>
-    /// <param name="tilemap">吐き出し対象のTilemap</param>
-    public void SetTilemap(Tilemap tilemap)
-    {
-        _updateTilemap = tilemap;
     }
 
     private void Awake()
@@ -86,6 +75,8 @@ public class BlowOut : MonoBehaviour
 
     private void BlowOutTiles()
     {
+        blockType = inputTank.GetSelectType();
+
         if (blockType == BlockType.None) { return; }
         
         if (blockType == BlockType.Ore)
@@ -116,7 +107,7 @@ public class BlowOut : MonoBehaviour
     private void GenerateTile()
     {
         var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-        var centerCell = (Vector3)_updateTilemap.WorldToCell(mouseWorldPosition);
+        var centerCell = (Vector3)updateTilemap.WorldToCell(mouseWorldPosition);
 
         var direction = centerCell - pivot.position;
         var angle = Mathf.Atan2(direction.y, direction.x);
@@ -141,8 +132,8 @@ public class BlowOut : MonoBehaviour
                 var randomX = Random.Range(newCell1.x, newCell2.x);
                 var randomY = Random.Range(newCell1.y, newCell2.y);
                 var randomPosition = new Vector3(randomX, randomY, 0);
-                var randomCell = _updateTilemap.WorldToCell(randomPosition);
-                _updateTilemap.SetTile(randomCell, blockDatas.GetBlock(blockType).tile);
+                var randomCell = updateTilemap.WorldToCell(randomPosition);
+                updateTilemap.SetTile(randomCell, blockDatas.GetBlock(blockType).tile);
             }
         }
     }
@@ -150,9 +141,9 @@ public class BlowOut : MonoBehaviour
     // 疑似吐き出し範囲
     private void UpdateTiles()
     {
-        var bounds = new BoundsInt(_updateTilemap.WorldToCell(pivot.position) - new Vector3Int((int)radius, (int)radius, 0), new Vector3Int((int)radius * 2, (int)radius * 2, 1));
+        var bounds = new BoundsInt(updateTilemap.WorldToCell(pivot.position) - new Vector3Int((int)radius, (int)radius, 0), new Vector3Int((int)radius * 2, (int)radius * 2, 1));
         
-        var getTilesBlock = _updateTilemap.GetTilesBlock(bounds);
+        var getTilesBlock = updateTilemap.GetTilesBlock(bounds);
         getTilesBlock = getTilesBlock.Where(x => x != null).ToArray();
         if (getTilesBlock.Length == 0) { return; }
         
@@ -179,9 +170,9 @@ public class BlowOut : MonoBehaviour
             Tilemap tilemap;
             mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
             var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
-            if (_updateTilemap.HasTile(position))
+            if (updateTilemap.HasTile(position))
             {
-                tilemap = _updateTilemap;
+                tilemap = updateTilemap;
             }
             else if (mapTilemap != null && mapTilemap.HasTile(localPosition))
             {
@@ -203,23 +194,23 @@ public class BlowOut : MonoBehaviour
                 var localNewTilePosition = _chunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
                 mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
                 if (mapTilemap == null) { continue; }
-                if (_updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(localNewTilePosition)) { continue; }
+                if (updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(localNewTilePosition)) { continue; }
 
-                var tile = tilemap != _updateTilemap ? tilemap.GetTile(localPosition) : tilemap.GetTile(position);
+                var tile = tilemap != updateTilemap ? tilemap.GetTile(localPosition) : tilemap.GetTile(position);
                 if (tile == null) { continue; }
 
                 if (tile == blockDatas.GetBlock(BlockType.Sand).tile)
                 {
-                    _updateTilemap.SetTile(newTilePosition, tile);
+                    updateTilemap.SetTile(newTilePosition, tile);
                 }
                 else
                 {
                     mapTilemap.SetTile(localNewTilePosition, tile);
                 }
                 
-                if (tilemap == _updateTilemap)
+                if (tilemap == updateTilemap)
                 {
-                    _updateTilemap.SetTile(position, null);
+                    updateTilemap.SetTile(position, null);
                 }
                 else
                 {
@@ -330,9 +321,9 @@ public class BlowOut : MonoBehaviour
         if (mainCamera == null) { return; }
 
         var mouseWorldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        if (_updateTilemap == null) { return; }
+        if (updateTilemap == null) { return; }
 
-        var centerCell = (Vector3)_updateTilemap.WorldToCell(mouseWorldPosition);
+        var centerCell = (Vector3)updateTilemap.WorldToCell(mouseWorldPosition);
 
         var direction = centerCell - pivot.position;
 
