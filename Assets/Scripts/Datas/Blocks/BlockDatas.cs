@@ -19,6 +19,11 @@ public class BlockDatas : ScriptableObject
 		return blocks.FirstOrDefault(block => block.sprite == sprite);
 	}
 	
+	public Block GetBlock(TileBase tile)
+	{
+		return blocks.FirstOrDefault(block => block.tile == tile);
+	}
+	
 	public Ore GetOre(OreType oreType)
 	{
 		return blocks.FirstOrDefault(block => block.type == BlockType.Ore && ((Ore) block).oreType == oreType) as Ore;
@@ -27,6 +32,11 @@ public class BlockDatas : ScriptableObject
 	public Ore GetOre(Sprite sprite)
 	{
 		return blocks.FirstOrDefault(block => block.type == BlockType.Ore && block.sprite == sprite) as Ore;
+	}
+	
+	public Ore GetOre(TileBase tile)
+	{
+		return blocks.FirstOrDefault(block => block.type == BlockType.Ore && block.tile == tile) as Ore;
 	}
 	
 	public Ore GetRandomOre()

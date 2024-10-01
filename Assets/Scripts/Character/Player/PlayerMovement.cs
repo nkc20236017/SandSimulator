@@ -38,7 +38,6 @@ public class PlayerMovement : MonoBehaviour
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-		Debug.Log(_boxCollider2D);
 	}
 
 	private void Start()

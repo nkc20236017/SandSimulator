@@ -167,11 +167,12 @@ public class UpdateTile : MonoBehaviour
         for (var i = 0; i < updateTiles.Length; i++)
         {
             tilePositions[i + clearTiles.Length] = updateTiles[i];
-            var tileLayer = _chunkInformation.GetLayer(new Vector2(updateTiles[i].x, updateTiles[i].y));
-            if (tile.GetStratumGeologyData(tileLayer) != null)
-            {
-                _updateTilemap.SetColor(updateTiles[i], tile.GetStratumGeologyData(tileLayer).color);
-            }
+            // TODO: 地層の色を設定する
+            // var tileLayer = _chunkInformation.GetLayer(new Vector2(updateTiles[i].x, updateTiles[i].y));
+            // if (tile.GetStratumGeologyData(tileLayer) != null)
+            // {
+            //     _updateTilemap.SetColor(updateTiles[i], tile.GetStratumGeologyData(tileLayer).color);
+            // }
             tileArray[i + clearTiles.Length] = tile.tile;
         }
         
@@ -202,11 +203,12 @@ public class UpdateTile : MonoBehaviour
         {
             var block = blockDatas.GetBlock(BlockType.Sand);
             mapTilemap.SetTile(localPosition, block.tile);
-            var tileLayer = _chunkInformation.GetLayer(pos);
-            if (block.GetStratumGeologyData(tileLayer) != null)
-            {
-                mapTilemap.SetColor(position, block.GetStratumGeologyData(tileLayer).color);
-            }
+            // TODO: 地層の色を設定する
+            // var tileLayer = _chunkInformation.GetLayer(pos);
+            // if (block.GetStratumGeologyData(tileLayer) != null)
+            // {
+            //     mapTilemap.SetColor(position, block.GetStratumGeologyData(tileLayer).color);
+            // }
             _clearTiles.Add(position);
             return;
         }
