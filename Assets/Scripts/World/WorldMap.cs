@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using WorldCreation.Temp;
 
 namespace WorldCreation
 {
@@ -14,7 +13,7 @@ namespace WorldCreation
     }
 
     [CreateAssetMenu(fileName = "New world map", menuName = "Config/WorldMap")]
-    public class WorldMap : TempWorldMap
+    public class WorldMap : ScriptableObject
     {
         [Header("standard worldwide")]
         [SerializeField]    // ¢ŠE‚ÌÅ‘åƒTƒCƒY
@@ -62,6 +61,13 @@ namespace WorldCreation
         [SerializeField]
         private CaveCombine[] caveCombines;
         public CaveCombine[] CaveCombines => caveCombines;
+
+        [SerializeField]
+        private GameObject enemyPrefab;
+        public GameObject EnemyPrefab => enemyPrefab;
+        [SerializeField]
+        private int enemySpase;
+        public int EnemySpase => enemySpase;
 
 #if UNITY_EDITOR
         private float[] layerRatiosOld = new float[0];

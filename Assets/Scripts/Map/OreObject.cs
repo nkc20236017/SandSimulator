@@ -104,7 +104,6 @@ public class OreObject : MonoBehaviour, IDamagable
         setSize = Mathf.Clamp(setSize, 1, 3);
         setAngle = Mathf.Clamp(setAngle, 0, 360);
         transform.eulerAngles = new Vector3(0, 0, setAngle);
-        _rigidbody2D.isKinematic = true;
         SetOreConfig(setSize);
     }
 
