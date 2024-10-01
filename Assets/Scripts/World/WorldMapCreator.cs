@@ -1,7 +1,9 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using VContainer;
@@ -32,6 +34,12 @@ namespace WorldCreation
         private MainGameEntoryPoint entoryPoint;
         [SerializeField]
         private GameObject orePrefab;
+        [SerializeField]
+        private CameraSystem mainCameraSystem;
+        [SerializeField]
+        private CameraSystem mapCameraSystem;
+        [SerializeField]
+        private Minimap minimap;
         [Space]
         [SerializeField]
         private GameObject startObject;
@@ -220,15 +228,15 @@ namespace WorldCreation
             GameObject worldMapManager = Instantiate(worldMapManagerPrefab);
             worldMapManager.GetComponent<IWorldMapManager>()
                 .Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
-
-            entoryPoint.SetProgress(new(1f, "100%", "ê¢äEÇÃê∂ê¨Ç™äÆóπÇµÇ‹ÇµÇΩ"));
+            Debug.Log($"<color=#ffff00ff>WorldMapManagerÇÃê∂ê¨äÆóπ</color>");
 
             foreach (GameObject activateObject in activeStanbyObject)
             {
                 activateObject.SetActive(true);
             }
 
-            Debug.Log($"<color=#ffff00ff>WorldMapManagerÇÃê∂ê¨äÆóπ</color>");
+            entoryPoint.SetProgress(new(1f, "100%", "ê¢äEÇÃê∂ê¨Ç™äÆóπÇµÇ‹ÇµÇΩ"));
+
         }
 
         private void EnemyGenerate()
@@ -398,7 +406,7 @@ namespace WorldCreation
                     );
                 }
 
-                chance -= 100 / circulePoints.Length;
+                chance -= circulePoints.Length / 100;
             }
         }
 
@@ -475,6 +483,8 @@ namespace WorldCreation
             BlowOut blowOut = player.GetComponentInChildren<BlowOut>();
             SelectTank select = player.GetComponent<SelectTank>();
 
+            blowOut.SetTilemap(updateTilemap.gameObject.GetComponent<Tilemap>());
+
             suckUp.Inject(inputTank);
             blowOut.Inject(inputTank);
             select.Inject(inputTank);
@@ -482,8 +492,10 @@ namespace WorldCreation
             activeStanbyObject.Add(player);
             activeStanbyObject.Add(updateTilemap.gameObject);
 
-            // CameraSystem cameraSystem = Camera.main.transform.GetComponentInChildren<CameraSystem>();
-            // cameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
+            mainCameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
+
+            mapCameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
+            minimap.AddTargetIcons(MinimapIconType.Player, player);
 
             // ÉSÅ[Éã
             chunkX = (int)goalPosition.x / worldMap.OneChunkSize.x;
@@ -532,6 +544,8 @@ namespace WorldCreation
 
             ExitGateObject exitGateObject = Instantiate(goalObject, start, Quaternion.identity);
             exitGateObject.Inject(gameLoad);
+
+            minimap.AddTargetIcons(MinimapIconType.Goal, exitGateObject.gameObject);
         }
 
         private Vector2Int[] BlueNoise(int width, int height, int space, int seed)
