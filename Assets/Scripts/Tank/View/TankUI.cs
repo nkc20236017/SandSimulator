@@ -14,7 +14,7 @@ public class TankUI : MonoBehaviour, IOutResultUI
     [SerializeField]
     private RectTransform maxTransfom;
 
-    public void OutputTank(OutPutData outPutData)
+    public void OutputTank(OutPutTankData outPutData)
     {
         Debug.Log("èoóÕ");
         var totaleSize = outPutData.totalRatio * maxTransfom.sizeDelta.y;

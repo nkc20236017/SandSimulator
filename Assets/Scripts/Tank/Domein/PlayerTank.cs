@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using VContainer;
 
-public class PlayerTank : IInputTank
+public class PlayerTank : IInputTank ,IGameLoad
 {
     private ITankRepository tankRepository;
+    private ExitGate exitGate;
     private Dictionary<Block, MineralTank> itemTankDictionary = new();
     private IOutResultUI outPutTank;
     private readonly float MaxTank = 4000;
@@ -90,7 +91,7 @@ public class PlayerTank : IInputTank
         float totalRatio = totalValue / MaxTank;
         float itemRatio = itemData.mineralAmount / totalValue;
 
-        var outputTank = new OutPutData(itemRatio, totalRatio, itemData.mineralData.type
+        var outputTank = new OutPutTankData(itemRatio, totalRatio, itemData.mineralData.type
             , itemData.mineralData.sprite);
         outPutTank.OutputTank(outputTank);
     }
@@ -123,5 +124,11 @@ public class PlayerTank : IInputTank
     public bool TamkMaxSignal()
     {
         return maxSignal;
+    }
+
+    public void GameLoad()
+    {
+        exitGate = new(itemTankDictionary);
+        exitGate.ResultScene();
     }
 }

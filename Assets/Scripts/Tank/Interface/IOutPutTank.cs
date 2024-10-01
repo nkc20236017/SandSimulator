@@ -1,4 +1,4 @@
 ﻿public interface IOutResultUI
 {
-    public void OutputTank(OutPutData outPutData);
+    public void OutputTank(OutPutTankData outPutData);
 }

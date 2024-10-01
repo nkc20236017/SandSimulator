@@ -387,6 +387,7 @@ GameObject:
   - component: {fileID: 185597937}
   - component: {fileID: 185597939}
   - component: {fileID: 185597938}
+  - component: {fileID: 185597940}
   m_Layer: 5
   m_Name: Paper3
   m_TagString: Untagged
@@ -452,6 +453,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 185597936}
   m_CullTransparentMesh: 1
+--- !u!114 &185597940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185597936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b885ec75be0d2d347b4385c5bbcde3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &211014766
 GameObject:
   m_ObjectHideFlags: 0
@@ -827,6 +840,50 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!1 &448900550
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 448900552}
+  - component: {fileID: 448900551}
+  m_Layer: 0
+  m_Name: SelectEntoryPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &448900551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448900550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f4fa211a626bb418caf4f1f19d1534, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &448900552
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448900550}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &809081566
 GameObject:
   m_ObjectHideFlags: 0
@@ -1175,10 +1232,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cb9eca739821b2479b3e5f62a57ec70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  appearSpeed: 2
-  backSpeed: 1
-  startPoint: {x: 718, y: 627}
-  movePoint: {x: 718, y: 400}
 --- !u!114 &1168116325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2037,3 +2090,4 @@ SceneRoots:
   - {fileID: 25533703}
   - {fileID: 906698359}
   - {fileID: 211014769}
+  - {fileID: 448900552}

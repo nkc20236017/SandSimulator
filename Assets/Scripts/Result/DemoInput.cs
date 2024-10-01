@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 
-public class DemoInput : MonoBehaviour
+public class DemoInputTank : MonoBehaviour
 {
     private IResultAction resultAction;
 

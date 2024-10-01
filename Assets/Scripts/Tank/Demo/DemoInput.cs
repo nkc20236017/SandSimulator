@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 
-public class DemoInput : MonoBehaviour
+public class DemoInputItemTank : MonoBehaviour
 {
 
     private IInputTank itemTank;
+    private IGameLoad gameLoad;
 
     [Inject]
-    public void Inject(IInputTank itemTank)
+    public void Inject(IInputTank itemTank, IGameLoad gameLoad)
     {
         this.itemTank = itemTank;
+        this.gameLoad = gameLoad;
     }
 
     private void Update()
@@ -37,6 +39,11 @@ public class DemoInput : MonoBehaviour
                 Debug.Log("ПoВ№ВєВс");
             }
 
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            gameLoad.GameLoad();
         }
 
         if(Input.GetKey(KeyCode.A))
