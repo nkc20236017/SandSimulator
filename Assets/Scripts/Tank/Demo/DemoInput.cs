@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 
-public class DemoInput : MonoBehaviour
+public class DemoInputItemTank : MonoBehaviour
 {
 
     private IInputTank itemTank;
+    private IGameLoad gameLoad;
+    [SerializeField]
+    private MainGameEntoryPoint gameEntoryPoint;
 
     [Inject]
-    public void Inject(IInputTank itemTank)
+    public void Inject(IInputTank itemTank, IGameLoad gameLoad)
     {
         this.itemTank = itemTank;
+        this.gameLoad = gameLoad;
     }
 
     private void Update()
@@ -26,6 +30,11 @@ public class DemoInput : MonoBehaviour
             itemTank.SelectTank(BlockType.Mud);
         }
 
+        if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            gameEntoryPoint.SetProgress(new ProgressData(1f, "ÉçÅ[ÉhíÜ", "100%"));
+        }
+
         if (Input.GetKey(KeyCode.S))
         {
             if (itemTank.FiringTank())
@@ -37,6 +46,11 @@ public class DemoInput : MonoBehaviour
                 Debug.Log("èoÇ‹ÇπÇÒ");
             }
 
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            gameLoad.GameLoad();
         }
 
         if(Input.GetKey(KeyCode.A))

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Items/Crystal.meta
 guid: 2a22585a5fc0ed544b75daa1bf7e9ac1
+========
+guid: 6188bfa02b151ed41a3c1c96a3a297fc
+>>>>>>>> scenemanager:Assets/Scripts/SceneManager/SceneDirector.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

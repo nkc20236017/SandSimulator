@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/PouseUI.meta
 guid: 17a67c36d9e079545aca86341c472b4f
+========
+guid: d71aa8ea1d6229b439bab99b27f0079a
+>>>>>>>> scenemanager:Assets/Scripts/SceneManager/Demo.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
