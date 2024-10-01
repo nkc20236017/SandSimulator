@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using NaughtyAttributes;
 
@@ -25,7 +26,7 @@ public class DecisionAngleDetectPlayer : FsmDecision
 	private Coroutine _markCoroutine;
 	private EnemyBrain _enemyBrain;
 
-	private void Awake()
+	private void OnEnable()
 	{
 		_enemyBrain = GetComponent<EnemyBrain>();
 	}
