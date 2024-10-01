@@ -13,7 +13,11 @@ public enum BlockType
     Stone,
     Ore,
     Liquid,
-    ExpCrystal
+    ExpCrystal,
+    Ruby,
+    Emerald,
+    Crystal
+
 }
 
 public enum OreType

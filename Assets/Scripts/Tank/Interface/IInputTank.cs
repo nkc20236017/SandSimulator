@@ -12,5 +12,6 @@ public interface IInputTank
     void RightSelectTank();
     void InputAddTank(TileBase tileBase);
     bool TamkMaxSignal();
+    BlockType GetSelectType();
 
 }
