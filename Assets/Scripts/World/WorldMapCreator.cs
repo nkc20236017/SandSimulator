@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -31,6 +32,12 @@ namespace WorldCreation
         private MainGameEntoryPoint entoryPoint;
         [SerializeField]
         private GameObject orePrefab;
+        [SerializeField]
+        private CameraSystem mainCameraSystem;
+        [SerializeField]
+        private CameraSystem mapCameraSystem;
+        [SerializeField]
+        private Minimap minimap;
         [Space]
         [SerializeField]
         private GameObject startObject;
@@ -47,6 +54,7 @@ namespace WorldCreation
         [SerializeField]
         private int structureRadius;
 
+        (Ore ore, int size, float angle) setOreData;
 
         private bool _isQuitting;
         private LayerGenerator _layer;
@@ -219,15 +227,23 @@ namespace WorldCreation
             GameObject worldMapManager = Instantiate(worldMapManagerPrefab);
             worldMapManager.GetComponent<IWorldMapManager>()
                 .Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
-
-            entoryPoint.SetProgress(new(1f, "100%", "世界の生成が完了しました"));
+            Debug.Log($"<color=#ffff00ff>WorldMapManagerの生成完了</color>");
 
             foreach (GameObject activateObject in activeStanbyObject)
             {
                 activateObject.SetActive(true);
+
+                // 鉱石の場合は初期設定をする
+                OreObject oreObject;
+                if (activateObject.TryGetComponent(out oreObject))
+                {
+                    // 初期データをセット
+                    oreObject.SetOre(setOreData.ore, setOreData.size, setOreData.angle);
+                }
             }
 
-            Debug.Log($"<color=#ffff00ff>WorldMapManagerの生成完了</color>");
+            entoryPoint.SetProgress(new(1f, "100%", "世界の生成が完了しました"));
+
         }
 
         private void EnemyGenerate()
@@ -336,18 +352,15 @@ namespace WorldCreation
             GameObject substanceOre = Instantiate
             (
                 orePrefab,
-                nearest.point,
+                _chunks[0, 0].TileMap.WorldToCell(nearest.point),
                 Quaternion.identity
             );
 
             activeStanbyObject.Add(substanceOre);
 
-            OreObject oreObject;
-            if (substanceOre.TryGetComponent(out oreObject))
-            {
-                // 初期データをセット
-                oreObject.SetOre(ore, size, angle);
-            }
+            setOreData.ore = worldMap.WorldLayers[0].PrimevalOres[oreIndex].ExposedOreData;
+            setOreData.size = Random.Range(1, 4);
+            setOreData.angle = angle;
         }
 
         private void BuriedOreProcess(Vector2Int spownPoint, int oreIndex)
@@ -397,7 +410,7 @@ namespace WorldCreation
                     );
                 }
 
-                chance -= 100 / circulePoints.Length;
+                chance -= circulePoints.Length / 100;
             }
         }
 
@@ -474,14 +487,19 @@ namespace WorldCreation
             BlowOut blowOut = player.GetComponentInChildren<BlowOut>();
             SelectTank select = player.GetComponent<SelectTank>();
 
+            //blowOut.SetTilemap(updateTilemap.gameObject.GetComponent<Tilemap>());
+
             suckUp.Inject(inputTank);
             blowOut.Inject(inputTank);
             select.Inject(inputTank);
 
             activeStanbyObject.Add(player);
+            activeStanbyObject.Add(updateTilemap.gameObject);
 
-            // CameraSystem cameraSystem = Camera.main.transform.GetComponentInChildren<CameraSystem>();
-            // cameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
+            mainCameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
+
+            mapCameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
+            minimap.AddTargetIcons(MinimapIconType.Player, player);
 
             // ゴール
             chunkX = (int)goalPosition.x / worldMap.OneChunkSize.x;
@@ -530,6 +548,8 @@ namespace WorldCreation
 
             ExitGateObject exitGateObject = Instantiate(goalObject, start, Quaternion.identity);
             exitGateObject.Inject(gameLoad);
+
+            minimap.AddTargetIcons(MinimapIconType.Goal, exitGateObject.gameObject);
         }
 
         private Vector2Int[] BlueNoise(int width, int height, int space, int seed)
