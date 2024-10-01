@@ -344,7 +344,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
       propertyPath: seed
-      value: 463160048
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
       propertyPath: player
@@ -354,6 +354,10 @@ PrefabInstance:
       propertyPath: worldMap
       value: 
       objectReference: {fileID: 11400000, guid: 375e8424901c1a74e94589b5480cfbcf, type: 2}
+    - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
+      propertyPath: goalObject
+      value: 
+      objectReference: {fileID: 2128276887}
     - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
       propertyPath: startObject
       value: 
@@ -379,8 +383,12 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
+      propertyPath: backgroundWorldMap
+      value: 
+      objectReference: {fileID: 11400000, guid: 375e8424901c1a74e94589b5480cfbcf, type: 2}
+    - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
       propertyPath: oreData.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6385568336271638583, guid: 1aba112d111a84f44b488b8221997d08, type: 3}
       propertyPath: oreTouchLayer.m_Bits

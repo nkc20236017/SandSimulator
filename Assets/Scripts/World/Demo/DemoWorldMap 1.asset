@@ -36,7 +36,7 @@ MonoBehaviour:
     - exposedOrePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
       buriedOreID: 1
       lumpAmount: 30
-      blockAmount: 2
+      blockAmount: 5
       probability: 80
       space: 20
     primevalDungeons:

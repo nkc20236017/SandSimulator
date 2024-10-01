@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,6 +17,8 @@ namespace WorldCreation
         public int Seed => seed;
         [SerializeField]    // 
         private WorldMap worldMap;
+        [SerializeField]
+        private WorldMap backgroundWorldMap;
         [SerializeField]
         private LayerMask touchLayer;
         [SerializeField]
@@ -184,8 +187,8 @@ namespace WorldCreation
 
                     foreach (IWorldGeneratable backgourndGenerator in _backgroundGenerators)
                     {
-                        backgourndGenerator.Initalize(_chunks[x, y], worldMap, initalUsageCount);
-                        _backgroundChunks[x, y] = await backgourndGenerator.Execute(_backgroundChunks[x, y], worldMap, token);
+                        backgourndGenerator.Initalize(_chunks[x, y], backgroundWorldMap, initalUsageCount);
+                        _backgroundChunks[x, y] = await backgourndGenerator.Execute(_backgroundChunks[x, y], backgroundWorldMap, token);
                     }
                 }
             }
@@ -320,7 +323,7 @@ namespace WorldCreation
             if (substanceOre.TryGetComponent(out oreObject))
             {
                 // 初期データをセット
-                // oreObject.SetOre(ore, size, angle);
+                oreObject.SetOre(ore, size, angle);
             }
         }
 
@@ -330,7 +333,12 @@ namespace WorldCreation
             int lumpRadius = ore.BlockAmount + Random.Range(0, ore.BlockAmount);
             Vector2Int[] circulePoints = GenerateCircularGrid(lumpRadius, spownPoint);
 
-            int chance = 80;
+            // 中心からの距離で昇順に並び替え
+            circulePoints = circulePoints
+                .OrderBy(point => (point - spownPoint).magnitude)
+                .ToArray();
+
+            float chance = 100;
             for (int i = 0; i < circulePoints.Length; i++)
             {
                 Vector2Int point = circulePoints[i];
@@ -350,7 +358,7 @@ namespace WorldCreation
                 // 空間であれば設置しない
                 if (id == 0) { continue; }
 
-                if (Random.Range(0, 100) < chance)
+                if (Random.Range(0f, 100f) < chance)
                 {
                     // 地中なら鉱石のタイルマップを配置
                     _chunks[chunkX, chunkY].TileMap.SetTile
@@ -359,6 +367,8 @@ namespace WorldCreation
                         worldMap.Blocks.GetBlock(worldMap.WorldLayers[0].PrimevalOres[oreIndex].BuriedOreID)
                     );
                 }
+
+                chance -= 100 / circulePoints.Length;
             }
         }
 
