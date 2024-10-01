@@ -4,8 +4,6 @@ using UnityEngine.UI;
 
 public class Minimap : MonoBehaviour
 {
-	public GameObject player;
-	
 	[Header("Minimap Camera")]
 	[SerializeField] private MinimapIcon _minimapIcon;
 	[SerializeField] private GameObject _targetIconPrefab;
@@ -13,14 +11,6 @@ public class Minimap : MonoBehaviour
 	
 	private List<GameObject> _targets = new();
 	private List<GameObject> _targetIcons = new();
-	private Camera _mainCamera;
-
-	private void Start()
-	{
-		_mainCamera = Camera.main;
-		
-		AddTargetIcons(MinimapIconType.Player, player);
-	}
 
 	/// <summary>
 	/// アイコンを表示させるターゲットを追加

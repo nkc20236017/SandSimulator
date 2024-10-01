@@ -13,8 +13,10 @@ public class BlowOut : MonoBehaviour
     [SerializeField] private BlockDatas blockDatas;
 
     [Header("BlowOut Config")]
-    [SerializeField] private BlockType blockType;
-    [SerializeField, ShowIf(nameof(blockType), BlockType.Ore)] private OreType oreType;
+    // [SerializeField] 
+    private BlockType blockType;
+    // [SerializeField, ShowIf(nameof(blockType), BlockType.Ore)] 
+    private OreType oreType;
     [SerializeField] private Transform pivot;
     [SerializeField, Min(0f)] private float radius; // 吐き出し範囲
     [SerializeField, Min(0f)] private float distance; // 吐き出し距離（現状意味ない）
