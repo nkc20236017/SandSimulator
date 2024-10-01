@@ -31,6 +31,9 @@ namespace WorldCreation
         private GameObject worldMapManagerPrefab;
         [Space]
         [SerializeField]
+        private MainGameEntoryPoint entoryPoint;
+        [Space]
+        [SerializeField]
         private GameObject startObject;
         [SerializeField]
         private UpdateTile updateTilemapPrefab;
@@ -174,6 +177,7 @@ namespace WorldCreation
 
         private async void GenerateAll(CancellationToken token)
         {
+            entoryPoint.SetProgress(new(0, "0%", "世界を生成します..."));
             int initalUsageCount = _randomization.UsageCount;
             // 全てのチャンクを読み込む
             for (int y = 0; y < _chunks.GetLength(0); y++)
@@ -195,11 +199,17 @@ namespace WorldCreation
                 }
             }
 
+            entoryPoint.SetProgress(new(0.7f, "70%", "鉱石を配置中..."));
+
             // 鉱石生成
             OreGenerate();
 
+            entoryPoint.SetProgress(new(0.8f, "80%", "敵を配置中..."));
+
             // 敵召喚
             EnemyGenerate();
+
+            entoryPoint.SetProgress(new(0.9f, "90%", "スポーン地点を整理中..."));
 
             // スタートとゴール召喚
             StructureGenerate();
@@ -207,6 +217,8 @@ namespace WorldCreation
             GameObject worldMapManager = Instantiate(worldMapManagerPrefab);
             worldMapManager.GetComponent<IWorldMapManager>()
                 .Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
+
+            entoryPoint.SetProgress(new(1f, "100%", "世界の生成が完了しました"));
 
             Debug.Log($"<color=#ffff00ff>WorldMapManagerの生成完了</color>");
         }
@@ -439,8 +451,12 @@ namespace WorldCreation
             }
 
             Instantiate(startObject, start, Quaternion.identity);
+            // プレイヤーの設定
             GameObject player = Instantiate(playerPrefab, (Vector2)center, Quaternion.identity);
             UpdateTile updateTilemap = Instantiate(updateTilemapPrefab);
+            updateTilemap.SetPlayer(player.transform);
+            CameraSystem cameraSystem = Camera.main.transform.GetComponentInChildren<CameraSystem>();
+            cameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
 
             // ゴール
             chunkX = (int)goalPosition.x / worldMap.OneChunkSize.x;
