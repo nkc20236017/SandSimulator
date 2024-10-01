@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using NaughtyAttributes;
 
 public class ActionAttack : FsmAction
@@ -19,13 +18,6 @@ public class ActionAttack : FsmAction
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
 	private IChunkInformation _chunkInformation;
-
-	private void Awake()
-	{
-		_boxCollider2D = GetComponent<BoxCollider2D>();
-		_rigidbody2D = GetComponent<Rigidbody2D>();
-		_enemyBrain = GetComponent<EnemyBrain>();
-	}
 
 	public override void Action()
 	{
@@ -129,5 +121,9 @@ public class ActionAttack : FsmAction
 	{
 		var worldMapManager = FindObjectOfType<WorldMapManager>();
 		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+		
+		_boxCollider2D = GetComponent<BoxCollider2D>();
+		_rigidbody2D = GetComponent<Rigidbody2D>();
+		_enemyBrain = GetComponent<EnemyBrain>();
 	}
 }

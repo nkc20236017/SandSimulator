@@ -5,7 +5,7 @@ public class ActionChase : FsmAction
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
 
-	private void Awake()
+	private void OnEnable()
 	{
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();
