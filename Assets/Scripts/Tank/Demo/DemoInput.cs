@@ -8,6 +8,8 @@ public class DemoInputItemTank : MonoBehaviour
 
     private IInputTank itemTank;
     private IGameLoad gameLoad;
+    [SerializeField]
+    private MainGameEntoryPoint gameEntoryPoint;
 
     [Inject]
     public void Inject(IInputTank itemTank, IGameLoad gameLoad)
@@ -26,6 +28,11 @@ public class DemoInputItemTank : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Alpha2))
         {
             itemTank.SelectTank(BlockType.Mud);
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            gameEntoryPoint.SetProgress(new ProgressData(1f, "ÉçÅ[ÉhíÜ", "100%"));
         }
 
         if (Input.GetKey(KeyCode.S))
