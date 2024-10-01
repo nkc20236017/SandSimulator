@@ -3,11 +3,6 @@ using System.Threading;
 using UnityEngine.Tilemaps;
 using UnityEngine;
 
-// TODO: 座標からチャンク取得
-// TODO: Vector2Intで渡された場所のチャンク取得
-// TODO: 層の取得
-
-
 namespace WorldCreation
 {
     public class ChunkLoader : IWorldGeneratable

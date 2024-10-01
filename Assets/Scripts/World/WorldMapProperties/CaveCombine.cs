@@ -17,6 +17,9 @@ namespace WorldCreation
         [Range(0, 1)]
         private float hollowSize;
         public float HollowSize => hollowSize;
+        [SerializeField]
+        private bool isOrverride;
+        public bool IsOrverride => isOrverride;
         [SerializeField]    // ƒuƒƒbƒN‚Å–„‚ß‚é‚æ‚¤‚É‚·‚é
         private bool isBackfill;
         public bool IsBackfill => isBackfill;

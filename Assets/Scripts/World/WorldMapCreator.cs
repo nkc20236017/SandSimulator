@@ -22,8 +22,6 @@ namespace WorldCreation
         [SerializeField]
         private LayerMask touchLayer;
         [SerializeField]
-        private Ore[] oreData;
-        [SerializeField]
         private Transform tilemapParent;
         [SerializeField]
         private GameObject tilemapPrefab;
@@ -32,6 +30,8 @@ namespace WorldCreation
         [Space]
         [SerializeField]
         private MainGameEntoryPoint entoryPoint;
+        [SerializeField]
+        private GameObject orePrefab;
         [Space]
         [SerializeField]
         private GameObject startObject;
@@ -137,7 +137,6 @@ namespace WorldCreation
                     GameObject tilemap = Instantiate(tilemapPrefab, origin, Quaternion.identity, tilemapParent);
                     // 名前をチャンクの番号にする
                     tilemap.name = $"{tilemap.name} ({x}, {y})";
-
                     _chunks[x, y] = new Chunk
                     (
                         _randomization,
@@ -180,9 +179,9 @@ namespace WorldCreation
             entoryPoint.SetProgress(new(0, "0%", "世界を生成します..."));
             int initalUsageCount = _randomization.UsageCount;
             // 全てのチャンクを読み込む
-            for (int y = 0; y < _chunks.GetLength(0); y++)
+            for (int y = 0; y < _chunks.GetLength(1); y++)
             {
-                for (int x = 0; x < _chunks.GetLength(1); x++)
+                for (int x = 0; x < _chunks.GetLength(0); x++)
                 {
                     foreach (IWorldGeneratable worldGenerator in _worldGenerators)
                     {
@@ -294,7 +293,7 @@ namespace WorldCreation
             if (nearest == default) { return; }
 
             // 初期値
-            Ore ore = oreData[Random.Range(0, oreData.Length)];
+            Ore ore = worldMap.WorldLayers[0].PrimevalOres[oreIndex].ExposedOreData;
             int size = Random.Range(1, 4);
             float angle = 0;
 
@@ -328,7 +327,7 @@ namespace WorldCreation
             // 鉱石を設置する
             GameObject substanceOre = Instantiate
             (
-                worldMap.WorldLayers[0].PrimevalOres[oreIndex].ExposedOrePrefab,
+                orePrefab,
                 nearest.point,
                 Quaternion.identity
             );

@@ -7,8 +7,8 @@ namespace WorldCreation
     public struct PrimevalOre
     {
         [SerializeField]    // 地上に見えている鉱石のゲームオブジェクト
-        private GameObject exposedOrePrefab;
-        public GameObject ExposedOrePrefab => exposedOrePrefab;
+        private Ore exposedOreData;
+        public Ore ExposedOreData => exposedOreData;
         [SerializeField]    // 生成するオブジェクト
         private int buriedOreID;
         public int BuriedOreID => buriedOreID;

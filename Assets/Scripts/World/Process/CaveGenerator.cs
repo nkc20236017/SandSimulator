@@ -48,7 +48,7 @@ public class CaveGenerator : IWorldGeneratable
                 {
                     Vector2Int worldPosition = chunk.GetWorldPosition(x, y, worldMap.OneChunkSize);
                     // 現在の座標にタイルが既にあったら次の座標へ移動する
-                    if (!caveCombine.IsBackfill && grid[x, y] != VOID_ID) { continue; }
+                    if (!caveCombine.IsOrverride && grid[x, y] != VOID_ID) { continue; }
 
                     // 現在の座標のノイズ値を取得
                     float noisePower = Mathf.PerlinNoise

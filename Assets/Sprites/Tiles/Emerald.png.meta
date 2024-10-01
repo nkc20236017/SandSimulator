@@ -113,10 +113,10 @@ TextureImporter:
       name: Emerald_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 7
-        width: 10
-        height: 10
+        x: 8
+        y: 8
+        width: 8
+        height: 8
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,10 +134,10 @@ TextureImporter:
       name: Emerald_1
       rect:
         serializedVersion: 2
-        x: 23
-        y: 7
-        width: 10
-        height: 10
+        x: 24
+        y: 8
+        width: 8
+        height: 8
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -155,10 +155,10 @@ TextureImporter:
       name: Emerald_2
       rect:
         serializedVersion: 2
-        x: 39
-        y: 7
-        width: 10
-        height: 10
+        x: 40
+        y: 8
+        width: 8
+        height: 8
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -176,10 +176,10 @@ TextureImporter:
       name: Emerald_3
       rect:
         serializedVersion: 2
-        x: 55
-        y: 7
-        width: 10
-        height: 10
+        x: 56
+        y: 8
+        width: 8
+        height: 8
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

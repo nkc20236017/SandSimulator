@@ -45,7 +45,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seed: 0
-  worldMap: {fileID: 11400000, guid: d3bea26fdfb133940bb933d384498db8, type: 2}
+  worldMap: {fileID: 11400000, guid: 3ef1efac4c1edc6408735b2e9a82ab98, type: 2}
+  backgroundWorldMap: {fileID: 11400000, guid: aad68b60adabf7e43b9473f01562dcb8, type: 2}
+  touchLayer:
+    serializedVersion: 2
+    m_Bits: 8
   tilemapParent: {fileID: 0}
   tilemapPrefab: {fileID: 4281351336352850513, guid: 1d8ff621e4dfdf241a877aad79dc3ee6, type: 3}
   worldMapManagerPrefab: {fileID: 4864080701464837153, guid: 7aebf57b1f0fa864aaad27561cc167ae, type: 3}
+  entoryPoint: {fileID: 0}
+  orePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
+  startObject: {fileID: 0}
+  updateTilemapPrefab: {fileID: 0}
+  playerPrefab: {fileID: 136167499057178077, guid: ef78aa1a1ed5fb24b8322613b684933d, type: 3}
+  startPosition: {x: 300, y: 300}
+  goalObject: {fileID: 0}
+  goalPosition: {x: 0, y: 0}
+  structureRadius: 5
