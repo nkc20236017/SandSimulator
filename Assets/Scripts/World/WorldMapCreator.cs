@@ -187,6 +187,8 @@ namespace WorldCreation
         {
             entoryPoint.SetProgress(new(0, "0%", "世界を生成します..."));
             int initalUsageCount = _randomization.UsageCount;
+
+            float progressCount = 0;
             // 全てのチャンクを読み込む
             for (int y = 0; y < _chunks.GetLength(1); y++)
             {
@@ -205,19 +207,17 @@ namespace WorldCreation
                         _backgroundChunks[x, y] = await backgourndGenerator.Execute(_backgroundChunks[x, y], backgroundWorldMap, token);
                     }
                 }
+                progressCount = Mathf.InverseLerp(0, 98, 98 / _chunks.GetLength(1) * y);
+                entoryPoint.SetProgress(new(progressCount, (progressCount * 100).ToString("f0") + "%", "チャンクを読み込み中..."));
             }
-
-            entoryPoint.SetProgress(new(0.7f, "70%", "鉱石を配置中..."));
 
             // 鉱石生成
             OreGenerate();
 
-            entoryPoint.SetProgress(new(0.8f, "80%", "敵を配置中..."));
-
             // 敵召喚
             EnemyGenerate();
 
-            entoryPoint.SetProgress(new(0.9f, "90%", "スポーン地点を整理中..."));
+            entoryPoint.SetProgress(new(0.98f, "98%", "初期化中..."));
 
             // スタートとゴール召喚
             StructureGenerate();
