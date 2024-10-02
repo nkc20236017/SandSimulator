@@ -54,8 +54,6 @@ namespace WorldCreation
         [SerializeField]
         private int structureRadius;
 
-        (Ore ore, int size, float angle) setOreData;
-
         private bool _isQuitting;
         private LayerGenerator _layer;
         private CancellationTokenSource _cancelTokenSource;
@@ -232,14 +230,6 @@ namespace WorldCreation
             foreach (GameObject activateObject in activeStanbyObject)
             {
                 activateObject.SetActive(true);
-
-                // 鉱石の場合は初期設定をする
-                OreObject oreObject;
-                if (activateObject.TryGetComponent(out oreObject))
-                {
-                    // 初期データをセット
-                    oreObject.SetOre(setOreData.ore, setOreData.size, setOreData.angle);
-                }
             }
 
             entoryPoint.SetProgress(new(1f, "100%", "世界の生成が完了しました"));
@@ -358,9 +348,12 @@ namespace WorldCreation
 
             activeStanbyObject.Add(substanceOre);
 
-            setOreData.ore = worldMap.WorldLayers[0].PrimevalOres[oreIndex].ExposedOreData;
-            setOreData.size = Random.Range(1, 4);
-            setOreData.angle = angle;
+            OreObject oreObject;
+            if (substanceOre.TryGetComponent(out oreObject))
+            {
+                // 初期データをセット
+                oreObject.SetOre(ore, size, angle);
+            }
         }
 
         private void BuriedOreProcess(Vector2Int spownPoint, int oreIndex)
@@ -481,7 +474,7 @@ namespace WorldCreation
             Instantiate(startObject, start, Quaternion.identity);
             // プレイヤーの設定
             GameObject player = Instantiate(playerPrefab, (Vector2)center, Quaternion.identity);
-            UpdateTile updateTilemap = Instantiate(updateTilemapPrefab);
+            UpdateTile updateTilemap = Instantiate(updateTilemapPrefab, tilemapParent);
             updateTilemap.SetPlayer(player.transform);
             SuckUp suckUp = player.GetComponentInChildren<SuckUp>();
             BlowOut blowOut = player.GetComponentInChildren<BlowOut>();
