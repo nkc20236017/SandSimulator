@@ -136,9 +136,6 @@ public class SuckUp : MonoBehaviour
         {
             var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
             if (tilemap == null) { continue; }
-            
-            var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
-            if (!tilemap.HasTile(localPosition)) { continue; }
 
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             
@@ -152,7 +149,7 @@ public class SuckUp : MonoBehaviour
                 DetectOre(new Vector2(position.x, position.y));   
                 if (_suckUpOreObject.Count > 0) { continue; }
                 
-                localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+                var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
                 if (!tilemap.HasTile(localPosition)) { continue; }
                 
                 if (distance <= _deleteDistance)
@@ -178,7 +175,7 @@ public class SuckUp : MonoBehaviour
             if (!hit.TryGetComponent<OreObject>(out var oreObject)) { continue; }
             // if (oreObject == null) { continue; }
             if (!hit.TryGetComponent<IDamagable>(out var target)) { continue; }
-            // if (_suckUpOreObject.Contains(oreObject)) { continue; }
+            if (_suckUpOreObject.Contains(oreObject)) { continue; }
             _suckUpOreObject.Add(oreObject);
             
             if (_numberExecutions % oreObject.Ore.weightPerSize[oreObject.Size - 1] == 0)
