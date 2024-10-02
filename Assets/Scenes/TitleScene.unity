@@ -644,7 +644,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 779e14dce2425d549ad870af527d4736, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgm: TitleAudio
+  bgm: TitleBGM
 --- !u!1 &953170157
 GameObject:
   m_ObjectHideFlags: 0
