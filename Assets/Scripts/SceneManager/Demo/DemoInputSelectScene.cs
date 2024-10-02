@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class DemoInputSelectScene : MonoBehaviour, IPointerDownHandler
 {
     private ISceneIdentifier loadScene = new BuiltInSceneIdentifier("LoadProgressScene");
-    private ISceneIdentifier gameScene = new BuiltInSceneIdentifier("TileMapScene");
+    private ISceneIdentifier gameScene = new BuiltInSceneIdentifier("MainScene");
 
     public void OnPointerDown(PointerEventData eventData)
     {

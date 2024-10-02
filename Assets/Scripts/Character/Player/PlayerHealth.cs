@@ -56,7 +56,8 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 	
 	private void Die()
 	{
-		GlobalSceneNavigator.Instance.Reload();
+		GlobalSceneNavigator.Instance.Push(new BuiltInSceneIdentifier("TitleScene")
+			, new LoadSceneDirector(new BuiltInSceneIdentifier("LoadScene")));
 	}
 }
 
