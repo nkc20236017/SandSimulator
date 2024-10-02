@@ -27,7 +27,7 @@ public class FallingSandSimulation : MonoBehaviour
 
     private void Start()
     {
-        _camera = Camera.main;
+        _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 
         _width = 100;
         _height = 100;

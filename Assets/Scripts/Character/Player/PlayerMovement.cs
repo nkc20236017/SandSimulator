@@ -42,8 +42,6 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Start()
 	{
-		_camera = Camera.main;
-		
 		MovementActions.Jump.started += _ => Jump();
 		MovementActions.Jump.canceled += _ => JumpCancel();
 		
@@ -192,6 +190,11 @@ public class PlayerMovement : MonoBehaviour
 		}
 		else
 		{
+			if (_camera == null)
+			{
+				_camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+			}
+			
 			var worldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
 			if (transform.position.x < worldPosition.x)
 			{
@@ -254,6 +257,8 @@ public class PlayerMovement : MonoBehaviour
 		
 		var worldMapManager = FindObjectOfType<WorldMapManager>();
 		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+		
+		_camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 	}
 	
 	private void OnDisable()

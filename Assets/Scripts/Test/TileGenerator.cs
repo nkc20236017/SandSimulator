@@ -16,7 +16,7 @@ public class TileGenerator : MonoBehaviour
 
     private void Start()
     {
-        _camera = Camera.main;
+        _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
     }
     
     private Block GetTileData(BlockType type)
