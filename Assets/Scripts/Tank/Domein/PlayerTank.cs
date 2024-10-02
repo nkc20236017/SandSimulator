@@ -16,6 +16,8 @@ public class PlayerTank : IInputTank ,IGameLoad
     private BlockType currentBlockType;
     private bool maxSignal;
 
+    private bool fast;
+
     [Inject]
     public PlayerTank(IOutResultUI outPutTank, ITankRepository tankRepository)
     {
@@ -42,7 +44,12 @@ public class PlayerTank : IInputTank ,IGameLoad
 
     public void AddItem(Block mineralData)
     {
-
+        if (fast == false)
+        {
+            currentBlockType = mineralData.type;
+            outPutTank.OutputSelectTank(new(mineralData.type));
+            fast = true;
+        }
         if (currentItemAmount >= MaxTank)
         {
             Debug.Log("�A�C�e���������ς��ł�");
