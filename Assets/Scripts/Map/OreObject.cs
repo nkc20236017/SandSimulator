@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
 
@@ -11,12 +12,6 @@ public class OreObject : MonoBehaviour, IDamagable
     [SerializeField] private Ore ore;
     [SerializeField, MinValue(1), MaxValue(3)] private int size;
     [SerializeField, MinValue(0), MaxValue(360)] private float angle;
-
-    [Header("Random Config")]
-    [SerializeField] private bool isRandomOre;
-    [SerializeField] private bool isRandomSize;
-    [SerializeField] private bool isRandomAngle;
-    [SerializeField] private bool canObliqueAngle;
     
     [Header("Fall Ore Config")]
     [SerializeField] private float fallDamageInterval;
@@ -36,34 +31,6 @@ public class OreObject : MonoBehaviour, IDamagable
     public bool CanFall { get; set; } = true;
     public bool CanSuckUp { get; private set; }
     public Ore Ore => ore;
-
-    private void Awake()
-    {
-        _capsuleCollider2D = GetComponent<CapsuleCollider2D>();
-        _rigidbody2D = GetComponent<Rigidbody2D>();
-        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-    }
-
-    private void Start()
-    {
-        if (_isChild) { return; }
-        
-        if (isRandomOre)
-        {
-            ore = blockDatas.GetRandomOre();
-        }
-        if (isRandomSize)
-        {
-            size = Random.Range(1, 4);
-        }
-        if (isRandomAngle)
-        {
-            angle = Random.Range(0, 361);
-            var minAngle = canObliqueAngle ? 45 : 90;
-            angle = Mathf.Round(angle / minAngle) * minAngle;
-        }
-        SetOre(ore, size, angle);
-    }
 
     private void Update()
     {
@@ -158,5 +125,9 @@ public class OreObject : MonoBehaviour, IDamagable
     {
         var worldMapManager = FindObjectOfType<WorldMapManager>();
         _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        
+        _capsuleCollider2D = GetComponent<CapsuleCollider2D>();
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 }

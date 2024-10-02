@@ -216,6 +216,7 @@ public class SuckUp : MonoBehaviour
             if (isContinue) { continue; }
             
             newTilemap.SetTile(localNewTilePosition, tile);
+            // TODO: 層ごとに色を変える
             // var tileLayer = _chunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
             // var block = blockDatas.GetBlock(tile);
             // if (block.GetStratumGeologyData(tileLayer) != null)
