@@ -81,7 +81,7 @@ public class SemicircleGraph : MonoBehaviour , IOutResultUI
 			{
 				Debug.Log(outPutSelectData.type);
 				_semicircles[i].SelectScaleUp();
-				SetImage(_semicircles[i].Sprite);
+				SetImage(outPutSelectData.SelectSprite);
 			}
 		}
     }

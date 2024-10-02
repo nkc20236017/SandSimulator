@@ -66,7 +66,7 @@ public class PlayerTank : IInputTank ,IGameLoad
         {
             currentBlockType = mineralData.type;
             Debug.Log(mineralData.name);
-            outPutTank.OutputSelectTank(new(mineralData.type));
+            outPutTank.OutputSelectTank(new(mineralData.type,mineralData.resultSprite));
             fast = true;
         }
         maxSignal = false;
@@ -137,7 +137,7 @@ public class PlayerTank : IInputTank ,IGameLoad
             if(select == selectIndex)
             {
                 this.currentBlockType = pair.Key.type;
-                outPutTank.OutputSelectTank(new OutPutSelectData(currentBlockType));
+                outPutTank.OutputSelectTank(new OutPutSelectData(currentBlockType,pair.Key.resultSprite));
             }
         }
 
