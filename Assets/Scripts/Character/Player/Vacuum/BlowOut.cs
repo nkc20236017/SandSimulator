@@ -74,6 +74,8 @@ public class BlowOut : MonoBehaviour
     {
         blockType = inputTank.GetSelectType();
         
+        if(blockType == BlockType.None ) { return; }
+
         if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
         {
             _parabola.GenerateParabola();
