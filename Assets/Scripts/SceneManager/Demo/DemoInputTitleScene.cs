@@ -12,6 +12,12 @@ public class DemoInputTitleScene : MonoBehaviour
 
     private void Awake()
     {
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            // アクティブなシーンの中に"RootScene"
+            Scene activeScene = SceneManager.GetSceneAt(i);
+            if (activeScene.name == "RootScene") { return; }
+        }
         SceneManager.LoadScene("RootScene", LoadSceneMode.Additive);
     }
 
