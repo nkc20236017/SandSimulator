@@ -139,6 +139,7 @@ public class BlowOut : MonoBehaviour
         {
             var position = distance * direction.normalized + pivot.position;
             var blowOutOre = Instantiate(blowOutOrePrefab, position, Quaternion.identity);
+            blowOutOre.gameObject.SetActive(true);
             var ore = blockDatas.GetOre(blockType);
             blowOutOre.SetOre(ore.attackPower, ore.weightPerSize[0], direction.normalized, ore.oreSprites[0]);
         }

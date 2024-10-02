@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7930134a84226f409a459d504674671, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interval: 1
+  interval: 3.5
   dotSize: 1
   pivot: {fileID: 3791670881468073661}
   startDistance: 3.5
