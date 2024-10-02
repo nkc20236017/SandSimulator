@@ -183,7 +183,7 @@ public class UpdateTile : MonoBehaviour
             var checkPosition = position + new Vector3Int(i, -1, 0);
             var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(checkPosition.x, checkPosition.y));
             var checkLocalPosition = _chunkInformation.WorldToChunk(new Vector2(checkPosition.x, checkPosition.y));
-            if (tilemap == null || tilemap.HasTile(checkLocalPosition))
+            if (tilemap == null || tilemap.HasTile(checkLocalPosition) || IsCollision(checkPosition))
             {
                 hasTileCount++;
             }

@@ -51,7 +51,6 @@ public class SuckUp : MonoBehaviour
 
     private void Start()
     {
-        _camera = Camera.main;
         _numberExecutions = 0;
         
         VacuumActions.Absorption.started += _ => _playerMovement.IsMoveFlip = false;
@@ -312,6 +311,7 @@ public class SuckUp : MonoBehaviour
         
         var worldMapManager = FindObjectOfType<WorldMapManager>();
         _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        _camera = Camera.main;
     }
     
     private void OnDisable()
