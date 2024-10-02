@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using NaughtyAttributes;
-using Random = UnityEngine.Random;
 
 public class OreObject : MonoBehaviour, IDamagable
 {
