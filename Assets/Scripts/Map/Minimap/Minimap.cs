@@ -67,8 +67,8 @@ public class Minimap : MonoBehaviour
 			{
 				var direction = _targets[_targetIcons.IndexOf(target)].transform.position - _minimapCamera.transform.position;
 				var distance = Mathf.Min(_minimapCamera.orthographicSize, direction.magnitude);
-				var perpendicularDirection = new Vector3(-direction.y, direction.x);
-				var position = _minimapCamera.transform.position + direction + Vector2.Dot(perpendicularDirection, direction) * perpendicularDirection.normalized;
+				direction = direction.normalized * distance;
+				var position = _minimapCamera.transform.position + direction;
 				position.z = 0;
 				target.transform.position = position;
 			}

@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: d559dbbf29837e34188d654ce55499c0, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -88,8 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3d0dd15b2184c80b1d6151789f9481e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
+  _blockDatas: {fileID: 0}
   _semicirclePrefab: {fileID: 3407255173737571923, guid: afac9c2414a3e39478b7d5069e244bea, type: 3}
-  pieChartDatas: []
-  maxPieCount: 9
-  maxTankValue: 100
+  maxSemicircleCount: 9
+  selectImage: {fileID: 0}
