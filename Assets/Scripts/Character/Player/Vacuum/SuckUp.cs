@@ -95,6 +95,11 @@ public class SuckUp : MonoBehaviour
 
     private void RotateToCursorDirection()
     {
+        if (_camera == null)
+        {
+            _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        }
+        
         var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
         var direction = mouseWorldPosition - pivot.position;
         var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -280,7 +285,7 @@ public class SuckUp : MonoBehaviour
         Gizmos.DrawWireSphere(pivot.position, _deleteDistance);
 
         Gizmos.color = Color.green;
-        var camera = Camera.main;
+        var camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         if (camera == null) { return; }
 
         var mouseWorldPosition = camera.ScreenToWorldPoint(Input.mousePosition);
@@ -311,7 +316,7 @@ public class SuckUp : MonoBehaviour
         
         var worldMapManager = FindObjectOfType<WorldMapManager>();
         _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
-        _camera = Camera.main;
+        _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
     }
     
     private void OnDisable()

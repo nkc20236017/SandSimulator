@@ -66,7 +66,6 @@ public class BlowOut : MonoBehaviour
 
     private void Start()
     {
-        _camera = Camera.main;
         _lastUpdateTime = Time.time;
 
         VacuumActions.SpittingOut.started += _ => _playerMovement.IsMoveFlip = false;
@@ -115,6 +114,11 @@ public class BlowOut : MonoBehaviour
 
     private void GenerateTile()
     {
+        if (_camera == null)
+        {
+            _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        }
+        
         var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
         var centerCell = (Vector3)_updateTilemap.WorldToCell(mouseWorldPosition);
 
@@ -326,7 +330,7 @@ public class BlowOut : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(pivot.position, distance);
 
-        var mainCamera = Camera.main;
+        var mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         if (mainCamera == null) { return; }
 
         var mouseWorldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -382,6 +386,8 @@ public class BlowOut : MonoBehaviour
         
         var worldMapManager = FindObjectOfType<WorldMapManager>();
         _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        
+        _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
     }
 
     private void OnDisable()

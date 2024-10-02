@@ -82,7 +82,7 @@ public class UpdateTile : MonoBehaviour
                 for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
                 {
                     var position = new Vector3Int(x, y, 0) + (_player != null ? Vector3Int.RoundToInt(_player.transform.position) : Vector3Int.zero);
-                    var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(x, y) + (_player != null ? _player.transform.position : Vector2.zero));
+                    var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
                     var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
                     if (tilemap == null || !tilemap.HasTile(localPosition))
                     {
@@ -92,7 +92,6 @@ public class UpdateTile : MonoBehaviour
                     
                     var tile = _updateTilemap.GetTile(position);
                     if (tile == null) { continue; }
-                    
                     var index = Array.FindIndex(blockDatas.Block, t => t.tile == tile);
                     if (index >= 0 && index < blockDatas.Block.Length)
                     {
@@ -112,7 +111,6 @@ public class UpdateTile : MonoBehaviour
         {
             _clearTiles.Clear();
             _updateTiles.Clear();
-            
             var randomTilePositions = tileData.tilePositions.OrderBy(_ => Guid.NewGuid()).ToList();
             foreach (var position in randomTilePositions)
             {

@@ -19,12 +19,17 @@ public class Parabola : MonoBehaviour
 
     private void Start()
     {
-        _camera = Camera.main;
+        _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
     }
 
     public void GenerateParabola()
     {
         DestroyParabola();
+        
+        if (_camera == null)
+        {
+            _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        }
         
         var startDirection = (_camera.ScreenToWorldPoint(Input.mousePosition) - pivot.position).normalized;
         _startPosition = pivot.position + startDirection * startDistance;
@@ -56,6 +61,11 @@ public class Parabola : MonoBehaviour
 
     private Vector3 GetGroundHitPosition()
     {
+        if (_camera == null)
+        {
+            _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        }
+        
         var ray = new Ray(_startPosition, (_camera.ScreenToWorldPoint(Input.mousePosition) - _startPosition).normalized);
         var hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity, groundLayerMask);
         if (hit.collider == null)
