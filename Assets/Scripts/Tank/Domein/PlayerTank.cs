@@ -50,6 +50,8 @@ public class PlayerTank : IInputTank ,IGameLoad
             maxSignal = true;
             return ;
         }
+        //maxSignalを修正
+        maxSignal = false;
         currentItemAmount++;
         if (itemTankDictionary.TryGetValue(mineralData, out MineralTank vaule))
         {

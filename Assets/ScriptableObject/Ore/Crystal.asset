@@ -21,7 +21,7 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 12859dcb69247fd44bb55848c9cdfe6b, type: 3}
   resultSprite: {fileID: -1876801667, guid: 2a8b131a634d85c4384eb759909cafe6, type: 3}
   endurance: 35
-  price: 0
+  price: 300
   tilePositions: []
   attackPower: 10
   weightPerSize: 0a0000001900000028000000
