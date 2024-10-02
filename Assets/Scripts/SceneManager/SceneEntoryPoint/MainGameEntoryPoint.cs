@@ -22,7 +22,7 @@ public class MainGameEntoryPoint : SceneEntryPointBase
         progress.Report(store.SetData(progressData));
         await UniTask.Delay(TimeSpan.FromSeconds(3f), cancellationToken: cancellationToken);
         progress.Report(store.SetData(progressData));
-        await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: cancellationToken);
+        await UniTask.Delay(TimeSpan.FromSeconds(5f), cancellationToken: cancellationToken);
         progress.Report(store.SetData(progressData));
     }
 
