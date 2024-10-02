@@ -15,7 +15,7 @@ public class DemoInputTitleScene : MonoBehaviour
         {
 
             if(fastSelect) { return; }
-
+            AudioManager.Instance.PlaySFX("DecisionSE");
             fastSelect = true;
             GlobalSceneNavigator.Instance.Push(gameScene,new LoadSceneDirector(loadScene));
         }

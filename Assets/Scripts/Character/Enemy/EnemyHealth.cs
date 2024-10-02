@@ -46,6 +46,7 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     {
         CurrentHealth -= damage;
         // TODO: ［効果音］エネミーダメージ
+        AudioManager.Instance.PlaySFX("DamegeSE");
         // TODO: ［エフェクト］エネミーダメージ
         if (CurrentHealth > 0f) { return; }
 

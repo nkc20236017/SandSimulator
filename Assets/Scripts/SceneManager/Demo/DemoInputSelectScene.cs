@@ -11,6 +11,7 @@ public class DemoInputSelectScene : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        AudioManager.Instance.PlaySFX("DecisionSE");
         GlobalSceneNavigator.Instance.Push(gameScene, new LoadSceneDirector(loadScene));
     }
 }

@@ -63,6 +63,7 @@ public class SuckUp : MonoBehaviour
         if (VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
         {
             // TODO: ［効果音］吸い込み
+            //AudioManager.Instance.PlaySFX("VacuumSE");
             IsSuckUp = true;
             Performed();
             _numberExecutions++;
