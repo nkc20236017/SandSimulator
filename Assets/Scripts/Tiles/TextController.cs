@@ -36,4 +36,9 @@ public class TextController : MonoBehaviour
     {
         text.DOColor(startcolor, time).OnComplete(Fade);
     }
+
+    private void OnDestroy()
+    {
+        text.DOKill();
+    }
 }
