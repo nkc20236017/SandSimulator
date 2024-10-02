@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2920249801988323023}
   - component: {fileID: 8186084011419548071}
   - component: {fileID: -6021333388844205746}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: BlowOutOre
   m_TagString: Untagged
   m_Icon: {fileID: 0}

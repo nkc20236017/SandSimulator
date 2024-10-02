@@ -62,6 +62,7 @@ MonoBehaviour:
     m_Bits: 8
   canAutoJump: 1
   autoJumpHeight: 1
+  knockbackTime: 1.5
 --- !u!114 &4175660784992728977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -459,7 +460,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
   blockType: 0
-  oreType: 1
   pivot: {fileID: 3791670881468073661}
   radius: 13.86
   distance: 3.5
