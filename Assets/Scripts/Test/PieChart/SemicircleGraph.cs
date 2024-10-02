@@ -79,6 +79,7 @@ public class SemicircleGraph : MonoBehaviour , IOutResultUI
 		{
 			if(outPutSelectData.type == _semicircles[i].blockType)
 			{
+				Debug.Log(outPutSelectData.type);
 				_semicircles[i].SelectScaleUp();
 				SetImage(_semicircles[i].Sprite);
 			}

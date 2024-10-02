@@ -65,6 +65,7 @@ public class PlayerTank : IInputTank ,IGameLoad
         if (fast == false)
         {
             currentBlockType = mineralData.type;
+            Debug.Log(mineralData.name);
             outPutTank.OutputSelectTank(new(mineralData.type));
             fast = true;
         }

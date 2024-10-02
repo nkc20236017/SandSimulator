@@ -7,7 +7,7 @@ public class Semicircle : MonoBehaviour
 	private Vector2 defaltScale;
 	public Sprite Sprite => _image.sprite;
 	public float FillAmount => _image.fillAmount;
-	public BlockType blockType;
+	public BlockType blockType = BlockType.None;
 
 	private void Awake()
 	{

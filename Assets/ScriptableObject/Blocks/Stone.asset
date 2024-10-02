@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6db163b9c32844029ceedc5cfd452298, type: 3}
   m_Name: Stone
   m_EditorClassIdentifier: 
-  type: 2
+  type: 3
   id: 1301
   name: "\u77F3"
   tile: {fileID: 0}

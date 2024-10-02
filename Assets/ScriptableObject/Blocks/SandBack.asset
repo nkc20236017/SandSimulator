@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6db163b9c32844029ceedc5cfd452298, type: 3}
   m_Name: SandBack
   m_EditorClassIdentifier: 
-  type: 8
+  type: 9
   id: 1101
   name: "\u7802\u58C1"
   tile: {fileID: 11400000, guid: 75354da9db15b3f48bde02326a5e2e36, type: 2}

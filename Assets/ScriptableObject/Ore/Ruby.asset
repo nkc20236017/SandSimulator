@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed3ee7e5ba574701819d926c84d2a9af, type: 3}
   m_Name: Ruby
   m_EditorClassIdentifier: 
-  type: 5
+  type: 6
   id: 
   name: "\u30EB\u30D3\u30FC"
   tile: {fileID: 11400000, guid: 4c8f89a6aa38a7643add9c20c6a236c9, type: 2}

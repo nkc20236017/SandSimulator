@@ -7,11 +7,16 @@ public class DemoInputTitleScene : MonoBehaviour
 {
     private ISceneIdentifier loadScene = new BuiltInSceneIdentifier("LoadScene");
     private ISceneIdentifier gameScene = new BuiltInSceneIdentifier("SelectScene");
+    private bool fastSelect;
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
+
+            if(fastSelect) { return; }
+
+            fastSelect = true;
             GlobalSceneNavigator.Instance.Push(gameScene,new LoadSceneDirector(loadScene));
         }
     }
