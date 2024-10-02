@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6db163b9c32844029ceedc5cfd452298, type: 3}
   m_Name: Sand
   m_EditorClassIdentifier: 
-  type: 1
+  type: 0
   id: 1101
   name: "\u7802"
   tile: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}

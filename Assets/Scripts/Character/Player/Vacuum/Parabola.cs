@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using SingularityGroup.HotReload;
 using UnityEngine;
 
 public class Parabola : MonoBehaviour
@@ -15,7 +14,6 @@ public class Parabola : MonoBehaviour
     private Vector3 _startPosition;
     private Camera _camera;
     private GameObject[] _dots;
-    private Queue<GameObject> _dotPool = new();
 
     private void Start()
     {
@@ -42,20 +40,19 @@ public class Parabola : MonoBehaviour
         for (var i = 0; i < count; i++)
         {
             var position = _startPosition + direction * (interval * i);
-            _dots[i] = GetDot();
+            _dots[i] = Instantiate(dotPrefab, position, Quaternion.identity);
             _dots[i].transform.position = position;
             _dots[i].transform.localScale = Vector3.one * dotSize;
-            _dots[i].SetActive(true);
         }
     }
 
-    private void DestroyParabola()
+    public void DestroyParabola()
     {
         if (_dots == null) { return; }
 
         foreach (var dot in _dots)
         {
-            ReturnDot(dot);
+            Destroy(dot);
         }
     }
 
@@ -74,30 +71,5 @@ public class Parabola : MonoBehaviour
         }
         
         return hit.point;
-    }
-
-    private GameObject GetDot()
-    {
-        if (_dotPool.Count == 0)
-        {
-            AddDots(1);
-        }
-        return _dotPool.Dequeue();
-    }
-
-    private void ReturnDot(GameObject dot)
-    {
-        dot.SetActive(false);
-        _dotPool.Enqueue(dot);
-    }
-
-    private void AddDots(int count)
-    {
-        for (var i = 0; i < count; i++)
-        {
-            var newDot = Instantiate(dotPrefab, pivot, true);
-            newDot.SetActive(false);
-            _dotPool.Enqueue(newDot);
-        }
     }
 }

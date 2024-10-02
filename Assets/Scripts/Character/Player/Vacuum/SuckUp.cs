@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using VContainer;
 using Random = UnityEngine.Random;
 
 public class SuckUp : MonoBehaviour
@@ -150,11 +149,11 @@ public class SuckUp : MonoBehaviour
             var distance = Vector3.Distance(pivot.position, position);
             if (angle <= _suctionAngle && distance <= _suctionDistance)
             {
-                DetectOre(tilemap.GetCellCenterWorld(position));   
+                DetectOre(new Vector2(position.x, position.y));   
                 if (_suckUpOreObject.Count > 0) { continue; }
                 
                 localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
-                if (tilemap.GetTile(localPosition) == null) { continue; }
+                if (!tilemap.HasTile(localPosition)) { continue; }
                 
                 if (distance <= _deleteDistance)
                 {
@@ -169,21 +168,22 @@ public class SuckUp : MonoBehaviour
     
     private void DetectOre(Vector2 position)
     {
-        var hitAll = Physics2D.OverlapPointAll(position, oreLayerMask);
+        var hitAll = Physics2D.OverlapBoxAll(position, Vector2.one, 0, oreLayerMask);
         if (hitAll.Length == 0) { return; }
         
         foreach (var hit in hitAll)
         {
+            // if (hit == null) { continue; }
             if (IsBlock(hit.transform.position)) { continue; }
             if (!hit.TryGetComponent<OreObject>(out var oreObject)) { continue; }
+            // if (oreObject == null) { continue; }
             if (!hit.TryGetComponent<IDamagable>(out var target)) { continue; }
-            if (_suckUpOreObject.Contains(oreObject)) { continue; }
-            
+            // if (_suckUpOreObject.Contains(oreObject)) { continue; }
             _suckUpOreObject.Add(oreObject);
             
             if (_numberExecutions % oreObject.Ore.weightPerSize[oreObject.Size - 1] == 0)
             {
-                target.TakeDamage(1);
+                target.TakeDamage(3);
             }
         }
     }
@@ -253,7 +253,7 @@ public class SuckUp : MonoBehaviour
             
             if (Vector3.Distance(oreObject.transform.position, pivot.position) <= _deleteDistance)
             {
-                inputTank.InputAddTank(BlockType.Ore);//タンクに追加
+                inputTank.InputAddTank(oreObject.Ore.type);//タンクに追加
                 _suckUpOreObject.Remove(oreObject);
                 Destroy(oreObject.gameObject);
             }

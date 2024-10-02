@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
 
@@ -35,6 +36,15 @@ public class ActionWander : FsmAction
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
 	private IChunkInformation _chunkInformation;
+
+	private void Start()
+	{
+		var random = Random.Range(0, 2);
+		_moveDirection = random == 0 ? Vector3.left : Vector3.right;
+		transform.localScale = new Vector3(_moveDirection.x, 1, 1);
+
+		GenerateOres();
+	}
 
 	private void GenerateOres()
 	{
@@ -211,11 +221,5 @@ public class ActionWander : FsmAction
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();
-		
-		var random = Random.Range(0, 2);
-		_moveDirection = random == 0 ? Vector3.left : Vector3.right;
-		transform.localScale = new Vector3(_moveDirection.x, 1, 1);
-
-		GenerateOres();
 	}
 }

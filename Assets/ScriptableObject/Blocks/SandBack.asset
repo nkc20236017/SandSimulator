@@ -12,25 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6db163b9c32844029ceedc5cfd452298, type: 3}
   m_Name: SandBack
   m_EditorClassIdentifier: 
-  type: 0
+  type: 8
   id: 1101
-  name: "\u7802"
-  tile: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
+  name: "\u7802\u58C1"
+  tile: {fileID: 11400000, guid: 75354da9db15b3f48bde02326a5e2e36, type: 2}
   stratumGeologyDatas:
   - stratumName: "\uFF11\u5C64"
     depth: 1
-    color: {r: 0, g: 0, b: 0, a: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
   - stratumName: "\uFF12\u5C64"
     depth: 2
-    color: {r: 0, g: 0, b: 0, a: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
   - stratumName: "\uFF13\u5C64"
     depth: 3
-    color: {r: 0, g: 0, b: 0, a: 0}
-  weight: 1
-  sprite: {fileID: 21300000, guid: ee7af9e93d2993141981eff4c0dc84f7, type: 3}
-  resultSprite: {fileID: 2027378876, guid: 2a8b131a634d85c4384eb759909cafe6, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+  weight: 0
+  sprite: {fileID: 0}
+  resultSprite: {fileID: 0}
   endurance: 0
-  price: 2
+  price: 0
   tilePositions:
   - {x: -55, y: 30, z: 0}
   - {x: -51, y: 35, z: 0}

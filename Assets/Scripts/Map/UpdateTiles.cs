@@ -84,11 +84,11 @@ public class UpdateTile : MonoBehaviour
                     var position = new Vector3Int(x, y, 0) + (_player != null ? Vector3Int.RoundToInt(_player.transform.position) : Vector3Int.zero);
                     var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
                     var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
-                    /*if (tilemap == null || !tilemap.HasTile(localPosition))
-                    {
-                        _updateTilemap.SetTile(position, null);
-                        continue;
-                    }*/
+                    // if (tilemap == null || !tilemap.HasTile(localPosition))
+                    // {
+                    //     _updateTilemap.SetTile(position, null);
+                    //     continue;
+                    // }
                     
                     var tile = _updateTilemap.GetTile(position);
                     if (tile == null) { continue; }

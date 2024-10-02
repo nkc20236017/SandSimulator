@@ -7,41 +7,15 @@ using NaughtyAttributes;
 
 public enum BlockType
 {
-    None,
     Sand,
     Mud,
     Stone,
-    Ore,
     Liquid,
     ExpCrystal,
     Ruby,
     Emerald,
-    Crystal
-
-}
-
-public enum OreType
-{
-    Gurus,
     Crystal,
-    Dynamism,
-    Malakud,
-    Prodect,
-    Emerald,
-    Natrum,
-    Kdot,
-    Diamond,
-    Bismuth,
-    Ruby,
-    MagicOre
-}
-
-public enum MagicOreType
-{
-    FlameStone,
-    WaterStone,
-    Thunderstone,
-    IceStone
+    SandBack
 }
 
 public enum LiquidType
