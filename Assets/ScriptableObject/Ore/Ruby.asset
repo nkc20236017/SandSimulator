@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed3ee7e5ba574701819d926c84d2a9af, type: 3}
   m_Name: Ruby
   m_EditorClassIdentifier: 
-  type: 7
+  type: 5
   id: 
   name: "\u30EB\u30D3\u30FC"
   tile: {fileID: 11400000, guid: 4c8f89a6aa38a7643add9c20c6a236c9, type: 2}
@@ -23,10 +23,9 @@ MonoBehaviour:
   endurance: 35
   price: 0
   tilePositions: []
-  oreType: 10
   attackPower: 10
   weightPerSize: 0a0000001900000028000000
-  endurancePerSize: 230000003c00000078000000
+  endurancePerSize: 030000000900000012000000
   oreSprites:
   - {fileID: 21300000, guid: 5006c57662f2d9245aca4104027732d9, type: 3}
   - {fileID: 21300000, guid: 84fd9a080b676f5488bb949a20589ea5, type: 3}

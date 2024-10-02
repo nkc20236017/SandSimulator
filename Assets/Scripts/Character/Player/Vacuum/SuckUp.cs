@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using VContainer;
 using Random = UnityEngine.Random;
 
 public class SuckUp : MonoBehaviour
@@ -154,7 +153,7 @@ public class SuckUp : MonoBehaviour
                 if (_suckUpOreObject.Count > 0) { continue; }
                 
                 localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
-                if (tilemap.GetTile(localPosition) == null) { continue; }
+                if (!tilemap.HasTile(localPosition)) { continue; }
                 
                 if (distance <= _deleteDistance)
                 {
@@ -174,12 +173,12 @@ public class SuckUp : MonoBehaviour
         
         foreach (var hit in hitAll)
         {
-            if (hit == null) { continue; }
+            // if (hit == null) { continue; }
             if (IsBlock(hit.transform.position)) { continue; }
             if (!hit.TryGetComponent<OreObject>(out var oreObject)) { continue; }
-            if (oreObject == null) { continue; }
+            // if (oreObject == null) { continue; }
             if (!hit.TryGetComponent<IDamagable>(out var target)) { continue; }
-            if (_suckUpOreObject.Contains(oreObject)) { continue; }
+            // if (_suckUpOreObject.Contains(oreObject)) { continue; }
             _suckUpOreObject.Add(oreObject);
             
             if (_numberExecutions % oreObject.Ore.weightPerSize[oreObject.Size - 1] == 0)
@@ -254,7 +253,7 @@ public class SuckUp : MonoBehaviour
             
             if (Vector3.Distance(oreObject.transform.position, pivot.position) <= _deleteDistance)
             {
-                inputTank.InputAddTank(BlockType.Ore);//タンクに追加
+                inputTank.InputAddTank(oreObject.Ore.type);//タンクに追加
                 _suckUpOreObject.Remove(oreObject);
                 Destroy(oreObject.gameObject);
             }

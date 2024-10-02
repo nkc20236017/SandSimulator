@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using NaughtyAttributes;
-using VContainer;
 using Random = UnityEngine.Random;
 
 public class BlowOut : MonoBehaviour
@@ -13,7 +12,6 @@ public class BlowOut : MonoBehaviour
 
     [Header("BlowOut Config")]
     [SerializeField] private BlockType blockType;
-    [SerializeField, ShowIf(nameof(blockType), BlockType.Ore)] private OreType oreType;
     [SerializeField] private Transform pivot;
     [SerializeField, Min(0f)] private float radius; // 吐き出し範囲
     [SerializeField, Min(0f)] private float distance; // 吐き出し距離（現状意味ない）
@@ -74,6 +72,17 @@ public class BlowOut : MonoBehaviour
 
     private void Update()
     {
+        blockType = inputTank.GetSelectType();
+        
+        if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
+        {
+            _parabola.GenerateParabola();
+        }
+        else
+        {
+            _parabola.DestroyParabola();
+        }
+        
         if (VacuumActions.SpittingOut.IsPressed() && !_suckUp.IsSuckUp)
         {
             IsBlowOut = true;
@@ -83,14 +92,9 @@ public class BlowOut : MonoBehaviour
 
     private void BlowOutTiles()
     {
-        blockType = inputTank.GetSelectType();
-
-        if (blockType == BlockType.None) { return; }
-        
-        if (blockType == BlockType.Ore)
+        if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
         {
-            _weight = blockDatas.GetOre(oreType).weightPerSize[0] * 10;
-            _parabola.GenerateParabola();
+            _weight = blockDatas.GetOre(blockType).weightPerSize[0] * 10;
         }
         else
         {
@@ -129,12 +133,13 @@ public class BlowOut : MonoBehaviour
         var angle2 = Mathf.Acos(distance / chordLength);
         var newCell1 = GetNewCell(angle - angle2, chordLength);
         var newCell2 = GetNewCell(angle + angle2, chordLength);
-
-        if (blockType == BlockType.Ore)
+        
+        // TODO: blockTypeが鉱石かどうかの判定
+        if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
         {
             var position = distance * direction.normalized + pivot.position;
             var blowOutOre = Instantiate(blowOutOrePrefab, position, Quaternion.identity);
-            var ore = blockDatas.GetOre(oreType);
+            var ore = blockDatas.GetOre(blockType);
             blowOutOre.SetOre(ore.attackPower, ore.weightPerSize[0], direction.normalized, ore.oreSprites[0]);
         }
         else

@@ -75,8 +75,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
-  fallDamageInterval: 0.3
-  fundamentalDistance: 0.5
+  fallDamageInterval: 0.5
+  fundamentalDistance: 0.75
 --- !u!70 &3408433744735999243
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

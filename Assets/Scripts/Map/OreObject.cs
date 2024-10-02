@@ -27,6 +27,7 @@ public class OreObject : MonoBehaviour, IDamagable
     private void Update()
     {
         if (!CanFall) { return; }
+        if (_isChild) { return; }
 
         if (_rigidbody2D.velocity.y < 0)
         {
@@ -67,11 +68,12 @@ public class OreObject : MonoBehaviour, IDamagable
         SetOreConfig(setSize);
     }
 
-    private void SetChildOre()
+    private void SetChildOre(Ore setOre)
     {
-        SetOreConfig(1);
+        SetOre(setOre, 1, transform.eulerAngles.z);
         _isChild = true;
         CanSuckUp = true;
+        _currentEndurance = 0;
         _rigidbody2D.isKinematic = false;
     }
 
@@ -87,7 +89,7 @@ public class OreObject : MonoBehaviour, IDamagable
                 Size--;
                 SetOreConfig(Size);
                 var destroyedOre = Instantiate(this, transform.position, Quaternion.identity);
-                destroyedOre.SetChildOre();
+                destroyedOre.SetChildOre(Ore);
             }
         }
         if (_currentEndurance > 0) { return; }

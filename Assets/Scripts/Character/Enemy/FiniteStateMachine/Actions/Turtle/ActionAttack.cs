@@ -130,22 +130,5 @@ public class ActionAttack : FsmAction
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();
-		
-		if (_chunkInformation == null)
-		{
-			Debug.LogError("ChunkInformation is not found or not assigned.");
-		}
-		if (_boxCollider2D == null)
-		{
-			Debug.LogError("BoxCollider2D is not found or not assigned.");
-		}
-		if (_rigidbody2D == null)
-		{
-			Debug.LogError("Rigidbody2D is not found or not assigned.");
-		}
-		if (_enemyBrain == null)
-		{
-			Debug.LogError("EnemyBrain is not found or not assigned.");
-		}
 	}
 }

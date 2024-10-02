@@ -21,20 +21,24 @@ MonoBehaviour:
     depth: 1
     health: 50
     speed: 7
-    attack: 10
+    attack: 1
     attackSpeed: 100
-  - name: 
-    depth: 0
-    health: 0
-    speed: 0
-    attack: 0
-    attackSpeed: 0
-  - name: 
-    depth: 0
-    health: 0
-    speed: 0
-    attack: 0
-    attackSpeed: 0
+  - name: "\uFF12\u5C64"
+    depth: 2
+    health: 50
+    speed: 7
+    attack: 1
+    attackSpeed: 100
+  - name: "\uFF13\u5C64"
+    depth: 3
+    health: 50
+    speed: 7
+    attack: 2
+    attackSpeed: 100
   turtleOres:
   - ore: {fileID: 11400000, guid: 6534895f1114d374a80f4e1c68535ad4, type: 2}
+    rate: 30
+  - ore: {fileID: 11400000, guid: b9f2c12f461f9c649b1deb1dabb9767a, type: 2}
+    rate: 30
+  - ore: {fileID: 11400000, guid: 1aa9d39301cef7a49acd44409269e64f, type: 2}
     rate: 30
