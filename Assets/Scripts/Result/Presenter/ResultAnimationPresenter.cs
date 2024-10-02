@@ -26,7 +26,9 @@ public class ResultAnimationPresenter : MonoBehaviour
             animationPaper.SetUpUI(mineral.mineralData.resultSprite, mineral.mineralAmount.ToString(), mineralPrice.ToString());
             await animationPaper.AnimationEnterUI(cancellationToken);
             await animationPaper.AnimationStampUI(cancellationToken);
+            AudioManager.Instance.PlaySFX("StampNormalSE");
             await animationPaper.AnimationExitUI(cancellationToken);
+            AudioManager.Instance.PlaySFX("PaperSE");
         }
 
         resultText.text = resultPrie.ToString();

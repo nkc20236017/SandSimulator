@@ -41,7 +41,9 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 		_isInvincible = true;
 		_currentHealth -= damage - _currentDefence;
 		// TODO: ［効果音］プレイヤーダメージ
+		AudioManager.Instance.PlaySFX("DamegeSE");
 		// TODO: ［エフェクト］プレイヤーダメージ
+
 		healthUI.UpdateHealth(_currentHealth);
 		if (_currentHealth > 0) { return; }
 
