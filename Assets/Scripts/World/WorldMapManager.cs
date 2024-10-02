@@ -31,7 +31,7 @@ public class WorldMapManager : MonoBehaviour, IChunkInformation, IWorldMapManage
 
     public int GetLayer(Vector2 position)
     {
-        Vector2Int gridPosition = new((int)position.x, (int)position.y);
+        Vector2Int gridPosition = (Vector2Int)WorldToChunk(position);
 
         if (GetChunk(position, Vector2Int.zero) == null)
         {
@@ -75,7 +75,7 @@ public class WorldMapManager : MonoBehaviour, IChunkInformation, IWorldMapManage
         return result;
     }
 
-    Vector3Int IChunkInformation.WorldToChunk(Vector2 world)
+    public Vector3Int WorldToChunk(Vector2 world)
     {
         Vector2Int originWorldInt = new Vector2Int((int)world.x, (int)world.y) - new Vector2Int((int)_tilemapOrigin.x, (int)_tilemapOrigin.y);
 
@@ -84,7 +84,7 @@ public class WorldMapManager : MonoBehaviour, IChunkInformation, IWorldMapManage
         return (Vector3Int)result;
     }
 
-    Vector3 IChunkInformation.ChunkToWorld(Vector2Int chunkIndex, Vector3Int tilePosition)
+    public Vector3 ChunkToWorld(Vector2Int chunkIndex, Vector3Int tilePosition)
     {
         Vector2Int worldPosition = _oneChunkSize * chunkIndex;
 
