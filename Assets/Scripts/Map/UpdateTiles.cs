@@ -26,16 +26,6 @@ public class UpdateTile : MonoBehaviour
     private List<Vector3Int> _clearTiles = new();
     private List<Vector3Int> _updateTiles = new();
     private IChunkInformation _chunkInformation;
-
-    private void Awake()
-    {
-        _updateTilemap = GetComponent<Tilemap>();
-    }
-
-    private void Start()
-    {
-        blockDatas.Block.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
-    }
     
     /// <summary>
     /// プレイヤーの設定
@@ -168,11 +158,11 @@ public class UpdateTile : MonoBehaviour
         {
             tilePositions[i + clearTiles.Length] = updateTiles[i];
             // TODO: 地層の色を設定する
-            // var tileLayer = _chunkInformation.GetLayer(new Vector2(updateTiles[i].x, updateTiles[i].y));
-            // if (tile.GetStratumGeologyData(tileLayer) != null)
-            // {
-            //     _updateTilemap.SetColor(updateTiles[i], tile.GetStratumGeologyData(tileLayer).color);
-            // }
+            var tileLayer = _chunkInformation.GetLayer(new Vector2(updateTiles[i].x, updateTiles[i].y));
+            if (tile.GetStratumGeologyData(tileLayer) != null)
+            {
+                _updateTilemap.SetColor(updateTiles[i], tile.GetStratumGeologyData(tileLayer).color);
+            }
             tileArray[i + clearTiles.Length] = tile.tile;
         }
         
@@ -204,11 +194,11 @@ public class UpdateTile : MonoBehaviour
             var block = blockDatas.GetBlock(BlockType.Sand);
             mapTilemap.SetTile(localPosition, block.tile);
             // TODO: 地層の色を設定する
-            // var tileLayer = _chunkInformation.GetLayer(pos);
-            // if (block.GetStratumGeologyData(tileLayer) != null)
-            // {
-            //     mapTilemap.SetColor(position, block.GetStratumGeologyData(tileLayer).color);
-            // }
+            var tileLayer = _chunkInformation.GetLayer(pos);
+            if (block.GetStratumGeologyData(tileLayer) != null)
+            {
+                mapTilemap.SetColor(position, block.GetStratumGeologyData(tileLayer).color);
+            }
             _clearTiles.Add(position);
             return;
         }
@@ -371,5 +361,7 @@ public class UpdateTile : MonoBehaviour
     {
         var worldMapManager = FindObjectOfType<WorldMapManager>();
         _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        _updateTilemap = GetComponent<Tilemap>();
+        blockDatas.Block.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
     }
 }

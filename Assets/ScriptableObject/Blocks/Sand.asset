@@ -27,10 +27,10 @@ MonoBehaviour:
     depth: 3
     color: {r: 0, g: 0, b: 0, a: 0}
   weight: 1
-  sprite: {fileID: -1194580231, guid: 8e3e0692f42c9064299b43136cf86086, type: 3}
+  sprite: {fileID: 21300000, guid: 323704303ec97dd458efe70da95bb9e5, type: 3}
   resultSprite: {fileID: 2027378876, guid: 2a8b131a634d85c4384eb759909cafe6, type: 3}
   endurance: 0
   price: 2
   tilePositions:
-  - {x: -55, y: 30, z: 0}
-  - {x: -51, y: 35, z: 0}
+  - {x: 174, y: 406, z: 0}
+  - {x: 177, y: 407, z: 0}
