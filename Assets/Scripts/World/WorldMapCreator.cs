@@ -6,8 +6,6 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using VContainer;
 
-// TODO: 層の取得
-
 namespace WorldCreation
 {
     public class WorldMapCreator : MonoBehaviour
@@ -17,6 +15,8 @@ namespace WorldCreation
         public int Seed => seed;
         [SerializeField]    // 
         private WorldMap worldMap;
+        [SerializeField]
+        private Transform sceneParent;
         [SerializeField]
         private WorldMap backgroundWorldMap;
         [SerializeField]
@@ -53,8 +53,6 @@ namespace WorldCreation
         private Vector2 goalPosition;
         [SerializeField]
         private int structureRadius;
-
-        (Ore ore, int size, float angle) setOreData;
 
         private bool _isQuitting;
         private LayerGenerator _layer;
@@ -224,26 +222,25 @@ namespace WorldCreation
             // スタートとゴール召喚
             StructureGenerate();
 
-            GameObject worldMapManager = Instantiate(worldMapManagerPrefab);
+            GameObject worldMapManager = Instantiate(worldMapManagerPrefab, sceneParent);
             worldMapManager.GetComponent<IWorldMapManager>()
                 .Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
             Debug.Log($"<color=#ffff00ff>WorldMapManagerの生成完了</color>");
 
+            int childCount = sceneParent.childCount;
+            for (int i = 0; i < childCount; i++)
+            {
+                // 生成用の仮オブジェクトから独立させる
+                sceneParent.GetChild(0).parent = null;
+            }
+            Destroy(sceneParent.gameObject);
+
             foreach (GameObject activateObject in activeStanbyObject)
             {
                 activateObject.SetActive(true);
-
-                // 鉱石の場合は初期設定をする
-                OreObject oreObject;
-                if (activateObject.TryGetComponent(out oreObject))
-                {
-                    // 初期データをセット
-                    oreObject.SetOre(setOreData.ore, setOreData.size, setOreData.angle);
-                }
             }
 
             entoryPoint.SetProgress(new(1f, "100%", "世界の生成が完了しました"));
-
         }
 
         private void EnemyGenerate()
@@ -260,7 +257,7 @@ namespace WorldCreation
                 bool hit = Physics2D.Raycast(noisePoint, Vector2.down, 10, touchLayer);
                 if (id == 0 && hit)
                 {
-                    activeStanbyObject.Add(Instantiate(worldMap.EnemyPrefab, (Vector2)noisePoint, Quaternion.identity));
+                    activeStanbyObject.Add(Instantiate(worldMap.EnemyPrefab, (Vector2)noisePoint, Quaternion.identity, sceneParent));
                 }
             }
         }
@@ -353,14 +350,18 @@ namespace WorldCreation
             (
                 orePrefab,
                 _chunks[0, 0].TileMap.WorldToCell(nearest.point),
-                Quaternion.identity
+                Quaternion.identity,
+                sceneParent
             );
 
             activeStanbyObject.Add(substanceOre);
 
-            setOreData.ore = worldMap.WorldLayers[0].PrimevalOres[oreIndex].ExposedOreData;
-            setOreData.size = Random.Range(1, 4);
-            setOreData.angle = angle;
+            OreObject oreObject;
+            if (substanceOre.TryGetComponent(out oreObject))
+            {
+                // 初期データをセット
+                oreObject.SetOre(ore, size, angle);
+            }
         }
 
         private void BuriedOreProcess(Vector2Int spownPoint, int oreIndex)
@@ -478,16 +479,16 @@ namespace WorldCreation
                 );
             }
 
-            Instantiate(startObject, start, Quaternion.identity);
+            Instantiate(startObject, start, Quaternion.identity, sceneParent);
             // プレイヤーの設定
-            GameObject player = Instantiate(playerPrefab, (Vector2)center, Quaternion.identity);
-            UpdateTile updateTilemap = Instantiate(updateTilemapPrefab);
+            GameObject player = Instantiate(playerPrefab, (Vector2)center, Quaternion.identity, sceneParent);
+            UpdateTile updateTilemap = Instantiate(updateTilemapPrefab, tilemapParent);
             updateTilemap.SetPlayer(player.transform);
             SuckUp suckUp = player.GetComponentInChildren<SuckUp>();
             BlowOut blowOut = player.GetComponentInChildren<BlowOut>();
             SelectTank select = player.GetComponent<SelectTank>();
 
-            //blowOut.SetTilemap(updateTilemap.gameObject.GetComponent<Tilemap>());
+            blowOut.SetTilemap(updateTilemap.gameObject.GetComponent<Tilemap>());
 
             suckUp.Inject(inputTank);
             blowOut.Inject(inputTank);
@@ -546,7 +547,7 @@ namespace WorldCreation
                 );
             }
 
-            ExitGateObject exitGateObject = Instantiate(goalObject, start, Quaternion.identity);
+            ExitGateObject exitGateObject = Instantiate(goalObject, start, Quaternion.identity, sceneParent);
             exitGateObject.Inject(gameLoad);
 
             minimap.AddTargetIcons(MinimapIconType.Goal, exitGateObject.gameObject);
