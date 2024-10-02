@@ -1,15 +1,9 @@
 ﻿using UnityEngine;
-using NaughtyAttributes;
 
 public class OreObject : MonoBehaviour, IDamagable
 {
     [Header("Datas Config")]
     [SerializeField] private BlockDatas blockDatas;
-    
-    [Header("Ore Object Config")]
-    [SerializeField] private Ore ore;
-    [SerializeField, MinValue(1), MaxValue(3)] private int size;
-    [SerializeField, MinValue(0), MaxValue(360)] private float angle;
     
     [Header("Fall Ore Config")]
     [SerializeField] private float fallDamageInterval;
@@ -28,10 +22,12 @@ public class OreObject : MonoBehaviour, IDamagable
     public int Size { get; private set; }
     public bool CanFall { get; set; } = true;
     public bool CanSuckUp { get; private set; }
-    public Ore Ore => ore;
+    public Ore Ore { get; private set; }
 
     private void Update()
     {
+        if (!CanFall) { return; }
+
         if (_rigidbody2D.velocity.y < 0)
         {
             _fallDamageTimer += Time.deltaTime;
@@ -45,7 +41,6 @@ public class OreObject : MonoBehaviour, IDamagable
             _fallDamageTimer = 0;
         }
         
-        if (!CanFall) { return; }
         if (_isFall) { return; }
         
         var size = Mathf.Max(_capsuleCollider2D.size.x, _capsuleCollider2D.size.y) / 2 + 0.9f;
@@ -65,11 +60,19 @@ public class OreObject : MonoBehaviour, IDamagable
 
     public void SetOre(Ore setOre, int setSize, float setAngle)
     {
-        ore = setOre;
+        Ore = setOre;
         setSize = Mathf.Clamp(setSize, 1, 3);
         setAngle = Mathf.Clamp(setAngle, 0, 360);
         transform.eulerAngles = new Vector3(0, 0, setAngle);
         SetOreConfig(setSize);
+    }
+
+    private void SetChildOre()
+    {
+        SetOreConfig(1);
+        _isChild = true;
+        CanSuckUp = true;
+        _rigidbody2D.isKinematic = false;
     }
 
     public void TakeDamage(int damage)
@@ -79,15 +82,12 @@ public class OreObject : MonoBehaviour, IDamagable
         _currentEndurance -= damage;
         if (Size > 1)
         {
-            if (_currentEndurance <= ore.endurancePerSize[Size - 2])
+            if (_currentEndurance <= Ore.endurancePerSize[Size - 2])
             {
                 Size--;
                 SetOreConfig(Size);
                 var destroyedOre = Instantiate(this, transform.position, Quaternion.identity);
-                destroyedOre._isChild = true;
-                destroyedOre.SetOreConfig(1);
-                destroyedOre.CanSuckUp = true;
-                destroyedOre._rigidbody2D.isKinematic = false;
+                destroyedOre.SetChildOre();
             }
         }
         if (_currentEndurance > 0) { return; }
@@ -99,9 +99,9 @@ public class OreObject : MonoBehaviour, IDamagable
     private void SetOreConfig(int size)
     {
         Size = size;
-        _currentEndurance = ore.endurancePerSize[Size - 1];
+        _currentEndurance = Ore.endurancePerSize[Size - 1];
         if (_spriteRenderer == null) { _spriteRenderer = GetComponentInChildren<SpriteRenderer>(); }
-        _spriteRenderer.sprite = ore.oreSprites[Size - 1];
+        _spriteRenderer.sprite = Ore.oreSprites[Size - 1];
     }
     
     private void OnCollisionEnter2D(Collision2D other)

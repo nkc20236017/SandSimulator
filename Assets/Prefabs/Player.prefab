@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2345579383987343299}
   - component: {fileID: 1818623514482903418}
   - component: {fileID: 4516138058894865992}
+  - component: {fileID: 6331109950301011818}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -175,6 +176,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b05cffbe327f0504783243c5c949a10e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6331109950301011818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136167499057178077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7930134a84226f409a459d504674671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interval: 1
+  dotSize: 1
+  pivot: {fileID: 3791670881468073661}
+  startDistance: 3.5
+  dotPrefab: {fileID: 4963326286473157808, guid: 0de9ff07e1a133647a54361ab0db2d15, type: 3}
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &2762497230538219215
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,7 +457,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b25146e0b1c4301af0ee85eedc9b1ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  updateTilemap: {fileID: 0}
   blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
   blockType: 0
   oreType: 1
@@ -448,6 +468,7 @@ MonoBehaviour:
   generateTileCount: {x: 2, y: 4}
   blowOutOrePrefab: {fileID: 9133644170437659737, guid: f9894d24cfcacfb418601744a869af7e, type: 3}
   debug: 0
+  _updateTilemap: {fileID: 0}
 --- !u!1001 &7761226255580890619
 PrefabInstance:
   m_ObjectHideFlags: 0

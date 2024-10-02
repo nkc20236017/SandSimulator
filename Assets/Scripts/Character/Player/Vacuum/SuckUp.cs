@@ -150,7 +150,7 @@ public class SuckUp : MonoBehaviour
             var distance = Vector3.Distance(pivot.position, position);
             if (angle <= _suctionAngle && distance <= _suctionDistance)
             {
-                DetectOre(tilemap.GetCellCenterWorld(position));   
+                DetectOre(new Vector2(position.x, position.y));   
                 if (_suckUpOreObject.Count > 0) { continue; }
                 
                 localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
@@ -169,21 +169,22 @@ public class SuckUp : MonoBehaviour
     
     private void DetectOre(Vector2 position)
     {
-        var hitAll = Physics2D.OverlapPointAll(position, oreLayerMask);
+        var hitAll = Physics2D.OverlapBoxAll(position, Vector2.one, 0, oreLayerMask);
         if (hitAll.Length == 0) { return; }
         
         foreach (var hit in hitAll)
         {
+            if (hit == null) { continue; }
             if (IsBlock(hit.transform.position)) { continue; }
             if (!hit.TryGetComponent<OreObject>(out var oreObject)) { continue; }
+            if (oreObject == null) { continue; }
             if (!hit.TryGetComponent<IDamagable>(out var target)) { continue; }
             if (_suckUpOreObject.Contains(oreObject)) { continue; }
-            
             _suckUpOreObject.Add(oreObject);
             
             if (_numberExecutions % oreObject.Ore.weightPerSize[oreObject.Size - 1] == 0)
             {
-                target.TakeDamage(1);
+                target.TakeDamage(3);
             }
         }
     }
