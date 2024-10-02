@@ -2,6 +2,7 @@ using MackySoft.Navigathena.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DemoInputTitleScene : MonoBehaviour
 {
@@ -9,15 +10,20 @@ public class DemoInputTitleScene : MonoBehaviour
     private ISceneIdentifier gameScene = new BuiltInSceneIdentifier("SelectScene");
     private bool fastSelect;
 
+    private void Awake()
+    {
+        SceneManager.LoadScene("RootScene", LoadSceneMode.Additive);
+    }
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
 
-            if(fastSelect) { return; }
+            if (fastSelect) { return; }
             AudioManager.Instance.PlaySFX("DecisionSE");
             fastSelect = true;
-            GlobalSceneNavigator.Instance.Push(gameScene,new LoadSceneDirector(loadScene));
+            GlobalSceneNavigator.Instance.Push(gameScene, new LoadSceneDirector(loadScene));
         }
     }
 }

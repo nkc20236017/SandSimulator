@@ -2,9 +2,11 @@ using Cysharp.Threading.Tasks;
 using MackySoft.Navigathena.SceneManagement.Utilities;
 using MackySoft.Navigathena.SceneManagement.VContainer;
 using System.Threading;
-using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 using VContainer.Unity;
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+#endif
 
 public class RootSceneEntoryPoint : ScopedSceneEntryPoint
 {
