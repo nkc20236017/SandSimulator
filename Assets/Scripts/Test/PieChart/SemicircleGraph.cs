@@ -34,7 +34,7 @@ public class SemicircleGraph : MonoBehaviour , IOutResultUI
 	/// </summary>
 	/// <param name="sprite">ブロックの画像</param>
 	/// <param name="ratio">ブロックの割合</param>
-	private void SemicircleGraphConfig(Sprite sprite, float ratio,BlockType blockType)
+	private void SemicircleGraphConfig(Sprite sprite, float ratio, BlockType blockType)
 	{
 		var hasSemicircle = false;
 		var angle = 0f;
@@ -44,14 +44,14 @@ public class SemicircleGraph : MonoBehaviour , IOutResultUI
 		{
 			if (_semicircles[i].Sprite == sprite)
 			{
-				_semicircles[i].SemicircleConfig(sprite, ratio,blockType);
+				_semicircles[i].SemicircleConfig(sprite, ratio, blockType);
 				hasSemicircle = true;
 			}
 			
 			_semicircles[i].SetRotation(angle);
 			var rad = _semicircles[i].FillAmount * 2f * Mathf.PI;
 			var deg = rad * Mathf.Rad2Deg;
-			angle += deg / 2;
+			angle += deg;
 		}
 		
 		if (hasSemicircle) { return; }
@@ -61,7 +61,7 @@ public class SemicircleGraph : MonoBehaviour , IOutResultUI
 		{
 			if (_semicircles[i].Sprite != null) { continue; }
 
-			_semicircles[i].SemicircleConfig(sprite, ratio , blockType);
+			_semicircles[i].SemicircleConfig(sprite, ratio, blockType);
 			return;
 		}
 	}
@@ -69,7 +69,7 @@ public class SemicircleGraph : MonoBehaviour , IOutResultUI
     public void OutputTank(OutPutTankData outPutData)
     {
 	    var ratio = outPutData.itemRatio * outPutData.totalRatio / 2;
-        SemicircleGraphConfig(outPutData.Sprite, ratio,outPutData.itemType);
+        SemicircleGraphConfig(outPutData.Sprite, ratio, outPutData.itemType);
     }
 
     public void OutputSelectTank(OutPutSelectData outPutSelectData)
@@ -81,7 +81,6 @@ public class SemicircleGraph : MonoBehaviour , IOutResultUI
 			{
 				_semicircles[i].SelectScaleUp();
 				SetImage(_semicircles[i].Sprite);
-				Debug.Log(_semicircles[i].blockType);
 			}
 		}
     }
