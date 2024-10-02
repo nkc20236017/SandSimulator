@@ -44,12 +44,6 @@ public class PlayerTank : IInputTank ,IGameLoad
 
     public void AddItem(Block mineralData)
     {
-        if (fast == false)
-        {
-            currentBlockType = mineralData.type;
-            outPutTank.OutputSelectTank(new(mineralData.type));
-            fast = true;
-        }
         if (currentItemAmount >= MaxTank)
         {
             Debug.Log("�A�C�e���������ς��ł�");
@@ -67,6 +61,12 @@ public class PlayerTank : IInputTank ,IGameLoad
             MineralTank itemData = new MineralTank(mineralData);
             itemTankDictionary.Add(mineralData, itemData);
             TankCalculation(itemData);
+        }
+        if (fast == false)
+        {
+            currentBlockType = mineralData.type;
+            outPutTank.OutputSelectTank(new(mineralData.type));
+            fast = true;
         }
         maxSignal = false;
     }
