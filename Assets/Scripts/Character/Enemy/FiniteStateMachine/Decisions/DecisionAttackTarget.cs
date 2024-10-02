@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DecisionAttackTarget : FsmDecision
 {
@@ -55,7 +54,7 @@ public class DecisionAttackTarget : FsmDecision
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
 			var tilemap = _chunkInformation.GetChunkTilemap(position);
-			if (tilemap == null) { continue; }
+			if (tilemap == null) { return true; }
 
 			var localPosition = _chunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(localPosition)) { continue; }

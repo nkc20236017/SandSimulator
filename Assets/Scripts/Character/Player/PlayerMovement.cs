@@ -16,7 +16,11 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private bool canAutoJump = true;
 	[ShowIf(nameof(canAutoJump))]
 	[SerializeField] private int autoJumpHeight = 1;
-
+	
+	[Header("Knockback Config")]
+	[SerializeField] private float knockbackTime;
+		
+	private float _knockbackTimer;
 	private float _currentSpeed;
 	private Vector2 _moveDirection;
 	private BoxCollider2D _boxCollider2D;
@@ -68,6 +72,16 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Update()
 	{
+		if (!CanMove)
+		{
+			_knockbackTimer += Time.deltaTime;
+			if (_knockbackTimer >= knockbackTime)
+			{
+				CanMove = true;
+				_knockbackTimer = 0;
+			}
+		}
+		
 		InputMovement();
 		IsGround();
 	}
@@ -81,6 +95,7 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Jump()
 	{
+		if (!CanMove) { return; }
 		if (!IsGround()) { return; }
 		
 		_rigidbody2D.velocity = Vector2.up * jumpForce;
@@ -144,7 +159,7 @@ public class PlayerMovement : MonoBehaviour
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
 			var tilemap = _chunkInformation.GetChunkTilemap(position);
-			if (tilemap == null) { continue; }
+			if (tilemap == null) { return true; }
 			
 			var cellPosition = _chunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(cellPosition)) { continue; }
@@ -224,14 +239,6 @@ public class PlayerMovement : MonoBehaviour
             _animator.SetBool("isJump", false);
             _animator.SetFloat("xVelocity", _rigidbody2D.velocity.x);
         }
-	}
-
-	private void OnCollisionEnter2D(Collision2D other)
-	{
-		if (other.gameObject.CompareTag("Ground"))
-		{
-			CanMove = true;
-		}
 	}
 
 	private void OnDrawGizmos()

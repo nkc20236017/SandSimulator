@@ -21,11 +21,6 @@ public class ActionAttack : FsmAction
 
 	public override void Action()
 	{
-		if (_rigidbody2D == null) { return; }
-		if (_boxCollider2D == null) { return; }
-		if (_enemyBrain == null) { return; }
-		if (_chunkInformation == null) { return; }
-		
 		AutoBlockJump();
 		Movement();
 	}
@@ -89,7 +84,7 @@ public class ActionAttack : FsmAction
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
 			var tilemap = _chunkInformation.GetChunkTilemap(position);
-			if (tilemap == null) { continue; }
+			if (tilemap == null) { return true; }
 			
 			var localPosition = _chunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(localPosition)) { continue; }

@@ -52,10 +52,11 @@ public class ActionWander : FsmAction
 		for (var i = 0; i < random; i++)
 		{
 			var ore = Instantiate(orePrefab, oreParents[i]);
+			ore.gameObject.SetActive(true);
 			ore.CanFall = false;
 			var randomSize = Random.Range(1, 4);
 			ore.SetOre(turtle.DropOre(), randomSize, 0);
-			oreParents[i].SetParent(ore.transform);
+			// oreParents[i].SetParent(ore.transform);
 		}
 	}
 
@@ -66,10 +67,6 @@ public class ActionWander : FsmAction
 	
 	private void Wander()
 	{
-		if (_rigidbody2D == null) { return; }
-		if (_enemyBrain == null) { return; }
-		if (_chunkInformation == null) { return; }
-		
 		AutoBlockJump();
 		if (IsHole() && IsGround())
 		{
@@ -142,7 +139,7 @@ public class ActionWander : FsmAction
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
 			var tilemap = _chunkInformation.GetChunkTilemap(position);
-			if (tilemap == null) { continue; }
+			if (tilemap == null) { return true; }
 			
 			var localPosition = _chunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(localPosition)) { continue; }

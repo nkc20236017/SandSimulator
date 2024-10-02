@@ -55,9 +55,6 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     private void DisableEnemy()
     {
         // _animator.SetTrigger(_deadHash);
-        _spriteRenderer.sortingOrder = -1;
-        _enemyBrain.enabled = false;
-        _rigidbody2D.bodyType = RigidbodyType2D.Static;
         // TODO: アイテムドロップ（経験値結晶のみ）
         // TODO: ［効果音］エネミー死亡
         // TODO: ［エフェクト］エネミー死亡
