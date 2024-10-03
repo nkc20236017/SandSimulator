@@ -444,6 +444,7 @@ MonoBehaviour:
   oreLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  suckUpSpeed: 3
   _debugMode: 1
   matchTheSizeOfTheCollider: 0
 --- !u!114 &8575309676087972804
