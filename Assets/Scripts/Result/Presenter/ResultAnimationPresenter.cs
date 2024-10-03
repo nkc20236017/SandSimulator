@@ -22,6 +22,7 @@ public class ResultAnimationPresenter : MonoBehaviour
         int resultPrice = 0;
         for (int i = 0; i < outPutData.mineralTank.Count; i++)
         {
+            AudioManager.Instance.PlaySFX("PaperSE");
             var paperObject = Instantiate(paperAnimationObject, paperTransform);
             var animationPaper = paperObject.GetComponent<ResultAnimationUI>();
             var mineral = outPutData.mineralTank[i];
@@ -32,7 +33,6 @@ public class ResultAnimationPresenter : MonoBehaviour
             await animationPaper.AnimationStampUI(cancellationToken);
             AudioManager.Instance.PlaySFX("StampNormalSE");
             await animationPaper.AnimationExitUI(cancellationToken);
-            AudioManager.Instance.PlaySFX("PaperSE");
         }
         await DOVirtual.Int
     (
