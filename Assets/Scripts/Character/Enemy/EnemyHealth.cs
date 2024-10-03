@@ -48,7 +48,12 @@ public class EnemyHealth : MonoBehaviour, IDamagable
         AudioManager.Instance.PlaySFX("DamegeSE");
         // TODO: ［エフェクト］エネミーダメージ
         GameObject effectObj = (GameObject)Resources.Load("HitEffect");
-        Instantiate(effectObj, transform.position,Quaternion.identity);
+        Vector3 effectPos = 
+            new Vector3
+            (transform.position.x,
+            transform.position.y,
+            transform.position.z - 1);
+        Instantiate(effectObj, effectPos, Quaternion.identity);
 
         if (CurrentHealth > 0f) { return; }
 
