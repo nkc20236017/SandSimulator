@@ -10,7 +10,6 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer _spriteRenderer;
     private EnemyBrain _enemyBrain;
-    
     public float CurrentHealth { get; set; }
 
     private void Awake()
@@ -48,6 +47,14 @@ public class EnemyHealth : MonoBehaviour, IDamagable
         // TODO: ［効果音］エネミーダメージ
         AudioManager.Instance.PlaySFX("DamegeSE");
         // TODO: ［エフェクト］エネミーダメージ
+        GameObject effectObj = (GameObject)Resources.Load("HitEffect");
+        Vector3 effectPos = 
+            new Vector3
+            (transform.position.x,
+            transform.position.y,
+            transform.position.z - 1);
+        Instantiate(effectObj, effectPos, Quaternion.identity);
+
         if (CurrentHealth > 0f) { return; }
 
         DisableEnemy();
@@ -59,6 +66,7 @@ public class EnemyHealth : MonoBehaviour, IDamagable
         // TODO: アイテムドロップ（経験値結晶のみ）
         // TODO: ［効果音］エネミー死亡
         // TODO: ［エフェクト］エネミー死亡
+
         Destroy(gameObject);
     }
 }
