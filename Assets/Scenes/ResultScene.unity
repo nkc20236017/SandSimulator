@@ -220,7 +220,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &758932924
 RectTransform:
   m_ObjectHideFlags: 0
@@ -625,6 +625,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiPrefab: {fileID: 5219214338408108746, guid: 3d1aef7f74e66674a86c264e9a7b949f, type: 3}
+  resultText: {fileID: 1954063726}
 --- !u!1 &1661097112
 GameObject:
   m_ObjectHideFlags: 0
@@ -824,6 +825,7 @@ MonoBehaviour:
   resultPresenter: {fileID: 1415452162}
   animationPresenter: {fileID: 1850984669}
   sceneButton: {fileID: 758932923}
+  totalePrise: {fileID: 1408600154}
 --- !u!1 &1850984667
 GameObject:
   m_ObjectHideFlags: 0
@@ -875,7 +877,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paperAnimationObject: {fileID: 5808964377527516774, guid: b108f6ddc6f63b949a8ac629b27cb843, type: 3}
   paperTransform: {fileID: 1330675741}
-  resultText: {fileID: 1954063726}
 --- !u!1 &1900942618
 GameObject:
   m_ObjectHideFlags: 0

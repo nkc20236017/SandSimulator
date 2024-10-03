@@ -11,7 +11,10 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     private ResultAnimationPresenter animationPresenter;
     [SerializeField]
     private GameObject sceneButton;
-
+    [SerializeField]
+    private GameObject totalePrise;
+    //ˆêŽž“I‚È
+    private bool demofast;
     private CancellationToken token;
     private CancellationTokenSource tokenSource;
 
@@ -25,8 +28,9 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)&&!demofast)
         {
+            demofast = true;
             tokenSource.Cancel();
         }
     }
@@ -44,9 +48,11 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
             animationPresenter.gameObject.SetActive(false);
             resultPresenter.gameObject.SetActive(true);
             sceneButton.SetActive(true);
+            totalePrise.SetActive(true);
         }
         animationPresenter.gameObject.SetActive(false);
         resultPresenter.gameObject.SetActive(true);
         sceneButton.SetActive(true);
+            totalePrise.SetActive(true);
     }
 }

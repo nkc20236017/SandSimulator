@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using VContainer;
 
-public class PlayerTank : IInputTank ,IGameLoad
+public class PlayerTank : IInputTank, IGameLoad
 {
     private int selectIndex;
     private ITankRepository tankRepository;
@@ -12,7 +12,7 @@ public class PlayerTank : IInputTank ,IGameLoad
     private Dictionary<Block, MineralTank> itemTankDictionary = new();
     private IOutResultUI outPutTank;
     private readonly float MaxTank = 4000;
-    private int currentItemAmount =1;
+    private int currentItemAmount = 1;
     private BlockType currentBlockType;
     private bool maxSignal;
 
@@ -25,12 +25,17 @@ public class PlayerTank : IInputTank ,IGameLoad
         this.tankRepository = tankRepository;
     }
 
-    public void InputAddTank(TileBase tileBase)
+    public void InputAddTank(TileBase tileBase, int amount)
     {
         var mineralItem = tankRepository.Find(tileBase);
-        AddItem(mineralItem);
+
+        for (int i = 0; i < amount; i++)
+        {
+            AddItem(mineralItem);
+        }
+
     }
-    public void InputAddTank(BlockType type)
+    public void InputAddTank(BlockType type, int amount)
     {
         var mineralItem = tankRepository.Find(type);
         AddItem(mineralItem);
@@ -48,10 +53,9 @@ public class PlayerTank : IInputTank ,IGameLoad
         {
             Debug.Log("�A�C�e���������ς��ł�");
             maxSignal = true;
-            return ;
+            return;
         }
         //maxSignalを修正
-        maxSignal = false;
         currentItemAmount++;
         if (itemTankDictionary.TryGetValue(mineralData, out MineralTank vaule))
         {
@@ -68,14 +72,18 @@ public class PlayerTank : IInputTank ,IGameLoad
         {
             currentBlockType = mineralData.type;
             Debug.Log(mineralData.name);
-            outPutTank.OutputSelectTank(new(mineralData.type,mineralData.resultSprite));
+            outPutTank.OutputSelectTank(new(mineralData.type, mineralData.resultSprite));
             fast = true;
         }
-        maxSignal = false;
     }
 
     public void RemoveItem(Block mineralData)
     {
+        if(currentItemAmount <= MaxTank)
+        {
+            maxSignal = false ;
+        }
+
         if (itemTankDictionary.TryGetValue(mineralData, out MineralTank vaule))
         {
             if (vaule.mineralAmount <= 1)
@@ -133,13 +141,13 @@ public class PlayerTank : IInputTank ,IGameLoad
 
         select = Mathf.Clamp(select, 0, itemTankDictionary.Keys.Count);
 
-        foreach(KeyValuePair<Block,MineralTank> pair in itemTankDictionary)
+        foreach (KeyValuePair<Block, MineralTank> pair in itemTankDictionary)
         {
             selectIndex++;
-            if(select == selectIndex)
+            if (select == selectIndex)
             {
                 this.currentBlockType = pair.Key.type;
-                outPutTank.OutputSelectTank(new OutPutSelectData(currentBlockType,pair.Key.resultSprite));
+                outPutTank.OutputSelectTank(new OutPutSelectData(currentBlockType, pair.Key.resultSprite));
             }
         }
 
@@ -158,7 +166,7 @@ public class PlayerTank : IInputTank ,IGameLoad
 
     public void LeftSelectTank()
     {
-        selectIndex = Mathf.Clamp(selectIndex,1,itemTankDictionary.Keys.Count);
+        selectIndex = Mathf.Clamp(selectIndex, 1, itemTankDictionary.Keys.Count);
         selectIndex--;
         SelectTank(selectIndex);
         Debug.Log(selectIndex);
@@ -166,7 +174,7 @@ public class PlayerTank : IInputTank ,IGameLoad
 
     public void RightSelectTank()
     {
-        selectIndex = Mathf.Clamp(selectIndex,1,itemTankDictionary.Keys.Count);
+        selectIndex = Mathf.Clamp(selectIndex, 1, itemTankDictionary.Keys.Count);
         selectIndex++;
         SelectTank(selectIndex);
         Debug.Log(selectIndex);

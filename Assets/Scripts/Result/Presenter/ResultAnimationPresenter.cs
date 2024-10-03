@@ -10,19 +10,15 @@ public class ResultAnimationPresenter : MonoBehaviour
     private GameObject paperAnimationObject;
     [SerializeField]
     private Transform paperTransform;
-    [SerializeField]
-    private Text resultText;
 
     public async UniTask AnimationPaper(ResultOutPutData outPutData, CancellationToken cancellationToken)
     {
-        int resultPrie = 0;
         for (int i = 0; i < outPutData.mineralTank.Count; i++)
         {
             var paperObject = Instantiate(paperAnimationObject, paperTransform);
             var animationPaper = paperObject.GetComponent<ResultAnimationUI>();
             var mineral = outPutData.mineralTank[i];
             var mineralPrice = mineral.mineralData.price * mineral.mineralAmount;
-            resultPrie += mineralPrice;
             animationPaper.SetUpUI(mineral.mineralData.resultSprite, mineral.mineralAmount.ToString(), mineralPrice.ToString());
             await animationPaper.AnimationEnterUI(cancellationToken);
             await animationPaper.AnimationStampUI(cancellationToken);
@@ -30,7 +26,5 @@ public class ResultAnimationPresenter : MonoBehaviour
             await animationPaper.AnimationExitUI(cancellationToken);
             AudioManager.Instance.PlaySFX("PaperSE");
         }
-
-        resultText.text = resultPrie.ToString();
     }
 }
