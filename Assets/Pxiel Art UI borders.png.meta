@@ -142,13 +142,13 @@ TextureImporter:
       name: Pxiel Art UI borders_2
       rect:
         serializedVersion: 2
-        x: 305
+        x: 307
         y: 290
-        width: 93
+        width: 91
         height: 92
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 7, y: 8, z: 8, w: 8}
       outline: []
       physicsShape: []
       tessellationDetail: 0

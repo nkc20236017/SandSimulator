@@ -15,8 +15,7 @@ public class SelectTank : MonoBehaviour
     {
         playerInput = new();
 
-        playerInput.Vacuum.LeftSelect.started += _ => LeftTank();
-        playerInput.Vacuum.RightSelect.started += _ => RightTank();
+        playerInput.Vacuum.TankSelect.performed += OnWheel;
         playerInput.Enable();
     }
 
@@ -30,16 +29,18 @@ public class SelectTank : MonoBehaviour
         this.inputTank = inputTank;
     }
 
-    public void LeftTank()
+    public void OnWheel(InputAction.CallbackContext context)
     {
-        inputTank.LeftSelectTank();
+        var vaule = context.ReadValue<Vector2>();
+        if (vaule.y < 0)
+        {
+            inputTank.LeftSelectTank();
+        }
+        else if (vaule.y > 0)
+        {
+            inputTank.RightSelectTank();
+        }
     }
-
-    public void RightTank()
-    {
-        inputTank.RightSelectTank();
-    }
-
 
 
 }

@@ -110,6 +110,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "TankSelect",
+                    "type": "Value",
+                    "id": "b3b66551-65cb-4eb5-8cfd-6d4d6a5c1c00",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -154,6 +163,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "RightSelect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "11e04afb-c2a0-41ae-a9eb-2a84c4ed956a",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TankSelect",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

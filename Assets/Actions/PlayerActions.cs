@@ -132,6 +132,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TankSelect"",
+                    ""type"": ""Value"",
+                    ""id"": ""b3b66551-65cb-4eb5-8cfd-6d4d6a5c1c00"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -178,6 +187,17 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""RightSelect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""11e04afb-c2a0-41ae-a9eb-2a84c4ed956a"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TankSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -194,6 +214,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Vacuum_SpittingOut = m_Vacuum.FindAction("SpittingOut", throwIfNotFound: true);
         m_Vacuum_LeftSelect = m_Vacuum.FindAction("LeftSelect", throwIfNotFound: true);
         m_Vacuum_RightSelect = m_Vacuum.FindAction("RightSelect", throwIfNotFound: true);
+        m_Vacuum_TankSelect = m_Vacuum.FindAction("TankSelect", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -313,6 +334,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Vacuum_SpittingOut;
     private readonly InputAction m_Vacuum_LeftSelect;
     private readonly InputAction m_Vacuum_RightSelect;
+    private readonly InputAction m_Vacuum_TankSelect;
     public struct VacuumActions
     {
         private @PlayerActions m_Wrapper;
@@ -321,6 +343,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         public InputAction @SpittingOut => m_Wrapper.m_Vacuum_SpittingOut;
         public InputAction @LeftSelect => m_Wrapper.m_Vacuum_LeftSelect;
         public InputAction @RightSelect => m_Wrapper.m_Vacuum_RightSelect;
+        public InputAction @TankSelect => m_Wrapper.m_Vacuum_TankSelect;
         public InputActionMap Get() { return m_Wrapper.m_Vacuum; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -342,6 +365,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @RightSelect.started += instance.OnRightSelect;
             @RightSelect.performed += instance.OnRightSelect;
             @RightSelect.canceled += instance.OnRightSelect;
+            @TankSelect.started += instance.OnTankSelect;
+            @TankSelect.performed += instance.OnTankSelect;
+            @TankSelect.canceled += instance.OnTankSelect;
         }
 
         private void UnregisterCallbacks(IVacuumActions instance)
@@ -358,6 +384,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @RightSelect.started -= instance.OnRightSelect;
             @RightSelect.performed -= instance.OnRightSelect;
             @RightSelect.canceled -= instance.OnRightSelect;
+            @TankSelect.started -= instance.OnTankSelect;
+            @TankSelect.performed -= instance.OnTankSelect;
+            @TankSelect.canceled -= instance.OnTankSelect;
         }
 
         public void RemoveCallbacks(IVacuumActions instance)
@@ -386,5 +415,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         void OnSpittingOut(InputAction.CallbackContext context);
         void OnLeftSelect(InputAction.CallbackContext context);
         void OnRightSelect(InputAction.CallbackContext context);
+        void OnTankSelect(InputAction.CallbackContext context);
     }
 }
