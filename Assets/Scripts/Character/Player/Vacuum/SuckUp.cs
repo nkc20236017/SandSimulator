@@ -115,6 +115,7 @@ public class SuckUp : MonoBehaviour
     {
         _suckUpTilePositions.Clear();
         _suckUpOreObject.Clear();
+        
         var mapTilemap = _chunkInformation.GetChunkTilemap(pivot.position);
         if (mapTilemap == null) { return; }
         
@@ -204,7 +205,7 @@ public class SuckUp : MonoBehaviour
             if (tilemap == null) { continue; }
             
             var direction = (Vector3)tilemap.WorldToCell(pivot.position) - tilemap.WorldToCell(tilePosition);
-            var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized);
+            var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized * 2);
            
             var newTilemap = _chunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
             var localNewTilePosition = _chunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
