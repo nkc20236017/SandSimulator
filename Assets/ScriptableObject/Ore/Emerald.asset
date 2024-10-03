@@ -19,7 +19,7 @@ MonoBehaviour:
   stratumGeologyDatas: []
   weight: 10
   sprite: {fileID: 21300000, guid: 116ddf771d6c89444bc09c898fb804cb, type: 3}
-  resultSprite: {fileID: -1799300007, guid: 2a8b131a634d85c4384eb759909cafe6, type: 3}
+  resultSprite: {fileID: 21300000, guid: a35108038c4cf4841a38a292b27fb58f, type: 3}
   endurance: 35
   price: 450
   tilePositions: []
