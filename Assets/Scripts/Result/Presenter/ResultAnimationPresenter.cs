@@ -34,16 +34,16 @@ public class ResultAnimationPresenter : MonoBehaviour
             AudioManager.Instance.PlaySFX("StampNormalSE");
             await animationPaper.AnimationExitUI(cancellationToken);
         }
+        resultObject.SetActive(true);
         await DOVirtual.Int
     (
-    from: 0,
-    to: resultPrice,
-    duration: 1,
-    onVirtualUpdate: (totalePrice) =>
-    {
-        resultObject.SetActive(true);
-        resultText.text = totalePrice.ToString();
-    }
-    ).ToUniTask(cancellationToken:cancellationToken);
+        from: 0,
+        to: resultPrice,
+        duration: 1,
+        onVirtualUpdate: (totalePrice) =>
+        {
+            resultText.text = totalePrice.ToString();
+        }
+    ).ToUniTask(cancellationToken: cancellationToken);
     }
 }

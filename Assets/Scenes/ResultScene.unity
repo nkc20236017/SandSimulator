@@ -876,7 +876,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paperAnimationObject: {fileID: 5808964377527516774, guid: b108f6ddc6f63b949a8ac629b27cb843, type: 3}
   paperTransform: {fileID: 1330675741}
-  resultObject: {fileID: 0}
+  resultObject: {fileID: 1408600154}
   resultText: {fileID: 1954063726}
 --- !u!1 &1900942618
 GameObject:
