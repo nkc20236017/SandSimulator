@@ -55,4 +55,10 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
         sceneButton.SetActive(true);
             totalePrise.SetActive(true);
     }
+
+    private void OnDestroy()
+    {
+        tokenSource.Cancel();
+    }
+
 }

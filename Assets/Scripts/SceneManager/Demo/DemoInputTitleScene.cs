@@ -17,8 +17,6 @@ public class DemoInputTitleScene : MonoBehaviour
         inputActions = new PlayerActions();
         inputActions.UI.UISelect.performed += OnMouseButton;
         inputActions.Enable();
-
-
     }
 
     private void OnMouseButton(InputAction.CallbackContext context)
