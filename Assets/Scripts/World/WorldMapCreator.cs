@@ -13,7 +13,7 @@ namespace WorldCreation
         [SerializeField]
         private int seed;   // シード値
         public int Seed => seed;
-        [SerializeField]    // 
+        [SerializeField]
         private WorldMap worldMap;
         [SerializeField]
         private Transform sceneParent;
@@ -523,10 +523,12 @@ namespace WorldCreation
                 {
                     hit = Physics2D.Raycast(goalPosition, Vector2.left, Mathf.Infinity, touchLayer);
                 }
+                center = new((int)hit.point.x, (int)hit.point.y + structureRadius);
                 start = hit.point;
             }
             else
             {
+                center = new((int)goalPosition.x, (int)goalPosition.y + structureRadius);
                 start = goalPosition;
             }
             circulePoints = GenerateCircularGrid(structureRadius, center);
