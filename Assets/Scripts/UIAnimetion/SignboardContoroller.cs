@@ -1,6 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class SignboardAnimetion : MonoBehaviour
 {
@@ -37,5 +37,17 @@ public class SignboardAnimetion : MonoBehaviour
     {
         transform.DOKill();
         recPos.DOAnchorPos(startPoint, backSpeed);
+    }
+
+    public void OnOutLine()
+    {
+        Outline outline = GetComponent<Outline>();
+        outline.enabled = true;
+    }
+
+    public void KillOutLine()
+    {
+        Outline outline = GetComponent<Outline>();
+        outline.enabled = false;
     }
 }
