@@ -155,16 +155,19 @@ public class UpdateTile : MonoBehaviour
         for (var i = 0; i < updateTiles.Length; i++)
         {
             tilePositions[i + clearTiles.Length] = updateTiles[i];
-            // TODO: 地層の色を設定する
-            var tileLayer = _chunkInformation.GetLayer(new Vector2(updateTiles[i].x, updateTiles[i].y));
-            if (tile.GetStratumGeologyData(tileLayer) != null)
-            {
-                _updateTilemap.SetColor(updateTiles[i], tile.GetStratumGeologyData(tileLayer).color);
-            }
             tileArray[i + clearTiles.Length] = tile.tile;
         }
         
         _updateTilemap.SetTiles(tilePositions, tileArray);
+        foreach (var tilePosition in tilePositions)
+        {
+            // TODO: 地層の色を設定する
+            var tileLayer = _chunkInformation.GetLayer(new Vector2(tilePosition.x, tilePosition.y));
+            if (tile.GetStratumGeologyData(tileLayer) != null)
+            {
+                _updateTilemap.SetColor(tilePosition, tile.GetStratumGeologyData(tileLayer).color);
+            }
+        }
     }
 
     private void UpdateSand(Vector3Int position)
@@ -195,7 +198,7 @@ public class UpdateTile : MonoBehaviour
             var tileLayer = _chunkInformation.GetLayer(pos);
             if (block.GetStratumGeologyData(tileLayer) != null)
             {
-                mapTilemap.SetColor(position, block.GetStratumGeologyData(tileLayer).color);
+                mapTilemap.SetColor(localPosition, block.GetStratumGeologyData(tileLayer).color);
             }
             _clearTiles.Add(position);
             return;

@@ -15,7 +15,8 @@ public class SuckUp : MonoBehaviour
     [SerializeField, Min(0f)] private float _suctionDistance; // この距離以内のオブジェクトは吸い寄せられる
     [SerializeField, Min(0f)] private float _deleteDistance; // この距離以内のオブジェクトは削除される
     [SerializeField] private LayerMask oreLayerMask;
-
+    [SerializeField, Min(1f)] private float suckUpSpeed;
+    
     [Header("Debug Config")]
     [SerializeField] private bool _debugMode;
 
@@ -115,6 +116,7 @@ public class SuckUp : MonoBehaviour
     {
         _suckUpTilePositions.Clear();
         _suckUpOreObject.Clear();
+        
         var mapTilemap = _chunkInformation.GetChunkTilemap(pivot.position);
         if (mapTilemap == null) { return; }
         
@@ -204,7 +206,7 @@ public class SuckUp : MonoBehaviour
             if (tilemap == null) { continue; }
             
             var direction = (Vector3)tilemap.WorldToCell(pivot.position) - tilemap.WorldToCell(tilePosition);
-            var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized);
+            var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized * suckUpSpeed);
            
             var newTilemap = _chunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
             var localNewTilePosition = _chunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
