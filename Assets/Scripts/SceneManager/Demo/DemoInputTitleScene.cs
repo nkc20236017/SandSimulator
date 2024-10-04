@@ -13,7 +13,7 @@ public class DemoInputTitleScene : MonoBehaviour
 
     private void Awake()
     {
-        if (SceneManager.GetSceneByName("RootScene").isLoaded)
+        if(!SceneManager.GetSceneByName("RootScene").isLoaded)
         {
             SceneManager.LoadScene("RootScene",LoadSceneMode.Additive );
         }
