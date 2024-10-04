@@ -13,7 +13,7 @@ public class SelectEntoryPoint : SceneEntryPointBase
     {
         var store = new ProgressDataStore<ProgressData>();
         progress.Report(store.SetData(new ProgressData(0f,"ÉçÅ[ÉhíÜ","0%")));
-        await UniTask.Delay(TimeSpan.FromSeconds(0.2f));
+        await UniTask.Delay(TimeSpan.FromSeconds(0.2f),cancellationToken:cancellationToken);
         progress.Report(store.SetData(new ProgressData(1f, "äÆóπ", "100%")));
 
     }
