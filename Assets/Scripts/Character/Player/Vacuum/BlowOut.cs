@@ -127,6 +127,7 @@ public class BlowOut : MonoBehaviour
         }
         
         var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPosition.z = 0;
         var centerCell = (Vector3)_updateTilemap.WorldToCell(mouseWorldPosition);
 
         var direction = centerCell - pivot.position;
@@ -145,6 +146,7 @@ public class BlowOut : MonoBehaviour
             blowOutOre.gameObject.SetActive(true);
             var ore = blockDatas.GetOre(blockType);
             blowOutOre.SetOre(ore.attackPower, ore.weightPerSize[0], direction.normalized, ore.oreSprites[0]);
+            inputTank.RemoveTank(1);
         }
         else
         {
@@ -155,9 +157,23 @@ public class BlowOut : MonoBehaviour
                 var randomY = Random.Range(newCell1.y, newCell2.y);
                 var randomPosition = new Vector3(randomX, randomY, 0);
                 var randomCell = _updateTilemap.WorldToCell(randomPosition);
+                var mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(randomCell.x, randomCell.y));
+                if (mapTilemap == null) { continue; }
+                
+                var localPosition = _chunkInformation.WorldToChunk(new Vector2(randomCell.x, randomCell.y));
+                if (_updateTilemap.HasTile(randomCell) || mapTilemap.HasTile(localPosition)) { continue; }
+                
                 _updateTilemap.SetTile(randomCell, blockDatas.GetBlock(blockType).tile);
+
+                var tileLayer = _chunkInformation.GetLayer(new Vector2(randomCell.x, randomCell.y));
+                var block = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile);
+                if (block.GetStratumGeologyData(tileLayer) != null)
+                {
+                    _updateTilemap.SetColor(randomCell, block.GetStratumGeologyData(tileLayer).color);
+                }
+                
+                inputTank.RemoveTank(1);
             }
-            inputTank.RemoveTank(randomGenerateTileCount);
         }
     }
 
@@ -204,6 +220,7 @@ public class BlowOut : MonoBehaviour
             else { continue; }
 
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorldPosition.z = 0;
 
             var direction1 = position - pivot.position;
             var direction2 = mouseWorldPosition - pivot.position;
@@ -221,14 +238,31 @@ public class BlowOut : MonoBehaviour
 
                 var tile = tilemap != _updateTilemap ? tilemap.GetTile(localPosition) : tilemap.GetTile(position);
                 if (tile == null) { continue; }
-
-                if (tile == blockDatas.GetBlock(BlockType.Sand).tile)
+                
+                if (blockDatas.GetBlock(tile).type == BlockType.Sand)
                 {
                     _updateTilemap.SetTile(newTilePosition, tile);
+                    
+                    var tileLayer = _chunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
+                    var block = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile);
+                    if (block.GetStratumGeologyData(tileLayer) != null)
+                    {
+                        _updateTilemap.SetColor(newTilePosition, block.GetStratumGeologyData(tileLayer).color);
+                    }
                 }
                 else
                 {
                     mapTilemap.SetTile(localNewTilePosition, tile);
+
+                    if (blockDatas.GetBlock(tile).type is not (BlockType.Ruby or BlockType.Crystal or BlockType.Emerald))
+                    {
+                        var tileLayer = _chunkInformation.GetLayer(new Vector2(localNewTilePosition.x, localNewTilePosition.y));
+                        var block = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile);
+                        if (block.GetStratumGeologyData(tileLayer) != null)
+                        {
+                            mapTilemap.SetColor(localNewTilePosition, block.GetStratumGeologyData(tileLayer).color);
+                        }
+                    }
                 }
                 
                 if (tilemap == _updateTilemap)

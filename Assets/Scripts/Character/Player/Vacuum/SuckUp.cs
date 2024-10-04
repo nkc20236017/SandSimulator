@@ -109,6 +109,7 @@ public class SuckUp : MonoBehaviour
         }
         
         var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPosition.z = 0;
         var direction = mouseWorldPosition - pivot.position;
         var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         if (pivot.parent.localScale.x < 0)
@@ -149,6 +150,7 @@ public class SuckUp : MonoBehaviour
             if (tilemap == null) { continue; }
 
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorldPosition.z = 0;
             
             Vector2 direction1 = position - pivot.position;
             Vector2 direction2 = mouseWorldPosition - pivot.position;
