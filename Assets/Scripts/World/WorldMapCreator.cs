@@ -500,7 +500,7 @@ namespace WorldCreation
 
             mainCameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
 
-            mapCameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
+            mapCameraSystem.CameraConfig(player.transform);
             minimap.AddTargetIcons(MinimapIconType.Player, player);
 
             // ÉSÅ[Éã
