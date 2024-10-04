@@ -157,6 +157,7 @@ public class BlowOut : MonoBehaviour
                 var randomCell = _updateTilemap.WorldToCell(randomPosition);
                 _updateTilemap.SetTile(randomCell, blockDatas.GetBlock(blockType).tile);
             }
+            inputTank.RemoveTank(randomGenerateTileCount);
         }
     }
 

@@ -8,6 +8,7 @@ public interface IInputTank
 {
     void InputAddTank(BlockType type , int amount = 1);
     bool FiringTank();
+    void RemoveTank(int removeAmount);
     void LeftSelectTank();
     void RightSelectTank();
     void InputAddTank(TileBase tileBase , int amount = 1);

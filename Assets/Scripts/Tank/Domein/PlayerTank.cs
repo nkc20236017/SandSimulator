@@ -79,9 +79,9 @@ public class PlayerTank : IInputTank, IGameLoad
 
     public void RemoveItem(Block mineralData)
     {
-        if(currentItemAmount <= MaxTank)
+        if (currentItemAmount <= MaxTank)
         {
-            maxSignal = false ;
+            maxSignal = false;
         }
 
         if (itemTankDictionary.TryGetValue(mineralData, out MineralTank vaule))
@@ -118,11 +118,10 @@ public class PlayerTank : IInputTank, IGameLoad
     public bool FiringTank()
     {
         var block = tankRepository.Find(currentBlockType);
-        RemoveItem(block);
 
         var item = itemTankDictionary.
-            Where(item => item.Key.type == block.type).
-            FirstOrDefault();
+    Where(item => item.Key.type == block.type).
+    FirstOrDefault();
 
         if (item.Key != null)
         {
@@ -183,5 +182,17 @@ public class PlayerTank : IInputTank, IGameLoad
     public BlockType GetSelectType()
     {
         return currentBlockType;
+    }
+
+    public void RemoveTank(int removeAmount)
+    {
+
+        var block = tankRepository.Find(currentBlockType);
+        for (int i = 0; i < removeAmount; i++)
+        {
+            RemoveItem(block);
+        }
+
+
     }
 }
