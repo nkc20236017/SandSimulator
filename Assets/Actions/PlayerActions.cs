@@ -200,6 +200,45 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""UI"",
+            ""id"": ""a71c2d18-8b94-43ba-b5d1-4e857650110a"",
+            ""actions"": [
+                {
+                    ""name"": ""UISelect"",
+                    ""type"": ""Button"",
+                    ""id"": ""fbe36503-966d-42e5-9c15-33ca4082fc2a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""5a512d0a-a03f-41cc-b5b6-3fc56d3dd6db"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UISelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c795f3d8-01e3-443e-8284-959d0efa8448"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UISelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -215,6 +254,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Vacuum_LeftSelect = m_Vacuum.FindAction("LeftSelect", throwIfNotFound: true);
         m_Vacuum_RightSelect = m_Vacuum.FindAction("RightSelect", throwIfNotFound: true);
         m_Vacuum_TankSelect = m_Vacuum.FindAction("TankSelect", throwIfNotFound: true);
+        // UI
+        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
+        m_UI_UISelect = m_UI.FindAction("UISelect", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -404,6 +446,52 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         }
     }
     public VacuumActions @Vacuum => new VacuumActions(this);
+
+    // UI
+    private readonly InputActionMap m_UI;
+    private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
+    private readonly InputAction m_UI_UISelect;
+    public struct UIActions
+    {
+        private @PlayerActions m_Wrapper;
+        public UIActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @UISelect => m_Wrapper.m_UI_UISelect;
+        public InputActionMap Get() { return m_Wrapper.m_UI; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
+        public void AddCallbacks(IUIActions instance)
+        {
+            if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
+            @UISelect.started += instance.OnUISelect;
+            @UISelect.performed += instance.OnUISelect;
+            @UISelect.canceled += instance.OnUISelect;
+        }
+
+        private void UnregisterCallbacks(IUIActions instance)
+        {
+            @UISelect.started -= instance.OnUISelect;
+            @UISelect.performed -= instance.OnUISelect;
+            @UISelect.canceled -= instance.OnUISelect;
+        }
+
+        public void RemoveCallbacks(IUIActions instance)
+        {
+            if (m_Wrapper.m_UIActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IUIActions instance)
+        {
+            foreach (var item in m_Wrapper.m_UIActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_UIActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public UIActions @UI => new UIActions(this);
     public interface IMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -416,5 +504,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         void OnLeftSelect(InputAction.CallbackContext context);
         void OnRightSelect(InputAction.CallbackContext context);
         void OnTankSelect(InputAction.CallbackContext context);
+    }
+    public interface IUIActions
+    {
+        void OnUISelect(InputAction.CallbackContext context);
     }
 }
