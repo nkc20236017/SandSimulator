@@ -1,7 +1,6 @@
 using MackySoft.Navigathena.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,11 +10,11 @@ public class DemoInputTitleScene : MonoBehaviour
     private ISceneIdentifier gameScene = new BuiltInSceneIdentifier("SelectScene");
     private bool fastSelect;
 
-    private void Awake()
+    private void Start()
     {
-        if(!SceneManager.GetSceneByName("RootScene").isLoaded)
+        if (!SceneManager.GetSceneByName("RootScene").isLoaded)
         {
-            SceneManager.LoadScene("RootScene",LoadSceneMode.Additive );
+            SceneManager.LoadScene("RootScene", LoadSceneMode.Additive);
         }
     }
 
