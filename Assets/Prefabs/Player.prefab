@@ -462,7 +462,7 @@ MonoBehaviour:
   blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
   blockType: 0
   pivot: {fileID: 3791670881468073661}
-  radius: 13.86
+  radius: 17.13
   distance: 3.5
   range: 2.75
   interval: 0.01
