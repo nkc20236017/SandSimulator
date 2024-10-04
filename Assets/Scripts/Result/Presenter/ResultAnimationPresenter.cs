@@ -35,6 +35,7 @@ public class ResultAnimationPresenter : MonoBehaviour
             await animationPaper.AnimationExitUI(cancellationToken);
         }
         resultObject.SetActive(true);
+        AudioManager.Instance.PlayBGM("Coinloop");
         await DOVirtual.Int
     (
         from: 0,
@@ -45,5 +46,7 @@ public class ResultAnimationPresenter : MonoBehaviour
             resultText.text = totalePrice.ToString();
         }
     ).ToUniTask(cancellationToken: cancellationToken);
+        AudioManager.Instance.StopBGM("Coinloop");
+        AudioManager.Instance.PlaySFX("CoinSE");
     }
 }
