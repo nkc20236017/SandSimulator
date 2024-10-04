@@ -57,7 +57,7 @@ public class LoadSceneDirector : ITransitionDirector
             await loadSceneEfect.CanvasGroup
                 .DOFade(0,0.5f)
                 .ToUniTask(cancellationToken: cancellation);
-            await loadSceneHandle.Unload();
+            await loadSceneHandle.Unload(cancellationToken:cancellation);
 
             loadSceneEfect = null;
             loadSceneHandle = null;

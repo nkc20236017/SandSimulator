@@ -9,7 +9,6 @@ public class DemoInputTitleScene : MonoBehaviour
 {
     private ISceneIdentifier loadScene = new BuiltInSceneIdentifier("LoadScene");
     private ISceneIdentifier gameScene = new BuiltInSceneIdentifier("SelectScene");
-    private bool fastSelect;
     private PlayerActions inputActions;
 
     private void Start()
@@ -21,10 +20,8 @@ public class DemoInputTitleScene : MonoBehaviour
 
     private void OnMouseButton(InputAction.CallbackContext context)
     {
-        if (fastSelect) { return; }
-
         AudioManager.Instance.PlaySFX("DecisionSE");
-        fastSelect = true;
         GlobalSceneNavigator.Instance.Push(gameScene, new LoadSceneDirector(loadScene));
+        inputActions.Disable();
     }
 }
