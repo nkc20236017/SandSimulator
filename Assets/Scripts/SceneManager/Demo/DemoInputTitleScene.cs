@@ -10,6 +10,14 @@ public class DemoInputTitleScene : MonoBehaviour
     private ISceneIdentifier gameScene = new BuiltInSceneIdentifier("SelectScene");
     private bool fastSelect;
 
+    private void Start()
+    {
+        if (!SceneManager.GetSceneByName("RootScene").isLoaded)
+        {
+            SceneManager.LoadScene("RootScene", LoadSceneMode.Additive);
+        }
+    }
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
