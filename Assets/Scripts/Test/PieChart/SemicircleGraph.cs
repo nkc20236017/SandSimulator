@@ -75,6 +75,7 @@ public class SemicircleGraph : MonoBehaviour , IOutResultUI
     public void OutputSelectTank(OutPutSelectData outPutSelectData)
     {
 		DefaltScale();
+		selectImage.gameObject.SetActive(true);
         for(var i = 0; i < _semicircles.Length; i++)
 		{
 			if(outPutSelectData.type == _semicircles[i].blockType)
