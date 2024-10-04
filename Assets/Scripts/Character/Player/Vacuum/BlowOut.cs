@@ -16,7 +16,8 @@ public class BlowOut : MonoBehaviour
     [SerializeField, Min(0f)] private float radius; // 吐き出し範囲
     [SerializeField, Min(0f)] private float distance; // 吐き出し距離（現状意味ない）
     [SerializeField, Min(0f)] private float range; // 吐き出し範囲の幅（現状意味ない）
-
+    [SerializeField, Min(1f)] private float blowOutSpeed = 1;
+    
     [Header("Instantiation Config")]
     [SerializeField] private float interval;
     [SerializeField, MinMaxSlider(0, 10)] private Vector2Int generateTileCount;
@@ -33,7 +34,7 @@ public class BlowOut : MonoBehaviour
     private Parabola _parabola;
     private PlayerActions _playerActions;
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
-    [SerializeField] private Tilemap _updateTilemap;
+    private Tilemap _updateTilemap;
     private IInputTank inputTank;
     private IChunkInformation _chunkInformation;
 
@@ -211,7 +212,7 @@ public class BlowOut : MonoBehaviour
 
             if (angle <= 30 && dis <= radius)
             {
-                var newTilePosition = Vector3Int.RoundToInt(position + direction1.normalized);
+                var newTilePosition = Vector3Int.RoundToInt(position + direction1.normalized * blowOutSpeed);
                 var localNewTilePosition = _chunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
                 mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
                 if (mapTilemap == null) { continue; }
