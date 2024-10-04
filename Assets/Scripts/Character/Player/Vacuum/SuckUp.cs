@@ -216,29 +216,29 @@ public class SuckUp : MonoBehaviour
         
         _suckUpTilePositions = _suckUpTilePositions.OrderBy(_ => Random.value).ToList();
 
-        foreach (var tilePosition in _suckUpTilePositions)
+        foreach (var position in _suckUpTilePositions)
         {
-            var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(tilePosition.x, tilePosition.y));
+            var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
             if (tilemap == null) { continue; }
             
-            var direction = pivot.position - tilePosition;
-            var newTilePosition = tilePosition + direction.normalized * suckUpSpeed;
+            var direction = pivot.position - position;
+            var newTilePosition = position + direction.normalized * suckUpSpeed;
 
             var newTilemap = _chunkInformation.GetChunkTilemap(newTilePosition);
             var localNewTilePosition = _chunkInformation.WorldToChunk(newTilePosition);
             if (newTilemap.HasTile(localNewTilePosition) || _updateTilemap.HasTile(_updateTilemap.WorldToCell(newTilePosition))) { continue; }
 
             TileBase tile = null;
-            var localTilePosition = _chunkInformation.WorldToChunk(new Vector2(tilePosition.x, tilePosition.y));
-            if (newTilemap.HasTile(localTilePosition))
+            var localTilePosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+            if (tilemap.HasTile(localTilePosition))
             {
                 tile = tilemap.GetTile(localTilePosition);
                 var isContinue = blockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
                 if (isContinue) { continue; }
             }
-            else if (_updateTilemap.HasTile(tilePosition))
+            else if (_updateTilemap.HasTile(position))
             {
-                tile = _updateTilemap.GetTile(tilePosition);
+                tile = _updateTilemap.GetTile(position);
                 var isContinue = blockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
                 if (isContinue) { continue; }
             }
@@ -261,7 +261,7 @@ public class SuckUp : MonoBehaviour
                 _updateTilemap.SetColor(_updateTilemap.WorldToCell(newTilePosition), block.GetStratumGeologyData(tileLayer).color);
             }
             
-            _updateTilemap.SetTile(_updateTilemap.WorldToCell(tilePosition), null);
+            _updateTilemap.SetTile(_updateTilemap.WorldToCell(position), null);
             tilemap.SetTile(localTilePosition, null);
 
             if ((newTilePosition - pivot.position).sqrMagnitude <= _deleteDistance * _deleteDistance)
@@ -289,7 +289,7 @@ public class SuckUp : MonoBehaviour
             
             if (Vector3.Distance(oreObject.transform.position, pivot.position) <= _deleteDistance)
             {
-                inputTank.InputAddTank(oreObject.Ore.type);//タンクに追加
+                inputTank.InputAddTank(oreObject.Ore.type, 10);//タンクに追加
                 _suckUpOreObject.Remove(oreObject);
                 Destroy(oreObject.gameObject);
             }

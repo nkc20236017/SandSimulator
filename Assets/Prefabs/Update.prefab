@@ -184,7 +184,7 @@ MonoBehaviour:
   blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
   collisionLayerMask:
     serializedVersion: 2
-    m_Bits: 576
+    m_Bits: 960
   updateInterval: 0.01
   chunkSize: {x: 160, y: 150}
   canUpdateSand: 1
