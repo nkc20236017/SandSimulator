@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class SuckUp : MonoBehaviour
@@ -26,6 +27,7 @@ public class SuckUp : MonoBehaviour
     private int _numberExecutions;
     private List<Vector3Int> _suckUpTilePositions = new();
     private List<OreObject> _suckUpOreObject = new();
+    private Tilemap _updateTilemap;
     private PlayerMovement _playerMovement;
     private Camera _camera;
     private BlowOut _blowOut;
@@ -39,6 +41,11 @@ public class SuckUp : MonoBehaviour
     public void Inject(IInputTank inputTank)
     {
         this.inputTank = inputTank;
+    }
+    
+    public void SetTilemap(Tilemap tilemap)
+    {
+        _updateTilemap = tilemap;
     }
 
     private void Awake()
@@ -129,9 +136,10 @@ public class SuckUp : MonoBehaviour
             if (mapTilemap == null) { continue; }
             
             var localPosition = _chunkInformation.WorldToChunk(pos);
-            if (!mapTilemap.HasTile(localPosition)) { continue; }
-            
-            hasTile = true;
+            if (mapTilemap.HasTile(localPosition) || _updateTilemap.HasTile(position))
+            {
+                hasTile = true;
+            }
         }
         if (!hasTile) { return; }
         
@@ -153,15 +161,23 @@ public class SuckUp : MonoBehaviour
                 if (_suckUpOreObject.Count > 0) { continue; }
                 
                 var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
-                if (!tilemap.HasTile(localPosition)) { continue; }
-                
-                if (distance <= _deleteDistance)
+                if (tilemap.HasTile(localPosition) || _updateTilemap.HasTile(position))
                 {
-                    tilemap.SetTile(localPosition, null);
-                    return;
+                    // if (distance <= _deleteDistance)
+                    // {
+                    //     if (tilemap.HasTile(localPosition))
+                    //     {
+                    //         tilemap.SetTile(localPosition, null);
+                    //     }
+                    //     else if (_updateTilemap.HasTile(position))
+                    //     {
+                    //         _updateTilemap.SetTile(position, null);
+                    //     }
+                    //     return;
+                    // }
+
+                    _suckUpTilePositions.Add(position);
                 }
-                
-                _suckUpTilePositions.Add(position);
             }
         }
     }
@@ -205,34 +221,54 @@ public class SuckUp : MonoBehaviour
             var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(tilePosition.x, tilePosition.y));
             if (tilemap == null) { continue; }
             
-            var direction = (Vector3)tilemap.WorldToCell(pivot.position) - tilemap.WorldToCell(tilePosition);
-            var newTilePosition = Vector3Int.RoundToInt(tilePosition + direction.normalized * suckUpSpeed);
-           
-            var newTilemap = _chunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
-            var localNewTilePosition = _chunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
-            if (newTilemap.HasTile(localNewTilePosition)) { continue; }
-            
+            var direction = pivot.position - tilePosition;
+            var newTilePosition = tilePosition + direction.normalized * suckUpSpeed;
+
+            var newTilemap = _chunkInformation.GetChunkTilemap(newTilePosition);
+            var localNewTilePosition = _chunkInformation.WorldToChunk(newTilePosition);
+            if (newTilemap.HasTile(localNewTilePosition) || _updateTilemap.HasTile(_updateTilemap.WorldToCell(newTilePosition))) { continue; }
+
+            TileBase tile = null;
             var localTilePosition = _chunkInformation.WorldToChunk(new Vector2(tilePosition.x, tilePosition.y));
-            var tile = tilemap.GetTile(localTilePosition);
-            var isContinue = blockDatas.Block
-                    .Where(tileData => tileData.tile == tile)
-                    .Any(tileData => _numberExecutions % tileData.weight != 0);
-            if (isContinue) { continue; }
-            
-            newTilemap.SetTile(localNewTilePosition, tile);
+            if (newTilemap.HasTile(localTilePosition))
+            {
+                tile = tilemap.GetTile(localTilePosition);
+                var isContinue = blockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
+                if (isContinue) { continue; }
+            }
+            else if (_updateTilemap.HasTile(tilePosition))
+            {
+                tile = _updateTilemap.GetTile(tilePosition);
+                var isContinue = blockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
+                if (isContinue) { continue; }
+            }
+            if (tile == null) { continue; }
+
+            if (blockDatas.GetBlock(tile).type == BlockType.Sand)
+            {
+                _updateTilemap.SetTile(_updateTilemap.WorldToCell(newTilePosition), tile);
+            }
+            else
+            {
+                newTilemap.SetTile(localNewTilePosition, tile);
+            }
             // TODO: 層ごとに色を変える
             var tileLayer = _chunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
             var block = blockDatas.GetBlock(tile);
             if (block.GetStratumGeologyData(tileLayer) != null)
             {
                 newTilemap.SetColor(localNewTilePosition, block.GetStratumGeologyData(tileLayer).color);
+                _updateTilemap.SetColor(_updateTilemap.WorldToCell(newTilePosition), block.GetStratumGeologyData(tileLayer).color);
             }
-            tilemap.SetTile(localTilePosition, null);
             
+            _updateTilemap.SetTile(_updateTilemap.WorldToCell(tilePosition), null);
+            tilemap.SetTile(localTilePosition, null);
+
             if ((newTilePosition - pivot.position).sqrMagnitude <= _deleteDistance * _deleteDistance)
             {
                 inputTank.InputAddTank(tile);//タンクに追加
                 newTilemap.SetTile(localNewTilePosition, null);
+                _updateTilemap.SetTile(_updateTilemap.WorldToCell(newTilePosition), null);
             }
         }
     }
