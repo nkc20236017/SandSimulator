@@ -445,7 +445,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   suckUpSpeed: 3
-  _debugMode: 1
+  _debugMode: 0
   matchTheSizeOfTheCollider: 0
 --- !u!114 &8575309676087972804
 MonoBehaviour:
@@ -462,14 +462,14 @@ MonoBehaviour:
   blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
   blockType: 0
   pivot: {fileID: 3791670881468073661}
-  radius: 17.13
-  distance: 3.5
-  range: 2.75
+  radius: 25
+  distance: 4.5
+  range: 3
+  blowOutSpeed: 3
   interval: 0.01
-  generateTileCount: {x: 2, y: 4}
+  generateTileCount: {x: 5, y: 8}
   blowOutOrePrefab: {fileID: 9133644170437659737, guid: f9894d24cfcacfb418601744a869af7e, type: 3}
-  debug: 0
-  _updateTilemap: {fileID: 0}
+  debug: 1
 --- !u!1001 &7761226255580890619
 PrefabInstance:
   m_ObjectHideFlags: 0
