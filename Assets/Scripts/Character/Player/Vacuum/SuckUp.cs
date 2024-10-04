@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -9,7 +10,7 @@ public class SuckUp : MonoBehaviour
     [Header("Tile Config")]
     [SerializeField] private BlockDatas blockDatas;
     [SerializeField] private LayerMask blockLayerMask;
-    
+
     [Header("Suction Config")]
     [SerializeField] private Transform pivot;
     [SerializeField, Range(0f, 180f)] private float _suctionAngle; // この角度以内のオブジェクトは吸い寄せられる
@@ -17,7 +18,7 @@ public class SuckUp : MonoBehaviour
     [SerializeField, Min(0f)] private float _deleteDistance; // この距離以内のオブジェクトは削除される
     [SerializeField] private LayerMask oreLayerMask;
     [SerializeField, Min(1f)] private float suckUpSpeed;
-    
+
     [Header("Debug Config")]
     [SerializeField] private bool _debugMode;
 
@@ -35,14 +36,14 @@ public class SuckUp : MonoBehaviour
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
     private IInputTank inputTank;
     private IChunkInformation _chunkInformation;
-    
+
     public bool IsSuckUp { get; private set; }
-    
+
     public void Inject(IInputTank inputTank)
     {
         this.inputTank = inputTank;
     }
-    
+
     public void SetTilemap(Tilemap tilemap)
     {
         _updateTilemap = tilemap;
@@ -51,7 +52,7 @@ public class SuckUp : MonoBehaviour
     private void Awake()
     {
         _playerActions = new PlayerActions();
-        
+
         _blowOut = GetComponent<BlowOut>();
         _playerMovement = GetComponentInParent<PlayerMovement>();
     }
@@ -59,15 +60,17 @@ public class SuckUp : MonoBehaviour
     private void Start()
     {
         _numberExecutions = 0;
-        
+
+        _playerActions.Vacuum.VacuumPos.performed += OnVacuum;
+        _playerActions.Enable();
         VacuumActions.Absorption.started += _ => _playerMovement.IsMoveFlip = false;
         VacuumActions.Absorption.canceled += _ => CancelSuckUp();
     }
 
     private void Update()
     {
-        RotateToCursorDirection();
-        
+        //RotateToCursorDirection();
+
         if (VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
         {
             // TODO: ［効果音］吸い込み
@@ -81,14 +84,14 @@ public class SuckUp : MonoBehaviour
     private void Performed()
     {
         if (inputTank.TamkMaxSignal()) { return; }
-        
+
         // 吸い込み対象の座標取得
         GetSuckUpTilePositions();
-        
+
         // 鉱石の吸い込み
         SuckUpOres();
         if (_suckUpOreObject.Count > 0) { return; }
-        
+
         // タイルの吸い込み
         SuckUpTiles();
     }
@@ -101,14 +104,15 @@ public class SuckUp : MonoBehaviour
         _numberExecutions = 0;
     }
 
-    private void RotateToCursorDirection()
+    private void OnVacuum(InputAction.CallbackContext context)
     {
+
         if (_camera == null)
         {
             _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         }
-        
-        var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+        var demo = context.ReadValue<Vector2>();
+        Vector3 mouseWorldPosition = demo;//_camera.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPosition.z = 0;
         var direction = mouseWorldPosition - pivot.position;
         var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -118,16 +122,37 @@ public class SuckUp : MonoBehaviour
         }
 
         pivot.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        Debug.Log(pivot.rotation);
     }
+
+
+    //private void RotateToCursorDirection()
+    //{
+    //    if (_camera == null)
+    //    {
+    //        _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+    //    }
+
+    //    var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+    //    mouseWorldPosition.z = 0;
+    //    var direction = mouseWorldPosition - pivot.position;
+    //    var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+    //    if (pivot.parent.localScale.x < 0)
+    //    {
+    //        angle += 180;
+    //    }
+
+    //    pivot.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+    //}
 
     private void GetSuckUpTilePositions()
     {
         _suckUpTilePositions.Clear();
         _suckUpOreObject.Clear();
-        
+
         var mapTilemap = _chunkInformation.GetChunkTilemap(pivot.position);
         if (mapTilemap == null) { return; }
-        
+
         var bounds = new BoundsInt(Vector3Int.RoundToInt(pivot.position) - new Vector3Int((int)_suctionDistance, (int)_suctionDistance, 0), new Vector3Int((int)_suctionDistance * 2, (int)_suctionDistance * 2, 1));
         var hasTile = false;
         foreach (var position in bounds.allPositionsWithin)
@@ -135,7 +160,7 @@ public class SuckUp : MonoBehaviour
             var pos = new Vector2(position.x, position.y);
             mapTilemap = _chunkInformation.GetChunkTilemap(pos);
             if (mapTilemap == null) { continue; }
-            
+
             var localPosition = _chunkInformation.WorldToChunk(pos);
             if (mapTilemap.HasTile(localPosition) || _updateTilemap.HasTile(position))
             {
@@ -143,7 +168,7 @@ public class SuckUp : MonoBehaviour
             }
         }
         if (!hasTile) { return; }
-        
+
         foreach (var position in bounds.allPositionsWithin)
         {
             var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
@@ -151,7 +176,7 @@ public class SuckUp : MonoBehaviour
 
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPosition.z = 0;
-            
+
             Vector2 direction1 = position - pivot.position;
             Vector2 direction2 = mouseWorldPosition - pivot.position;
             var angle = Vector3.Angle(direction1, direction2);
@@ -159,9 +184,9 @@ public class SuckUp : MonoBehaviour
             var distance = Vector3.Distance(pivot.position, position);
             if (angle <= _suctionAngle && distance <= _suctionDistance)
             {
-                DetectOre(new Vector2(position.x, position.y));   
+                DetectOre(new Vector2(position.x, position.y));
                 if (_suckUpOreObject.Count > 0) { continue; }
-                
+
                 var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
                 if (tilemap.HasTile(localPosition) || _updateTilemap.HasTile(position))
                 {
@@ -183,12 +208,12 @@ public class SuckUp : MonoBehaviour
             }
         }
     }
-    
+
     private void DetectOre(Vector2 position)
     {
         var hitAll = Physics2D.OverlapBoxAll(position, Vector2.one, 0, oreLayerMask);
         if (hitAll.Length == 0) { return; }
-        
+
         foreach (var hit in hitAll)
         {
             // if (hit == null) { continue; }
@@ -198,31 +223,31 @@ public class SuckUp : MonoBehaviour
             if (!hit.TryGetComponent<IDamagable>(out var target)) { continue; }
             if (_suckUpOreObject.Contains(oreObject)) { continue; }
             _suckUpOreObject.Add(oreObject);
-            
+
             if (_numberExecutions % oreObject.Ore.weightPerSize[oreObject.Size - 1] == 0)
             {
                 target.TakeDamage(3);
             }
         }
     }
-    
+
     private bool IsBlock(Vector3 position)
     {
         var hit = Physics2D.Linecast(pivot.position, position, blockLayerMask);
         return hit.collider != null;
     }
-    
+
     private void SuckUpTiles()
     {
         if (_suckUpTilePositions.Count == 0) { return; }
-        
+
         _suckUpTilePositions = _suckUpTilePositions.OrderBy(_ => Random.value).ToList();
 
         foreach (var position in _suckUpTilePositions)
         {
             var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
             if (tilemap == null) { continue; }
-            
+
             var direction = pivot.position - position;
             var newTilePosition = position + direction.normalized * suckUpSpeed;
 
@@ -262,7 +287,7 @@ public class SuckUp : MonoBehaviour
                 newTilemap.SetColor(localNewTilePosition, block.GetStratumGeologyData(tileLayer).color);
                 _updateTilemap.SetColor(_updateTilemap.WorldToCell(newTilePosition), block.GetStratumGeologyData(tileLayer).color);
             }
-            
+
             _updateTilemap.SetTile(_updateTilemap.WorldToCell(position), null);
             tilemap.SetTile(localTilePosition, null);
 
@@ -278,7 +303,7 @@ public class SuckUp : MonoBehaviour
     private void SuckUpOres()
     {
         if (_suckUpOreObject.Count == 0) { return; }
-        
+
         _suckUpOreObject = _suckUpOreObject.OrderBy(_ => Random.value).Where(x => x != null).ToList();
 
         foreach (var oreObject in _suckUpOreObject.ToList())
@@ -288,7 +313,7 @@ public class SuckUp : MonoBehaviour
             var position = oreObject.transform.position;
             var direction = pivot.position - position;
             oreObject.transform.position = position + direction.normalized;
-            
+
             if (Vector3.Distance(oreObject.transform.position, pivot.position) <= _deleteDistance)
             {
                 inputTank.InputAddTank(oreObject.Ore.type, 10);//タンクに追加
@@ -302,7 +327,7 @@ public class SuckUp : MonoBehaviour
     {
         _deleteDistance = Mathf.Min(_suctionDistance, _deleteDistance);
         _suctionDistance = Mathf.Max(_deleteDistance, _suctionDistance);
-        
+
         if (!_debugMode) { return; }
 
         if (matchTheSizeOfTheCollider)
@@ -318,7 +343,7 @@ public class SuckUp : MonoBehaviour
         }
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(pivot.position, _suctionDistance);
-        
+
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(pivot.position, _deleteDistance);
 
@@ -338,7 +363,7 @@ public class SuckUp : MonoBehaviour
         var newCell2 = GetNewCell(angle + angleInRadians, _suctionDistance);
         Gizmos.DrawLine(pivot.position, newCell2);
     }
-    
+
     private Vector3 GetNewCell(float angle, float chordLength)
     {
         var newX = chordLength * Mathf.Cos(angle);
@@ -347,16 +372,16 @@ public class SuckUp : MonoBehaviour
         var newCell = pivot.position + newDirection;
         return newCell;
     }
-    
+
     private void OnEnable()
     {
         _playerActions.Enable();
-        
+
         var worldMapManager = FindObjectOfType<WorldMapManager>();
         _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
         _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
     }
-    
+
     private void OnDisable()
     {
         _playerActions.Disable();
