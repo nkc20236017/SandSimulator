@@ -62,9 +62,10 @@ public class ResultAnimationUI : MonoBehaviour
             .ToUniTask(cancellationToken: cancellationToken);
     }
 
-    public UniTask AnimationExitUI(CancellationToken cancellationToken)
+    public async UniTask AnimationExitUI(CancellationToken cancellationToken)
     {
-        return rectTransform
+        await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken: cancellationToken);
+        await rectTransform
             .DOAnchorPos(outPoint, defaultSpeed)
             .ToUniTask(cancellationToken:cancellationToken);
     }
