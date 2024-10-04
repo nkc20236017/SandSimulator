@@ -438,12 +438,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   pivot: {fileID: 3791670881468073661}
-  _suctionAngle: 30
-  _suctionDistance: 13.86
-  _deleteDistance: 4.8
+  _suctionAngle: 35
+  _suctionDistance: 23
+  _deleteDistance: 7
   oreLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  suckUpSpeed: 3
   _debugMode: 1
   matchTheSizeOfTheCollider: 0
 --- !u!114 &8575309676087972804
