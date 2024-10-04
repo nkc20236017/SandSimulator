@@ -20,8 +20,9 @@ public class PlayerMovement : MonoBehaviour
 	[Header("Knockback Config")]
 	[SerializeField] private float knockbackTime;
 		
+	private static readonly int IsJump = Animator.StringToHash("isJump");
+	private static readonly int XVelocity = Animator.StringToHash("xVelocity");
 	private float _knockbackTimer;
-	private float _currentSpeed;
 	private Vector2 _moveDirection;
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
@@ -30,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
 	private Camera _camera;
 	private PlayerActions _playerActions;
 	private IChunkInformation _chunkInformation;
-	
+
 	public bool CanMove { get; set; } = true;
 	public bool IsMoveFlip { get; set; } = true;
 	private PlayerActions.MovementActions MovementActions => _playerActions.Movement;
@@ -48,8 +49,6 @@ public class PlayerMovement : MonoBehaviour
 	{
 		MovementActions.Jump.started += _ => Jump();
 		MovementActions.Jump.canceled += _ => JumpCancel();
-		
-		_currentSpeed = speed;
 	}
 
 	private void FixedUpdate()
@@ -67,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
 	
 	private void Movement()
 	{
-		_rigidbody2D.velocity = new Vector2(_moveDirection.x * _currentSpeed, _rigidbody2D.velocity.y);
+		_rigidbody2D.velocity = new Vector2(_moveDirection.x * speed, _rigidbody2D.velocity.y);
 	}
 
 	private void Update()
@@ -230,15 +229,8 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Animation()
 	{
-		if(_rigidbody2D.velocity.y != 0)
-		{
-            _animator.SetBool("isJump", true);
-        }
-		else
-		{
-            _animator.SetBool("isJump", false);
-            _animator.SetFloat("xVelocity", _rigidbody2D.velocity.x);
-        }
+        _animator.SetBool(IsJump, !IsGround());
+        _animator.SetFloat(XVelocity, Mathf.Abs(_rigidbody2D.velocity.x));
 	}
 
 	private void OnDrawGizmos()

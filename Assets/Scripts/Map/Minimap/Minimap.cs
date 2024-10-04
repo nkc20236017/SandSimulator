@@ -8,6 +8,7 @@ public class Minimap : MonoBehaviour
 	[SerializeField] private MinimapIcon _minimapIcon;
 	[SerializeField] private GameObject _targetIconPrefab;
 	[SerializeField] private Camera _minimapCamera;
+	[SerializeField] private float _distance = 5;
 	
 	private List<GameObject> _targets = new();
 	private List<GameObject> _targetIcons = new();
@@ -67,7 +68,7 @@ public class Minimap : MonoBehaviour
 			{
 				var direction = _targets[_targetIcons.IndexOf(target)].transform.position - _minimapCamera.transform.position;
 				var distance = Mathf.Min(_minimapCamera.orthographicSize, direction.magnitude);
-				direction = direction.normalized * distance;
+				direction = direction.normalized * (distance - _distance);
 				var position = _minimapCamera.transform.position + direction;
 				position.z = 0;
 				target.transform.position = position;
