@@ -30,6 +30,7 @@ public class ResultEntoryPoint : SceneEntryPointBase
         {
             resultAction.ResultStart(resultData.result);
         }
+
         return base.OnEnter(reader, cancellationToken);
     }
 
