@@ -488,6 +488,7 @@ namespace WorldCreation
             BlowOut blowOut = player.GetComponentInChildren<BlowOut>();
             SelectTank select = player.GetComponent<SelectTank>();
 
+            suckUp.SetTilemap(updateTilemap.gameObject.GetComponent<Tilemap>());
             blowOut.SetTilemap(updateTilemap.gameObject.GetComponent<Tilemap>());
 
             suckUp.Inject(inputTank);
