@@ -136,7 +136,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.037460327, y: 0.4000883}
+  m_Offset: {x: 0.3843994, y: -0.021770477}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -147,7 +147,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 6.1801414, y: 12.374811}
+  m_Size: {x: 12.284702, y: 6.2702484}
   m_EdgeRadius: 0
 --- !u!114 &5928910025739412085
 MonoBehaviour:
@@ -230,7 +230,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 776dcd8d1043472790d7408cbc4f6183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
   _radius: 10
+  _diggingInterval: 0.1
 --- !u!114 &3733803965801239941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,7 +246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pivot: {fileID: 9097912794915553998}
-  radius: 45
+  radius: 55
   targetLayerMask:
     serializedVersion: 2
     m_Bits: 4288
@@ -283,7 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pivot: {fileID: 9097912794915553998}
-  radius: 25
+  radius: 15
   angle: 180
   direction: 0
   playerLayerMask:
@@ -386,14 +388,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3668698857136145095}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: -0, z: 0.7071068, w: -0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6878933882226315049}
   m_Father: {fileID: 9097912794915553998}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 270}
 --- !u!212 &60279398336962668
 SpriteRenderer:
   m_ObjectHideFlags: 0

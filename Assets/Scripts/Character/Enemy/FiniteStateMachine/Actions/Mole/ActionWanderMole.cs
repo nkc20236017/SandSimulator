@@ -11,6 +11,7 @@ public class ActionWanderMole : FsmAction
 	private float _timer;
 	private float _randomWanderTime;
 	private Vector3 _movePosition;
+	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
 	private IChunkInformation _chunkInformation;
 	
@@ -27,14 +28,15 @@ public class ActionWanderMole : FsmAction
 	
 	private void Wander()
 	{
-		if (IsTilemap(_movePosition))
+		if (!IsTilemap(_movePosition))
 		{
 			GetRandomPointInCircle();
 			return;
 		}
 
 		Movement();
-
+		Rotate();
+		
 		_timer -= Time.deltaTime;
 		if (_timer <= 0f)
 		{
@@ -48,15 +50,20 @@ public class ActionWanderMole : FsmAction
         // ランダムな位置に向かって移動する
         var moveDirection = (_movePosition - transform.position).normalized;
         var movement = moveDirection * (_enemyBrain.Status.speed * Time.deltaTime);
+        movement.z = 0f;
         if (Vector3.Distance(transform.position, _movePosition) >= 0.5f)
         {
-            transform.Translate(movement);
-            
-            var direction = _movePosition - transform.position;
-            var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, 0f, angle);
+            _rigidbody2D.MovePosition(transform.position + movement);
         }
     }
+    
+    private void Rotate()
+	{
+		// 移動している方向に向く
+		var moveDirection = (_movePosition - transform.position).normalized;
+		var angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+		transform.rotation = Quaternion.Euler(0f, 0f, angle);
+	}
 
     private void GetRandomPointInCircle()
     {
@@ -91,6 +98,7 @@ public class ActionWanderMole : FsmAction
 	{
 		var worldMapManager = FindObjectOfType<WorldMapManager>();
 		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();
 	}
 }
