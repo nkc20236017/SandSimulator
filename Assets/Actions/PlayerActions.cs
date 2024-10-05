@@ -185,6 +185,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""VacuumPos"",
+                    ""type"": ""Value"",
+                    ""id"": ""32b1b7b1-beb0-462c-aabf-c1d8b1a59080"",
+                    ""expectedControlType"": ""Vector3"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -234,28 +243,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""a40e2c6c-4418-436f-82b6-eb421c3eb070"",
-                    ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""LeftSelect"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""b0d55759-476e-415f-a07d-b77bc346aa17"",
-                    ""path"": ""<Keyboard>/rightArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RightSelect"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""11e04afb-c2a0-41ae-a9eb-2a84c4ed956a"",
                     ""path"": ""<Mouse>/scroll"",
                     ""interactions"": """",
@@ -267,12 +254,45 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""10541ef0-ed5b-4c7f-b239-466857a2e34e"",
-                    ""path"": ""<Gamepad>/dpad"",
+                    ""id"": ""cba2dc97-1822-4dc9-b991-fd4881853851"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""TankSelect"",
+                    ""action"": ""LeftSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""072b2718-679a-49be-a89e-b0031247e65b"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c480fbd2-8298-45d1-a05d-903a7884e5ec"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VacuumPos"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""339ec6aa-cd69-44f7-a6b7-aef4c4870c34"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VacuumPos"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -331,6 +351,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Vacuum_LeftSelect = m_Vacuum.FindAction("LeftSelect", throwIfNotFound: true);
         m_Vacuum_RightSelect = m_Vacuum.FindAction("RightSelect", throwIfNotFound: true);
         m_Vacuum_TankSelect = m_Vacuum.FindAction("TankSelect", throwIfNotFound: true);
+        m_Vacuum_VacuumPos = m_Vacuum.FindAction("VacuumPos", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_UISelect = m_UI.FindAction("UISelect", throwIfNotFound: true);
@@ -454,6 +475,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Vacuum_LeftSelect;
     private readonly InputAction m_Vacuum_RightSelect;
     private readonly InputAction m_Vacuum_TankSelect;
+    private readonly InputAction m_Vacuum_VacuumPos;
     public struct VacuumActions
     {
         private @PlayerActions m_Wrapper;
@@ -463,6 +485,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         public InputAction @LeftSelect => m_Wrapper.m_Vacuum_LeftSelect;
         public InputAction @RightSelect => m_Wrapper.m_Vacuum_RightSelect;
         public InputAction @TankSelect => m_Wrapper.m_Vacuum_TankSelect;
+        public InputAction @VacuumPos => m_Wrapper.m_Vacuum_VacuumPos;
         public InputActionMap Get() { return m_Wrapper.m_Vacuum; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -487,6 +510,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @TankSelect.started += instance.OnTankSelect;
             @TankSelect.performed += instance.OnTankSelect;
             @TankSelect.canceled += instance.OnTankSelect;
+            @VacuumPos.started += instance.OnVacuumPos;
+            @VacuumPos.performed += instance.OnVacuumPos;
+            @VacuumPos.canceled += instance.OnVacuumPos;
         }
 
         private void UnregisterCallbacks(IVacuumActions instance)
@@ -506,6 +532,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @TankSelect.started -= instance.OnTankSelect;
             @TankSelect.performed -= instance.OnTankSelect;
             @TankSelect.canceled -= instance.OnTankSelect;
+            @VacuumPos.started -= instance.OnVacuumPos;
+            @VacuumPos.performed -= instance.OnVacuumPos;
+            @VacuumPos.canceled -= instance.OnVacuumPos;
         }
 
         public void RemoveCallbacks(IVacuumActions instance)
@@ -581,6 +610,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         void OnLeftSelect(InputAction.CallbackContext context);
         void OnRightSelect(InputAction.CallbackContext context);
         void OnTankSelect(InputAction.CallbackContext context);
+        void OnVacuumPos(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
