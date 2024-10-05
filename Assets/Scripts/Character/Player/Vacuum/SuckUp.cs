@@ -298,7 +298,7 @@ public class SuckUp : MonoBehaviour, IDetectSoundable
             
             if (Vector3.Distance(oreObject.transform.position, pivot.position) <= _deleteDistance)
             {
-                inputTank.InputAddTank(oreObject.Ore.type, 10);//タンクに追加
+                inputTank.InputAddTank(oreObject.Ore.type);//タンクに追加
                 _suckUpOreObject.Remove(oreObject);
                 Destroy(oreObject.gameObject);
             }
