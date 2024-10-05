@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ActionChase : FsmAction
+public class ActionChaseTurtle : FsmAction
 {
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
@@ -19,9 +19,9 @@ public class ActionChase : FsmAction
 	
 	private void Flip()
 	{
-		if (_enemyBrain.Player == null) { return; }
+		if (_enemyBrain.Target == null) { return; }
 		
-		var direction = _enemyBrain.Player.position - transform.position;
+		var direction = _enemyBrain.Target.position - transform.position;
 		var dir = direction.x >= 0 ? Vector3.right : Vector3.left;
 		transform.localScale = new Vector3(dir.x, 1, 1);
 		_enemyBrain.Direction = dir;

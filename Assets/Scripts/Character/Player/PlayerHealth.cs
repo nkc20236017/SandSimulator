@@ -1,7 +1,7 @@
 ﻿using MackySoft.Navigathena.SceneManagement;
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour, IDamagable
+public class PlayerHealth : MonoBehaviour, IDamageable
 {
 	[SerializeField] private float invincibilityTime;
 	[SerializeField] private int maxHealth;

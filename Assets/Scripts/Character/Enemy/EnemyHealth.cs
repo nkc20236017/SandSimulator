@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour, IDamagable
+public class EnemyHealth : MonoBehaviour, IDamageable
 {
     // [Header("Health Bar")]
     // [SerializeField] private GameObject healthBarObject;

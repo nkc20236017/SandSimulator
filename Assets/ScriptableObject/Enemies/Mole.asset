@@ -15,5 +15,23 @@ MonoBehaviour:
   type: 0
   id: 
   name: "\u30E2\u30B0\u30E9"
-  sprite: {fileID: 0}
-  status: []
+  sprite: {fileID: 21300000, guid: d1f4cd7899e2d4949bcf45089c5ed199, type: 3}
+  status:
+  - name: "\uFF11\u5C64"
+    depth: 1
+    health: 30
+    speed: 15
+    attack: 1
+    attackSpeed: 30
+  - name: "\uFF12\u5C64"
+    depth: 2
+    health: 30
+    speed: 15
+    attack: 1
+    attackSpeed: 30
+  - name: "\uFF13\u5C64"
+    depth: 3
+    health: 30
+    speed: 15
+    attack: 1
+    attackSpeed: 30

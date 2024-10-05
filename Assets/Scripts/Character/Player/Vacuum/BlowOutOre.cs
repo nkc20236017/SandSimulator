@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public class BlowOutOre : MonoBehaviour
+public class BlowOutOre : MonoBehaviour, IDetectSoundable
 {
 	[SerializeField] private float _speed;
 	[SerializeField] private float plusRadius;
@@ -14,6 +15,8 @@ public class BlowOutOre : MonoBehaviour
 	private CircleCollider2D _circleCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private SpriteRenderer _spriteRenderer;
+	
+	public bool IsDetectSound { get; set; }
 	
 	private void Awake()
 	{
@@ -58,7 +61,8 @@ public class BlowOutOre : MonoBehaviour
 	{
 		if (other.collider.CompareTag("Player")) { return; }
 		
-		if (other.collider.TryGetComponent<IDamagable>(out var target))
+		IsDetectSound = true;
+		if (other.collider.TryGetComponent<IDamageable>(out var target))
 		{
 			target.TakeDamage(_attackPower);
 			Destroy(gameObject);
@@ -67,6 +71,13 @@ public class BlowOutOre : MonoBehaviour
 		if (_isInvincible) { return; }
 		
 		Destroy(gameObject);
+	}
+
+	private void OnCollisionExit2D(Collision2D other)
+	{
+		if (other.collider.CompareTag("Player")) { return; }
+
+		IsDetectSound = false;
 	}
 }
 

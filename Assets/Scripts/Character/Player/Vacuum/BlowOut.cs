@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
 
-public class BlowOut : MonoBehaviour
+public class BlowOut : MonoBehaviour, IDetectSoundable
 {
     [Header("Tile Config")]
     [SerializeField] private BlockDatas blockDatas;
@@ -39,6 +39,7 @@ public class BlowOut : MonoBehaviour
     private IChunkInformation _chunkInformation;
 
     public bool IsBlowOut { get; private set; }
+    public bool IsDetectSound { get; set; }
 
     public void Inject(IInputTank inputTank)
     {
@@ -147,6 +148,7 @@ public class BlowOut : MonoBehaviour
             var ore = blockDatas.GetOre(blockType);
             blowOutOre.SetOre(ore.attackPower, ore.weightPerSize[0], direction.normalized, ore.oreSprites[0]);
             inputTank.RemoveTank(1);
+            IsDetectSound = true;
         }
         else
         {
@@ -173,6 +175,7 @@ public class BlowOut : MonoBehaviour
                 }
                 
                 inputTank.RemoveTank(1);
+                IsDetectSound = true;
             }
         }
     }
@@ -360,6 +363,7 @@ public class BlowOut : MonoBehaviour
     private void CancelBlowOut()
     {
         IsBlowOut = false;
+        IsDetectSound = false;
         _lastUpdateTime = Time.time;
         _playerMovement.IsMoveFlip = true;
     }

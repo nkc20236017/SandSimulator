@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using NaughtyAttributes;
 
-public class ActionAttack : FsmAction
+public class ActionAttackTurtle : FsmAction
 {
 	[Header("Auto Jump Config")]
 	[SerializeField] private bool autoJump;

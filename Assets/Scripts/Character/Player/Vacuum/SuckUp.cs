@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class SuckUp : MonoBehaviour
+public class SuckUp : MonoBehaviour, IDetectSoundable
 {
     [Header("Tile Config")]
     [SerializeField] private BlockDatas blockDatas;
@@ -37,6 +37,7 @@ public class SuckUp : MonoBehaviour
     private IChunkInformation _chunkInformation;
     
     public bool IsSuckUp { get; private set; }
+    public bool IsDetectSound { get; set; }
     
     public void Inject(IInputTank inputTank)
     {
@@ -96,6 +97,7 @@ public class SuckUp : MonoBehaviour
     private void CancelSuckUp()
     {
         IsSuckUp = false;
+        IsDetectSound = false;
         _suckUpTilePositions.Clear();
         _playerMovement.IsMoveFlip = true;
         _numberExecutions = 0;
@@ -195,13 +197,14 @@ public class SuckUp : MonoBehaviour
             if (IsBlock(hit.transform.position)) { continue; }
             if (!hit.TryGetComponent<OreObject>(out var oreObject)) { continue; }
             // if (oreObject == null) { continue; }
-            if (!hit.TryGetComponent<IDamagable>(out var target)) { continue; }
+            if (!hit.TryGetComponent<IDamageable>(out var target)) { continue; }
             if (_suckUpOreObject.Contains(oreObject)) { continue; }
             _suckUpOreObject.Add(oreObject);
             
             if (_numberExecutions % oreObject.Ore.weightPerSize[oreObject.Size - 1] == 0)
             {
                 target.TakeDamage(3);
+                IsDetectSound = true;
             }
         }
     }
@@ -246,6 +249,7 @@ public class SuckUp : MonoBehaviour
             }
             if (tile == null) { continue; }
 
+            IsDetectSound = true;
             if (blockDatas.GetBlock(tile).type == BlockType.Sand)
             {
                 _updateTilemap.SetTile(_updateTilemap.WorldToCell(newTilePosition), tile);

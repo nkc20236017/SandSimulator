@@ -3,7 +3,7 @@ using UnityEngine;
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
 
-public class ActionWander : FsmAction
+public class ActionWanderTurtle : FsmAction
 {
 	[Header("Datas Config")]
 	[SerializeField] private LayerMask groundLayerMask;
