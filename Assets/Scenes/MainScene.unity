@@ -1297,6 +1297,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cameras
       objectReference: {fileID: 0}
+    - target: {fileID: 4630064883744295800, guid: 6ad9f4d31582f7c44aa481e34ad84c9f, type: 3}
+      propertyPath: m_FollowOffset.y
+      value: -8
+      objectReference: {fileID: 0}
     - target: {fileID: 7013166499007780325, guid: 6ad9f4d31582f7c44aa481e34ad84c9f, type: 3}
       propertyPath: _offset.x
       value: 0
@@ -1311,7 +1315,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7013166499007780325, guid: 6ad9f4d31582f7c44aa481e34ad84c9f, type: 3}
       propertyPath: _overSize.y
-      value: 30
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 8089045788280291248, guid: 6ad9f4d31582f7c44aa481e34ad84c9f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1320,6 +1324,18 @@ PrefabInstance:
     - target: {fileID: 8089045788280291248, guid: 6ad9f4d31582f7c44aa481e34ad84c9f, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.0954895
+      objectReference: {fileID: 0}
+    - target: {fileID: 8099437121189374548, guid: 6ad9f4d31582f7c44aa481e34ad84c9f, type: 3}
+      propertyPath: m_NoiseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: e9ce97b7a206dc64d90931ea044e0c72, type: 2}
+    - target: {fileID: 8099437121189374548, guid: 6ad9f4d31582f7c44aa481e34ad84c9f, type: 3}
+      propertyPath: m_AmplitudeGain
+      value: 7.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 8099437121189374548, guid: 6ad9f4d31582f7c44aa481e34ad84c9f, type: 3}
+      propertyPath: m_FrequencyGain
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8986183656235445870, guid: 6ad9f4d31582f7c44aa481e34ad84c9f, type: 3}
       propertyPath: m_ColliderPaths.Array.size
