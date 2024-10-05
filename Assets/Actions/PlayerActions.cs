@@ -284,17 +284,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""VacuumPos"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""339ec6aa-cd69-44f7-a6b7-aef4c4870c34"",
-                    ""path"": ""<Mouse>/position"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""VacuumPos"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         },
