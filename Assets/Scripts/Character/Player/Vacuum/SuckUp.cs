@@ -72,6 +72,7 @@ public class SuckUp : MonoBehaviour, IDetectSoundable
         if (VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
         {
             // TODO: ［効果音］吸い込み
+            // TODO: ［エフェクト］吸い込み
             //AudioManager.Instance.PlaySFX("VacuumSE");
             IsSuckUp = true;
             Performed();
@@ -204,6 +205,8 @@ public class SuckUp : MonoBehaviour, IDetectSoundable
             if (_numberExecutions % oreObject.Ore.weightPerSize[oreObject.Size - 1] == 0)
             {
                 target.TakeDamage(3);
+                // TODO: ［エフェクト］鉱石吸い込み
+                // if (oreObject.Ore.type == BlockType.Crystal) { }
                 IsDetectSound = true;
             }
         }
