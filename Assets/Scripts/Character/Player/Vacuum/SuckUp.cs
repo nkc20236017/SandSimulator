@@ -61,7 +61,6 @@ public class SuckUp : MonoBehaviour
     {
         _numberExecutions = 0;
 
-        _playerActions.Vacuum.VacuumPos.performed += OnVacuum;
         _playerActions.Enable();
         VacuumActions.Absorption.started += _ => _playerMovement.IsMoveFlip = false;
         VacuumActions.Absorption.canceled += _ => CancelSuckUp();
@@ -69,7 +68,7 @@ public class SuckUp : MonoBehaviour
 
     private void Update()
     {
-        //RotateToCursorDirection();
+        RotateToCursorDirection();
 
         if (VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
         {
@@ -104,15 +103,15 @@ public class SuckUp : MonoBehaviour
         _numberExecutions = 0;
     }
 
-    private void OnVacuum(InputAction.CallbackContext context)
-    {
 
+    private void RotateToCursorDirection()
+    {
         if (_camera == null)
         {
             _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         }
-        var demo = context.ReadValue<Vector2>();
-        Vector3 mouseWorldPosition = demo;//_camera.ScreenToWorldPoint(Input.mousePosition);
+
+        var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPosition.z = 0;
         var direction = mouseWorldPosition - pivot.position;
         var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -122,28 +121,7 @@ public class SuckUp : MonoBehaviour
         }
 
         pivot.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-        Debug.Log(pivot.rotation);
     }
-
-
-    //private void RotateToCursorDirection()
-    //{
-    //    if (_camera == null)
-    //    {
-    //        _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
-    //    }
-
-    //    var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-    //    mouseWorldPosition.z = 0;
-    //    var direction = mouseWorldPosition - pivot.position;
-    //    var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-    //    if (pivot.parent.localScale.x < 0)
-    //    {
-    //        angle += 180;
-    //    }
-
-    //    pivot.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-    //}
 
     private void GetSuckUpTilePositions()
     {
