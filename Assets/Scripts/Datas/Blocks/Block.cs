@@ -39,7 +39,7 @@ public class Block : ScriptableObject
     public Sprite resultSprite;
     public int endurance;
     public int price;
-
+    public Color color;
     public int vacuumAmount;
 
     [HideInInspector] public List<Vector3Int> tilePositions = new();

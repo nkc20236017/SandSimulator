@@ -28,27 +28,25 @@ public class PlayerTank : IInputTank, IGameLoad
     public void InputAddTank(TileBase tileBase)
     {
         var mineralItem = tankRepository.Find(tileBase);
-
         for (int i = 0; i < mineralItem.vacuumAmount; i++)
         {
             AddItem(mineralItem);
         }
-
     }
+
     public void InputAddTank(BlockType type)
     {
         var mineralItem = tankRepository.Find(type);
-
         for (int i = 0; i < mineralItem.vacuumAmount; i++)
         {
             AddItem(mineralItem);
         }
-
     }
 
     public void RemoveTank()
     {
         var block = tankRepository.Find(currentBlockType);
+        if (block == null) { return; }
 
         for (int i = 0; i < block.vacuumAmount; i++)
         {
@@ -61,7 +59,6 @@ public class PlayerTank : IInputTank, IGameLoad
     {
         if (currentItemAmount >= MaxTank)
         {
-            Debug.Log("�A�C�e���������ς��ł�");
             maxSignal = true;
             return;
         }
@@ -78,6 +75,7 @@ public class PlayerTank : IInputTank, IGameLoad
             itemTankDictionary.Add(mineralData, itemData);
             TankCalculation(itemData);
         }
+
         if (fast == false)
         {
             currentBlockType = mineralData.type;
@@ -101,6 +99,12 @@ public class PlayerTank : IInputTank, IGameLoad
                 Debug.Log("タンクを削除");
                 itemTankDictionary.Remove(mineralData);
                 currentItemAmount--;
+                outPutTank.OutputSelectTank(new(BlockType.None, null));
+                currentBlockType = BlockType.None;
+                if (itemTankDictionary.Keys.Count <= 0)
+                {
+                    fast = false;
+                }
             }
             else
             {
