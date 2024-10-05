@@ -1,14 +1,24 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 public class Digging : MonoBehaviour
 {
 	[Header("Digging Config")]
+	[SerializeField] private BlockDatas _blockDatas;
 	[SerializeField] private float _radius;
+	[SerializeField] private float _diggingInterval;
 	
+	private int _numberExecutions;
+	private float _timer;
 	private IChunkInformation _chunkInformation;
 
 	private void Update()
 	{
+		_timer += Time.deltaTime;
+		if (_timer < _diggingInterval) { return; }
+		
+		_numberExecutions++;
+		_timer = 0f;
 		var bounds = new BoundsInt(Vector3Int.RoundToInt(transform.position) - new Vector3Int((int)_radius, (int)_radius, 0), new Vector3Int((int)_radius * 2, (int)_radius * 2, 1));
 		foreach (var position in bounds.allPositionsWithin)
 		{
@@ -20,6 +30,9 @@ public class Digging : MonoBehaviour
 			
 			var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
 			if (!tilemap.HasTile(localPosition)) { continue; }
+			var tile = tilemap.GetTile(localPosition);
+			var isContinue = _blockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
+			if (isContinue) { continue; }
 			
 			tilemap.SetTile(localPosition, null);
 		}

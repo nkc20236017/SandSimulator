@@ -230,7 +230,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 776dcd8d1043472790d7408cbc4f6183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
   _radius: 10
+  _diggingInterval: 0.1
 --- !u!114 &3733803965801239941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,7 +246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pivot: {fileID: 9097912794915553998}
-  radius: 45
+  radius: 55
   targetLayerMask:
     serializedVersion: 2
     m_Bits: 4288
@@ -283,7 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pivot: {fileID: 9097912794915553998}
-  radius: 25
+  radius: 15
   angle: 180
   direction: 0
   playerLayerMask:

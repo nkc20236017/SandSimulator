@@ -66,7 +66,7 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
 
     private void Start()
     {
-        _lastUpdateTime = Time.time;
+        _lastUpdateTime = 0f;
 
         VacuumActions.SpittingOut.started += _ => _playerMovement.IsMoveFlip = false;
         VacuumActions.SpittingOut.canceled += _ => CancelBlowOut();
@@ -87,6 +87,7 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
             _parabola.DestroyParabola();
         }
         
+        _lastUpdateTime -= Time.deltaTime;
         if (VacuumActions.SpittingOut.IsPressed() && !_suckUp.IsSuckUp)
         {
             IsBlowOut = true;
@@ -105,11 +106,11 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
             _weight = blockDatas.GetBlock(blockType).weight;
         }
         
-        if (Time.time - _lastUpdateTime > interval * _weight)
+        if (_lastUpdateTime <= 0f)
         {
             if (blockType == BlockType.Liquid) { return; }
 
-            _lastUpdateTime = Time.time;
+            _lastUpdateTime = interval * _weight;
             if (inputTank.FiringTank())
             {
                 // TODO: ［効果音］吐き出し
@@ -194,34 +195,24 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
         var positions = new List<Vector3Int>();
         foreach (var position in bounds.allPositionsWithin)
         {
-            positions.Add(position);
             var pos = new Vector2(position.x, position.y);
             mapTilemap = _chunkInformation.GetChunkTilemap(pos);
             if (mapTilemap == null) { continue; }
             
             var localPosition = _chunkInformation.WorldToChunk(pos);
-            if (!mapTilemap.HasTile(localPosition)) { continue; }
-            
+            if (!mapTilemap.HasTile(localPosition) && !_updateTilemap.HasTile(position)) { continue; }
+
             hasTile = true;
+            positions.Add(position);
         }
         if (!hasTile) { return; }
         
         positions = positions.OrderBy(_ => Random.value).ToList();
         foreach (var position in positions)
         {
-            Tilemap tilemap;
             mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
-            var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
-            if (_updateTilemap.HasTile(position))
-            {
-                tilemap = _updateTilemap;
-            }
-            else if (mapTilemap != null && mapTilemap.HasTile(localPosition))
-            {
-                tilemap = mapTilemap;
-            }
-            else { continue; }
-
+            if (mapTilemap == null) { continue; }
+            
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPosition.z = 0;
 
@@ -235,47 +226,112 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
             {
                 var newTilePosition = Vector3Int.RoundToInt(position + direction1.normalized * blowOutSpeed);
                 var localNewTilePosition = _chunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
-                mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
-                if (mapTilemap == null) { continue; }
-                if (_updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(localNewTilePosition)) { continue; }
-
-                var tile = tilemap != _updateTilemap ? tilemap.GetTile(localPosition) : tilemap.GetTile(position);
-                if (tile == null) { continue; }
+                var newMapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
+                if (newMapTilemap == null) { continue; }
+                if (_updateTilemap.HasTile(newTilePosition) || newMapTilemap.HasTile(localNewTilePosition)) { continue; }
                 
-                if (blockDatas.GetBlock(tile).type == BlockType.Sand)
+                // 更新用タイルの移動
+                if (_updateTilemap.HasTile(position))
                 {
+                    var tile = _updateTilemap.GetTile(position);
+                    
+                    _updateTilemap.SetTile(position, null);
                     _updateTilemap.SetTile(newTilePosition, tile);
                     
                     var tileLayer = _chunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
-                    var block = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile);
-                    if (block.GetStratumGeologyData(tileLayer) != null)
+                    var blockStratumGeologyData = blockDatas.GetBlock(tile).GetStratumGeologyData(tileLayer);
+                    if (blockStratumGeologyData != null)
                     {
-                        _updateTilemap.SetColor(newTilePosition, block.GetStratumGeologyData(tileLayer).color);
+                        _updateTilemap.SetColor(newTilePosition, blockStratumGeologyData.color);
                     }
+                    
+                    continue;
                 }
-                else
-                {
-                    mapTilemap.SetTile(localNewTilePosition, tile);
 
-                    if (blockDatas.GetBlock(tile).type is not (BlockType.Ruby or BlockType.Crystal or BlockType.Emerald))
+                // マップタイルの移動（砂の場合更新用タイルに移行）
+                var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+                if (mapTilemap.HasTile(localPosition))
+                {
+                    var tile = mapTilemap.GetTile(localPosition);
+                    mapTilemap.SetTile(localPosition, null);
+                    
+                    if (blockDatas.GetBlock(tile).type == BlockType.Sand)
                     {
-                        var tileLayer = _chunkInformation.GetLayer(new Vector2(localNewTilePosition.x, localNewTilePosition.y));
-                        var block = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile);
-                        if (block.GetStratumGeologyData(tileLayer) != null)
+                        _updateTilemap.SetTile(newTilePosition, tile);
+                        
+                        var tileLayer = _chunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
+                        var blockStratumGeologyData = blockDatas.GetBlock(tile).GetStratumGeologyData(tileLayer);
+                        if (blockStratumGeologyData != null)
                         {
-                            mapTilemap.SetColor(localNewTilePosition, block.GetStratumGeologyData(tileLayer).color);
+                            _updateTilemap.SetColor(newTilePosition, blockStratumGeologyData.color);
+                        }
+                    }
+                    else
+                    {
+                        newMapTilemap.SetTile(localNewTilePosition, tile);
+                        
+                        if (blockDatas.GetBlock(tile).type is not (BlockType.Ruby or BlockType.Crystal or BlockType.Emerald))
+                        {
+                            var tileLayer = _chunkInformation.GetLayer(new Vector2(localNewTilePosition.x, localNewTilePosition.y));
+                            var blockStratumGeologyData = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile).GetStratumGeologyData(tileLayer);
+                            if (blockStratumGeologyData != null)
+                            {
+                                newMapTilemap.SetColor(localNewTilePosition, blockStratumGeologyData.color);
+                            }
                         }
                     }
                 }
                 
-                if (tilemap == _updateTilemap)
-                {
-                    _updateTilemap.SetTile(position, null);
-                }
-                else
-                {
-                    mapTilemap.SetTile(localPosition, null);
-                }
+                // Tilemap tilemap;
+                // mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
+                // var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+                // if (_updateTilemap.HasTile(position))
+                // {
+                //     tilemap = _updateTilemap;
+                // }
+                // else if (mapTilemap != null && mapTilemap.HasTile(localPosition))
+                // {
+                //     tilemap = mapTilemap;
+                // }
+                // else { continue; }
+                //
+                // var newTilePosition = Vector3Int.RoundToInt(position + direction1.normalized * blowOutSpeed);
+                // var localNewTilePosition = _chunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
+                // mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
+                // if (mapTilemap == null) { continue; }
+                // if (_updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(localNewTilePosition)) { continue; }
+                //
+                // var tile = tilemap == _updateTilemap ? _updateTilemap.GetTile(position) : tilemap.GetTile(localPosition);
+                // if (tile == null) { continue; }
+                //
+                // _updateTilemap.SetTile(position, null);
+                // mapTilemap.SetTile(localPosition, null);
+                //
+                // if (blockDatas.GetBlock(tile).type == BlockType.Sand)
+                // {
+                //     _updateTilemap.SetTile(newTilePosition, tile);
+                //     
+                //     var tileLayer = _chunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
+                //     var block = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile);
+                //     if (block.GetStratumGeologyData(tileLayer) != null)
+                //     {
+                //         _updateTilemap.SetColor(newTilePosition, block.GetStratumGeologyData(tileLayer).color);
+                //     }
+                // }
+                // else
+                // {
+                //     mapTilemap.SetTile(localNewTilePosition, tile);
+                //
+                //     if (blockDatas.GetBlock(tile).type is not (BlockType.Ruby or BlockType.Crystal or BlockType.Emerald))
+                //     {
+                //         var tileLayer = _chunkInformation.GetLayer(new Vector2(localNewTilePosition.x, localNewTilePosition.y));
+                //         var block = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile);
+                //         if (block.GetStratumGeologyData(tileLayer) != null)
+                //         {
+                //             mapTilemap.SetColor(localNewTilePosition, block.GetStratumGeologyData(tileLayer).color);
+                //         }
+                //     }
+                // }
             }
         }
     }
@@ -364,7 +420,6 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
     {
         IsBlowOut = false;
         IsDetectSound = false;
-        _lastUpdateTime = Time.time;
         _playerMovement.IsMoveFlip = true;
     }
 

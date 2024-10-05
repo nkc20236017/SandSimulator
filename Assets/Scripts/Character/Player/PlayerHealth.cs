@@ -68,8 +68,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
 	private void OnEnable()
 	{
-		var cameraSystem = FindObjectOfType<CameraSystem>();
-		_cameraEffect = cameraSystem.GetComponent<ICameraEffect>();
+	    var cameraSystem = GameObject.FindWithTag("MainVirtualCamera").GetComponent<CameraSystem>();
+	    _cameraEffect = cameraSystem.GetComponent<ICameraEffect>();
 	}
 }
 
