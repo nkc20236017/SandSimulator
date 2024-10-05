@@ -25,26 +25,36 @@ public class PlayerTank : IInputTank, IGameLoad
         this.tankRepository = tankRepository;
     }
 
-    public void InputAddTank(TileBase tileBase, int amount)
+    public void InputAddTank(TileBase tileBase)
     {
         var mineralItem = tankRepository.Find(tileBase);
 
-        for (int i = 0; i < amount; i++)
+        for (int i = 0; i < mineralItem.vacuumAmount; i++)
         {
             AddItem(mineralItem);
         }
 
     }
-    public void InputAddTank(BlockType type, int amount)
+    public void InputAddTank(BlockType type)
     {
         var mineralItem = tankRepository.Find(type);
-        AddItem(mineralItem);
+
+        for (int i = 0; i < mineralItem.vacuumAmount; i++)
+        {
+            AddItem(mineralItem);
+        }
+
     }
 
-    public void InputRemoveTank(BlockType type)
+    public void RemoveTank()
     {
-        var mineralItem = tankRepository.Find(type);
-        RemoveItem(mineralItem);
+        var block = tankRepository.Find(currentBlockType);
+
+        for (int i = 0; i < block.vacuumAmount; i++)
+        {
+            RemoveItem(block);
+        }
+
     }
 
     public void AddItem(Block mineralData)
@@ -184,15 +194,4 @@ public class PlayerTank : IInputTank, IGameLoad
         return currentBlockType;
     }
 
-    public void RemoveTank(int removeAmount)
-    {
-
-        var block = tankRepository.Find(currentBlockType);
-        for (int i = 0; i < removeAmount; i++)
-        {
-            RemoveItem(block);
-        }
-
-
-    }
 }
