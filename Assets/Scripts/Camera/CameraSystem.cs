@@ -23,7 +23,6 @@ public class CameraSystem : MonoBehaviour, ICameraEffect
 
         for (int i = 0; i < parentObject.childCount; i++)
         {
-            Debug.Log($"a");
             if (parentObject.GetChild(i).TryGetComponent(out _polygonCollider2D))
             {
                 _hasMapCollider = true;
@@ -51,23 +50,24 @@ public class CameraSystem : MonoBehaviour, ICameraEffect
     /// <param name="mapSize">マップのサイズ</param>
     public void CameraConfig(Transform followTarget, Vector2 mapSize = default)
     {
-        if (!_hasMapCollider) { return; }
-
         _virtualCamera.Follow = followTarget;
 
-        Vector2 size = new
-        (
-            _overSize.x / 2,
-            _overSize.y / 2
-        );
-
-        _polygonCollider2D.points = new Vector2[]
+        if (_hasMapCollider)
         {
+            Vector2 size = new
+            (
+                _overSize.x / 2,
+                _overSize.y / 2
+            );
+
+            _polygonCollider2D.points = new Vector2[]
+            {
             Vector2.zero - size + _offset,
             new Vector2(mapSize.x + size.x, 0 - size.y) + _offset,
             mapSize + size + _offset,
             new Vector2(0 - size.x, mapSize.y + size.y) + _offset
-        };
+            };
+        }
 
         // 状態を更新
         _confiner2D.InvalidateCache();
