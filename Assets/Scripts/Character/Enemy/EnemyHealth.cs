@@ -46,14 +46,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         CurrentHealth -= damage;
         // TODO: ［効果音］エネミーダメージ
         AudioManager.Instance.PlaySFX("DamegeSE");
-        // TODO: ［エフェクト］エネミーダメージ
-        GameObject effectObj = (GameObject)Resources.Load("HitEffect");
-        Vector3 effectPos = 
-            new Vector3
-            (transform.position.x,
-            transform.position.y,
-            transform.position.z - 1);
-        Instantiate(effectObj, effectPos, Quaternion.identity);
 
         if (CurrentHealth > 0f) { return; }
 

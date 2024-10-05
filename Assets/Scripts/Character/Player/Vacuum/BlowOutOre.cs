@@ -65,11 +65,17 @@ public class BlowOutOre : MonoBehaviour, IDetectSoundable
 		if (other.collider.TryGetComponent<IDamageable>(out var target))
 		{
 			target.TakeDamage(_attackPower);
-			Destroy(gameObject);
+			Destroy();
 			return;
 		}
 		if (_isInvincible) { return; }
 		
+		Destroy();
+	}
+
+	private void Destroy()
+	{
+		// TODO: ［エフェクト］鉱石破壊
 		Destroy(gameObject);
 	}
 
