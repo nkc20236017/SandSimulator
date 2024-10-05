@@ -143,7 +143,7 @@ public class DecisionAngleDetectPlayer : FsmDecision
 		if (!debugMode) { return; }
 		if (pivot == null) { return; }
 		
-		Gizmos.color = Color.yellow;
+		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere(pivot.position, radius);
 		
 		Gizmos.color = Color.green;

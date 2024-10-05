@@ -46,6 +46,7 @@ public class DecisionDetectSound : FsmDecision
 			foreach (var target in targetCollider)
 			{
 				var detectSound = target.GetComponent<IDetectSoundable>();
+				if (detectSound == null) { continue; }
 				if (!detectSound.IsDetectSound) { continue; }
 
 				var distance1 = (pivot.position - target.transform.position).sqrMagnitude;

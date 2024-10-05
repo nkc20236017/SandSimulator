@@ -33,20 +33,20 @@ MonoBehaviour:
     primevalOres:
     - exposedOreData: {fileID: 11400000, guid: 6534895f1114d374a80f4e1c68535ad4, type: 2}
       buriedOreID: 2
-      lumpAmount: 30
-      blockAmount: 5
+      lumpDispersion: 30
+      buriedOreRadius: 5
       probability: 75
       space: 30
     - exposedOreData: {fileID: 11400000, guid: b9f2c12f461f9c649b1deb1dabb9767a, type: 2}
       buriedOreID: 3
-      lumpAmount: 30
-      blockAmount: 5
+      lumpDispersion: 0
+      buriedOreRadius: 3
       probability: 75
       space: 30
     - exposedOreData: {fileID: 11400000, guid: 1aa9d39301cef7a49acd44409269e64f, type: 2}
       buriedOreID: 4
-      lumpAmount: 30
-      blockAmount: 5
+      lumpDispersion: 0
+      buriedOreRadius: 5
       probability: 75
       space: 30
     primevalDungeons: []

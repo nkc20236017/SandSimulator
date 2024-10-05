@@ -115,11 +115,10 @@ public class OreObject : MonoBehaviour, IDamageable, IDetectSoundable
         if (other.collider.TryGetComponent<IDamageable>(out var target))
         {
             target.TakeDamage(Ore.attackPower);
-            Destroy(gameObject);
         }
         
         // TODO: ［正規実装］魔鉱石が壊れると能力が発動する
-		
+        // TODO: ［エフェクト］鉱石破壊
         Destroy(gameObject);
     }
     
