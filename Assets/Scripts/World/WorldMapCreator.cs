@@ -367,7 +367,7 @@ namespace WorldCreation
         private void BuriedOreProcess(Vector2Int spownPoint, int oreIndex)
         {
             PrimevalOre ore = worldMap.WorldLayers[0].PrimevalOres[oreIndex];
-            int lumpRadius = ore.BlockAmount + Random.Range(0, ore.BlockAmount);
+            int lumpRadius = ore.BuriedOreRadius + Random.Range(0, ore.BuriedOreRadius);
             Vector2Int[] circulePoints = GenerateCircularGrid(lumpRadius, spownPoint);
 
             // ’†S‚©‚ç‚Ì‹——£‚Å¸‡‚É•À‚Ñ‘Ö‚¦
