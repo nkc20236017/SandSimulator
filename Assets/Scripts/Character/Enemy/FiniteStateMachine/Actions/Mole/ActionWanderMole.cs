@@ -51,6 +51,10 @@ public class ActionWanderMole : FsmAction
         if (Vector3.Distance(transform.position, _movePosition) >= 0.5f)
         {
             transform.Translate(movement);
+            
+            var direction = _movePosition - transform.position;
+            var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
     }
 
@@ -75,6 +79,12 @@ public class ActionWanderMole : FsmAction
     {
 	    Gizmos.color = Color.green;
 		Gizmos.DrawWireSphere(transform.position, _radius);
+		
+		if (_movePosition == Vector3.zero) { return; }
+		if (_enemyBrain.Target != null) { return; }
+		
+		Gizmos.DrawLine(transform.position, _movePosition);
+		Gizmos.DrawWireSphere(_movePosition, 0.5f);
     }
 
     private void OnEnable()

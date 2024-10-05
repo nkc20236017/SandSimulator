@@ -41,6 +41,7 @@ public class Parabola : MonoBehaviour
         {
             var position = _startPosition + direction * (interval * i);
             _dots[i] = Instantiate(dotPrefab, position, Quaternion.identity);
+            _dots[i].transform.SetParent(transform);
             _dots[i].transform.position = position;
             _dots[i].transform.localScale = Vector3.one * dotSize;
         }
