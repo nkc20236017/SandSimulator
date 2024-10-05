@@ -31,4 +31,5 @@ MonoBehaviour:
   resultSprite: {fileID: -1260437461, guid: 2a8b131a634d85c4384eb759909cafe6, type: 3}
   endurance: 5
   price: 3
+  vacuumAmount: 1
   tilePositions: []

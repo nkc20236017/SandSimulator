@@ -40,6 +40,8 @@ public class Block : ScriptableObject
     public int endurance;
     public int price;
 
+    public int vacuumAmount;
+
     [HideInInspector] public List<Vector3Int> tilePositions = new();
     
     public StratumGeologyData GetStratumGeologyData(int depth)

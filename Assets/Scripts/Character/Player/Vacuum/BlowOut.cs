@@ -147,7 +147,7 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
             blowOutOre.gameObject.SetActive(true);
             var ore = blockDatas.GetOre(blockType);
             blowOutOre.SetOre(ore.attackPower, ore.weightPerSize[0], direction.normalized, ore.oreSprites[0]);
-            inputTank.RemoveTank(1);
+            inputTank.RemoveTank();
             IsDetectSound = true;
         }
         else
@@ -174,7 +174,7 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
                     _updateTilemap.SetColor(randomCell, block.GetStratumGeologyData(tileLayer).color);
                 }
                 
-                inputTank.RemoveTank(1);
+                inputTank.RemoveTank();
                 IsDetectSound = true;
             }
         }

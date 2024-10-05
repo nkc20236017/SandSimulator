@@ -190,7 +190,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""name"": ""VacuumPos"",
                     ""type"": ""Value"",
                     ""id"": ""32b1b7b1-beb0-462c-aabf-c1d8b1a59080"",
-                    ""expectedControlType"": ""Vector3"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
