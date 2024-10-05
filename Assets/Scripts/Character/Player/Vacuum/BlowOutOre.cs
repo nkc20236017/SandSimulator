@@ -76,6 +76,9 @@ public class BlowOutOre : MonoBehaviour, IDetectSoundable
 	private void Destroy()
 	{
 		// TODO: ［エフェクト］鉱石破壊
+		GameObject effectobj = (GameObject)Resources.Load("OreEfect");
+		Vector2 effectPos = new Vector2(transform.position.x,transform.position.y);
+		Instantiate(effectobj, effectPos, Quaternion.identity);
 		Destroy(gameObject);
 	}
 
