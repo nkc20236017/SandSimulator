@@ -13,11 +13,11 @@ namespace WorldCreation
         private int buriedOreID;
         public int BuriedOreID => buriedOreID;
         [SerializeField]    // âÚÇÃê∂ê¨ó 
-        private int lumpAmount;
-        public int LumpAmount => lumpAmount;
+        private int lumpDispersion;
+        public int LumpDispersion => lumpDispersion;
         [SerializeField]    // Ç–Ç∆Ç¬ÇÃâÚÇ…ë∂ç›Ç∑ÇÈó 
-        private int blockAmount;
-        public int BlockAmount => blockAmount;
+        private int buriedOreRadius;
+        public int BuriedOreRadius => buriedOreRadius;
         [SerializeField]    // ê∂ê¨Ç≥ÇÍÇÈämó¶
         [Range(0f, 100f)]
         private float probability;

@@ -52,7 +52,7 @@ namespace WorldCreation
 
                 PrimevalOre ore = worldMap.WorldLayers[chunk.GetLayerIndex(firstPoint.x, firstPoint.y)].PrimevalOres[targetOre];
 
-                for (int i = 0; i < ore.LumpAmount; i++)
+                for (int i = 0; i < ore.LumpDispersion; i++)
                 {
                     float angle = chunk.GetNoise(_executionOrder + 3, Int16.MaxValue) * Mathf.PI * 2;
                     float distance = ore.Space + chunk.GetNoise(_executionOrder + 4, Int16.MaxValue) * ore.Space;

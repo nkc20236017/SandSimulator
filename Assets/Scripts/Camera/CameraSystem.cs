@@ -3,22 +3,37 @@ using Cinemachine;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-[RequireComponent(typeof(CinemachineConfiner2D))]
+
 public class CameraSystem : MonoBehaviour, ICameraEffect
 {
     [Header("Camera Components")]
     [SerializeField] private CinemachineVirtualCamera _virtualCamera;
-    [SerializeField] private PolygonCollider2D _polygonCollider2D;
     [SerializeField] private Vector2 _overSize;
     [SerializeField] private Vector2 _offset;
 
+    private bool _hasMapCollider = false;
+    private PolygonCollider2D _polygonCollider2D;
     private CancellationTokenSource _tokenSource;
     private CinemachineConfiner2D _confiner2D;
     private CinemachineBasicMultiChannelPerlin _noise;
 
     private void Start()
     {
+        Transform parentObject = transform.parent;
+
+        for (int i = 0; i < parentObject.childCount; i++)
+        {
+            Debug.Log($"a");
+            if (parentObject.GetChild(i).TryGetComponent(out _polygonCollider2D))
+            {
+                _hasMapCollider = true;
+                break;
+            }
+        }
+
         _confiner2D = GetComponent<CinemachineConfiner2D>();
+
+        if (!_hasMapCollider) { return; }
 
         _noise = _virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         _noise.enabled = false;
@@ -36,7 +51,7 @@ public class CameraSystem : MonoBehaviour, ICameraEffect
     /// <param name="mapSize">マップのサイズ</param>
     public void CameraConfig(Transform followTarget, Vector2 mapSize = default)
     {
-        if (mapSize == default) { return; }
+        if (!_hasMapCollider) { return; }
 
         _virtualCamera.Follow = followTarget;
 
@@ -65,6 +80,8 @@ public class CameraSystem : MonoBehaviour, ICameraEffect
     /// <param name="targetCameraRole">揺らすカメラの対象</param>
     public void CameraShake(float shakeTime)
     {
+        if (!_hasMapCollider) { return; }
+
         _tokenSource = new();
 
         // カメラ揺れを開始
