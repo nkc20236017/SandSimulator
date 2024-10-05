@@ -99,10 +99,11 @@ public class PlayerTank : IInputTank, IGameLoad
                 Debug.Log("タンクを削除");
                 itemTankDictionary.Remove(mineralData);
                 currentItemAmount--;
-                outPutTank.OutputSelectTank(new(BlockType.None, null));
-                currentBlockType = BlockType.None;
+                SelectTank(itemTankDictionary.Keys.Count);
                 if (itemTankDictionary.Keys.Count <= 0)
                 {
+                    outPutTank.OutputSelectTank(new(BlockType.None, null));
+                    currentBlockType = BlockType.None;
                     fast = false;
                 }
             }
