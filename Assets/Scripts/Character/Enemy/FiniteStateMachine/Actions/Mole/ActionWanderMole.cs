@@ -27,7 +27,7 @@ public class ActionWanderMole : FsmAction
 	
 	private void Wander()
 	{
-		if (IsTilemap(_movePosition))
+		if (!IsTilemap(_movePosition))
 		{
 			GetRandomPointInCircle();
 			return;
@@ -48,13 +48,10 @@ public class ActionWanderMole : FsmAction
         // ランダムな位置に向かって移動する
         var moveDirection = (_movePosition - transform.position).normalized;
         var movement = moveDirection * (_enemyBrain.Status.speed * Time.deltaTime);
+        movement.z = 0f;
         if (Vector3.Distance(transform.position, _movePosition) >= 0.5f)
         {
             transform.Translate(movement);
-            
-            var direction = _movePosition - transform.position;
-            var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
     }
 
@@ -66,6 +63,10 @@ public class ActionWanderMole : FsmAction
         var x = Mathf.Cos(randomAngle) * randomDistance;
         var y = Mathf.Sin(randomAngle) * randomDistance;
         _movePosition = transform.position + new Vector3(x, y, 0f);
+        
+        var direction = _movePosition - transform.position;
+        var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
     
     private bool IsTilemap(Vector3 position)
