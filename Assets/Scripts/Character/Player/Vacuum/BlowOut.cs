@@ -76,8 +76,6 @@ public class BlowOut : MonoBehaviour
     {
         blockType = inputTank.GetSelectType();
         
-        if(blockType == BlockType.None ) { return; }
-
         if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
         {
             _parabola.GenerateParabola();
@@ -97,24 +95,27 @@ public class BlowOut : MonoBehaviour
 
     private void BlowOutTiles()
     {
-        if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
+        if (blockType != BlockType.None)
         {
-            _weight = blockDatas.GetOre(blockType).weightPerSize[0] * 10;
-        }
-        else
-        {
-            _weight = blockDatas.GetBlock(blockType).weight;
-        }
-        
-        if (_lastUpdateTime <= 0f)
-        {
-            if (blockType == BlockType.Liquid) { return; }
-
-            _lastUpdateTime = interval * _weight;
-            if (inputTank.FiringTank())
+            if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
             {
-                // TODO: ［効果音］吐き出し
-                GenerateTile();
+                _weight = blockDatas.GetOre(blockType).weightPerSize[0] * 10;
+            }
+            else
+            {
+                _weight = blockDatas.GetBlock(blockType).weight;
+            }
+        
+            if (_lastUpdateTime <= 0f)
+            {
+                if (blockType == BlockType.Liquid) { return; }
+
+                _lastUpdateTime = interval * _weight;
+                if (inputTank.FiringTank())
+                {
+                    // TODO: ［効果音］吐き出し
+                    GenerateTile();
+                }
             }
         }
 
@@ -185,10 +186,6 @@ public class BlowOut : MonoBehaviour
     private void UpdateTiles()
     {
         var bounds = new BoundsInt(_updateTilemap.WorldToCell(pivot.position) - new Vector3Int((int)radius, (int)radius, 0), new Vector3Int((int)radius * 2, (int)radius * 2, 1));
-        
-        var getTilesBlock = _updateTilemap.GetTilesBlock(bounds);
-        getTilesBlock = getTilesBlock.Where(x => x != null).ToArray();
-        if (getTilesBlock.Length == 0) { return; }
         
         var hasTile = false;
         Tilemap mapTilemap;
