@@ -31,7 +31,14 @@ public class ResultAnimationPresenter : MonoBehaviour
             animationPaper.SetUpUI(mineral.mineralData.resultSprite, mineral.mineralAmount.ToString(), mineralPrice.ToString());
             await animationPaper.AnimationEnterUI(cancellationToken);
             await animationPaper.AnimationStampUI(cancellationToken);
-            AudioManager.Instance.PlaySFX("StampNormalSE");
+            if (resultPrice > 100000)
+            {
+                AudioManager.Instance.PlaySFX("StampHighSE");
+            }
+            else
+            {
+                AudioManager.Instance.PlaySFX("StampNormalSE");
+            }
             await animationPaper.AnimationExitUI(cancellationToken);
         }
         resultObject.SetActive(true);
