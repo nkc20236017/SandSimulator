@@ -2,16 +2,21 @@
 
 public class ActionAttackPreparednessMole : FsmAction
 {
+	[SerializeField] private float _rotateSpeed = 5f;
 	private EnemyBrain _enemyBrain;
 	
 	public override void Action()
 	{
-		if (_enemyBrain.Target == null) { return; }
-		
-		// ターゲットの方向に向かって回転させる
-		var direction = _enemyBrain.Target.position - transform.position;
-		var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-		transform.rotation = Quaternion.Euler(0f, 0f, angle);
+		Rotate();
+	}
+	
+	private void Rotate()
+	{
+		// 移動している方向に滑らかに回転する
+		var moveDirection = (_enemyBrain.TargetPosition - transform.position).normalized;
+		var angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+		var rotation = Mathf.LerpAngle(transform.eulerAngles.z, angle, Time.deltaTime * _rotateSpeed);
+		transform.rotation = Quaternion.Euler(0f, 0f, rotation);
 	}
 	
 	private void OnEnable()

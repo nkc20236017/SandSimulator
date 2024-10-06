@@ -11,6 +11,7 @@ public class BlowOutOre : MonoBehaviour
 	private float _invincibleTimer;
 	private bool _isInvincible = true;
 	private Vector2 _direction;
+	private Color _color;
 	private CircleCollider2D _circleCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private SpriteRenderer _spriteRenderer;
@@ -43,14 +44,15 @@ public class BlowOutOre : MonoBehaviour
 		_isInvincible = false;
 	}
 	
-	public void SetOre(int attackPower, int gravity, Vector2 direction, Sprite sprite)
+	public void SetOre(Ore ore, Vector2 direction)
 	{
-		_attackPower = attackPower;
-		_speed /= gravity;
+		_attackPower = ore.attackPower;
+		_speed /= ore.weightPerSize[0];
 		_direction = direction;
-		_spriteRenderer.sprite = sprite;
+		_spriteRenderer.sprite = ore.oreSprites[0];
+		_color = ore.color;
 		
-		_circleCollider2D.radius = sprite.bounds.size.x / 2 + plusRadius;
+		_circleCollider2D.radius = ore.oreSprites[0].bounds.size.x / 2 + plusRadius;
 
 		Movement();
 	}
@@ -64,7 +66,6 @@ public class BlowOutOre : MonoBehaviour
 	{
 		if (other.collider.CompareTag("Player")) { return; }
 		
-		_soundSource.InstantiateSound("BlowOutOre", transform.position);
 		if (other.collider.TryGetComponent<IDamageable>(out var target))
 		{
 			target.TakeDamage(_attackPower);
@@ -78,11 +79,12 @@ public class BlowOutOre : MonoBehaviour
 
 	private void Destroy()
 	{
+		_soundSource.InstantiateSound("BlowOutOre", transform.position);
 		// TODO: ［エフェクト］鉱石破壊
+		AudioManager.Instance.PlaySFX("BreakSE");
 		GameObject effectobj = (GameObject)Resources.Load("OreEfect");
 		Vector2 effectPos = new Vector2(transform.position.x,transform.position.y);
 		Instantiate(effectobj, effectPos, Quaternion.identity);
 		Destroy(gameObject);
 	}
 }
-

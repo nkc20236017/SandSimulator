@@ -114,6 +114,7 @@ public class BlowOut : MonoBehaviour
                 if (inputTank.FiringTank())
                 {
                     // TODO: ［効果音］吐き出し
+                    //AudioManager.Instance.PlaySFX("SpitoutSE");
                     GenerateTile();
                 }
             }
@@ -148,9 +149,8 @@ public class BlowOut : MonoBehaviour
             var blowOutOre = Instantiate(blowOutOrePrefab, position, Quaternion.identity);
             blowOutOre.gameObject.SetActive(true);
             var ore = blockDatas.GetOre(blockType);
-            blowOutOre.SetOre(ore.attackPower, ore.weightPerSize[0], direction.normalized, ore.oreSprites[0]);
+            blowOutOre.SetOre(ore, direction.normalized);
             inputTank.RemoveTank();
-            _soundSource.InstantiateSound("BlowOut", position);
         }
         else
         {
@@ -278,140 +278,9 @@ public class BlowOut : MonoBehaviour
                         }
                     }
                 }
-                
-                // Tilemap tilemap;
-                // mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
-                // var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
-                // if (_updateTilemap.HasTile(position))
-                // {
-                //     tilemap = _updateTilemap;
-                // }
-                // else if (mapTilemap != null && mapTilemap.HasTile(localPosition))
-                // {
-                //     tilemap = mapTilemap;
-                // }
-                // else { continue; }
-                //
-                // var newTilePosition = Vector3Int.RoundToInt(position + direction1.normalized * blowOutSpeed);
-                // var localNewTilePosition = _chunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
-                // mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
-                // if (mapTilemap == null) { continue; }
-                // if (_updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(localNewTilePosition)) { continue; }
-                //
-                // var tile = tilemap == _updateTilemap ? _updateTilemap.GetTile(position) : tilemap.GetTile(localPosition);
-                // if (tile == null) { continue; }
-                //
-                // _updateTilemap.SetTile(position, null);
-                // mapTilemap.SetTile(localPosition, null);
-                //
-                // if (blockDatas.GetBlock(tile).type == BlockType.Sand)
-                // {
-                //     _updateTilemap.SetTile(newTilePosition, tile);
-                //     
-                //     var tileLayer = _chunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
-                //     var block = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile);
-                //     if (block.GetStratumGeologyData(tileLayer) != null)
-                //     {
-                //         _updateTilemap.SetColor(newTilePosition, block.GetStratumGeologyData(tileLayer).color);
-                //     }
-                // }
-                // else
-                // {
-                //     mapTilemap.SetTile(localNewTilePosition, tile);
-                //
-                //     if (blockDatas.GetBlock(tile).type is not (BlockType.Ruby or BlockType.Crystal or BlockType.Emerald))
-                //     {
-                //         var tileLayer = _chunkInformation.GetLayer(new Vector2(localNewTilePosition.x, localNewTilePosition.y));
-                //         var block = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile);
-                //         if (block.GetStratumGeologyData(tileLayer) != null)
-                //         {
-                //             mapTilemap.SetColor(localNewTilePosition, block.GetStratumGeologyData(tileLayer).color);
-                //         }
-                //     }
-                // }
             }
         }
     }
-
-    // TODO: 吐き出し範囲の修正
-    // private void UpdateTile()
-    // {
-    // 	var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-    // 	var centerCell = (Vector3)updateTilemap.WorldToCell(mouseWorldPosition);
-    //
-    // 	var direction = centerCell - pivot.position;
-    // 	var angle = Mathf.Atan2(direction.y, direction.x);
-    // 	
-    // 	var chordLength = Mathf.Sqrt(Mathf.Pow(distance, 2) + Mathf.Pow(range, 2));
-    // 	var angle2 = Mathf.Acos(distance / chordLength);
-    // 	var a = GetNewCell(angle - angle2, chordLength);
-    // 	var b = GetNewCell(angle + angle2, chordLength);
-    // 	
-    // 	var chordLength2 = Mathf.Sqrt(Mathf.Pow(0, 2) + Mathf.Pow(range, 2));
-    // 	var angle3 = Mathf.Acos(0 / chordLength2);
-    // 	var h = radius * (1 - Mathf.Cos(angle3));
-    // 	var y = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(range, 2)) - (radius - h) - distance;
-    // 	
-    // 	var newX3 = y * Mathf.Cos(angle);
-    // 	var newY3 = y * Mathf.Sin(angle);
-    // 	var newDirection3 = new Vector3(newX3, newY3, 0);
-    // 	
-    // 	var c = a + newDirection3;
-    // 	var d = b + newDirection3;
-    // 	
-    // 	var max = new Vector2(Mathf.Max(a.x, b.x, c.x, d.x), Mathf.Max(a.y, b.y, c.y, d.y));
-    // 	var min = new Vector2(Mathf.Min(a.x, b.x, c.x, d.x), Mathf.Min(a.y, b.y, c.y, d.y));
-    //
-    // 	var angleAC = Mathf.Atan2(c.y - a.y, c.x - a.x);
-    // 	var angleBD = Mathf.Atan2(d.y - b.y, d.x - b.x);
-    // 	
-    // 	angleAC = Mathf.Abs(angleAC);
-    // 	angleAC *= Mathf.Rad2Deg;
-    // 	
-    // 	angleBD = Mathf.Abs(angleBD);
-    // 	angleBD *= Mathf.Rad2Deg;
-    //
-    // 	for (y = min.y; y <= max.y; y++)
-    // 	{
-    // 		for (var x = min.x; x < max.x; x++)
-    // 		{
-    // 			var position = Vector3Int.RoundToInt(new Vector3(x, y, 0));
-    // 			if (!updateTilemap.HasTile(position) && !mapTilemap.HasTile(position)) { continue; }
-    // 			
-    // 			var tileToPivotDistance = Vector3.Distance(pivot.position, position);
-    // 			if (tileToPivotDistance > radius) { continue; }
-    // 			
-    // 			// 座標a, b, c, dの四角の内側にあるかどうかを判定する
-    // 			var angleAP = Mathf.Atan2(position.y - a.y, position.x - a.x);
-    // 			var angleBP = Mathf.Atan2(position.y - b.y, position.x - b.x);
-    // 			var angleCP = Mathf.Atan2(position.y - c.y, position.x - c.x);
-    // 			var angleDP = Mathf.Atan2(position.y - d.y, position.x - d.x);
-    // 			
-    // 			angleAP = Mathf.Abs(angleAP);
-    // 			angleAP *= Mathf.Rad2Deg;
-    // 			
-    // 			angleBP = Mathf.Abs(angleBP);
-    // 			angleBP *= Mathf.Rad2Deg;
-    // 			
-    // 			angleCP = Mathf.Abs(angleCP);
-    // 			angleCP *= Mathf.Rad2Deg;
-    // 			
-    // 			angleDP = Mathf.Abs(angleDP);
-    // 			angleDP *= Mathf.Rad2Deg;
-    //
-    // 			if (angleAP < angleAC && angleBP < angleBD && angleCP < angleAC && angleDP < angleBD)
-    // 			{
-    // 				var newTilePosition = Vector3Int.RoundToInt(position + (pivot.position - centerCell).normalized * 2);
-    // 				if (updateTilemap.HasTile(newTilePosition) || mapTilemap.HasTile(newTilePosition)) { continue; }
-    //
-    // 				Debug.DrawLine(newTilePosition, position, Color.red, 0.1f);
-    // 				updateTilemap.SetTile(newTilePosition, blockDatas.GetBlock(blockType).tile);
-    // 				updateTilemap.SetTile(position, null);
-    // 				mapTilemap.SetTile(position, null);
-    // 			}
-    // 		}
-    // 	}
-    // }
 
     private void CancelBlowOut()
     {
