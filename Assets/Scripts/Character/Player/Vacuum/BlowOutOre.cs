@@ -11,6 +11,7 @@ public class BlowOutOre : MonoBehaviour
 	private float _invincibleTimer;
 	private bool _isInvincible = true;
 	private Vector2 _direction;
+	private Color _color;
 	private CircleCollider2D _circleCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private SpriteRenderer _spriteRenderer;
@@ -43,14 +44,15 @@ public class BlowOutOre : MonoBehaviour
 		_isInvincible = false;
 	}
 	
-	public void SetOre(int attackPower, int gravity, Vector2 direction, Sprite sprite)
+	public void SetOre(Ore ore, Vector2 direction)
 	{
-		_attackPower = attackPower;
-		_speed /= gravity;
+		_attackPower = ore.attackPower;
+		_speed /= ore.weightPerSize[0];
 		_direction = direction;
-		_spriteRenderer.sprite = sprite;
+		_spriteRenderer.sprite = ore.oreSprites[0];
+		_color = ore.color;
 		
-		_circleCollider2D.radius = sprite.bounds.size.x / 2 + plusRadius;
+		_circleCollider2D.radius = ore.oreSprites[0].bounds.size.x / 2 + plusRadius;
 
 		Movement();
 	}

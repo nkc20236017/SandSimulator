@@ -148,7 +148,7 @@ public class BlowOut : MonoBehaviour
             var blowOutOre = Instantiate(blowOutOrePrefab, position, Quaternion.identity);
             blowOutOre.gameObject.SetActive(true);
             var ore = blockDatas.GetOre(blockType);
-            blowOutOre.SetOre(ore.attackPower, ore.weightPerSize[0], direction.normalized, ore.oreSprites[0]);
+            blowOutOre.SetOre(ore, direction.normalized);
             inputTank.RemoveTank();
         }
         else

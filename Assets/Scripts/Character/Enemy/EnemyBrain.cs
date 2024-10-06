@@ -35,11 +35,6 @@ public class EnemyBrain : MonoBehaviour
 
 	private void Update()
 	{
-		if (enemy.type == EnemyType.Mole)
-		{
-			Debug.Log(_currentState.ID);
-		}
-		
 		_currentState?.UpdateState(this);
 	}
 	
