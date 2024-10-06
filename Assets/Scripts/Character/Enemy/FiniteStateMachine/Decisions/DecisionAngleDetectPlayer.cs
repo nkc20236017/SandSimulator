@@ -56,7 +56,9 @@ public class DecisionAngleDetectPlayer : FsmDecision
 					_isPlayerDetected = false;
 					_enemyBrain.Target = null;
 					ShowMark(lostMarkSprite);
-				}
+                    AudioManager.Instance.PlaySFX("MissSE");
+					Debug.Log("111");
+                }
 
 				return;
 			}
@@ -77,8 +79,10 @@ public class DecisionAngleDetectPlayer : FsmDecision
 						_isPlayerDetected = false;
 						_enemyBrain.Target = null;
 						ShowMark(lostMarkSprite);
-						// TODO: プレイヤーを見失った場合、見失った場所まで移動する
-					}
+                        AudioManager.Instance.PlaySFX("MissSE");
+                        Debug.Log("222");
+                        // TODO: プレイヤーを見失った場合、見失った場所まで移動する
+                    }
 
 					return;
 				}
@@ -89,6 +93,7 @@ public class DecisionAngleDetectPlayer : FsmDecision
 					_enemyBrain.Target = player;
 					_enemyBrain.TargetPosition = player.position;
 					ShowMark(findMarkSprite);
+					AudioManager.Instance.PlaySFX("DiscoverySE");
 				}
 
 				return;
@@ -100,7 +105,9 @@ public class DecisionAngleDetectPlayer : FsmDecision
 				_enemyBrain.Target = null;
 				_isPlayerDetected = false;
 				ShowMark(lostMarkSprite);
-			}
+                AudioManager.Instance.PlaySFX("MissSE");
+                Debug.Log("333");
+            }
 
 			return;
 		}
@@ -110,7 +117,9 @@ public class DecisionAngleDetectPlayer : FsmDecision
 			_enemyBrain.Target = null;
 			_isPlayerDetected = false;
 			ShowMark(lostMarkSprite);
-		}
+            AudioManager.Instance.PlaySFX("MissSE");
+            Debug.Log("666");
+        }
 	}
 
 	private bool IsObstaclePivot(Transform target)

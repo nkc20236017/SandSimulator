@@ -36,7 +36,6 @@ public class PlayerMovement : MonoBehaviour
 	public bool CanMove { get; set; } = true;
 	public bool IsMoveFlip { get; set; } = true;
 	private PlayerActions.MovementActions MovementActions => _playerActions.Movement;
-	private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
 
 	private void Awake()
 	{
@@ -51,8 +50,6 @@ public class PlayerMovement : MonoBehaviour
 	{
 		MovementActions.Jump.started += _ => Jump();
 		MovementActions.Jump.canceled += _ => JumpCancel();
-		VacuumActions.Absorption.started += OnAbsorptionSound;
-        VacuumActions.Absorption.canceled += OnAbsorptionSound;
     }
 
 	private void FixedUpdate()
@@ -73,15 +70,6 @@ public class PlayerMovement : MonoBehaviour
 		_rigidbody2D.velocity = new Vector2(_moveDirection.x * speed, _rigidbody2D.velocity.y);
 	}
 
-    private void OnAbsorptionSound(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
-            AudioManager.Instance.PlaySFX("VacuumSE");
-            return;
-        }
-        AudioManager.Instance.StopSFX("VacuumSE");
-    }
 
     private void Update()
 	{

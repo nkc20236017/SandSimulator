@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
@@ -39,6 +40,15 @@ public class SuckUp : MonoBehaviour
     private IChunkInformation _chunkInformation;
     private ISoundSourceable _soundSource;
 
+    private string[] seName =
+    {
+        "VacuumSE",
+        "VacuumSE+2",
+        "VacuumSE+4",
+        "VacuumSE-2",
+        "VacuumSE-4"
+    };
+
     public bool IsSuckUp { get; private set; }
     
     public void Inject(IInputTank inputTank)
@@ -75,12 +85,12 @@ public class SuckUp : MonoBehaviour
         {
             suckEffect.SetActive(true);
             // TODO: ［効果音］吸い込み
-            //AudioManager.Instance.PlaySFX("VacuumSE");
+            int x = Random.Range(0, seName.Length);
+            AudioManager.Instance.PlaySFX(seName[x]);
             IsSuckUp = true;
             Performed();
             _numberExecutions++;
         }
-        //AudioManager.Instance.StopSFX("VacuumSE");
     }
 
     private void Performed()
