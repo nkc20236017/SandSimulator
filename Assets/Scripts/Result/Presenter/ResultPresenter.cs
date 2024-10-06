@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ResultPresenter : MonoBehaviour, IOutputResultUI
 {
@@ -17,18 +18,27 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     private bool demofast;
     private CancellationToken token;
     private CancellationTokenSource tokenSource;
+    private PlayerActions playerActions;
 
 
     private void Start()
     {
         tokenSource = new CancellationTokenSource();
-
+        playerActions = new PlayerActions();
+        playerActions.UI.UISelect.performed += OnUiClick;
+        playerActions.Enable();
         token = tokenSource.Token;
     }
 
-    private void Update()
+
+    private void OnDisable()
     {
-        if (Input.GetMouseButtonDown(0)&&!demofast)
+        playerActions.Disable();
+    }
+
+    private void OnUiClick(InputAction.CallbackContext context)
+    {
+        if(!demofast)
         {
             demofast = true;
             tokenSource.Cancel();
