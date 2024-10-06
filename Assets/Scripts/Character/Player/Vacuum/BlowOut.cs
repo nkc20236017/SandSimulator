@@ -26,6 +26,8 @@ public class BlowOut : MonoBehaviour
     [Header("Debug Config")]
     [SerializeField] private bool debug;
 
+    [SerializeField] private GameObject blowEffect;
+
     private float _weight;
     private float _lastUpdateTime;
     private PlayerMovement _playerMovement;
@@ -88,6 +90,7 @@ public class BlowOut : MonoBehaviour
         _lastUpdateTime -= Time.deltaTime;
         if (VacuumActions.SpittingOut.IsPressed() && !_suckUp.IsSuckUp)
         {
+            blowEffect.SetActive(true);
             IsBlowOut = true;
             BlowOutTiles();
         }
@@ -284,6 +287,7 @@ public class BlowOut : MonoBehaviour
 
     private void CancelBlowOut()
     {
+        blowEffect.SetActive(false);
         IsBlowOut = false;
         _playerMovement.IsMoveFlip = true;
     }

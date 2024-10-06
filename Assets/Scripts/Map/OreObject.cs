@@ -8,6 +8,8 @@ public class OreObject : MonoBehaviour, IDamageable
     [Header("Fall Ore Config")]
     [SerializeField] private float fallDamageInterval;
     [SerializeField] private float fundamentalDistance;
+
+    [SerializeField] private GameObject oreEffect;
     
     private int _currentEndurance;
     private float _fallDamageTimer;
@@ -116,9 +118,12 @@ public class OreObject : MonoBehaviour, IDamageable
         {
             target.TakeDamage(Ore.attackPower);
         }
-        
+
         // TODO: ［正規実装］魔鉱石が壊れると能力が発動する
         // TODO: ［エフェクト］鉱石破壊
+        Vector2 effectPos = new Vector2(transform.position.x, transform.position.y);
+        GameObject effectObj = Instantiate(oreEffect, effectPos, Quaternion.identity);
+        effectObj.GetComponent<ParticleSystemRenderer>().material = Ore.material;
         Destroy(gameObject);
     }
     

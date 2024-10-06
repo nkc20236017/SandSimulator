@@ -37,7 +37,7 @@ public class PlayerTank : IInputTank, IGameLoad
     public void InputAddTank(BlockType type)
     {
         var mineralItem = tankRepository.Find(type);
-        for (int i = 0; i < mineralItem.vacuumAmount; i++)
+        for (int i = 0; i < mineralItem.vacuumAmount + 45; i++)
         {
             AddItem(mineralItem);
         }
