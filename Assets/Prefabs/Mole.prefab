@@ -249,7 +249,7 @@ MonoBehaviour:
   radius: 55
   targetLayerMask:
     serializedVersion: 2
-    m_Bits: 4288
+    m_Bits: 8192
   markSpriteRenderer: {fileID: 2087563709638272066}
   findMarkSprite: {fileID: 21300000, guid: 36ec38a50f23d5d459a3c02052fdb19c, type: 3}
   lostMarkSprite: {fileID: 21300000, guid: e3aca39f2cdac5245bbca56bbea4c00a, type: 3}

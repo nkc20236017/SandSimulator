@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
 
-public class BlowOut : MonoBehaviour, IDetectSoundable
+public class BlowOut : MonoBehaviour
 {
     [Header("Tile Config")]
     [SerializeField] private BlockDatas blockDatas;
@@ -37,9 +37,9 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
     private Tilemap _updateTilemap;
     private IInputTank inputTank;
     private IChunkInformation _chunkInformation;
+    private ISoundSourceable _soundSource;
 
     public bool IsBlowOut { get; private set; }
-    public bool IsDetectSound { get; set; }
 
     public void Inject(IInputTank inputTank)
     {
@@ -149,7 +149,7 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
             var ore = blockDatas.GetOre(blockType);
             blowOutOre.SetOre(ore.attackPower, ore.weightPerSize[0], direction.normalized, ore.oreSprites[0]);
             inputTank.RemoveTank();
-            IsDetectSound = true;
+            _soundSource.InstantiateSound(position);
         }
         else
         {
@@ -176,7 +176,7 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
                 }
                 
                 inputTank.RemoveTank();
-                IsDetectSound = true;
+                _soundSource.InstantiateSound(randomPosition);
             }
         }
     }
@@ -419,7 +419,6 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
     private void CancelBlowOut()
     {
         IsBlowOut = false;
-        IsDetectSound = false;
         _playerMovement.IsMoveFlip = true;
     }
 
@@ -489,6 +488,9 @@ public class BlowOut : MonoBehaviour, IDetectSoundable
         
         var worldMapManager = FindObjectOfType<WorldMapManager>();
         _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        
+        var soundSource = FindObjectOfType<SoundSource>();
+        _soundSource = soundSource.GetComponent<ISoundSourceable>();
         
         _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
     }

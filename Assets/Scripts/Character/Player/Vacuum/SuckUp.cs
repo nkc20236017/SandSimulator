@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class SuckUp : MonoBehaviour, IDetectSoundable
+public class SuckUp : MonoBehaviour
 {
     [Header("Tile Config")]
     [SerializeField] private BlockDatas blockDatas;
@@ -35,9 +35,9 @@ public class SuckUp : MonoBehaviour, IDetectSoundable
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
     private IInputTank inputTank;
     private IChunkInformation _chunkInformation;
+    private ISoundSourceable _soundSource;
     
     public bool IsSuckUp { get; private set; }
-    public bool IsDetectSound { get; set; }
     
     public void Inject(IInputTank inputTank)
     {
@@ -98,7 +98,6 @@ public class SuckUp : MonoBehaviour, IDetectSoundable
     private void CancelSuckUp()
     {
         IsSuckUp = false;
-        IsDetectSound = false;
         _suckUpTilePositions.Clear();
         _playerMovement.IsMoveFlip = true;
         _numberExecutions = 0;
@@ -207,7 +206,7 @@ public class SuckUp : MonoBehaviour, IDetectSoundable
                 target.TakeDamage(3);
                 // TODO: ［エフェクト］鉱石吸い込み
                 // if (oreObject.Ore.type == BlockType.Crystal) { }
-                IsDetectSound = true;
+                _soundSource.InstantiateSound(transform.position);
             }
         }
     }
@@ -252,7 +251,7 @@ public class SuckUp : MonoBehaviour, IDetectSoundable
             }
             if (tile == null) { continue; }
 
-            IsDetectSound = true;
+            _soundSource.InstantiateSound(transform.position);
             if (blockDatas.GetBlock(tile).type == BlockType.Sand)
             {
                 _updateTilemap.SetTile(_updateTilemap.WorldToCell(newTilePosition), tile);
@@ -361,6 +360,10 @@ public class SuckUp : MonoBehaviour, IDetectSoundable
         
         var worldMapManager = FindObjectOfType<WorldMapManager>();
         _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        
+        var soundSource = FindObjectOfType<SoundSource>();
+        _soundSource = soundSource.GetComponent<ISoundSourceable>();
+        
         _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
     }
     

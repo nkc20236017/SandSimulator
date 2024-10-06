@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class BlowOutOre : MonoBehaviour, IDetectSoundable
+public class BlowOutOre : MonoBehaviour
 {
 	[SerializeField] private float _speed;
 	[SerializeField] private float plusRadius;
@@ -15,11 +14,14 @@ public class BlowOutOre : MonoBehaviour, IDetectSoundable
 	private CircleCollider2D _circleCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private SpriteRenderer _spriteRenderer;
+	private ISoundSourceable _soundSource;
 	
-	public bool IsDetectSound { get; set; }
 	
 	private void Awake()
 	{
+		var soundSource = FindObjectOfType<SoundSource>();
+		_soundSource = soundSource.GetComponent<ISoundSourceable>();
+		
 		_circleCollider2D = GetComponent<CircleCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_spriteRenderer = GetComponent<SpriteRenderer>();
@@ -61,7 +63,7 @@ public class BlowOutOre : MonoBehaviour, IDetectSoundable
 	{
 		if (other.collider.CompareTag("Player")) { return; }
 		
-		IsDetectSound = true;
+		_soundSource.InstantiateSound(transform.position);
 		if (other.collider.TryGetComponent<IDamageable>(out var target))
 		{
 			target.TakeDamage(_attackPower);
@@ -80,13 +82,6 @@ public class BlowOutOre : MonoBehaviour, IDetectSoundable
 		Vector2 effectPos = new Vector2(transform.position.x,transform.position.y);
 		Instantiate(effectobj, effectPos, Quaternion.identity);
 		Destroy(gameObject);
-	}
-
-	private void OnCollisionExit2D(Collision2D other)
-	{
-		if (other.collider.CompareTag("Player")) { return; }
-
-		IsDetectSound = false;
 	}
 }
 
