@@ -45,9 +45,17 @@ public class DecisionDetectSound : FsmDecision
 		{
 			foreach (var target in targetCollider)
 			{
+				if (!_isTargetDetected)
+				{
+					_isTargetDetected = true;
+					_enemyBrain.Target = target.transform;
+					ShowMark(findMarkSprite);
+				}
+				if (_enemyBrain.Target == null) { return; }
+				
 				var distance1 = (pivot.position - target.transform.position).sqrMagnitude;
 				var distance2 = (pivot.position - _enemyBrain.Target.position).sqrMagnitude;
-				if (!_isTargetDetected || distance1 <= distance2)
+				if (distance1 < distance2)
 				{
 					_isTargetDetected = true;
 					_enemyBrain.Target = target.transform;

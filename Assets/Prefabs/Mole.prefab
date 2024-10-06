@@ -231,7 +231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
-  _radius: 10
+  _radius: 7.5
   _diggingInterval: 0.1
 --- !u!114 &3733803965801239941
 MonoBehaviour:
@@ -246,7 +246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pivot: {fileID: 9097912794915553998}
-  radius: 55
+  radius: 85
   targetLayerMask:
     serializedVersion: 2
     m_Bits: 8192
@@ -350,7 +350,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _wanderTime: {x: 5, y: 10}
-  _radius: 85
+  _radius: 75
 --- !u!114 &8727729550799747418
 MonoBehaviour:
   m_ObjectHideFlags: 0
