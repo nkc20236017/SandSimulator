@@ -185,8 +185,8 @@ MonoBehaviour:
   collisionLayerMask:
     serializedVersion: 2
     m_Bits: 576
-  updateInterval: 0.01
-  chunkSize: {x: 160, y: 150}
+  updateInterval: 0.05
+  chunkSize: {x: 180, y: 200}
   canUpdateSand: 1
   canUpdateWater: 0
   canUpdateSandToMud: 0

@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 1437567251816535818}
   - component: {fileID: 7958432776048923174}
   - component: {fileID: 3484673331381006568}
+  - component: {fileID: -1275106332751938000}
   - component: {fileID: 6157076543574377748}
   - component: {fileID: 8824637259942292931}
   - component: {fileID: 8727729550799747418}
@@ -191,14 +192,14 @@ MonoBehaviour:
     - Decision: {fileID: 3484673331381006568}
       TrueState: Attack
       FalseState: 
-    - Decision: {fileID: 1437567251816535818}
+    - Decision: {fileID: -1275106332751938000}
       TrueState: 
       FalseState: Wander
   - ID: Attack
     Actions:
     - {fileID: 6157076543574377748}
     Transitions:
-    - Decision: {fileID: 1437567251816535818}
+    - Decision: {fileID: -1275106332751938000}
       TrueState: 
       FalseState: Wander
     - Decision: {fileID: 944992079682978371}
@@ -229,7 +230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
-  _radius: 7.5
+  _radius: 9
   _diggingInterval: 0.1
 --- !u!114 &3733803965801239941
 MonoBehaviour:
@@ -283,7 +284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pivot: {fileID: 9097912794915553998}
-  radius: 15
+  radius: 40
   angle: 180
   direction: 0
   playerLayerMask:
@@ -322,7 +323,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 829b22fabd31490e91df25d6ebb6df6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interval: 3
+  interval: 1
+--- !u!114 &-1275106332751938000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 325152271554838758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0d3e630a7b94c2d9ab7eabfcd6193d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _radius: 75
+  _targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &6157076543574377748
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,6 +352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14a7b1e677d047eda58c466657f57d5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rotateSpeed: 5
 --- !u!114 &8824637259942292931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -349,6 +367,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _wanderTime: {x: 5, y: 10}
   _radius: 75
+  _rotateSpeed: 5
 --- !u!114 &8727729550799747418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,6 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27b5679368a94cf88856f69ae73ce51c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rotateSpeed: 5
 --- !u!1 &3668698857136145095
 GameObject:
   m_ObjectHideFlags: 0
