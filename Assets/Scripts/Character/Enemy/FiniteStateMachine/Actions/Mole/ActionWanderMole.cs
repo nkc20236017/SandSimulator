@@ -34,8 +34,8 @@ public class ActionWanderMole : FsmAction
 			return;
 		}
 
-		Movement();
 		Rotate();
+		Movement();
 		
 		_timer -= Time.deltaTime;
 		if (_timer <= 0f)
@@ -60,9 +60,10 @@ public class ActionWanderMole : FsmAction
     private void Rotate()
 	{
 		// 移動している方向に向く
-		var moveDirection = (_movePosition - transform.position).normalized;
-		var angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
-		transform.rotation = Quaternion.Euler(0f, 0f, angle);
+		var direction = _enemyBrain.TargetPosition - transform.position;
+		var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+		var rotation = Mathf.Lerp(transform.rotation.z, angle, 2.5f * Time.deltaTime);
+		transform.rotation = Quaternion.Euler(0f, 0f, rotation);
 	}
 
     private void GetRandomPointInCircle()
@@ -91,7 +92,7 @@ public class ActionWanderMole : FsmAction
 		if (_enemyBrain.Target != null) { return; }
 		
 		Gizmos.DrawLine(transform.position, _movePosition);
-		Gizmos.DrawWireSphere(_movePosition, 0.5f);
+		Gizmos.DrawWireSphere(_movePosition, 2.5f);
     }
 
     private void OnEnable()

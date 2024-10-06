@@ -64,7 +64,6 @@ public class BlowOutOre : MonoBehaviour
 	{
 		if (other.collider.CompareTag("Player")) { return; }
 		
-		_soundSource.InstantiateSound("BlowOutOre", transform.position);
 		if (other.collider.TryGetComponent<IDamageable>(out var target))
 		{
 			target.TakeDamage(_attackPower);
@@ -78,6 +77,7 @@ public class BlowOutOre : MonoBehaviour
 
 	private void Destroy()
 	{
+		_soundSource.InstantiateSound("BlowOutOre", transform.position);
 		// TODO: ［エフェクト］鉱石破壊
 		AudioManager.Instance.PlaySFX("BreakSE");
 		GameObject effectobj = (GameObject)Resources.Load("OreEfect");
@@ -86,4 +86,3 @@ public class BlowOutOre : MonoBehaviour
 		Destroy(gameObject);
 	}
 }
-

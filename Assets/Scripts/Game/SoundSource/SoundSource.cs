@@ -15,7 +15,7 @@ public class SoundSource : MonoBehaviour, ISoundSourceable
         _instantiationTimes[id] = time;
     }
 
-    public void InstantiateSound(string id, Vector3 position, float despawnTime = 3f)
+    public void InstantiateSound(string id, Vector3 position, float despawnTime = 5f)
     {
         if (_canInstantiate)
         {

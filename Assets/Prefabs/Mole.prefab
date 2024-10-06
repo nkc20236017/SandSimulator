@@ -177,7 +177,6 @@ MonoBehaviour:
   - ID: Chase
     Actions:
     - {fileID: 6157076543574377748}
-    - {fileID: 8727729550799747418}
     Transitions:
     - Decision: {fileID: 1437567251816535818}
       TrueState: Attack Preparedness
@@ -198,7 +197,6 @@ MonoBehaviour:
   - ID: Attack
     Actions:
     - {fileID: 6157076543574377748}
-    - {fileID: 8727729550799747418}
     Transitions:
     - Decision: {fileID: 1437567251816535818}
       TrueState: 
