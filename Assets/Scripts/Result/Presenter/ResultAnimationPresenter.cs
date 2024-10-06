@@ -47,6 +47,5 @@ public class ResultAnimationPresenter : MonoBehaviour
         }
     ).ToUniTask(cancellationToken: cancellationToken);
         AudioManager.Instance.StopBGM("Coinloop");
-        AudioManager.Instance.PlaySFX("CoinSE");
     }
 }

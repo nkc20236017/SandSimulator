@@ -18,8 +18,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private void DisableEnemy()
     {
         // _animator.SetTrigger(_deadHash);
-        // TODO: アイテムドロップ（経験値結晶のみ）
         // TODO: ［効果音］エネミー死亡
+        GameObject effectobj = (GameObject)Resources.Load("EnemyDieEffect");
+        Vector2 effectPos = new Vector2(transform.position.x, transform.position.y);
+        Instantiate(effectobj, effectPos, Quaternion.identity);
         // TODO: ［エフェクト］エネミー死亡
 
         Destroy(gameObject);
