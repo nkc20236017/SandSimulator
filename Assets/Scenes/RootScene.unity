@@ -221,6 +221,91 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1070867353
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1245229138567954617, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_Name
+      value: VirtualMouse
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464423996311091276, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464423996311091276, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464423996311091276, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464423996311091276, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464423996311091276, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464423996311091276, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464423996311091276, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464423996311091276, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464423996311091276, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464423996311091276, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808508238956854053, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LeftButtonAction.m_UseReference
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808508238956854053, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LeftButtonAction.m_Action.m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808508238956854053, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LeftButtonAction.m_Action.m_ExpectedControlType
+      value: Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808508238956854053, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LeftButtonAction.m_Action.m_SingletonActionBindings.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808508238956854053, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LeftButtonAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Id
+      value: d5c6c673-d3af-4633-b68c-7b50769ca770
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808508238956854053, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LeftButtonAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <Gamepad>/buttonNorth
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808508238956854053, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
+      propertyPath: m_LeftButtonAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Action
+      value: Left Button
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1c3f7363694bf4e438b3c01e9fb17511, type: 3}
 --- !u!1001 &1841352847
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -388,3 +473,4 @@ SceneRoots:
   - {fileID: 1996053448}
   - {fileID: 633063344}
   - {fileID: 1841352847}
+  - {fileID: 1070867353}

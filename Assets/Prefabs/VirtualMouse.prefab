@@ -1,0 +1,135 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1245229138567954617
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5464423996311091276}
+  - component: {fileID: 7808508238956854053}
+  m_Layer: 0
+  m_Name: VirtualMouse
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5464423996311091276
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245229138567954617}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7808508238956854053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245229138567954617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 424b6720ff5999446843ba414e58a907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CursorMode: 1
+  m_CursorGraphic: {fileID: 0}
+  m_CursorTransform: {fileID: 0}
+  m_CursorSpeed: 2000
+  m_ScrollSpeed: 45
+  m_StickAction:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Stick
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 9fda21f7-5b2d-41b6-bf4d-960d86bb1627
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 8598894536906467110, guid: 04fccd292d3d66549926258d5b267d9f, type: 3}
+  m_LeftButtonAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: Left Button
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 027febcf-31ed-4f11-a6e7-2d2175cc88df
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  m_MiddleButtonAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: Middle Button
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: ed4c7e41-b04d-439b-8e97-80bfb2c9adbe
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  m_RightButtonAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: Right Button
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: cce28c47-b40d-47cc-962a-9edc470ee03e
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  m_ForwardButtonAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: Forward Button
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 3d3fa3dc-9a18-4ba2-9fdc-8569bd2acbed
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  m_BackButtonAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: Back Button
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 3c04aba1-b9ea-4d88-bf70-7f053b84be1e
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  m_ScrollWheelAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: Scroll Wheel
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 1c54993c-9bd1-4c5a-95b7-6ca52677a5cd
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
