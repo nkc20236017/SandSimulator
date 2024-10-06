@@ -117,7 +117,6 @@ public class BlowOut : MonoBehaviour
                 if (inputTank.FiringTank())
                 {
                     // TODO: ［効果音］吐き出し
-                    //AudioManager.Instance.PlaySFX("SpitoutSE");
                     GenerateTile();
                 }
             }
@@ -148,6 +147,7 @@ public class BlowOut : MonoBehaviour
         // TODO: blockTypeが鉱石かどうかの判定
         if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
         {
+            AudioManager.Instance.PlaySFX("SpitoutSE");
             var position = distance * direction.normalized + pivot.position;
             var blowOutOre = Instantiate(blowOutOrePrefab, position, Quaternion.identity);
             blowOutOre.gameObject.SetActive(true);

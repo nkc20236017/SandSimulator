@@ -50,6 +50,7 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
             sceneButton.SetActive(true);
             totalePrise.SetActive(true);
         }
+        AudioManager.Instance.StopBGM("Coinloop");
         AudioManager.Instance.PlaySFX("CoinSE");
         animationPresenter.gameObject.SetActive(false);
         resultPresenter.gameObject.SetActive(true);
