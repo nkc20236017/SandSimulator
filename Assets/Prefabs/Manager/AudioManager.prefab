@@ -686,7 +686,7 @@ GameObject:
   - component: {fileID: 9063482508766851759}
   - component: {fileID: 3728522659395416788}
   m_Layer: 0
-  m_Name: StampHighSE
+  m_Name: StampSE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
