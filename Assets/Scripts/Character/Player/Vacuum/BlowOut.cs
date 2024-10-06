@@ -149,7 +149,7 @@ public class BlowOut : MonoBehaviour
             var ore = blockDatas.GetOre(blockType);
             blowOutOre.SetOre(ore.attackPower, ore.weightPerSize[0], direction.normalized, ore.oreSprites[0]);
             inputTank.RemoveTank();
-            _soundSource.InstantiateSound(position);
+            _soundSource.InstantiateSound("BlowOut", position);
         }
         else
         {
@@ -176,7 +176,7 @@ public class BlowOut : MonoBehaviour
                 }
                 
                 inputTank.RemoveTank();
-                _soundSource.InstantiateSound(randomPosition);
+                _soundSource.InstantiateSound("BlowOut", randomPosition);
             }
         }
     }
@@ -491,6 +491,7 @@ public class BlowOut : MonoBehaviour
         
         var soundSource = FindObjectOfType<SoundSource>();
         _soundSource = soundSource.GetComponent<ISoundSourceable>();
+        _soundSource.SetInstantiation("BlowOut");
         
         _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
     }

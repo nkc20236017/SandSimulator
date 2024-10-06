@@ -21,6 +21,7 @@ public class BlowOutOre : MonoBehaviour
 	{
 		var soundSource = FindObjectOfType<SoundSource>();
 		_soundSource = soundSource.GetComponent<ISoundSourceable>();
+		_soundSource.SetInstantiation("BlowOutOre");
 		
 		_circleCollider2D = GetComponent<CircleCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
@@ -63,7 +64,7 @@ public class BlowOutOre : MonoBehaviour
 	{
 		if (other.collider.CompareTag("Player")) { return; }
 		
-		_soundSource.InstantiateSound(transform.position);
+		_soundSource.InstantiateSound("BlowOutOre", transform.position);
 		if (other.collider.TryGetComponent<IDamageable>(out var target))
 		{
 			target.TakeDamage(_attackPower);

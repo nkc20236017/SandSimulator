@@ -111,7 +111,7 @@ public class OreObject : MonoBehaviour, IDamageable
     {
         if (!_canDestroy) { return; }
 		
-        _soundSource.InstantiateSound(transform.position);
+        _soundSource.InstantiateSound("OreObject", transform.position);
         if (other.collider.TryGetComponent<IDamageable>(out var target))
         {
             target.TakeDamage(Ore.attackPower);
@@ -129,6 +129,7 @@ public class OreObject : MonoBehaviour, IDamageable
         
         var soundSource = FindObjectOfType<SoundSource>();
         _soundSource = soundSource.GetComponent<ISoundSourceable>();
+        _soundSource.SetInstantiation("OreObject");
         
         _capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();

@@ -206,7 +206,7 @@ public class SuckUp : MonoBehaviour
                 target.TakeDamage(3);
                 // TODO: ［エフェクト］鉱石吸い込み
                 // if (oreObject.Ore.type == BlockType.Crystal) { }
-                _soundSource.InstantiateSound(transform.position);
+                _soundSource.InstantiateSound("SuckUp", transform.position);
             }
         }
     }
@@ -251,7 +251,7 @@ public class SuckUp : MonoBehaviour
             }
             if (tile == null) { continue; }
 
-            _soundSource.InstantiateSound(transform.position);
+            _soundSource.InstantiateSound("SuckUp", transform.position);
             if (blockDatas.GetBlock(tile).type == BlockType.Sand)
             {
                 _updateTilemap.SetTile(_updateTilemap.WorldToCell(newTilePosition), tile);
@@ -363,6 +363,7 @@ public class SuckUp : MonoBehaviour
         
         var soundSource = FindObjectOfType<SoundSource>();
         _soundSource = soundSource.GetComponent<ISoundSourceable>();
+        _soundSource.SetInstantiation("SuckUp");
         
         _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
     }
