@@ -6,12 +6,11 @@ public class ActionAttackPreparednessMole : FsmAction
 	
 	public override void Action()
 	{
-		if (_enemyBrain.Target == null) { return; }
-		
 		// ターゲットの方向に向かって回転させる
-		var direction = _enemyBrain.Target.position - transform.position;
+		var direction = _enemyBrain.TargetPosition - transform.position;
 		var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-		transform.rotation = Quaternion.Euler(0f, 0f, angle);
+		var rotation = Mathf.Lerp(transform.rotation.z, angle, 2.5f * Time.deltaTime);
+		transform.rotation = Quaternion.Euler(0f, 0f, rotation);
 	}
 	
 	private void OnEnable()

@@ -87,6 +87,7 @@ public class DecisionAngleDetectPlayer : FsmDecision
 				{
 					_isPlayerDetected = true;
 					_enemyBrain.Target = player;
+					_enemyBrain.TargetPosition = player.position;
 					ShowMark(findMarkSprite);
 				}
 

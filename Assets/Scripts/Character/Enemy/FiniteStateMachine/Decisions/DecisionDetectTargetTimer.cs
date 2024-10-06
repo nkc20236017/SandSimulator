@@ -15,20 +15,15 @@ public class DecisionDetectTargetTimer : FsmDecision
 	
 	private bool DetectTargetTimer()
 	{
-		if (_enemyBrain.Target == null) { return false; }
-		
-		if (Vector3.Distance(_enemyBrain.Target.position, transform.position) <= 0.5f)
+		if (Vector3.Distance(_enemyBrain.TargetPosition, transform.position) <= 0.5f)
 		{
 			_timer += Time.deltaTime;
 			if (_timer >= _detectInterval)
 			{
 				_timer = 0f;
+				_enemyBrain.Target = null;
 				return true;
 			}
-		}
-		else
-		{
-			_timer = 0f;
 		}
 		
 		return false;
