@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ResultPresenter : MonoBehaviour, IOutputResultUI
 {
@@ -17,22 +18,31 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     private bool demofast;
     private CancellationToken token;
     private CancellationTokenSource tokenSource;
+    private PlayerActions playerActions;
 
 
     private void Start()
     {
         tokenSource = new CancellationTokenSource();
-
+        playerActions = new PlayerActions();
         token = tokenSource.Token;
+        playerActions.UI.UISelect.performed += OnUISelect;
+        playerActions.Enable();
     }
 
-    private void Update()
+    private void OnDisable()
     {
-        if (Input.GetMouseButtonDown(0)&&!demofast)
-        {
-            demofast = true;
-            tokenSource.Cancel();
-        }
+        playerActions.Disable();
+    }
+
+    private void OnUISelect(InputAction.CallbackContext context)
+    {
+        if (demofast) { return; }
+        Debug.Log("ƒLƒƒƒ“ƒZƒ‹");
+
+        demofast = true;
+        tokenSource.Cancel();
+
     }
 
     public async void ResultUI(ResultOutPutData outPutData)
@@ -54,7 +64,7 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
         animationPresenter.gameObject.SetActive(false);
         resultPresenter.gameObject.SetActive(true);
         sceneButton.SetActive(true);
-            totalePrise.SetActive(true);
+        totalePrise.SetActive(true);
     }
 
     private void OnDestroy()
