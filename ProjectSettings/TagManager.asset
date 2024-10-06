@@ -7,6 +7,7 @@ TagManager:
   - Ore
   - Ground
   - Enemy
+  - MainVirtualCamera
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - Main
   - Minimap
   - BlowOutOre
-  - 
+  - SoundSource
   - 
   - 
   - 

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class OreObject : MonoBehaviour, IDamageable, IDetectSoundable
+public class OreObject : MonoBehaviour, IDamageable
 {
     [Header("Datas Config")]
     [SerializeField] private BlockDatas blockDatas;
@@ -18,11 +18,11 @@ public class OreObject : MonoBehaviour, IDamageable, IDetectSoundable
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer _spriteRenderer;
     private IChunkInformation _chunkInformation;
+    private ISoundSourceable _soundSource;
 
     public int Size { get; private set; }
     public bool CanFall { get; set; } = true;
     public bool CanSuckUp { get; private set; }
-    public bool IsDetectSound { get; set; }
     public Ore Ore { get; private set; }
 
     private void Update()
@@ -111,7 +111,7 @@ public class OreObject : MonoBehaviour, IDamageable, IDetectSoundable
     {
         if (!_canDestroy) { return; }
 		
-        IsDetectSound = true;
+        _soundSource.InstantiateSound("OreObject", transform.position);
         if (other.collider.TryGetComponent<IDamageable>(out var target))
         {
             target.TakeDamage(Ore.attackPower);
@@ -126,6 +126,10 @@ public class OreObject : MonoBehaviour, IDamageable, IDetectSoundable
     {
         var worldMapManager = FindObjectOfType<WorldMapManager>();
         _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        
+        var soundSource = FindObjectOfType<SoundSource>();
+        _soundSource = soundSource.GetComponent<ISoundSourceable>();
+        _soundSource.SetInstantiation("OreObject");
         
         _capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();

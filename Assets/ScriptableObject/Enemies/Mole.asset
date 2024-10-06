@@ -20,9 +20,9 @@ MonoBehaviour:
   - name: "\uFF11\u5C64"
     depth: 1
     health: 30
-    speed: 15
+    speed: 7
     attack: 1
-    attackSpeed: 30
+    attackSpeed: 15
   - name: "\uFF12\u5C64"
     depth: 2
     health: 30

@@ -370,7 +370,7 @@ GameObject:
   - component: {fileID: 2246039907870077291}
   m_Layer: 10
   m_Name: Virtual Camera
-  m_TagString: Untagged
+  m_TagString: MainVirtualCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -443,7 +443,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _virtualCamera: {fileID: 181516711493814922}
-  _polygonCollider2D: {fileID: 3803720488644983331}
   _overSize: {x: 2, y: 0}
   _offset: {x: 0, y: 0}
 --- !u!114 &2246039907870077291
