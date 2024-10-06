@@ -358,6 +358,24 @@ public class UpdateTile : MonoBehaviour
         }
     }
 
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (!other.gameObject.CompareTag("Player")) { return; }
+        
+        var color = _updateTilemap.color;
+        color.a = 0.5f;
+        _updateTilemap.color = color;
+    }
+    
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (!other.gameObject.CompareTag("Player")) { return; }
+        
+        var color = _updateTilemap.color;
+        color.a = 1;
+        _updateTilemap.color = color;
+    }
+
     private void OnEnable()
     {
         var worldMapManager = FindObjectOfType<WorldMapManager>();

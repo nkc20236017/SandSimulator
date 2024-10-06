@@ -199,12 +199,15 @@ MonoBehaviour:
     Actions:
     - {fileID: 6157076543574377748}
     Transitions:
-    - Decision: {fileID: -1275106332751938000}
-      TrueState: 
-      FalseState: Wander
+    - Decision: {fileID: 7958432776048923174}
+      TrueState: Attack Preparedness
+      FalseState: 
     - Decision: {fileID: 944992079682978371}
       TrueState: Attack Preparedness
       FalseState: 
+    - Decision: {fileID: -1275106332751938000}
+      TrueState: 
+      FalseState: Wander
 --- !u!114 &1288835283905990261
 MonoBehaviour:
   m_ObjectHideFlags: 0
