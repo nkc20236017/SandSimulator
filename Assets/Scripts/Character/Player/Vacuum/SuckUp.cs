@@ -43,10 +43,10 @@ public class SuckUp : MonoBehaviour
     private string[] seName =
     {
         "VacuumSE",
-        "VacuumSE+2",
-        "VacuumSE+4",
         "VacuumSE-2",
-        "VacuumSE-4"
+        "VacuumSE-4",
+        "VacuumSE-6",
+        "VacuumSE-8"
     };
 
     public bool IsSuckUp { get; private set; }
@@ -73,7 +73,7 @@ public class SuckUp : MonoBehaviour
     {
         _numberExecutions = 0;
         
-        VacuumActions.Absorption.started += _ => _playerMovement.IsMoveFlip = false;
+        VacuumActions.Absorption.started += _ => PlaySuckUp();
         VacuumActions.Absorption.canceled += _ => CancelSuckUp();
     }
 
@@ -83,10 +83,13 @@ public class SuckUp : MonoBehaviour
         
         if (VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
         {
+            if (inputTank.TamkMaxSignal())
+            {
+                //AudioManager.Instance.PlaySFX("MaxtankSE");
+                return;
+            }
             suckEffect.SetActive(true);
             // TODO: ［効果音］吸い込み
-            int x = Random.Range(0, seName.Length);
-            AudioManager.Instance.PlaySFX(seName[x]);
             IsSuckUp = true;
             Performed();
             _numberExecutions++;
@@ -106,6 +109,15 @@ public class SuckUp : MonoBehaviour
         
         // タイルの吸い込み
         SuckUpTiles();
+    }
+
+    private void PlaySuckUp()
+    {
+        _playerMovement.IsMoveFlip = false;
+        if (inputTank.TamkMaxSignal())
+        {
+            AudioManager.Instance.PlaySFX("MaxtankSE");
+        }
     }
 
     private void CancelSuckUp()
@@ -309,6 +321,8 @@ public class SuckUp : MonoBehaviour
             
             if (Vector3.Distance(oreObject.transform.position, pivot.position) <= _deleteDistance)
             {
+                int x = Random.Range(0, seName.Length);
+                AudioManager.Instance.PlaySFX(seName[x]);
                 inputTank.InputAddTank(oreObject.Ore.type);//タンクに追加
                 _suckUpOreObject.Remove(oreObject);
                 Destroy(oreObject.gameObject);

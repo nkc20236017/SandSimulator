@@ -121,6 +121,7 @@ public class OreObject : MonoBehaviour, IDamageable
 
         // TODO: ［正規実装］魔鉱石が壊れると能力が発動する
         // TODO: ［エフェクト］鉱石破壊
+        AudioManager.Instance.PlaySFX("BreakSE");
         Vector2 effectPos = new Vector2(transform.position.x, transform.position.y);
         GameObject effectObj = Instantiate(oreEffect, effectPos, Quaternion.identity);
         effectObj.GetComponent<ParticleSystemRenderer>().material = Ore.material;
