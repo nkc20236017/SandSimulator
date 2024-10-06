@@ -6,12 +6,13 @@ public class BlowOutOre : MonoBehaviour
 	[SerializeField] private float plusRadius;
 	[SerializeField] private float despawnTime = 300;
 	[SerializeField] private float invincibleTime;
+	[SerializeField] private GameObject oreEffect;
 	
 	private int _attackPower;
 	private float _invincibleTimer;
 	private bool _isInvincible = true;
 	private Vector2 _direction;
-	private Color _color;
+	private Material _material;
 	private CircleCollider2D _circleCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private SpriteRenderer _spriteRenderer;
@@ -50,7 +51,7 @@ public class BlowOutOre : MonoBehaviour
 		_speed /= ore.weightPerSize[0];
 		_direction = direction;
 		_spriteRenderer.sprite = ore.oreSprites[0];
-		_color = ore.color;
+		_material = ore.material;
 		
 		_circleCollider2D.radius = ore.oreSprites[0].bounds.size.x / 2 + plusRadius;
 
@@ -81,9 +82,9 @@ public class BlowOutOre : MonoBehaviour
 	{
 		_soundSource.InstantiateSound("BlowOutOre", transform.position);
 		// TODO: ［エフェクト］鉱石破壊
-		GameObject effectobj = (GameObject)Resources.Load("OreEfect");
 		Vector2 effectPos = new Vector2(transform.position.x,transform.position.y);
-		Instantiate(effectobj, effectPos, Quaternion.identity);
-		Destroy(gameObject);
+		GameObject effectObj = Instantiate(oreEffect, effectPos, Quaternion.identity);
+		effectObj.GetComponent<ParticleSystemRenderer>().material = _material;
+        Destroy(gameObject);
 	}
 }

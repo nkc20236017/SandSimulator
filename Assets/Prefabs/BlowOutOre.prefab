@@ -51,6 +51,7 @@ MonoBehaviour:
   plusRadius: 0.5
   despawnTime: 300
   invincibleTime: 0.5
+  oreEffect: {fileID: 1818813448887924164, guid: 49bdd0ae17fe13d418be70cfd47dd4c3, type: 3}
 --- !u!212 &2920249801988323023
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -77,6 +77,7 @@ MonoBehaviour:
   blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
   fallDamageInterval: 0.5
   fundamentalDistance: 0.75
+  oreEffect: {fileID: 1818813448887924164, guid: 49bdd0ae17fe13d418be70cfd47dd4c3, type: 3}
 --- !u!70 &3408433744735999243
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
