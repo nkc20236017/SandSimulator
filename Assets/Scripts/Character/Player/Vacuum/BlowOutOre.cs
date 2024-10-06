@@ -79,6 +79,7 @@ public class BlowOutOre : MonoBehaviour
 	private void Destroy()
 	{
 		// TODO: ［エフェクト］鉱石破壊
+		AudioManager.Instance.PlaySFX("BreakSE");
 		GameObject effectobj = (GameObject)Resources.Load("OreEfect");
 		Vector2 effectPos = new Vector2(transform.position.x,transform.position.y);
 		Instantiate(effectobj, effectPos, Quaternion.identity);

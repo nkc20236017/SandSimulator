@@ -78,6 +78,7 @@ public class SuckUp : MonoBehaviour
             Performed();
             _numberExecutions++;
         }
+        //AudioManager.Instance.StopSFX("VacuumSE");
     }
 
     private void Performed()

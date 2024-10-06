@@ -114,6 +114,7 @@ public class BlowOut : MonoBehaviour
                 if (inputTank.FiringTank())
                 {
                     // TODO: ［効果音］吐き出し
+                    //AudioManager.Instance.PlaySFX("SpitoutSE");
                     GenerateTile();
                 }
             }

@@ -330,6 +330,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2906656980781630705, guid: ae9908b92c67cac4aa11c9cb9f8de4fd, type: 3}
+      propertyPath: sfx.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906656980781630705, guid: ae9908b92c67cac4aa11c9cb9f8de4fd, type: 3}
+      propertyPath: sfx.Array.data[9]
+      value: 
+      objectReference: {fileID: 7700275642213979208}
     - target: {fileID: 3264785776385540959, guid: ae9908b92c67cac4aa11c9cb9f8de4fd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 275.86163
@@ -379,6 +387,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae9908b92c67cac4aa11c9cb9f8de4fd, type: 3}
+--- !u!82 &7700275642213979208 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2565911708448314442, guid: ae9908b92c67cac4aa11c9cb9f8de4fd, type: 3}
+  m_PrefabInstance: {fileID: 7700275642213979207}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
