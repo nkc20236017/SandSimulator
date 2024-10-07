@@ -58,7 +58,7 @@ public class Semicircle : MonoBehaviour
 	//Imageのスケールアップ
 	public void SelectScaleUp()
 	{
-		_image.transform.localScale = new Vector2(1,1);
+		_image.transform.localScale = new Vector2(0.9f, 0.9f);
 	}
 
 	public void DefaltScale()
