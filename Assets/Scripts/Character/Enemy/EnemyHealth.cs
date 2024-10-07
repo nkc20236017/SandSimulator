@@ -12,6 +12,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField]
     private float time;
     private int x;
+    private bool isDamege;
 
     public void TakeDamage(int damage)
     {
@@ -25,21 +26,29 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private IEnumerator ColorChenge()
     {
-        for (int z = 0; z < count * 2; z++)
+        if(isDamege == false) 
         {
-            if(x != 0)
+            isDamege = true;
+            //点滅処理
+            //今回は簡易的にDOColorでα値を変更
+            for (int z = 0; z < count * 2; z++)
             {
-                yield return new WaitForSeconds(time);
-                sprite.DOColor(new Color(255, 255, 255, x), time);
-                x = 0;
+                if (x != 0)
+                {
+                    yield return new WaitForSeconds(time);
+                    sprite.DOColor(new Color(255, 255, 255, x), time);
+                    x = 0;
+                }
+                else
+                {
+                    yield return new WaitForSeconds(time);
+                    sprite.DOColor(new Color(255, 255, 255, x), time);
+                    x = 255;
+                }
             }
-            else
-            {
-                yield return new WaitForSeconds(time);
-                sprite.DOColor(new Color(255, 255, 255, x), time);
-                x = 255;
-            }
+            isDamege = false;
         }
+        
     }
         
 
@@ -50,6 +59,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         GameObject effectobj = (GameObject)Resources.Load("EnemyDieEffect");
         Vector2 effectPos = new Vector2(transform.position.x, transform.position.y);
         Instantiate(effectobj, effectPos, Quaternion.identity);
+
+        GameObject healobj = (GameObject)Resources.Load("HealOre");
+        Vector2 healPos = new Vector2(transform.position.x, transform.position.y);
+        Instantiate(healobj, healPos, Quaternion.identity);
         // TODO: ［エフェクト］エネミー死亡
 
         Destroy(gameObject);
