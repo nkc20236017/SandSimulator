@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using NaughtyAttributes;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -49,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		MovementActions.Jump.started += _ => Jump();
 		MovementActions.Jump.canceled += _ => JumpCancel();
-	}
+    }
 
 	private void FixedUpdate()
 	{
@@ -69,7 +70,8 @@ public class PlayerMovement : MonoBehaviour
 		_rigidbody2D.velocity = new Vector2(_moveDirection.x * speed, _rigidbody2D.velocity.y);
 	}
 
-	private void Update()
+
+    private void Update()
 	{
 		if (!CanMove)
 		{

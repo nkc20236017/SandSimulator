@@ -33,20 +33,20 @@ MonoBehaviour:
     primevalOres:
     - exposedOreData: {fileID: 11400000, guid: 6534895f1114d374a80f4e1c68535ad4, type: 2}
       buriedOreID: 2
-      lumpAmount: 30
-      blockAmount: 5
+      lumpDispersion: 30
+      buriedOreRadius: 5
       probability: 75
       space: 30
     - exposedOreData: {fileID: 11400000, guid: b9f2c12f461f9c649b1deb1dabb9767a, type: 2}
       buriedOreID: 3
-      lumpAmount: 30
-      blockAmount: 5
+      lumpDispersion: 0
+      buriedOreRadius: 3
       probability: 75
       space: 30
     - exposedOreData: {fileID: 11400000, guid: 1aa9d39301cef7a49acd44409269e64f, type: 2}
       buriedOreID: 4
-      lumpAmount: 30
-      blockAmount: 5
+      lumpDispersion: 0
+      buriedOreRadius: 5
       probability: 75
       space: 30
     primevalDungeons: []
@@ -54,7 +54,7 @@ MonoBehaviour:
     materialTileID: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
     primevalOres: []
     primevalDungeons: []
-  - layerColor: {r: 0.27328312, g: 0.2216981, b: 1, a: 1}
+  - layerColor: {r: 0.25098038, g: 0.5045192, b: 1, a: 1}
     materialTileID: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
     primevalOres: []
     primevalDungeons: []
@@ -87,5 +87,8 @@ MonoBehaviour:
     isBackfill: 0
     isInvert: 1
     backfillTileID: 0
-  enemyPrefab: {fileID: 1271221230508101186, guid: 0aa6e47f839bbad4f992753059cbfc00, type: 3}
+  turtleChance: 0.5
+  turtlePrefab: {fileID: 1271221230508101186, guid: 0aa6e47f839bbad4f992753059cbfc00, type: 3}
+  moleChance: 0.5
+  molePrefab: {fileID: 325152271554838758, guid: c2d2a402552a1894d8bc8e9db82b4f40, type: 3}
   enemySpase: 40

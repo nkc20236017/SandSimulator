@@ -1,8 +1,9 @@
-﻿using MackySoft.Navigathena.SceneManagement;
-using UnityEngine;
+﻿using UnityEngine;
+using MackySoft.Navigathena.SceneManagement;
 
-public class PlayerHealth : MonoBehaviour, IDamagable
+public class PlayerHealth : MonoBehaviour, IDamageable
 {
+	[SerializeField] private float shakeTime = 0.25f;
 	[SerializeField] private float invincibilityTime;
 	[SerializeField] private int maxHealth;
 	[SerializeField] private int maxDefence;
@@ -10,10 +11,11 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 	[SerializeField]
 	private HealthUI healthUI;
 
-	private float _timer;
-	private bool _isInvincible;
 	private int _currentHealth;
 	private int _currentDefence;
+	private float _timer;
+	private bool _isInvincible;
+	private ICameraEffect _cameraEffect;
 
 	private void Start()
 	{
@@ -43,6 +45,8 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 		// TODO: ［効果音］プレイヤーダメージ
 		AudioManager.Instance.PlaySFX("DamegeSE");
 		// TODO: ［エフェクト］プレイヤーダメージ
+		// TODO: カメラシェイク
+		_cameraEffect.CameraShake(shakeTime);
 
 		healthUI.UpdateHealth(_currentHealth);
 		if (_currentHealth > 0) { return; }
@@ -50,6 +54,13 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 		_currentHealth = 0;
 		Die();
 	}
+
+	public void TakeHeal(int healPoint)
+	{
+		_currentHealth += healPoint;
+        _currentHealth = Mathf.Clamp(_currentHealth,0, maxHealth);
+        healthUI.UpdateHealth(_currentHealth);
+    }
 	
 	public void RestoreHealth(int amount)
 	{
@@ -60,6 +71,12 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 	{
 		GlobalSceneNavigator.Instance.Push(new BuiltInSceneIdentifier("TitleScene")
 			, new LoadSceneDirector(new BuiltInSceneIdentifier("LoadScene")));
+	}
+
+	private void OnEnable()
+	{
+	    var cameraSystem = GameObject.FindWithTag("MainVirtualCamera").GetComponent<CameraSystem>();
+	    _cameraEffect = cameraSystem.GetComponent<ICameraEffect>();
 	}
 }
 

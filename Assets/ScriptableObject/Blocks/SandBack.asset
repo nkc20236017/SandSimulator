@@ -31,6 +31,7 @@ MonoBehaviour:
   resultSprite: {fileID: 0}
   endurance: 0
   price: 0
+  vacuumAmount: 1
   tilePositions:
   - {x: -55, y: 30, z: 0}
   - {x: -51, y: 35, z: 0}

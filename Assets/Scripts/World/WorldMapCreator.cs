@@ -245,7 +245,7 @@ namespace WorldCreation
 
         private void EnemyGenerate()
         {
-            Vector2Int[] noisePoints = BlueNoise(worldMap.WorldSize.x, worldMap.WorldSize.y, worldMap.EnemySpase, seed);
+            Vector2Int[] noisePoints = BlueNoise(worldMap.WorldSize.x, worldMap.WorldSize.y, worldMap.EnemySpase, seed + 1);
 
             foreach (Vector2Int noisePoint in noisePoints)
             {
@@ -254,10 +254,17 @@ namespace WorldCreation
                 Vector2Int withinChunkPosition
                     = _chunks[chunkX, chunkY].GetWithinChunkPosition(noisePoint);
                 int id = _chunks[chunkX, chunkY].GetBlockID(withinChunkPosition);
-                bool hit = Physics2D.Raycast(noisePoint, Vector2.down, 10, touchLayer);
-                if (id == 0 && hit)
+                bool isHit = Physics2D.Raycast(noisePoint, Vector2.down, 10, touchLayer);
+
+                if (!isHit) { continue; }
+
+                if (id == 0 && worldMap.TurtleChance > Random.value)
                 {
-                    activeStanbyObject.Add(Instantiate(worldMap.EnemyPrefab, (Vector2)noisePoint, Quaternion.identity, sceneParent));
+                    activeStanbyObject.Add(Instantiate(worldMap.TurtlePrefab, (Vector2)noisePoint, Quaternion.identity, sceneParent));
+                }
+                else if (worldMap.MoleChance > Random.value)
+                {
+                    activeStanbyObject.Add(Instantiate(worldMap.MolePrefab, (Vector2)noisePoint, Quaternion.identity, sceneParent));
                 }
             }
         }
@@ -367,7 +374,7 @@ namespace WorldCreation
         private void BuriedOreProcess(Vector2Int spownPoint, int oreIndex)
         {
             PrimevalOre ore = worldMap.WorldLayers[0].PrimevalOres[oreIndex];
-            int lumpRadius = ore.BlockAmount + Random.Range(0, ore.BlockAmount);
+            int lumpRadius = ore.BuriedOreRadius + Random.Range(0, ore.BuriedOreRadius);
             Vector2Int[] circulePoints = GenerateCircularGrid(lumpRadius, spownPoint);
 
             // íÜêSÇ©ÇÁÇÃãóó£Ç≈è∏èáÇ…ï¿Ç—ë÷Ç¶

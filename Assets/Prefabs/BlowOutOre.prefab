@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2149857685904652249}
-  - component: {fileID: 9133644170437659737}
+  - component: {fileID: 6160956251364179191}
   - component: {fileID: 2920249801988323023}
   - component: {fileID: 8186084011419548071}
   - component: {fileID: -6021333388844205746}
@@ -35,7 +35,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9133644170437659737
+--- !u!114 &6160956251364179191
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -51,6 +51,7 @@ MonoBehaviour:
   plusRadius: 0.5
   despawnTime: 300
   invincibleTime: 0.5
+  oreEffect: {fileID: 1818813448887924164, guid: 49bdd0ae17fe13d418be70cfd47dd4c3, type: 3}
 --- !u!212 &2920249801988323023
 SpriteRenderer:
   m_ObjectHideFlags: 0

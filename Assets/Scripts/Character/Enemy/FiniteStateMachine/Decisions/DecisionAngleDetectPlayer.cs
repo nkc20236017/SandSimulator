@@ -54,9 +54,10 @@ public class DecisionAngleDetectPlayer : FsmDecision
 				if (_isPlayerDetected)
 				{
 					_isPlayerDetected = false;
-					_enemyBrain.Player = null;
+					_enemyBrain.Target = null;
 					ShowMark(lostMarkSprite);
-				}
+                    AudioManager.Instance.PlaySFX("MissSE");
+                }
 
 				return;
 			}
@@ -75,10 +76,11 @@ public class DecisionAngleDetectPlayer : FsmDecision
 					if (_isPlayerDetected)
 					{
 						_isPlayerDetected = false;
-						_enemyBrain.Player = null;
+						_enemyBrain.Target = null;
 						ShowMark(lostMarkSprite);
-						// TODO: プレイヤーを見失った場合、見失った場所まで移動する
-					}
+                        AudioManager.Instance.PlaySFX("MissSE");
+                        // TODO: プレイヤーを見失った場合、見失った場所まで移動する
+                    }
 
 					return;
 				}
@@ -86,30 +88,34 @@ public class DecisionAngleDetectPlayer : FsmDecision
 				if (!_isPlayerDetected)
 				{
 					_isPlayerDetected = true;
-					_enemyBrain.Player = player;
+					_enemyBrain.Target = player;
+					_enemyBrain.TargetPosition = player.position;
 					ShowMark(findMarkSprite);
+					AudioManager.Instance.PlaySFX("DiscoverySE");
 				}
 
 				return;
 			}
 
 			// TODO: プレイヤーが死んでいる場合はプレイヤーを検知しない（無視する）
-			if (_isPlayerDetected && IsObstaclePivot(_enemyBrain.Player))
+			if (_isPlayerDetected && IsObstaclePivot(_enemyBrain.Target))
 			{
-				_enemyBrain.Player = null;
+				_enemyBrain.Target = null;
 				_isPlayerDetected = false;
 				ShowMark(lostMarkSprite);
-			}
+                AudioManager.Instance.PlaySFX("MissSE");
+            }
 
 			return;
 		}
 
-		if (_enemyBrain.Player != null && _isPlayerDetected)
+		if (_enemyBrain.Target != null && _isPlayerDetected)
 		{
-			_enemyBrain.Player = null;
+			_enemyBrain.Target = null;
 			_isPlayerDetected = false;
 			ShowMark(lostMarkSprite);
-		}
+            AudioManager.Instance.PlaySFX("MissSE");
+        }
 	}
 
 	private bool IsObstaclePivot(Transform target)
@@ -143,7 +149,7 @@ public class DecisionAngleDetectPlayer : FsmDecision
 		if (!debugMode) { return; }
 		if (pivot == null) { return; }
 		
-		Gizmos.color = Color.yellow;
+		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere(pivot.position, radius);
 		
 		Gizmos.color = Color.green;
@@ -161,10 +167,10 @@ public class DecisionAngleDetectPlayer : FsmDecision
 		Gizmos.DrawLine(pivot.position, newCell2);
 		
 		if (_enemyBrain == null) { return; }
-		if (_enemyBrain.Player == null) { return; }
+		if (_enemyBrain.Target == null) { return; }
 		
 		Gizmos.color = Color.red;
-		Gizmos.DrawLine(pivot.position, _enemyBrain.Player.position);
+		Gizmos.DrawLine(pivot.position, _enemyBrain.Target.position);
 	}
 	
 	private Vector3 GetNewCell(float f, float chordLength)

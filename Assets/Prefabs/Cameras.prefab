@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 6319799418068530574}
   - component: {fileID: 656243921785039149}
   - component: {fileID: 4630064883744295800}
+  - component: {fileID: 8099437121189374548}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -129,6 +130,23 @@ MonoBehaviour:
   m_YawDamping: 0
   m_RollDamping: 0
   m_AngularDamping: 0
+--- !u!114 &8099437121189374548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991614654227953766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NoiseProfile: {fileID: 0}
+  m_PivotOffset: {x: 0, y: 0, z: 0}
+  m_AmplitudeGain: 1
+  m_FrequencyGain: 1
+  mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &6398983909500801795
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,7 +370,7 @@ GameObject:
   - component: {fileID: 2246039907870077291}
   m_Layer: 10
   m_Name: Virtual Camera
-  m_TagString: Untagged
+  m_TagString: MainVirtualCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -425,7 +443,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _virtualCamera: {fileID: 181516711493814922}
-  _polygonCollider2D: {fileID: 3803720488644983331}
   _overSize: {x: 2, y: 0}
   _offset: {x: 0, y: 0}
 --- !u!114 &2246039907870077291

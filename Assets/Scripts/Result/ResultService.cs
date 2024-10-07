@@ -19,8 +19,6 @@ public class ResultService : IResultAction
         {
             var item = pair.Value;
 
-            UnityEngine.Debug.Log(item.mineralData.name);
-
             resultList.Add(item);
         }
 

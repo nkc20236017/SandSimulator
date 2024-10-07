@@ -70,7 +70,7 @@ public class LoadSceneDirector : ITransitionDirector
             {
                 loadSceneEfect.ProglesMesage.text = data.ProgressMesage;
                 loadSceneEfect.ProglesText.text = data.ProgressText;
-                loadSceneEfect.Slider.value = data.Progress;
+                loadSceneEfect.Slider.DOValue(data.Progress,0.3f);
 
             }
         }

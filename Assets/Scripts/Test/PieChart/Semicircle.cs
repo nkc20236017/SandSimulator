@@ -3,11 +3,14 @@ using UnityEngine.UI;
 
 public class Semicircle : MonoBehaviour
 {
+	[Header("Select Config")]
+	[SerializeField] private float _selectScale = 0.9f;
+	
 	private Image _image;
 	private Vector2 defaltScale;
 	public Sprite Sprite => _image.sprite;
 	public float FillAmount => _image.fillAmount;
-	public BlockType blockType = BlockType.None;
+	public BlockType BlockType { get; private set; } = BlockType.None;
 
 	private void Awake()
 	{
@@ -43,7 +46,7 @@ public class Semicircle : MonoBehaviour
 		gameObject.SetActive(true);
 		_image.sprite = sprite;
 		_image.fillAmount = value;
-		this.blockType = blockType;
+		this.BlockType = blockType;
 	}
 	
 	/// <summary>
@@ -58,7 +61,7 @@ public class Semicircle : MonoBehaviour
 	//Imageのスケールアップ
 	public void SelectScaleUp()
 	{
-		_image.transform.localScale = new Vector2(1,1);
+		_image.transform.localScale = new Vector2(_selectScale, _selectScale);
 	}
 
 	public void DefaltScale()

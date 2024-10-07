@@ -2,6 +2,9 @@
 
 public class DecisionAttackTarget : FsmDecision
 {
+	[Header("Decision Attack Target")]
+	[SerializeField] private bool checkWall;
+	[SerializeField] private bool canKnockback;
 	[SerializeField] private LayerMask targetLayerMask;
 	
 	private BoxCollider2D _boxCollider2D;
@@ -16,7 +19,7 @@ public class DecisionAttackTarget : FsmDecision
 	
 	private bool IsTargetAttack()
 	{
-		if (IsWall(2))
+		if (checkWall && IsWall(2))
 		{
 			_rigidbody2D.velocity = new Vector2(0f, _rigidbody2D.velocity.y);
 			return true;
@@ -29,14 +32,17 @@ public class DecisionAttackTarget : FsmDecision
 		_rigidbody2D.velocity = new Vector2(0f, _rigidbody2D.velocity.y);
 		foreach (var hit in hits)
 		{
-			var playerHealth = hit.GetComponent<IDamagable>();
+			var playerHealth = hit.GetComponent<IDamageable>();
 			playerHealth?.TakeDamage(_enemyBrain.Status.attack);
 
-			var targetMovement = hit.GetComponent<PlayerMovement>();
-			if (targetMovement != null)
+			if (canKnockback)
 			{
-				var direction = hit.transform.position - transform.position;
-				targetMovement.Knockback(direction.normalized * (_enemyBrain.Status.attackSpeed / 2));
+				var targetMovement = hit.GetComponent<PlayerMovement>();
+				if (targetMovement != null)
+				{
+					var direction = hit.transform.position - transform.position;
+					targetMovement.Knockback(direction.normalized * (_enemyBrain.Status.attackSpeed / 2));
+				}
 			}
 		}
 		

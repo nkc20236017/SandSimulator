@@ -16,6 +16,7 @@ public enum BlockType
     Ruby,
     Emerald,
     Crystal,
+    HealOre,
     SandBack
 }
 
@@ -39,6 +40,8 @@ public class Block : ScriptableObject
     public Sprite resultSprite;
     public int endurance;
     public int price;
+    public Material material;
+    public int vacuumAmount;
 
     [HideInInspector] public List<Vector3Int> tilePositions = new();
     

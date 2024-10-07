@@ -25,33 +25,40 @@ public class PlayerTank : IInputTank, IGameLoad
         this.tankRepository = tankRepository;
     }
 
-    public void InputAddTank(TileBase tileBase, int amount)
+    public void InputAddTank(TileBase tileBase)
     {
         var mineralItem = tankRepository.Find(tileBase);
-
-        for (int i = 0; i < amount; i++)
+        for (int i = 0; i < mineralItem.vacuumAmount; i++)
         {
             AddItem(mineralItem);
         }
-
-    }
-    public void InputAddTank(BlockType type, int amount)
-    {
-        var mineralItem = tankRepository.Find(type);
-        AddItem(mineralItem);
     }
 
-    public void InputRemoveTank(BlockType type)
+    public void InputAddTank(BlockType type)
     {
         var mineralItem = tankRepository.Find(type);
-        RemoveItem(mineralItem);
+        for (int i = 0; i < mineralItem.vacuumAmount + 45; i++)
+        {
+            AddItem(mineralItem);
+        }
+    }
+
+    public void RemoveTank()
+    {
+        var block = tankRepository.Find(currentBlockType);
+        if (block == null) { return; }
+
+        for (int i = 0; i < block.vacuumAmount; i++)
+        {
+            RemoveItem(block);
+        }
+
     }
 
     public void AddItem(Block mineralData)
     {
         if (currentItemAmount >= MaxTank)
         {
-            Debug.Log("�A�C�e���������ς��ł�");
             maxSignal = true;
             return;
         }
@@ -68,10 +75,10 @@ public class PlayerTank : IInputTank, IGameLoad
             itemTankDictionary.Add(mineralData, itemData);
             TankCalculation(itemData);
         }
+
         if (fast == false)
         {
             currentBlockType = mineralData.type;
-            Debug.Log(mineralData.name);
             outPutTank.OutputSelectTank(new(mineralData.type, mineralData.resultSprite));
             fast = true;
         }
@@ -88,9 +95,15 @@ public class PlayerTank : IInputTank, IGameLoad
         {
             if (vaule.mineralAmount <= 1)
             {
-                Debug.Log("タンクを削除");
                 itemTankDictionary.Remove(mineralData);
                 currentItemAmount--;
+                SelectTank(itemTankDictionary.Keys.Count);
+                if (itemTankDictionary.Keys.Count <= 0)
+                {
+                    outPutTank.OutputSelectTank(new(BlockType.None, null));
+                    currentBlockType = BlockType.None;
+                    fast = false;
+                }
             }
             else
             {
@@ -165,18 +178,25 @@ public class PlayerTank : IInputTank, IGameLoad
 
     public void LeftSelectTank()
     {
-        selectIndex = Mathf.Clamp(selectIndex, 1, itemTankDictionary.Keys.Count);
+        selectIndex = Mathf.Clamp(selectIndex, 0, itemTankDictionary.Keys.Count);
         selectIndex--;
+        if(selectIndex ==  0)
+        {
+            selectIndex = itemTankDictionary.Keys.Count;
+        }
         SelectTank(selectIndex);
-        Debug.Log(selectIndex);
     }
 
     public void RightSelectTank()
     {
-        selectIndex = Mathf.Clamp(selectIndex, 1, itemTankDictionary.Keys.Count);
+        selectIndex = Mathf.Clamp(selectIndex, 1, itemTankDictionary.Keys.Count+1);
         selectIndex++;
+
+        if(selectIndex > itemTankDictionary.Keys.Count)
+        {
+            selectIndex = 1;
+        }
         SelectTank(selectIndex);
-        Debug.Log(selectIndex);
     }
 
     public BlockType GetSelectType()
@@ -184,15 +204,4 @@ public class PlayerTank : IInputTank, IGameLoad
         return currentBlockType;
     }
 
-    public void RemoveTank(int removeAmount)
-    {
-
-        var block = tankRepository.Find(currentBlockType);
-        for (int i = 0; i < removeAmount; i++)
-        {
-            RemoveItem(block);
-        }
-
-
-    }
 }

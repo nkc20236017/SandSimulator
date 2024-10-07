@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class OreObject : MonoBehaviour, IDamagable
+public class OreObject : MonoBehaviour, IDamageable
 {
     [Header("Datas Config")]
     [SerializeField] private BlockDatas blockDatas;
@@ -8,6 +8,8 @@ public class OreObject : MonoBehaviour, IDamagable
     [Header("Fall Ore Config")]
     [SerializeField] private float fallDamageInterval;
     [SerializeField] private float fundamentalDistance;
+
+    [SerializeField] private GameObject oreEffect;
     
     private int _currentEndurance;
     private float _fallDamageTimer;
@@ -18,6 +20,7 @@ public class OreObject : MonoBehaviour, IDamagable
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer _spriteRenderer;
     private IChunkInformation _chunkInformation;
+    private ISoundSourceable _soundSource;
 
     public int Size { get; private set; }
     public bool CanFall { get; set; } = true;
@@ -68,7 +71,7 @@ public class OreObject : MonoBehaviour, IDamagable
         SetOreConfig(setSize);
     }
 
-    private void SetChildOre(Ore setOre)
+    public void SetChildOre(Ore setOre)
     {
         SetOre(setOre, 1, transform.eulerAngles.z);
         _isChild = true;
@@ -110,14 +113,18 @@ public class OreObject : MonoBehaviour, IDamagable
     {
         if (!_canDestroy) { return; }
 		
-        if (other.collider.TryGetComponent<IDamagable>(out var target))
+        _soundSource.InstantiateSound("OreObject", transform.position);
+        if (other.collider.TryGetComponent<IDamageable>(out var target))
         {
             target.TakeDamage(Ore.attackPower);
-            Destroy(gameObject);
         }
-        
+
         // TODO: ［正規実装］魔鉱石が壊れると能力が発動する
-		
+        // TODO: ［エフェクト］鉱石破壊
+        AudioManager.Instance.PlaySFX("BreakSE");
+        Vector2 effectPos = new Vector2(transform.position.x, transform.position.y);
+        GameObject effectObj = Instantiate(oreEffect, effectPos, Quaternion.identity);
+        effectObj.GetComponent<ParticleSystemRenderer>().material = Ore.material;
         Destroy(gameObject);
     }
     
@@ -125,6 +132,10 @@ public class OreObject : MonoBehaviour, IDamagable
     {
         var worldMapManager = FindObjectOfType<WorldMapManager>();
         _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        
+        var soundSource = FindObjectOfType<SoundSource>();
+        _soundSource = soundSource.GetComponent<ISoundSourceable>();
+        _soundSource.SetInstantiation("OreObject");
         
         _capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();

@@ -6,29 +6,31 @@ using Cysharp.Threading.Tasks;
 using System;
 using MackySoft.Navigathena;
 using System.Threading;
+using UniRx;
 
 public class MainGameEntoryPoint : SceneEntryPointBase
 {
-    private ProgressData progressData;
+    private ReactiveProperty<ProgressData> progressData = new();
 
     protected override async UniTask OnInitialize(ISceneDataReader reader, IProgress<IProgressDataStore> progress, CancellationToken cancellationToken)
     {
         var store = new ProgressDataStore<ProgressData>();
-        await UniTask.Delay(TimeSpan.FromSeconds(0.2f),cancellationToken:cancellationToken);
-        progress.Report(store.SetData(progressData));
-        await UniTask.Delay(TimeSpan.FromSeconds(3f), cancellationToken: cancellationToken);
-        progress.Report(store.SetData(progressData));
-        await UniTask.Delay(TimeSpan.FromSeconds(3f), cancellationToken: cancellationToken);
-        progress.Report(store.SetData(progressData));
-        await UniTask.Delay(TimeSpan.FromSeconds(3f), cancellationToken: cancellationToken);
-        progress.Report(store.SetData(progressData));
-        await UniTask.Delay(TimeSpan.FromSeconds(5f), cancellationToken: cancellationToken);
-        progress.Report(store.SetData(progressData));
+
+        await UniTask.Delay(1,cancellationToken: cancellationToken);
+
+        this.ObserveEveryValueChanged(progress => progressData.Value.Progress)
+            .Subscribe(progressData =>
+            {
+                Debug.Log(progressData);
+                progress.Report(store.SetData(this.progressData.Value));
+            });
+
     }
 
     public void SetProgress(ProgressData data)
     {
-        progressData = data;
+        progressData.Value = data;
+        Debug.Log(progressData.Value.Progress);
     }
 
 }

@@ -20,6 +20,8 @@ public class DemoInputTitleScene : MonoBehaviour
 
     private void OnMouseButton(InputAction.CallbackContext context)
     {
+        if (SceneManager.GetSceneByName("LoadScene").isLoaded) { return; }
+           
         AudioManager.Instance.PlaySFX("DecisionSE");
         GlobalSceneNavigator.Instance.Push(gameScene, new LoadSceneDirector(loadScene));
         inputActions.Disable();

@@ -62,9 +62,18 @@ namespace WorldCreation
         private CaveCombine[] caveCombines;
         public CaveCombine[] CaveCombines => caveCombines;
 
+        [SerializeField, Range(0f, 1f)]
+        private float turtleChance;
+        public float TurtleChance => turtleChance;
         [SerializeField]
-        private GameObject enemyPrefab;
-        public GameObject EnemyPrefab => enemyPrefab;
+        private GameObject turtlePrefab;
+        public GameObject TurtlePrefab => turtlePrefab;
+        [SerializeField, Range(0f, 1f)]
+        private float moleChance;
+        public float MoleChance => moleChance;
+        [SerializeField]
+        private GameObject molePrefab;
+        public GameObject MolePrefab => molePrefab;
         [SerializeField]
         private int enemySpase;
         public int EnemySpase => enemySpase;
