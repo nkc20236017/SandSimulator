@@ -4,15 +4,17 @@ using System.Collections;
 
 public class EnemyHealth : MonoBehaviour, IDamageable
 {
-    public float CurrentHealth { get; set; }
-    [SerializeField]
-    private SpriteRenderer sprite;
-    [SerializeField]
-    private int count;
-    [SerializeField]
-    private float time;
+    [Header("Enemy Health Config")]
+    [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private int count;
+    [SerializeField] private float time;
+    [SerializeField] private OreObject oreObject;
+    [SerializeField] private Ore healOre;
+    
     private int x;
     private bool isDamege;
+    
+    public float CurrentHealth { get; set; }
 
     public void TakeDamage(int damage)
     {
@@ -54,17 +56,16 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private void DisableEnemy()
     {
+        var position = transform.position;
         // _animator.SetTrigger(_deadHash);
         // TODO: ［効果音］エネミー死亡
         GameObject effectobj = (GameObject)Resources.Load("EnemyDieEffect");
-        Vector2 effectPos = new Vector2(transform.position.x, transform.position.y);
-        Instantiate(effectobj, effectPos, Quaternion.identity);
+        Instantiate(effectobj, position, Quaternion.identity);
 
-        GameObject healobj = (GameObject)Resources.Load("HealOre");
-        Vector2 healPos = new Vector2(transform.position.x, transform.position.y);
-        Instantiate(healobj, healPos, Quaternion.identity);
         // TODO: ［エフェクト］エネミー死亡
-
+        var ore = Instantiate(oreObject, position, Quaternion.identity);
+        ore.SetChildOre(healOre);
+        
         Destroy(gameObject);
     }
 }

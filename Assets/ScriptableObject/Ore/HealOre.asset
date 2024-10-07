@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed3ee7e5ba574701819d926c84d2a9af, type: 3}
   m_Name: HealOre
   m_EditorClassIdentifier: 
-  type: 0
+  type: 9
   id: 
-  name: 
+  name: "\u56DE\u5FA9\u9271\u77F3"
   tile: {fileID: 0}
   stratumGeologyDatas: []
   weight: 0
-  sprite: {fileID: 0}
+  sprite: {fileID: -492975016, guid: 9a6f8645dc8fc4b4c9b519dbf6ee9dfd, type: 3}
   resultSprite: {fileID: 0}
   endurance: 0
   price: 0
@@ -26,6 +26,9 @@ MonoBehaviour:
   vacuumAmount: 0
   tilePositions: []
   attackPower: 0
-  weightPerSize: 
-  endurancePerSize: 
-  oreSprites: []
+  weightPerSize: 010000000100000001000000
+  endurancePerSize: 010000000100000001000000
+  oreSprites:
+  - {fileID: -492975016, guid: 9a6f8645dc8fc4b4c9b519dbf6ee9dfd, type: 3}
+  - {fileID: -492975016, guid: 9a6f8645dc8fc4b4c9b519dbf6ee9dfd, type: 3}
+  - {fileID: -492975016, guid: 9a6f8645dc8fc4b4c9b519dbf6ee9dfd, type: 3}

@@ -69,6 +69,7 @@ public class SuckUp : MonoBehaviour
 
         _blowOut = GetComponent<BlowOut>();
         _playerMovement = GetComponentInParent<PlayerMovement>();
+        playerHealth = GetComponentInParent<PlayerHealth>();
     }
 
     private void Start()
@@ -322,12 +323,14 @@ public class SuckUp : MonoBehaviour
             {
                 if (oreObject.TryGetComponent<HealOre>(out var ore))
                 {
-                    playerHealth.GetComponentInParent<PlayerHealth>();
                     playerHealth.TakeHeal(ore.healPoint);
+                }
+                else
+                {
+                    inputTank.InputAddTank(oreObject.Ore.type);//タンクに追加
                 }
                 int x = Random.Range(0, seName.Length);
                 AudioManager.Instance.PlaySFX(seName[x]);
-                inputTank.InputAddTank(oreObject.Ore.type);//タンクに追加
                 _suckUpOreObject.Remove(oreObject);
                 Destroy(oreObject.gameObject);
             }

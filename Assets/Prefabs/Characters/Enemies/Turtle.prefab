@@ -285,6 +285,8 @@ MonoBehaviour:
   sprite: {fileID: 3689356370214643083}
   count: 3
   time: 0.2
+  oreObject: {fileID: 6746995548501597568, guid: 316fcb6903b14444289ed0f8e9e95dc5, type: 3}
+  healOre: {fileID: 11400000, guid: 8c7a64ff9bc7e30429621ebced03ae06, type: 2}
 --- !u!114 &2709472835341790432
 MonoBehaviour:
   m_ObjectHideFlags: 0
