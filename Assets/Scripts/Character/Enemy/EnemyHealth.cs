@@ -25,7 +25,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private IEnumerator ColorChenge()
     {
-        for (int z = 0; z > count; z++)
+        for (int z = 0; z < count * 2; z++)
         {
             if(x != 0)
             {

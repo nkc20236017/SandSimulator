@@ -54,7 +54,7 @@ MonoBehaviour:
     materialTileID: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
     primevalOres: []
     primevalDungeons: []
-  - layerColor: {r: 0.27328312, g: 0.2216981, b: 1, a: 1}
+  - layerColor: {r: 0.25098038, g: 0.5045192, b: 1, a: 1}
     materialTileID: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
     primevalOres: []
     primevalDungeons: []
