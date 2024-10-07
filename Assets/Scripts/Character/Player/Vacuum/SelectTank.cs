@@ -1,23 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using VContainer;
 
 public class SelectTank : MonoBehaviour
 {
-    private IInputTank inputTank;
-
-    [SerializeField]
     private PlayerActions playerInput;
+    private IInputTank inputTank;
 
     private void OnEnable()
     {
-        playerInput = new();
+        playerInput = new PlayerActions();
 
         playerInput.Vacuum.TankSelect.performed += OnWheel;
-        playerInput.Vacuum.RightSelect.performed += OnRightContller;
-        playerInput.Vacuum.LeftSelect.performed += OnLeftContller;
+        playerInput.Vacuum.RightSelect.performed += OnRightButton;
+        playerInput.Vacuum.LeftSelect.performed += OnLeftButton;
 
         playerInput.Enable();
     }
@@ -25,8 +20,8 @@ public class SelectTank : MonoBehaviour
     private void OnDisable()
     {
         playerInput.Vacuum.TankSelect.performed -= OnWheel;
-        playerInput.Vacuum.RightSelect.performed -= OnRightContller;
-        playerInput.Vacuum.LeftSelect.performed -= OnLeftContller;
+        playerInput.Vacuum.RightSelect.performed -= OnRightButton;
+        playerInput.Vacuum.LeftSelect.performed -= OnLeftButton;
         playerInput.Disable();
     }
 
@@ -37,23 +32,24 @@ public class SelectTank : MonoBehaviour
 
     public void OnWheel(InputAction.CallbackContext context)
     {
-        var vaule = context.ReadValue<Vector2>();
-        if (vaule.y < 0)
+        var value = context.ReadValue<Vector2>();
+        switch (value.y)
         {
-            inputTank.LeftSelectTank();
-        }
-        else if (vaule.y > 0)
-        {
-            inputTank.RightSelectTank();
+            case < 0:
+                inputTank.LeftSelectTank();
+                break;
+            case > 0:
+                inputTank.RightSelectTank();
+                break;
         }
     }
 
-    private void OnLeftContller(InputAction.CallbackContext context)
+    private void OnLeftButton(InputAction.CallbackContext context)
     {
         inputTank.LeftSelectTank();
     }
 
-    private void OnRightContller(InputAction.CallbackContext context)
+    private void OnRightButton(InputAction.CallbackContext context)
     {
         inputTank.RightSelectTank();
     }
