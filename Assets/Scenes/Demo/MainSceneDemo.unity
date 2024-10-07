@@ -1289,17 +1289,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
-    - target: {fileID: 4241040704925532756, guid: 0c67924dc401b9e469609e91b0f4a9ef, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8789253828052533071, guid: 0c67924dc401b9e469609e91b0f4a9ef, type: 3}
       propertyPath: m_Name
       value: PieChart
-      objectReference: {fileID: 0}
-    - target: {fileID: 8789253828052533071, guid: 0c67924dc401b9e469609e91b0f4a9ef, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

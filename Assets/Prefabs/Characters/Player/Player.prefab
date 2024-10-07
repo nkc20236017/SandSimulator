@@ -59,7 +59,7 @@ MonoBehaviour:
   radius: 2.83
   groundLayerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 16392
   canAutoJump: 1
   autoJumpHeight: 1
   knockbackTime: 1.5
