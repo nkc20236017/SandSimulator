@@ -290,6 +290,13 @@ public class SuckUp : MonoBehaviour
             
             _updateTilemap.SetTile(_updateTilemap.WorldToCell(position), null);
             tilemap.SetTile(localTilePosition, null);
+            
+            if ((newTilePosition - pivot.position).sqrMagnitude <= _deleteDistance * _deleteDistance)
+            {
+                inputTank.InputAddTank(tile);//タンクに追加
+                newTilemap.SetTile(localNewTilePosition, null);
+                _updateTilemap.SetTile(_updateTilemap.WorldToCell(newTilePosition), null);
+            }
         }
     }
 
