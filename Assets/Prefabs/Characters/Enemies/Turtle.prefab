@@ -326,7 +326,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundLayerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 16392
   matchTheColliderDirectionGround: 1
   radius: 0
   autoJump: 1
@@ -358,7 +358,7 @@ MonoBehaviour:
   radius: 0
   groundLayerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 16392
 --- !u!114 &3408546254744029857
 MonoBehaviour:
   m_ObjectHideFlags: 0
