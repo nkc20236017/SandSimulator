@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
@@ -24,6 +25,8 @@ public class SuckUp : MonoBehaviour
     [Header("Delete Config")]
     [SerializeField] private bool matchTheSizeOfTheCollider;
 
+    [SerializeField] private GameObject suckEffect;
+
     private int _numberExecutions;
     private List<Vector3Int> _suckUpTilePositions = new();
     private List<OreObject> _suckUpOreObject = new();
@@ -36,7 +39,16 @@ public class SuckUp : MonoBehaviour
     private IInputTank inputTank;
     private IChunkInformation _chunkInformation;
     private ISoundSourceable _soundSource;
-    
+
+    private string[] seName =
+    {
+        "VacuumSE",
+        "VacuumSE-2",
+        "VacuumSE-4",
+        "VacuumSE-6",
+        "VacuumSE-8"
+    };
+
     public bool IsSuckUp { get; private set; }
     
     public void Inject(IInputTank inputTank)
@@ -61,7 +73,7 @@ public class SuckUp : MonoBehaviour
     {
         _numberExecutions = 0;
         
-        VacuumActions.Absorption.started += _ => _playerMovement.IsMoveFlip = false;
+        VacuumActions.Absorption.started += _ => PlaySuckUp();
         VacuumActions.Absorption.canceled += _ => CancelSuckUp();
     }
 
@@ -71,9 +83,13 @@ public class SuckUp : MonoBehaviour
         
         if (VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
         {
+            if (inputTank.TamkMaxSignal())
+            {
+                //AudioManager.Instance.PlaySFX("MaxtankSE");
+                return;
+            }
+            suckEffect.SetActive(true);
             // TODO: ［効果音］吸い込み
-            // TODO: ［エフェクト］吸い込み
-            //AudioManager.Instance.PlaySFX("VacuumSE");
             IsSuckUp = true;
             Performed();
             _numberExecutions++;
@@ -95,8 +111,18 @@ public class SuckUp : MonoBehaviour
         SuckUpTiles();
     }
 
+    private void PlaySuckUp()
+    {
+        _playerMovement.IsMoveFlip = false;
+        if (inputTank.TamkMaxSignal())
+        {
+            AudioManager.Instance.PlaySFX("MaxtankSE");
+        }
+    }
+
     private void CancelSuckUp()
     {
+        suckEffect.SetActive(false);
         IsSuckUp = false;
         _suckUpTilePositions.Clear();
         _playerMovement.IsMoveFlip = true;
@@ -204,8 +230,6 @@ public class SuckUp : MonoBehaviour
             if (_numberExecutions % oreObject.Ore.weightPerSize[oreObject.Size - 1] == 0)
             {
                 target.TakeDamage(3);
-                // TODO: ［エフェクト］鉱石吸い込み
-                // if (oreObject.Ore.type == BlockType.Crystal) { }
                 _soundSource.InstantiateSound("SuckUp", transform.position);
             }
         }
@@ -297,6 +321,8 @@ public class SuckUp : MonoBehaviour
             
             if (Vector3.Distance(oreObject.transform.position, pivot.position) <= _deleteDistance)
             {
+                int x = Random.Range(0, seName.Length);
+                AudioManager.Instance.PlaySFX(seName[x]);
                 inputTank.InputAddTank(oreObject.Ore.type);//タンクに追加
                 _suckUpOreObject.Remove(oreObject);
                 Destroy(oreObject.gameObject);

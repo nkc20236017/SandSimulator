@@ -10,6 +10,7 @@ public class ResultSceneButton : MonoBehaviour
 
     public void SceneLoad()
     {
+        AudioManager.Instance.PlaySFX("DecisionSE");
         GlobalSceneNavigator.Instance.Push(gameScene, new LoadSceneDirector(loadScene));
     }
 

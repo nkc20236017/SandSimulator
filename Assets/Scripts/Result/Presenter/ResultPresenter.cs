@@ -25,24 +25,24 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     {
         tokenSource = new CancellationTokenSource();
         playerActions = new PlayerActions();
-        playerActions.UI.UISelect.performed += OnUiClick;
-        playerActions.Enable();
         token = tokenSource.Token;
+        playerActions.UI.UISelect.performed += OnUISelect;
+        playerActions.Enable();
     }
-
 
     private void OnDisable()
     {
         playerActions.Disable();
     }
 
-    private void OnUiClick(InputAction.CallbackContext context)
+    private void OnUISelect(InputAction.CallbackContext context)
     {
-        if(!demofast)
-        {
-            demofast = true;
-            tokenSource.Cancel();
-        }
+        if (demofast) { return; }
+        Debug.Log("ƒLƒƒƒ“ƒZƒ‹");
+
+        demofast = true;
+        tokenSource.Cancel();
+
     }
 
     public async void ResultUI(ResultOutPutData outPutData)
@@ -60,10 +60,12 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
             sceneButton.SetActive(true);
             totalePrise.SetActive(true);
         }
+        AudioManager.Instance.StopBGM("Coinloop");
+        AudioManager.Instance.PlaySFX("CoinSE");
         animationPresenter.gameObject.SetActive(false);
         resultPresenter.gameObject.SetActive(true);
         sceneButton.SetActive(true);
-            totalePrise.SetActive(true);
+        totalePrise.SetActive(true);
     }
 
     private void OnDestroy()

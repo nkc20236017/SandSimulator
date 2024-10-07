@@ -19,7 +19,7 @@ public class DemoInputSelectScene : MonoBehaviour
             return;
         }
 
-        AudioManager.Instance.PlaySFX("DecisionSE");
+        AudioManager.Instance.PlaySFX("PaperSE");
         GlobalSceneNavigator.Instance.Push(gameScene, new LoadSceneDirector(loadScene));
         gameObject.SetActive(false);
     }

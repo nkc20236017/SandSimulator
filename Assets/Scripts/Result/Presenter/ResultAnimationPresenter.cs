@@ -46,7 +46,5 @@ public class ResultAnimationPresenter : MonoBehaviour
             resultText.text = totalePrice.ToString();
         }
     ).ToUniTask(cancellationToken: cancellationToken);
-        AudioManager.Instance.StopBGM("Coinloop");
-        AudioManager.Instance.PlaySFX("CoinSE");
     }
 }

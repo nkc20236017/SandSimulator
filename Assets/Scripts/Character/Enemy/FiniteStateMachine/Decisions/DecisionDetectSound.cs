@@ -41,7 +41,7 @@ public class DecisionDetectSound : FsmDecision
 		// TODO: デバッグモードの時はプレイヤーを検知しないようにする
 		
 		var targetCollider = Physics2D.OverlapCircleAll(pivot.position, radius, targetLayerMask);
-		if (targetCollider != null)
+		if (targetCollider.Length > 0)
 		{
 			foreach (var target in targetCollider)
 			{
@@ -49,16 +49,7 @@ public class DecisionDetectSound : FsmDecision
 				{
 					_isTargetDetected = true;
 					_enemyBrain.Target = target.transform;
-					ShowMark(findMarkSprite);
-				}
-				if (_enemyBrain.Target == null) { return; }
-				
-				var distance1 = (pivot.position - target.transform.position).sqrMagnitude;
-				var distance2 = (pivot.position - _enemyBrain.Target.position).sqrMagnitude;
-				if (distance1 < distance2)
-				{
-					_isTargetDetected = true;
-					_enemyBrain.Target = target.transform;
+					_enemyBrain.TargetPosition = target.transform.position;
 					ShowMark(findMarkSprite);
 				}
 			}

@@ -15,6 +15,7 @@ public class EnemyBrain : MonoBehaviour
 	public Vector3 Direction { get; set; }
 	public EnemyStatus Status { get; private set; }
 	public Transform Target { get; set; }
+	public Vector3 TargetPosition { get; set; }
 
 	private void Awake()
 	{

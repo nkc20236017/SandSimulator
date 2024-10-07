@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MinimapIconDatas:
   - Type: 0
-    Icon: {fileID: 21300000, guid: 9d0e1c6ddd463bb439703c7ea7589bc9, type: 3}
+    Icon: {fileID: 21300000, guid: 02eaf2c1eb2486a4fbeb696b7e198166, type: 3}
   - Type: 1
-    Icon: {fileID: 21300000, guid: 285f31b1edd895a41a3faffc8c8d6a66, type: 3}
+    Icon: {fileID: 21300000, guid: 9b21c0e3590355349b3bfc292a1938a3, type: 3}

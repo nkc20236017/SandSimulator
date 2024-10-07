@@ -22,5 +22,4 @@ public class DemoInputAction : MonoBehaviour
             angle += 360;
         Debug.Log("スティックの角度: " + angle);
     }
-
 }

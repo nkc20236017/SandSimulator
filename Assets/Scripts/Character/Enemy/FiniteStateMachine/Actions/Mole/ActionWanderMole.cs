@@ -7,6 +7,7 @@ public class ActionWanderMole : FsmAction
 	[Header("Wander Config")]
 	[SerializeField, MinMaxSlider(0f, 60f)] private Vector2 _wanderTime;
 	[SerializeField] private float _radius;
+	[SerializeField] private float _rotateSpeed = 5f;
 	
 	private float _timer;
 	private float _randomWanderTime;
@@ -34,8 +35,8 @@ public class ActionWanderMole : FsmAction
 			return;
 		}
 
-		Movement();
 		Rotate();
+		Movement();
 		
 		_timer -= Time.deltaTime;
 		if (_timer <= 0f)
@@ -59,10 +60,11 @@ public class ActionWanderMole : FsmAction
     
     private void Rotate()
 	{
-		// 移動している方向に向く
+		// 移動している方向に滑らかに回転する
 		var moveDirection = (_movePosition - transform.position).normalized;
 		var angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
-		transform.rotation = Quaternion.Euler(0f, 0f, angle);
+		var rotation = Mathf.LerpAngle(transform.eulerAngles.z, angle, Time.deltaTime * _rotateSpeed);
+		transform.rotation = Quaternion.Euler(0f, 0f, rotation);
 	}
 
     private void GetRandomPointInCircle()
@@ -91,7 +93,7 @@ public class ActionWanderMole : FsmAction
 		if (_enemyBrain.Target != null) { return; }
 		
 		Gizmos.DrawLine(transform.position, _movePosition);
-		Gizmos.DrawWireSphere(_movePosition, 0.5f);
+		Gizmos.DrawWireSphere(_movePosition, 2.5f);
     }
 
     private void OnEnable()
