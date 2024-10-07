@@ -78,7 +78,7 @@ public class SemicircleGraph : MonoBehaviour, IOutResultUI
         selectImage.gameObject.SetActive(true);
         for (var i = 0; i < _semicircles.Length; i++)
         {
-            if (outPutSelectData.type == _semicircles[i].blockType)
+            if (outPutSelectData.type == _semicircles[i].BlockType)
             {
                 _semicircles[i].SelectScaleUp();
                 SetImage(outPutSelectData.SelectSprite);
