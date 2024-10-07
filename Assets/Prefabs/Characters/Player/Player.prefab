@@ -77,7 +77,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeTime: 0.25
   invincibilityTime: 0.1
-  maxHealth: 3
+  maxHealth: 5
   maxDefence: 0
   healthUI: {fileID: 623989613519376832}
 --- !u!114 &623989613519376832
