@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
+using UnityEngine.InputSystem;
 
 public class BlowOut : MonoBehaviour
 {
@@ -41,6 +42,9 @@ public class BlowOut : MonoBehaviour
     private IChunkInformation _chunkInformation;
     private ISoundSourceable _soundSource;
 
+    [SerializeField]
+    private Vector3 aa;
+
     public bool IsBlowOut { get; private set; }
 
     public void Inject(IInputTank inputTank)
@@ -72,6 +76,8 @@ public class BlowOut : MonoBehaviour
 
         VacuumActions.SpittingOut.started += _ => _playerMovement.IsMoveFlip = false;
         VacuumActions.SpittingOut.canceled += _ => CancelBlowOut();
+        VacuumActions.VacuumPos.performed += OnBlowOut;
+        VacuumActions.VacuumMouse.performed += OnBlowOutMouse;
     }
 
     private void Update()
@@ -94,6 +100,27 @@ public class BlowOut : MonoBehaviour
             IsBlowOut = true;
             BlowOutTiles();
         }
+    }
+
+    private void OnBlowOut(InputAction.CallbackContext context)
+    {
+        Vector3 mouseWorldPosition = context.ReadValue<Vector2>();
+
+        Vector3 direction = VacuumActions.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
+? VacuumActions.VacuumPos.ReadValue<Vector2>().normalized :
+mouseWorldPosition - pivot.position;
+
+        aa = direction;
+    }
+    private void OnBlowOutMouse(InputAction.CallbackContext context)
+    {
+        Vector3 mouseWorldPosition = _camera.ScreenToWorldPoint(context.ReadValue<Vector2>());
+
+        Vector3 direction = VacuumActions.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
+? VacuumActions.VacuumPos.ReadValue<Vector2>().normalized :
+mouseWorldPosition - pivot.position;
+
+        aa = direction;
     }
 
     private void BlowOutTiles()
@@ -136,7 +163,9 @@ public class BlowOut : MonoBehaviour
         mouseWorldPosition.z = 0;
         var centerCell = (Vector3)_updateTilemap.WorldToCell(mouseWorldPosition);
 
-        var direction = centerCell - pivot.position;
+        Vector3 direction = aa;
+
+        //var direction = centerCell - pivot.position;
         var angle = Mathf.Atan2(direction.y, direction.x);
 
         var chordLength = Mathf.Sqrt(Mathf.Pow(distance, 2) + Mathf.Pow(range, 2));
@@ -216,8 +245,10 @@ public class BlowOut : MonoBehaviour
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPosition.z = 0;
 
+            Vector3 direction2 = aa;
+
             var direction1 = position - pivot.position;
-            var direction2 = mouseWorldPosition - pivot.position;
+            //var direction2 = mouseWorldPosition - pivot.position;
             var angle = Vector3.Angle(direction1, direction2);
 
             var dis = Vector3.Distance(pivot.position, position);
@@ -305,12 +336,13 @@ public class BlowOut : MonoBehaviour
         var mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         if (mainCamera == null) { return; }
 
-        var mouseWorldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        var mouseWorldPosition = aa;
         if (_updateTilemap == null) { return; }
 
         var centerCell = (Vector3)_updateTilemap.WorldToCell(mouseWorldPosition);
 
-        var direction = centerCell - pivot.position;
+        //var direction = centerCell - pivot.position;
+        Vector3 direction = aa;
 
         var targetPosition = pivot.position + direction.normalized * distance;
         Gizmos.DrawLine(pivot.position, targetPosition);
