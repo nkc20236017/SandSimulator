@@ -194,6 +194,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""VacuumMouse"",
+                    ""type"": ""Value"",
+                    ""id"": ""3292e85e-82af-4a50-a658-5737e3fd55fb"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -284,6 +293,17 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""VacuumPos"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""659ee903-e07d-47dd-b7f9-588aa926ac21"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VacuumMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -341,6 +361,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Vacuum_RightSelect = m_Vacuum.FindAction("RightSelect", throwIfNotFound: true);
         m_Vacuum_TankSelect = m_Vacuum.FindAction("TankSelect", throwIfNotFound: true);
         m_Vacuum_VacuumPos = m_Vacuum.FindAction("VacuumPos", throwIfNotFound: true);
+        m_Vacuum_VacuumMouse = m_Vacuum.FindAction("VacuumMouse", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_UISelect = m_UI.FindAction("UISelect", throwIfNotFound: true);
@@ -465,6 +486,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Vacuum_RightSelect;
     private readonly InputAction m_Vacuum_TankSelect;
     private readonly InputAction m_Vacuum_VacuumPos;
+    private readonly InputAction m_Vacuum_VacuumMouse;
     public struct VacuumActions
     {
         private @PlayerActions m_Wrapper;
@@ -475,6 +497,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         public InputAction @RightSelect => m_Wrapper.m_Vacuum_RightSelect;
         public InputAction @TankSelect => m_Wrapper.m_Vacuum_TankSelect;
         public InputAction @VacuumPos => m_Wrapper.m_Vacuum_VacuumPos;
+        public InputAction @VacuumMouse => m_Wrapper.m_Vacuum_VacuumMouse;
         public InputActionMap Get() { return m_Wrapper.m_Vacuum; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -502,6 +525,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @VacuumPos.started += instance.OnVacuumPos;
             @VacuumPos.performed += instance.OnVacuumPos;
             @VacuumPos.canceled += instance.OnVacuumPos;
+            @VacuumMouse.started += instance.OnVacuumMouse;
+            @VacuumMouse.performed += instance.OnVacuumMouse;
+            @VacuumMouse.canceled += instance.OnVacuumMouse;
         }
 
         private void UnregisterCallbacks(IVacuumActions instance)
@@ -524,6 +550,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @VacuumPos.started -= instance.OnVacuumPos;
             @VacuumPos.performed -= instance.OnVacuumPos;
             @VacuumPos.canceled -= instance.OnVacuumPos;
+            @VacuumMouse.started -= instance.OnVacuumMouse;
+            @VacuumMouse.performed -= instance.OnVacuumMouse;
+            @VacuumMouse.canceled -= instance.OnVacuumMouse;
         }
 
         public void RemoveCallbacks(IVacuumActions instance)
@@ -600,6 +629,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         void OnRightSelect(InputAction.CallbackContext context);
         void OnTankSelect(InputAction.CallbackContext context);
         void OnVacuumPos(InputAction.CallbackContext context);
+        void OnVacuumMouse(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

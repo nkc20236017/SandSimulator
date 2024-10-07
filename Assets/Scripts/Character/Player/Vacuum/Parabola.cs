@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using static PlayerActions;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class Parabola : MonoBehaviour
 {
@@ -11,6 +14,10 @@ public class Parabola : MonoBehaviour
     [SerializeField] private GameObject dotPrefab;
     [SerializeField] private LayerMask groundLayerMask;
 
+    [SerializeField]
+    private Vector3 controllerParabla;
+
+    private PlayerActions playerActions;
     private Vector3 _startPosition;
     private Camera _camera;
     private GameObject[] _dots;
@@ -18,6 +25,27 @@ public class Parabola : MonoBehaviour
     private void Start()
     {
         _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        playerActions = new();
+        playerActions.Vacuum.VacuumPos.performed += OnParabola;
+        playerActions.Vacuum.VacuumMouse.performed += OnParabolaMouse;
+        playerActions.Enable();
+    }
+
+    private void OnParabola(InputAction.CallbackContext context)
+    {
+        Vector3 mouseWorldPosition = context.ReadValue<Vector2>();
+
+        Debug.Log(mouseWorldPosition);
+        Vector3 direction = playerActions.Vacuum.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
+? playerActions.Vacuum.VacuumPos.ReadValue<Vector2>().normalized :
+mouseWorldPosition - pivot.position;
+
+        controllerParabla = direction;
+    }
+
+    private void OnParabolaMouse(InputAction.CallbackContext context)
+    {
+        controllerParabla = context.ReadValue<Vector2>();
     }
 
     public void GenerateParabola()
@@ -28,8 +56,10 @@ public class Parabola : MonoBehaviour
         {
             _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         }
-        
-        var startDirection = (_camera.ScreenToWorldPoint(Input.mousePosition) - pivot.position).normalized;
+
+        Vector3 directions = controllerParabla;
+
+        var startDirection = directions.normalized;
         _startPosition = pivot.position + startDirection * startDistance;
         
         var groundHitPosition = GetGroundHitPosition();
@@ -64,7 +94,7 @@ public class Parabola : MonoBehaviour
             _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         }
         
-        var ray = new Ray(_startPosition, (_camera.ScreenToWorldPoint(Input.mousePosition) - _startPosition).normalized);
+        var ray = new Ray(_startPosition, (_camera.ScreenToWorldPoint(controllerParabla) - _startPosition).normalized);
         var hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity, groundLayerMask);
         if (hit.collider == null)
         {

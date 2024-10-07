@@ -21,7 +21,6 @@ public class MainGameEntoryPoint : SceneEntryPointBase
         this.ObserveEveryValueChanged(progress => progressData.Value.Progress)
             .Subscribe(progressData =>
             {
-                Debug.Log(progressData);
                 progress.Report(store.SetData(this.progressData.Value));
             });
 

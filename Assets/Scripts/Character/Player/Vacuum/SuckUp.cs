@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Xml.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -42,6 +43,8 @@ public class SuckUp : MonoBehaviour
     private ISoundSourceable _soundSource;
     private PlayerHealth playerHealth;
 
+    private Vector3 aa;
+
     private string[] seName =
     {
         "VacuumSE",
@@ -78,6 +81,10 @@ public class SuckUp : MonoBehaviour
 
         VacuumActions.Absorption.started += _ => PlaySuckUp();
         VacuumActions.Absorption.canceled += _ => CancelSuckUp();
+        VacuumActions.VacuumPos.performed += OnSuckUp;
+        VacuumActions.VacuumMouse.performed += OnSuckUpMouse;
+
+        aa = new Vector3(1,0, 0);
     }
 
     private void Update()
@@ -96,6 +103,33 @@ public class SuckUp : MonoBehaviour
             Performed();
             _numberExecutions++;
         }
+    }
+
+    private void OnSuckUp(InputAction.CallbackContext context)
+    {
+        Vector3 mouseWorldPosition = context.ReadValue<Vector2>();
+
+        Vector3 direction = VacuumActions.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
+? VacuumActions.VacuumPos.ReadValue<Vector2>().normalized :
+mouseWorldPosition - pivot.position;
+
+        aa = direction;
+    }
+
+    private void OnSuckUpMouse(InputAction.CallbackContext context)
+    {
+        if (_camera == null)
+        {
+            _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        }
+
+        Vector3 mouseWorldPosition = _camera.ScreenToWorldPoint(context.ReadValue<Vector2>());
+
+        Vector3 direction = VacuumActions.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
+? VacuumActions.VacuumPos.ReadValue<Vector2>().normalized :
+mouseWorldPosition - pivot.position;
+
+        aa = direction;
     }
 
     private void Performed()
@@ -140,7 +174,8 @@ public class SuckUp : MonoBehaviour
 
         var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPosition.z = 0;
-        var direction = mouseWorldPosition - pivot.position;
+        Vector3 direction = aa;
+        //var direction = mouseWorldPosition - pivot.position;
         var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         if (pivot.parent.localScale.x < 0)
         {
@@ -183,7 +218,8 @@ public class SuckUp : MonoBehaviour
             mouseWorldPosition.z = 0;
 
             Vector2 direction1 = position - pivot.position;
-            Vector2 direction2 = mouseWorldPosition - pivot.position;
+            Vector3 direction2 = aa;
+            //Vector2 direction2 = mouseWorldPosition - pivot.position;
             var angle = Vector3.Angle(direction1, direction2);
 
             var distance = Vector3.Distance(pivot.position, position);
@@ -365,10 +401,15 @@ public class SuckUp : MonoBehaviour
         var camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         if (camera == null) { return; }
 
-        var mouseWorldPosition = camera.ScreenToWorldPoint(Input.mousePosition);
+        var mouseWorldPosition = camera.ScreenToWorldPoint(aa);
 
         var angleInRadians = _suctionAngle * Mathf.Deg2Rad;
-        var direction2 = mouseWorldPosition - pivot.position;
+
+        Vector3 direction2 = aa;
+
+        aa = direction2;
+
+        //var direction2 = mouseWorldPosition - pivot.position;
         var angle = Mathf.Atan2(direction2.y, direction2.x);
 
         var newCell1 = GetNewCell(angle - angleInRadians, _suctionDistance);
