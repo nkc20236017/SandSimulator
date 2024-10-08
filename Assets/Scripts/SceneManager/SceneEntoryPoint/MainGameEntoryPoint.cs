@@ -29,7 +29,6 @@ public class MainGameEntoryPoint : SceneEntryPointBase
     public void SetProgress(ProgressData data)
     {
         progressData.Value = data;
-        Debug.Log(progressData.Value.Progress);
     }
 
 }

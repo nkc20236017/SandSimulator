@@ -38,8 +38,6 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     private void OnUISelect(InputAction.CallbackContext context)
     {
         if (demofast) { return; }
-        Debug.Log("ƒLƒƒƒ“ƒZƒ‹");
-
         demofast = true;
         tokenSource.Cancel();
 
