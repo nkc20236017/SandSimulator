@@ -25,7 +25,7 @@ MonoBehaviour:
     color: {r: 0.6745283, g: 0.9187974, b: 1, a: 1}
   - stratumName: "\uFF13\u5C64"
     depth: 3
-    color: {r: 0.27328312, g: 0.2216981, b: 1, a: 1}
+    color: {r: 0.2509804, g: 0.5058824, b: 1, a: 1}
   weight: 1
   sprite: {fileID: 21300000, guid: 323704303ec97dd458efe70da95bb9e5, type: 3}
   resultSprite: {fileID: 2027378876, guid: 2a8b131a634d85c4384eb759909cafe6, type: 3}
@@ -33,5 +33,4 @@ MonoBehaviour:
   price: 1
   material: {fileID: 0}
   vacuumAmount: 1
-  tilePositions:
-  - {x: 244, y: 486, z: 0}
+  tilePositions: []

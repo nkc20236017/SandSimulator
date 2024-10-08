@@ -59,7 +59,7 @@ MonoBehaviour:
   radius: 2.83
   groundLayerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 16392
   canAutoJump: 1
   autoJumpHeight: 1
   knockbackTime: 1.5
@@ -197,7 +197,7 @@ MonoBehaviour:
   dotPrefab: {fileID: 4963326286473157808, guid: 0de9ff07e1a133647a54361ab0db2d15, type: 3}
   groundLayerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 16392
 --- !u!1 &2762497230538219215
 GameObject:
   m_ObjectHideFlags: 0

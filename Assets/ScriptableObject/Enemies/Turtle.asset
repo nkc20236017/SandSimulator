@@ -19,22 +19,22 @@ MonoBehaviour:
   status:
   - name: "\uFF11\u5C64"
     depth: 1
-    health: 50
+    health: 30
     speed: 7
     attack: 1
-    attackSpeed: 100
+    attackSpeed: 50
   - name: "\uFF12\u5C64"
     depth: 2
-    health: 50
+    health: 30
     speed: 7
     attack: 1
-    attackSpeed: 100
+    attackSpeed: 50
   - name: "\uFF13\u5C64"
     depth: 3
-    health: 50
+    health: 30
     speed: 7
-    attack: 2
-    attackSpeed: 100
+    attack: 1
+    attackSpeed: 50
   turtleOres:
   - ore: {fileID: 11400000, guid: 6534895f1114d374a80f4e1c68535ad4, type: 2}
     rate: 30

@@ -189,7 +189,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 576
   updateInterval: 0.05
-  chunkSize: {x: 180, y: 100}
+  chunkSize: {x: 180, y: 120}
   canUpdateSand: 1
   canUpdateWater: 0
   canUpdateSandToMud: 0

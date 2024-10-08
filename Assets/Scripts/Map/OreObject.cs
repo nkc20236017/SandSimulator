@@ -71,7 +71,7 @@ public class OreObject : MonoBehaviour, IDamageable
         SetOreConfig(setSize);
     }
 
-    private void SetChildOre(Ore setOre)
+    public void SetChildOre(Ore setOre)
     {
         SetOre(setOre, 1, transform.eulerAngles.z);
         _isChild = true;

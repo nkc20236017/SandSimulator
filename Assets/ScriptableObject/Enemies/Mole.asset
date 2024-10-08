@@ -19,19 +19,19 @@ MonoBehaviour:
   status:
   - name: "\uFF11\u5C64"
     depth: 1
-    health: 30
+    health: 10
     speed: 7
     attack: 1
     attackSpeed: 15
   - name: "\uFF12\u5C64"
     depth: 2
-    health: 30
+    health: 10
     speed: 15
     attack: 1
     attackSpeed: 30
   - name: "\uFF13\u5C64"
     depth: 3
-    health: 30
+    health: 10
     speed: 15
     attack: 1
     attackSpeed: 30

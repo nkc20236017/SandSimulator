@@ -54,6 +54,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 		_currentHealth = 0;
 		Die();
 	}
+
+	public void TakeHeal(int healPoint)
+	{
+		_currentHealth += healPoint;
+        _currentHealth = Mathf.Clamp(_currentHealth,0, maxHealth);
+        healthUI.UpdateHealth(_currentHealth);
+    }
 	
 	public void RestoreHealth(int amount)
 	{

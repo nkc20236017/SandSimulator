@@ -16,6 +16,7 @@ public enum BlockType
     Ruby,
     Emerald,
     Crystal,
+    HealOre,
     SandBack
 }
 

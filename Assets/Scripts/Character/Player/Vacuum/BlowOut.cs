@@ -242,6 +242,11 @@ mouseWorldPosition - pivot.position;
             mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
             if (mapTilemap == null) { continue; }
             
+            if (_camera == null)
+            {
+                _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+            }
+            
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPosition.z = 0;
 

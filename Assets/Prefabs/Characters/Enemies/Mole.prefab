@@ -60,7 +60,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9097912794915553998
 Transform:
   m_ObjectHideFlags: 0
@@ -220,6 +220,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fcf4ad7148d48d989e786366e4844b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sprite: {fileID: 60279398336962668}
+  count: 3
+  time: 0.2
+  oreObject: {fileID: 6746995548501597568, guid: 316fcb6903b14444289ed0f8e9e95dc5, type: 3}
+  healOre: {fileID: 11400000, guid: 8c7a64ff9bc7e30429621ebced03ae06, type: 2}
 --- !u!114 &6403816726207798406
 MonoBehaviour:
   m_ObjectHideFlags: 0
