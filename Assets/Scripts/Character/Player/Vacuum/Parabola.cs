@@ -17,6 +17,8 @@ public class Parabola : MonoBehaviour
     [SerializeField]
     private Vector3 controllerParabla;
 
+    private Ray parablaRay;
+
     private PlayerActions playerActions;
     private Vector3 _startPosition;
     private Camera _camera;
@@ -41,11 +43,14 @@ public class Parabola : MonoBehaviour
 mouseWorldPosition - pivot.position;
 
         controllerParabla = direction;
+
+        parablaRay = new Ray(pivot.position, direction);
     }
 
     private void OnParabolaMouse(InputAction.CallbackContext context)
     {
-        controllerParabla = context.ReadValue<Vector2>();
+        controllerParabla = context.ReadValue<Vector2>().normalized;
+        parablaRay = new Ray(pivot.position, _camera.ScreenToWorldPoint(Input.mousePosition)-pivot.position);
     }
 
     public void GenerateParabola()
@@ -93,8 +98,8 @@ mouseWorldPosition - pivot.position;
         {
             _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         }
-        
-        var ray = new Ray(_startPosition, (_camera.ScreenToWorldPoint(controllerParabla) - _startPosition).normalized);
+
+        var ray = parablaRay;
         var hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity, groundLayerMask);
         if (hit.collider == null)
         {
