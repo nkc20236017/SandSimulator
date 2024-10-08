@@ -36,8 +36,6 @@ public class Parabola : MonoBehaviour
     private void OnParabola(InputAction.CallbackContext context)
     {
         Vector3 mouseWorldPosition = context.ReadValue<Vector2>();
-
-        Debug.Log(mouseWorldPosition);
         Vector3 direction = playerActions.Vacuum.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
 ? playerActions.Vacuum.VacuumPos.ReadValue<Vector2>().normalized :
 mouseWorldPosition - pivot.position;
@@ -49,6 +47,10 @@ mouseWorldPosition - pivot.position;
 
     private void OnParabolaMouse(InputAction.CallbackContext context)
     {
+        if(_camera == null)
+        {
+            _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        }
 
         controllerParabla = context.ReadValue<Vector2>().normalized;
         parablaRay = new Ray(pivot.position, _camera.ScreenToWorldPoint(Input.mousePosition)-pivot.position);
@@ -58,10 +60,6 @@ mouseWorldPosition - pivot.position;
     {
         DestroyParabola();
         
-        if (_camera == null)
-        {
-            _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
-        }
 
         Vector3 directions = controllerParabla;
 
