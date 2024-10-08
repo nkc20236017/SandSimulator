@@ -1,0 +1,18 @@
+{
+    "name": "PlayerStatus",
+    "rootNamespace": "",
+    "references": [
+        "GUID:de99c7ebec590b049962cf1f1e86afcb",
+        "GUID:e51a24f21301a534782f4cdcd9e9654e",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

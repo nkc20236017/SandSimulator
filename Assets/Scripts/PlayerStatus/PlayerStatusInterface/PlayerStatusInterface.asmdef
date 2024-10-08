@@ -1,0 +1,16 @@
+{
+    "name": "PlayerStatusInterface",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e51a24f21301a534782f4cdcd9e9654e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
