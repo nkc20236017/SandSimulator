@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static PlayerActions;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class Parabola : MonoBehaviour
 {
