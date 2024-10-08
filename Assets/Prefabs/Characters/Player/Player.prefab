@@ -54,7 +54,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 15
-  jumpForce: 40
+  jumpForce: 2000
   isColliderRadius: 1
   radius: 2.83
   groundLayerMask:
@@ -198,6 +198,7 @@ MonoBehaviour:
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 16392
+  controllerParabla: {x: 0, y: 0, z: 0}
 --- !u!1 &2762497230538219215
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,6 +476,7 @@ MonoBehaviour:
   blowOutOrePrefab: {fileID: 6160956251364179191, guid: f9894d24cfcacfb418601744a869af7e, type: 3}
   debug: 1
   blowEffect: {fileID: 5235812536410080479}
+  blowOutMousePostion: {x: 0, y: 0, z: 0}
 --- !u!1001 &7761226255580890619
 PrefabInstance:
   m_ObjectHideFlags: 0

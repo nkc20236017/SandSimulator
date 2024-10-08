@@ -99,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
 		if (!CanMove) { return; }
 		if (!IsGround()) { return; }
 		
-		_rigidbody2D.velocity = Vector2.up * jumpForce;
+		_rigidbody2D.velocity = Vector2.up * jumpForce * Time.fixedDeltaTime;
 	}
 	
 	private void JumpCancel()
