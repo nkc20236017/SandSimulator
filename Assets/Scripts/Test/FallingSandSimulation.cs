@@ -1,142 +1,274 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 public class FallingSandSimulation : MonoBehaviour
 {
-    [Header("Compute Shader Config")]
-    [SerializeField] private ComputeShader computeShader;
-    
-    [Header("Map Config")]
+    [Header("Datas Config")]
+    [SerializeField] private BlockDatas blockDatas;
+
+    [Header("Update Config")]
     [SerializeField] private Tilemap tilemap;
+    [SerializeField] private float updateInterval = 0.01f;
+    [SerializeField] private Vector2Int chunkSize = new(260, 150);
     
-    [Header("Brush Config")]
-    [SerializeField] private TileBase sandTile;
-    [SerializeField] private int radius = 5;
-
-    private static readonly int Result = Shader.PropertyToID("Result");
-    private static readonly int SandBuffer = Shader.PropertyToID("SandBuffer");
-    private static readonly int Width = Shader.PropertyToID("Width");
-    private static readonly int Height = Shader.PropertyToID("Height");
-    private int Kernel => computeShader.FindKernel("CSMain");
-    private int _width;
-    private int _height;
-    private Camera _camera;
-    private ComputeBuffer _computeBuffer;
-    private RenderTexture _renderTexture;
-
-    private void Start()
-    {
-        _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
-
-        _width = 100;
-        _height = 100;
-
-        InitializeSandSimulation();
-    }
+    [Header("Update Tile Config")]
+    [SerializeField] private bool canUpdateSand;
+    [SerializeField] private bool canUpdateWater;
+    [SerializeField] private bool isFallingSandAlgorithm;
     
-    private void InitializeSandSimulation()
-    {
-        _renderTexture = new RenderTexture(_width, _height, 0, RenderTextureFormat.RFloat)
-        {
-                enableRandomWrite = true
-        };
-        _renderTexture.Create();
-
-        _computeBuffer = new ComputeBuffer(_width * _height, sizeof(float));
-        var initialData = new float[_width * _height];
-        _computeBuffer.SetData(initialData);
-
-        computeShader.SetTexture(Kernel, Result, _renderTexture);
-        computeShader.SetBuffer(Kernel, SandBuffer, _computeBuffer);
-        computeShader.SetInt(Width, _width);
-        computeShader.SetInt(Height, _height);
-    }
-
+    private float _lastUpdateTime;
+    private List<Vector3Int> _clearTiles = new();
+    private List<Vector3Int> _updateTiles = new();
+    
     private void Update()
     {
-        HandleTileInput();
-        HandleNullInput();
-        UpdateSandSimulation();
-        UpdateTilemap();
+        if (Time.time - _lastUpdateTime <= updateInterval) { return; }
+        if (tilemap.GetUsedTilesCount() == 0) { return; }
+        
+        GetTilePosition();
+        _lastUpdateTime = Time.time;
     }
 
-    private void HandleTileInput()
+    private void GetTilePosition()
     {
-        if (!Input.GetMouseButton(0)) { return; }
+        foreach (var tile in blockDatas.Block.Where(tile => tile.tilePositions.Count > 0))
+        {
+            tile.tilePositions.Clear();
+        }
+        
+        for (var y = -chunkSize.y / 2; y < chunkSize.y / 2; y++)
+        {
+            for (var x = -chunkSize.x / 2; x < chunkSize.x / 2; x++)
+            {
+                var position = new Vector3Int(x, y, 0);
+                var tile = tilemap.GetTile(position);
+                if (tile == null) { continue; }
+                
+                var index = Array.FindIndex(blockDatas.Block, t => t.tile == tile);
+                if (index >= 0 && index < blockDatas.Block.Length)
+                {
+                    blockDatas.Block[index].tilePositions.Add(position);
+                }
+            }
+        }
+        if (blockDatas.Block.All(tile => tile.tilePositions.Count == 0)) { return; }
+        
+        CheckUpdateTiles();
+    }
 
-        var worldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-        var cellPosition = tilemap.WorldToCell(worldPosition);
+    private void CheckUpdateTiles()
+    {
+        foreach (var tileData in blockDatas.Block.Where(tile => tile.tilePositions.Count > 0))
+        {
+            _clearTiles.Clear();
+            _updateTiles.Clear();
+            if (isFallingSandAlgorithm)
+            {
+                foreach (var position in tileData.tilePositions)
+                {
+                    switch (tileData.type)
+                    {
+                        case BlockType.Sand:
+                            if (canUpdateSand)
+                            {
+                                UpdateSand(position);
+                            }
+                            break;
+                        case BlockType.Liquid:
+                            if (canUpdateWater)
+                            {
+                                UpdateWater(position);
+                            }
+                            break;
+                    }
+                }
+                continue;
+            }
 
-        SpawnTileAtPosition(cellPosition.x, cellPosition.y, 1f);
+            var randomTilePositions = tileData.tilePositions.OrderBy(_ => Guid.NewGuid()).ToList();
+            foreach (var position in randomTilePositions)
+            {
+                switch (tileData.type)
+                {
+                    case BlockType.Sand:
+                        if (canUpdateSand)
+                        {
+                            UpdateSand(position);
+                        }
+                        break;
+                    case BlockType.Liquid:
+                        if (canUpdateWater)
+                        {
+                            UpdateWater(position);
+                        }
+                        break;
+                }
+            }
+            
+            UpdateTiles(tileData);
+        }
+    }
+
+    private void UpdateSand(Vector3Int position)
+    {
+        var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 1, 1);
+        var tilesBlock = tilemap.GetTilesBlock(checkBound);
+        tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
+        if (tilesBlock.Length == 3) { return; }
+        
+        var below = position + Vector3Int.down;
+        var belowLeft = position + new Vector3Int(-1, -1, 0);
+        var belowRight = position + new Vector3Int(1, -1, 0);
+
+        if (isFallingSandAlgorithm)
+        {
+            var tile = tilemap.GetTile(position);
+            if (!tilemap.HasTile(below))
+            {
+                tilemap.SetTile(below, tile);
+                tilemap.SetTile(position, null);
+            }
+            else if (!tilemap.HasTile(belowLeft))
+            {
+                tilemap.SetTile(belowLeft, tile);
+                tilemap.SetTile(position, null);
+            }
+            else if (!tilemap.HasTile(belowRight))
+            {
+                tilemap.SetTile(belowRight, tile);
+                tilemap.SetTile(position, null);
+            }
+            
+            return;
+        }
+        
+        if (!CheckHasTile(below))
+        {
+            _clearTiles.Add(position);
+            _updateTiles.Add(below);
+        }
+        else if (!tilemap.HasTile(belowLeft)  || !tilemap.HasTile(belowRight))
+        {
+            var random = Random.Range(0, 2);
+            switch (random)
+            {
+                case 0:
+                    if (!CheckHasTile(belowLeft))
+                    {
+                        _clearTiles.Add(position);
+                        _updateTiles.Add(belowLeft);
+                    }
+                    break;
+                case 1:
+                    if (!CheckHasTile(belowRight))
+                    {
+                        _clearTiles.Add(position);
+                        _updateTiles.Add(belowRight);
+                    }
+                    break;
+            }
+        }
+    }
+
+    private bool CheckHasTile(Vector3Int position)
+    {
+        return tilemap.HasTile(position) || CheckUpdateTilePosition(position);
+    }
+
+    private void UpdateWater(Vector3Int position)
+    {
+        var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 2, 1);
+        var tilesBlock = tilemap.GetTilesBlock(checkBound);
+        tilesBlock = tilesBlock.Where(tileBase => tileBase != null).ToArray();
+        if (tilesBlock.Length == 6) { return; }
+        
+        var left = position + Vector3Int.left;
+        var right = position + Vector3Int.right;
+        var below = position + Vector3Int.down;
+        var belowLeft = position + new Vector3Int(-1, -1, 0);
+        var belowRight = position + new Vector3Int(1, -1, 0);
+        
+        if (!CheckHasTile(below))
+        {
+            _clearTiles.Add(position);
+            _updateTiles.Add(below);
+        }
+        else if (!tilemap.HasTile(left) || !tilemap.HasTile(right))
+        {
+            var random = Random.Range(0, 2);
+            switch (random)
+            {
+                case 0:
+                {
+                    if (!CheckHasTile(left))
+                    {
+                        _clearTiles.Add(position);
+                        _updateTiles.Add(left);
+                    }
+                    break;
+                }
+                case 1:
+                {
+                    if (!CheckHasTile(right))
+                    {
+                        _clearTiles.Add(position);
+                        _updateTiles.Add(right);
+                    }
+                    break;
+                }
+            }
+        }
+        else if (!tilemap.HasTile(belowLeft)  || !tilemap.HasTile(belowRight))
+        {
+            var random = Random.Range(0, 2);
+            switch (random)
+            {
+                case 0:
+                    if (!CheckHasTile(belowLeft))
+                    {
+                        _clearTiles.Add(position);
+                        _updateTiles.Add(belowLeft);
+                    }
+                    break;
+                case 1:
+                    if (!CheckHasTile(belowRight))
+                    {
+                        _clearTiles.Add(position);
+                        _updateTiles.Add(belowRight);
+                    }
+                    break;
+            }
+        }
     }
     
-    private void HandleNullInput()
+    private bool CheckUpdateTilePosition(Vector3Int position)
     {
-        if (!Input.GetMouseButton(1)) { return; }
-
-        var worldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-        var cellPosition = tilemap.WorldToCell(worldPosition);
-
-        SpawnTileAtPosition(cellPosition.x, cellPosition.y, 0f);
+        return _updateTiles.Any(updateTile => updateTile == position) || _clearTiles.Any(clearTile => clearTile == position);
     }
-
-    private void SpawnTileAtPosition(int centerX, int centerY, float amount)
+    
+    private void UpdateTiles(Block tile)
     {
-        var sandData = new float[_width * _height];
-        _computeBuffer.GetData(sandData);
-
-        for (var x = -radius; x <= radius; x++)
+        if (_clearTiles.Count == 0 && _updateTiles.Count == 0) { return; }
+        
+        var clearTiles = _clearTiles.ToArray();
+        var updateTiles = _updateTiles.ToArray();
+        var tilePositions = new Vector3Int[clearTiles.Length + updateTiles.Length];
+        var tileArray = new TileBase[clearTiles.Length + updateTiles.Length];
+        for (var i = 0; i < clearTiles.Length; i++)
         {
-            for (var y = -radius; y <= radius; y++)
-            {
-                if (x * x + y * y > radius * radius) { continue; }
-
-                var spawnX = centerX + x;
-                var spawnY = centerY + y;
-
-                if (spawnX < 0 || spawnX >= _width || spawnY < 0 || spawnY >= _height) { continue; }
-
-                var index = spawnY * _width + spawnX;
-                sandData[index] = amount;
-            }
+            tilePositions[i] = clearTiles[i];
+            tileArray[i] = null;
         }
-
-        _computeBuffer.SetData(sandData);
-    }
-
-    private void UpdateSandSimulation()
-    {
-        computeShader.Dispatch(Kernel, _width / 8, _height / 8, 1);
-    }
-
-    private void UpdateTilemap()
-    {
-        var sandData = new float[_width * _height];
-        _computeBuffer.GetData(sandData);
-
-        var tilePositions = new List<Vector3Int>();
-        var tileBases = new List<TileBase>();
-
-        for (var x = 0; x < _width; x++)
+        for (var i = 0; i < updateTiles.Length; i++)
         {
-            for (var y = 0; y < _height; y++)
-            {
-                var index = y * _width + x;
-                tilePositions.Add(new Vector3Int(x, y, 0));
-                tileBases.Add(Mathf.Approximately(sandData[index], 1f) ? sandTile : null);
-            }
+            tilePositions[i + clearTiles.Length] = updateTiles[i];
+            tileArray[i + clearTiles.Length] = tile.tile;
         }
-
-        tilemap.SetTiles(tilePositions.ToArray(), tileBases.ToArray());
-    }
-
-    private void OnDestroy()
-    {
-        _computeBuffer?.Release();
-        if (_renderTexture != null)
-        {
-            _renderTexture.Release();
-        }
+        
+        tilemap.SetTiles(tilePositions, tileArray);
     }
 }
