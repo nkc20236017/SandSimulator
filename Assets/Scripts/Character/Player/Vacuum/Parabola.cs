@@ -33,6 +33,11 @@ public class Parabola : MonoBehaviour
         playerActions.Enable();
     }
 
+    private void OnDestroy()
+    {
+        playerActions.Disable();
+    }
+
     private void OnParabola(InputAction.CallbackContext context)
     {
         Vector3 mouseWorldPosition = context.ReadValue<Vector2>();
