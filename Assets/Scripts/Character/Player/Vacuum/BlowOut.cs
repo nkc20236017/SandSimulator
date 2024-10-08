@@ -43,7 +43,7 @@ public class BlowOut : MonoBehaviour
     private ISoundSourceable _soundSource;
 
     [SerializeField]
-    private Vector3 aa;
+    private Vector3 blowOutMousePostion;
 
     public bool IsBlowOut { get; private set; }
 
@@ -110,17 +110,22 @@ public class BlowOut : MonoBehaviour
 ? VacuumActions.VacuumPos.ReadValue<Vector2>().normalized :
 mouseWorldPosition - pivot.position;
 
-        aa = direction;
+        blowOutMousePostion = direction;
     }
     private void OnBlowOutMouse(InputAction.CallbackContext context)
     {
+        if (_camera == null)
+        {
+            _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        }
+
         Vector3 mouseWorldPosition = _camera.ScreenToWorldPoint(context.ReadValue<Vector2>());
 
         Vector3 direction = VacuumActions.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
 ? VacuumActions.VacuumPos.ReadValue<Vector2>().normalized :
 mouseWorldPosition - pivot.position;
 
-        aa = direction;
+        blowOutMousePostion = direction;
     }
 
     private void BlowOutTiles()
@@ -163,7 +168,7 @@ mouseWorldPosition - pivot.position;
         mouseWorldPosition.z = 0;
         var centerCell = (Vector3)_updateTilemap.WorldToCell(mouseWorldPosition);
 
-        Vector3 direction = aa;
+        Vector3 direction = blowOutMousePostion;
 
         //var direction = centerCell - pivot.position;
         var angle = Mathf.Atan2(direction.y, direction.x);
@@ -250,7 +255,7 @@ mouseWorldPosition - pivot.position;
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPosition.z = 0;
 
-            Vector3 direction2 = aa;
+            Vector3 direction2 = blowOutMousePostion;
 
             var direction1 = position - pivot.position;
             //var direction2 = mouseWorldPosition - pivot.position;
@@ -341,13 +346,13 @@ mouseWorldPosition - pivot.position;
         var mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         if (mainCamera == null) { return; }
 
-        var mouseWorldPosition = aa;
+        var mouseWorldPosition = blowOutMousePostion;
         if (_updateTilemap == null) { return; }
 
         var centerCell = (Vector3)_updateTilemap.WorldToCell(mouseWorldPosition);
 
         //var direction = centerCell - pivot.position;
-        Vector3 direction = aa;
+        Vector3 direction = blowOutMousePostion;
 
         var targetPosition = pivot.position + direction.normalized * distance;
         Gizmos.DrawLine(pivot.position, targetPosition);

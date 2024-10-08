@@ -49,6 +49,7 @@ mouseWorldPosition - pivot.position;
 
     private void OnParabolaMouse(InputAction.CallbackContext context)
     {
+
         controllerParabla = context.ReadValue<Vector2>().normalized;
         parablaRay = new Ray(pivot.position, _camera.ScreenToWorldPoint(Input.mousePosition)-pivot.position);
     }
