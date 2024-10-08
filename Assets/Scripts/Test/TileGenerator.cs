@@ -39,6 +39,12 @@ public class TileGenerator : MonoBehaviour
     {
         if (!IsCameraVisible(center)) { return; }
         
+        if (radius == 0)
+        {
+            tilemap.SetTile(center, tile);
+            return;
+        }
+        
         var bounds = new BoundsInt(center.x - radius, center.y - radius, 0, radius * 2, radius * 2, 1);
         var tileBases = new TileBase[bounds.size.x * bounds.size.y];
 
