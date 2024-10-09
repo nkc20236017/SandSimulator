@@ -6,10 +6,15 @@ using static Codice.Client.BaseCommands.Import.Commit;
 [System.Serializable]
 public class StatusValue
 {
-    [SerializeField]
-    private int baseValue;
 
-    private List<int> modifiers = new List<int>();
+    private readonly int baseValue;
+
+    public StatusValue(int baseValue)
+    {
+        this.baseValue = baseValue;
+    }
+
+    private List<int> modifiers = new ();
 
     public int GetValue()
     {
