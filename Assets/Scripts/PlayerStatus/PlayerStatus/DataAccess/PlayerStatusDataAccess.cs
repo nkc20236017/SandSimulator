@@ -17,14 +17,27 @@ public class PlayerStatusDataAccess : IPlayerStatusRepository
 
     public void SetPlayerData(SetPlayerStatus setPlayerStatus)
     {
-        if (setPlayerStatus.MaxTankCapacity == -1)
+        if (setPlayerStatus.MaxTankCapacity != -1)
         {
-
+            playerDatas.MaxTankCapacity = setPlayerStatus.MaxTankCapacity;
         }
-        else if (setPlayerStatus.MaxHealth == -1)
+
+        if (setPlayerStatus.MaxHealth != -1)
         {
-
+            playerDatas.MaxHealth = setPlayerStatus.MaxHealth;
         }
+
+        if(setPlayerStatus.CurrentTankCapacity != -1)
+        {
+            playerDatas.CurrentTankCapacity = setPlayerStatus.CurrentTankCapacity;
+        }
+
+        if(setPlayerStatus.CurrentHealth != -1)
+        {
+            playerDatas.CurrentHealth = setPlayerStatus.CurrentHealth;
+        }
+
+
     }
 
 }
