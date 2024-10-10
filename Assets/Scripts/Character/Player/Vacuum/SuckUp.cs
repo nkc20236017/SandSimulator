@@ -43,6 +43,7 @@ public class SuckUp : MonoBehaviour
     private ISoundSourceable _soundSource;
     private PlayerHealth playerHealth;
 
+    [SerializeField]
     private Vector3 suckUpPostion;
 
     private string[] seName =
@@ -128,8 +129,9 @@ mouseWorldPosition - pivot.position;
         Vector3 direction = VacuumActions.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
 ? VacuumActions.VacuumPos.ReadValue<Vector2>().normalized :
 mouseWorldPosition - pivot.position;
+        direction.z = 0;
 
-        suckUpPostion = direction;
+        suckUpPostion = direction.normalized;
     }
 
     private void Performed()
