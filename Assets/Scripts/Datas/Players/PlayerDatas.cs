@@ -8,6 +8,10 @@ public class PlayerDatas : ScriptableObject
     public int MaxHealth;
     public int CurrentHealth;
     public int PlayerMoney;
-    public float MaxTankCapacity;
-    public float CurrentTankCapacity;
+    public int MaxTankCapacity;
+    public int CurrentTankCapacity;
+    public float PlayerExpRate;
+    public int CurrentExp;
+    public int BaseExp;
+
 }
