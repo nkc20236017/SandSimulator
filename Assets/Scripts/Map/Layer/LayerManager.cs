@@ -23,6 +23,15 @@ public class LayerManager : MonoBehaviour
     private List<int> _layerList = new();
     private IChunkInformation _chunkInformation;
     
+    /// <summary>
+    /// プレイヤーを設定
+    /// </summary>
+    /// <param name="player">プレイヤー</param>
+    public void SetPlayerTransform(GameObject player)
+    {
+        _playerTransform = player.transform;
+    }
+    
     private void Start()
     {
         _defaultBigLayerPosition = _bigLayer.transform.position;
@@ -30,24 +39,6 @@ public class LayerManager : MonoBehaviour
 
     private void Update()
     {
-        if (_playerTransform == null)
-        {
-            var player = GameObject.FindWithTag("Player");
-            if (player == null) { return; }
-            
-            _playerTransform = player.transform;
-            return;
-        }
-        
-        if (_chunkInformation == null)
-        {
-            var worldMapManager = FindObjectOfType<WorldMapManager>();
-            if (worldMapManager == null) { return; }
-            
-            _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
-            return;
-        }
-        
         var layer = _chunkInformation.GetLayer(_playerTransform.position);
         if (layer == _oldLayer) { return; }
         if (_layerList.Contains(layer)) { return; }
@@ -76,5 +67,11 @@ public class LayerManager : MonoBehaviour
         yield return new WaitForSeconds(_fadeTime);
         
         _bigLayer.transform.DOMoveX(-1000, _fadeTime);
+    }
+
+    private void OnEnable()
+    {
+        var worldMapManager = FindObjectOfType<WorldMapManager>();
+        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
     }
 }
