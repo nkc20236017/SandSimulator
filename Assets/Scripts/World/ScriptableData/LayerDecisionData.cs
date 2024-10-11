@@ -2,7 +2,8 @@ using System.Linq;
 using UnityEngine;
 using WorldCreation;
 
-public class LayerDecisionData
+[CreateAssetMenu(fileName = "New layer decision", menuName = "ScriptableObjects/WorldCreatePrinciple/Decision/Layer")]
+public class LayerDecisionData : ScriptableObject
 {
     [Header("Layer Propertys")]
 

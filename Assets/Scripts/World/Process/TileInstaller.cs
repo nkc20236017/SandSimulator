@@ -5,54 +5,54 @@ using UnityEngine;
 
 namespace WorldCreation
 {
-    public class TileInstaller : IWorldDecidable
+    public class TileInstaller : WorldDecisionerBase
     {
-        private int _executionOrder;
-        public int ExecutionOrder => _executionOrder;
-
-        public void Initalize(GameChunk chunk, WorldCreatePrinciple worldMap, int executionOrder)
+        public override void Initalize(GameChunk gameChunk, WorldCreatePrinciple createPrinciple, ManagedRandom managedRandom)
         {
-            _executionOrder = executionOrder;
+            base.Initalize(gameChunk, createPrinciple, managedRandom);
         }
 
-        async UniTask<GameChunk> IWorldDecidable.Execute(GameChunk chunk, WorldCreatePrinciple worldMap, CancellationToken token)
+        public override async UniTask<GameChunk> Execute(CancellationToken token)
         {
             int limitter = 0;
-            for (int y = 0; y < chunk.GetChunkLength(1); y++)
+            for (int y = 0; y < _gameChunk.Size.y; y++)
             {
-                for (int x = 0; x < chunk.GetChunkLength(0); x++)
+                for (int x = 0; x < _gameChunk.Size.x; x++)
                 {
                     Vector2Int position = new Vector2Int(x, y);
-                    if (chunk.GetBlockID(position) == 0)
-                    {
-                        continue;
-                    }
-                    chunk.TileMap.SetTile
+                    // ブロックが空気だったら飛ばす
+                    int blockID = _gameChunk.GetBlockID(position);
+                    int airIndex = _createPrinciple.Blocks.AirIndex;
+                    if (_gameChunk.GetBlockID(position) == airIndex) { continue; }
+                    _gameChunk.TileMap.SetTile
                     (
                         (Vector3Int)position,
-                        worldMap.Blocks.GetBlock(chunk.GetBlockID(position))
+                        _createPrinciple.Blocks.GetBlock(blockID)
                     );
 
-                    if (chunk.TileMap.GetTile((Vector3Int)position) != null)
+                    if (_gameChunk.TileMap.GetTile((Vector3Int)position) != null)
                     {
-                        chunk.TileMap.SetColor
+                        _gameChunk.TileMap.SetColor
                         (
                             (Vector3Int)position,
-                            worldMap.WorldLayers[chunk.GetLayerIndex(x, y)].LayerColor
+                            _createPrinciple
+                                .LayerDecision.WorldLayers[_gameChunk.GetLayerIndex(x, y)]
+                                .LayerColor
                         );
                     }
 
                     limitter++;
 
-                    if (worldMap.FillLimit < limitter)
+                    if (_createPrinciple.FillLimit < limitter)
                     {
-                        await UniTask.NextFrame(token).SuppressCancellationThrow();
                         limitter = 0;
+                        await UniTask.NextFrame(token).SuppressCancellationThrow();
                     }
                 }
             }
 
-            return await UniTask.RunOnThreadPool(() => chunk);
+            Debug.Log("<color=#00ff00ff>生成終了</color>");
+            return await UniTask.RunOnThreadPool(() => _gameChunk);
         }
     }
 }

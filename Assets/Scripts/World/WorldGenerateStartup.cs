@@ -14,6 +14,8 @@ public class WorldGenerateStartup : MonoBehaviour
     private WorldDecisionerBase[] mainWorldDecisions = new WorldDecisionerBase[]
     {
         new LayerDecisioner(),
+        new CaveDecisioner(),
+        new TileInstaller()
     };
 
     private void Awake()
@@ -31,8 +33,9 @@ public class WorldGenerateStartup : MonoBehaviour
             {
                 // チャンクのタイルマップを生成し、コンポーネントを取得する
                 // TilemapRendererはTilemapをRequireComponentしているためTilemapがあることが保証される
+                Vector3 position = new Vector3(x * chunkSize.x, y * chunkSize.y);
                 Tilemap newChunkTilemap
-                    = Instantiate(chunkTilemapRenderer)
+                    = Instantiate(chunkTilemapRenderer, position, Quaternion.identity)
                     .GetComponent<Tilemap>();
 
                 // ロードに必要なデータを作成する

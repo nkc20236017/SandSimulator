@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+/*using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -67,7 +67,7 @@ namespace WorldCreation
         private IWorldDecidable[] _worldGenerators =
         {
             new LayerDecisioner(),
-            new CaveGenerator(),
+            new CaveDecisioner(),
             // new OreGenerator(),
             // new TempWorldMapCreator(),
             new TileInstaller()
@@ -642,4 +642,4 @@ namespace WorldCreation
             this.gameLoad = gameLoad;
         }
     }
-}
+}*/

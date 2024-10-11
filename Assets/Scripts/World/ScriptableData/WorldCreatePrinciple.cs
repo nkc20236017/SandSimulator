@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace WorldCreation
 {
@@ -13,7 +9,7 @@ namespace WorldCreation
         Box
     }
 
-    [CreateAssetMenu(fileName = "New world map", menuName = "Config/WorldCreatePrinciple")]
+    [CreateAssetMenu(fileName = "New world create principle base", menuName = "ScriptableObjects/WorldCreatePrinciple/Base")]
     public class WorldCreatePrinciple : ScriptableObject
     {
         [Header("standard worldwide")]
@@ -26,30 +22,25 @@ namespace WorldCreation
         [SerializeField]    // 原点をずらす範囲の最大
         private Vector2Int maxOriginGapRange;
         public Vector2Int MaxOriginGapRange => maxOriginGapRange;
-        [SerializeField]    // ランダム値の振れ幅
-        [Range(0f, 1f)]
-        private float borderAmplitude;
-        public float BorderAmplitude => borderAmplitude;
 
         [Header("Principle Properties Data")]
-        [SerializeField]
+        [SerializeField]    // ブロックの情報ScriptableObject
         private EnvironmentBlocks blocks;
         public EnvironmentBlocks Blocks => blocks;
 
-        [SerializeField]
+        [SerializeField]    // 地層の情報ScriptableObject
         private LayerDecisionData layerDecision;
         public LayerDecisionData LayerDecision => layerDecision;
 
+        [SerializeField]    // 洞窟の情報ScriptableObject
+        private CaveDecisionData caveDecision;
+        public CaveDecisionData CaveDecision => caveDecision;
 
         [Space]
-        [SerializeField]
+        [SerializeField]    // ブロックで埋める処理の制限
         private int fillLimit;
         public int FillLimit => fillLimit;
-
-        [SerializeField]
-        private CaveProcedures[] caveCombines;
-        public CaveProcedures[] CaveCombines => caveCombines;
-
+/*
         [SerializeField, Range(0f, 1f)]
         private float turtleChance;
         public float TurtleChance => turtleChance;
@@ -64,6 +55,6 @@ namespace WorldCreation
         public GameObject MolePrefab => molePrefab;
         [SerializeField]
         private int enemySpase;
-        public int EnemySpase => enemySpase;
+        public int EnemySpase => enemySpase;*/
     }
 }

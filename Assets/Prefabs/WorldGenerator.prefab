@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 699861024539554483}
-  - component: {fileID: 6385568336271638583}
+  - component: {fileID: 6742924697948669765}
   m_Layer: 0
   m_Name: WorldGenerator
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6385568336271638583
+--- !u!114 &6742924697948669765
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,24 +41,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 4943378099846280640}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b63645b6f251a784fbb0b4119ff90f0d, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f334ceaf5e8c8340b95d11000eea0b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   seed: 0
-  worldMap: {fileID: 11400000, guid: 3ef1efac4c1edc6408735b2e9a82ab98, type: 2}
-  backgroundWorldMap: {fileID: 11400000, guid: aad68b60adabf7e43b9473f01562dcb8, type: 2}
-  touchLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  tilemapParent: {fileID: 0}
-  tilemapPrefab: {fileID: 4281351336352850513, guid: 1d8ff621e4dfdf241a877aad79dc3ee6, type: 3}
-  worldMapManagerPrefab: {fileID: 4864080701464837153, guid: 7aebf57b1f0fa864aaad27561cc167ae, type: 3}
-  entoryPoint: {fileID: 0}
-  orePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
-  startObject: {fileID: 0}
-  updateTilemapPrefab: {fileID: 2011397941330123504, guid: 1c0d188cd27f0a74f869f1055bfbbdb2, type: 3}
-  playerPrefab: {fileID: 136167499057178077, guid: ef78aa1a1ed5fb24b8322613b684933d, type: 3}
-  startPosition: {x: 300, y: 300}
-  goalObject: {fileID: 0}
-  goalPosition: {x: 0, y: 0}
-  structureRadius: 5
+  mainWorldCreatePrinciple: {fileID: 11400000, guid: 3ef1efac4c1edc6408735b2e9a82ab98, type: 2}

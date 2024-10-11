@@ -10,25 +10,25 @@ namespace WorldCreation
         [SerializeField]    // ノイズの大きさ
         private Vector2 scale;
         public Vector2 Scale => scale;
-        [SerializeField]    // 塊となる場所の大きさ
+        [SerializeField]    // 塊の閾値
         [Range(0, 1)]
-        private float lumpSize;
-        public float LumpSize => lumpSize;
-        [SerializeField]    // 
+        private float lumpThreshold;
+        public float LumpThreshold => lumpThreshold;
+        [SerializeField]    // 反転する閾値
         [Range(0, 1)]
-        private float hollowSize;
-        public float HollowSize => hollowSize;
+        private float hollowThreshold;
+        public float HollowThreshold => hollowThreshold;
         [SerializeField]    // 設置されているかに関わらず上書きする
         private bool isOrverride;
         public bool IsOrverride => isOrverride;
         [SerializeField]    // ブロックで埋めるようにする
         private bool isBackfill;
         public bool IsBackfill => isBackfill;
-        [SerializeField]
+        [SerializeField]    // 適用範囲の反転をする
         private bool isInvert;
         public bool IsInvert => isInvert;
-        [SerializeField]    // タイルマップのID
-        private TileBase backfillTileID;
-        public TileBase BackfillTileID => backfillTileID;
+        [SerializeField]    // タイル
+        private TileBase backfillTile;
+        public TileBase BackfillTile => backfillTile;
     }
 }

@@ -9,12 +9,15 @@ public class WorldGenerator : MonoBehaviour
 {
     [SerializeField]    // シード値
     private int seed;
-    [SerializeField]    // ワールド
-    private WorldCreatePrinciple mainWorldCreatePrinciple;
 
     // チャンクの情報を保持しておく辞書型
     private Dictionary<Vector2Int, GameChunk> _gameChunkDictionary = new();
     private CancellationTokenSource _tokenSource;
+
+    private void Start()
+    {
+        seed = (int)UnityEngine.Random.Range(float.MinValue, float.MaxValue);
+    }
 
     public async void ChunksLoad(GameChunk gameChunk, WorldCreatePrinciple worldCreatePrinciple, WorldDecisionerBase[] worldDecidables)
     {
@@ -35,6 +38,6 @@ public class WorldGenerator : MonoBehaviour
         }
 
         // ゲームオブジェクトを設置する
-        
+
     }
 }
