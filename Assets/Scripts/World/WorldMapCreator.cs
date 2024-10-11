@@ -223,8 +223,9 @@ namespace WorldCreation
             StructureGenerate();
 
             GameObject worldMapManager = Instantiate(worldMapManagerPrefab, sceneParent);
-            IWorldMapManager manager = worldMapManager.GetComponent<IWorldMapManager>();
-            manager.Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
+            WorldMapManager manager = worldMapManager.GetComponent<WorldMapManager>();
+            IWorldMapManager worldManager = manager;
+            worldManager.Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
 
             Debug.Log($"<color=#ffff00ff>WorldMapManager‚Ì¶¬Š®—¹</color>");
 
