@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class CursorManager : MonoBehaviour, ICursorable
+public class CursorManager : MonoBehaviour, ICursorSettable
 {
 	[Header("Cursor Config")]
 	[SerializeField] private Cursor cursor;
