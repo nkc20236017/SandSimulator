@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using NaughtyAttributes;
-using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 {
 	[Header("Movement Config")]
 	[SerializeField] private float speed;
@@ -255,15 +254,17 @@ public class PlayerMovement : MonoBehaviour
 	private void OnEnable()
 	{
 		_playerActions.Enable();
-		
-		var worldMapManager = FindObjectOfType<WorldMapManager>();
-		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
-		
-		_camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 	}
 	
 	private void OnDisable()
 	{
 		_playerActions.Disable();
+	}
+
+	public void OnGenerated(IChunkInformation worldMapManager)
+	{
+		_chunkInformation = worldMapManager;
+		
+		_camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 	}
 }

@@ -6,8 +6,6 @@ public class DecisionFindTarget : FsmDecision
 	[SerializeField] private float _radius;
 	[SerializeField] private LayerMask _targetLayerMask;
 	
-	private EnemyBrain _enemyBrain;
-	
 	public override bool Decide()
 	{
 		return FindTarget();
@@ -17,11 +15,6 @@ public class DecisionFindTarget : FsmDecision
 	{
 		var colliders = Physics2D.OverlapCircle(transform.position, _radius, _targetLayerMask);
 		return colliders != null;
-	}
-	
-	private void OnEnable()
-	{
-		_enemyBrain = GetComponent<EnemyBrain>();
 	}
 	
 	private void OnDrawGizmosSelected()

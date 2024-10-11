@@ -6,7 +6,7 @@ using NaughtyAttributes;
 using Random = UnityEngine.Random;
 using UnityEngine.InputSystem;
 
-public class BlowOut : MonoBehaviour
+public class BlowOut : MonoBehaviour, IWorldGenerateWaitable
 {
     [Header("Tile Config")]
     [SerializeField] private BlockDatas blockDatas;
@@ -397,19 +397,21 @@ mouseWorldPosition - pivot.position;
     private void OnEnable()
     {
         _playerActions.Enable();
-        
-        var worldMapManager = FindObjectOfType<WorldMapManager>();
-        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+    }
+
+    private void OnDisable()
+    {
+        _playerActions.Disable();
+    }
+
+    public void OnGenerated(IChunkInformation worldMapManager)
+    {
+        _chunkInformation = worldMapManager;
         
         var soundSource = FindObjectOfType<SoundSource>();
         _soundSource = soundSource.GetComponent<ISoundSourceable>();
         _soundSource.SetInstantiation("BlowOut");
         
         _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
-    }
-
-    private void OnDisable()
-    {
-        _playerActions.Disable();
     }
 }

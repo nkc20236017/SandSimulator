@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class SuckUp : MonoBehaviour
+public class SuckUp : MonoBehaviour, IWorldGenerateWaitable
 {
     [Header("Tile Config")]
     [SerializeField] private BlockDatas blockDatas;
@@ -433,19 +432,21 @@ mouseWorldPosition - pivot.position;
     private void OnEnable()
     {
         _playerActions.Enable();
+    }
 
-        var worldMapManager = FindObjectOfType<WorldMapManager>();
-        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+    private void OnDisable()
+    {
+        _playerActions.Disable();
+    }
+
+    public void OnGenerated(IChunkInformation worldMapManager)
+    {
+        _chunkInformation = worldMapManager;
 
         var soundSource = FindObjectOfType<SoundSource>();
         _soundSource = soundSource.GetComponent<ISoundSourceable>();
         _soundSource.SetInstantiation("SuckUp");
 
         _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
-    }
-
-    private void OnDisable()
-    {
-        _playerActions.Disable();
     }
 }

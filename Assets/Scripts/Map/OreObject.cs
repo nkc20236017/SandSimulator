@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class OreObject : MonoBehaviour, IDamageable
+public class OreObject : MonoBehaviour, IDamageable, IWorldGenerateWaitable
 {
     [Header("Datas Config")]
     [SerializeField] private BlockDatas blockDatas;
@@ -127,11 +127,10 @@ public class OreObject : MonoBehaviour, IDamageable
         effectObj.GetComponent<ParticleSystemRenderer>().material = Ore.material;
         Destroy(gameObject);
     }
-    
-    private void OnEnable()
+
+    public void OnGenerated(IChunkInformation worldMapManager)
     {
-        var worldMapManager = FindObjectOfType<WorldMapManager>();
-        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        _chunkInformation = worldMapManager;
         
         var soundSource = FindObjectOfType<SoundSource>();
         _soundSource = soundSource.GetComponent<ISoundSourceable>();

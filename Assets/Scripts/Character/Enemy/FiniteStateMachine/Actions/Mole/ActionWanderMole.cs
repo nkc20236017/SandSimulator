@@ -2,7 +2,7 @@
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
 
-public class ActionWanderMole : FsmAction
+public class ActionWanderMole : FsmAction, IWorldGenerateWaitable
 {
 	[Header("Wander Config")]
 	[SerializeField, MinMaxSlider(0f, 60f)] private Vector2 _wanderTime;
@@ -96,12 +96,10 @@ public class ActionWanderMole : FsmAction
 		Gizmos.DrawWireSphere(_movePosition, 2.5f);
     }
 
-    private void OnEnable()
+	public void OnGenerated(IChunkInformation worldMapManager)
 	{
-		var worldMapManager = FindObjectOfType<WorldMapManager>();
-		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+		_chunkInformation = worldMapManager;
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();
 	}
 }
-

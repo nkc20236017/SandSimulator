@@ -2,7 +2,7 @@
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
 
-public class ActionWanderTurtle : FsmAction
+public class ActionWanderTurtle : FsmAction, IWorldGenerateWaitable
 {
 	[Header("Datas Config")]
 	[SerializeField] private LayerMask groundLayerMask;
@@ -204,11 +204,9 @@ public class ActionWanderTurtle : FsmAction
 		_rigidbody2D.velocity = new Vector2(_moveDirection.x * _enemyBrain.Status.speed, _rigidbody2D.velocity.y);
 	}
 
-	private void OnEnable()
+	public void OnGenerated(IChunkInformation worldMapManager)
 	{
-		var worldMapManager = FindObjectOfType<WorldMapManager>();
-		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
-		
+		_chunkInformation = worldMapManager;
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();

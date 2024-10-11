@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using NaughtyAttributes;
 
-public class ActionAttackTurtle : FsmAction
+public class ActionAttackTurtle : FsmAction, IWorldGenerateWaitable
 {
 	[Header("Auto Jump Config")]
 	[SerializeField] private bool autoJump;
@@ -117,10 +117,9 @@ public class ActionAttackTurtle : FsmAction
 		return false;
 	}
 
-	private void OnEnable()
+	public void OnGenerated(IChunkInformation worldMapManager)
 	{
-		var worldMapManager = FindObjectOfType<WorldMapManager>();
-		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+		_chunkInformation = worldMapManager;
 		
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();

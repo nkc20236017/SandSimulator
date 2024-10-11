@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class DecisionAttackTarget : FsmDecision
+public class DecisionAttackTarget : FsmDecision, IWorldGenerateWaitable
 {
 	[Header("Decision Attack Target")]
 	[SerializeField] private bool checkWall;
@@ -71,10 +71,9 @@ public class DecisionAttackTarget : FsmDecision
 		return false;
 	}
 
-	private void OnEnable()
+	public void OnGenerated(IChunkInformation worldMapManager)
 	{
-		var worldMapManager = FindObjectOfType<WorldMapManager>();
-		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+		_chunkInformation = worldMapManager;
 		
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();

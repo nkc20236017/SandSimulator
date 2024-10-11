@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class LayerManager : MonoBehaviour
+public class LayerManager : MonoBehaviour, IWorldGenerateWaitable
 {
     [Header("Layer Text Config")]
     [SerializeField] private Layer _layer;
@@ -22,15 +22,6 @@ public class LayerManager : MonoBehaviour
     private Coroutine _coroutine;
     private List<int> _layerList = new();
     private IChunkInformation _chunkInformation;
-    
-    /// <summary>
-    /// プレイヤーを設定
-    /// </summary>
-    /// <param name="player">プレイヤー</param>
-    public void SetPlayerTransform(GameObject player)
-    {
-        _playerTransform = player.transform;
-    }
     
     private void Start()
     {
@@ -69,9 +60,9 @@ public class LayerManager : MonoBehaviour
         _bigLayer.transform.DOMoveX(-1000, _fadeTime);
     }
 
-    private void OnEnable()
+    public void OnGenerated(IChunkInformation worldMapManager)
     {
-        var worldMapManager = FindObjectOfType<WorldMapManager>();
-        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        _chunkInformation = worldMapManager;
+        _playerTransform = GameObject.FindWithTag("Player").transform;
     }
 }

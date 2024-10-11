@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-public class Digging : MonoBehaviour
+public class Digging : MonoBehaviour, IWorldGenerateWaitable
 {
 	[Header("Digging Config")]
 	[SerializeField] private BlockDatas _blockDatas;
@@ -37,16 +37,15 @@ public class Digging : MonoBehaviour
 			tilemap.SetTile(localPosition, null);
 		}
 	}
-
-	private void OnEnable()
-	{
-		var worldMapManager = FindObjectOfType<WorldMapManager>();
-		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
-	}
 	
 	private void OnDrawGizmos()
 	{
 		Gizmos.color = Color.cyan;
 		Gizmos.DrawWireSphere(transform.position, _radius);
+	}
+
+	public void OnGenerated(IChunkInformation worldMapManager)
+	{
+		_chunkInformation = worldMapManager;
 	}
 }

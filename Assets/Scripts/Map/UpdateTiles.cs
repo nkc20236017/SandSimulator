@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class UpdateTile : MonoBehaviour
+public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
 {
     [Header("Datas Config")]
     [SerializeField] private BlockDatas blockDatas;
@@ -376,10 +376,9 @@ public class UpdateTile : MonoBehaviour
         _updateTilemap.color = color;
     }
 
-    private void OnEnable()
+    public void OnGenerated(IChunkInformation worldMapManager)
     {
-        var worldMapManager = FindObjectOfType<WorldMapManager>();
-        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        _chunkInformation = worldMapManager;
         _updateTilemap = GetComponent<Tilemap>();
         blockDatas.Block.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
     }

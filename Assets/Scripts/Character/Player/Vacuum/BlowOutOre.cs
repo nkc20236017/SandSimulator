@@ -17,8 +17,7 @@ public class BlowOutOre : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer _spriteRenderer;
     private ISoundSourceable _soundSource;
-
-
+    
     private void Awake()
     {
         var soundSource = FindObjectOfType<SoundSource>();
