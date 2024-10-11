@@ -1,4 +1,4 @@
 public interface IWorldGenerateWaitable
 {
-    public void OnGenerated(IWorldMapManager worldMapManager);
+    public void OnGenerated(IChunkInformation worldMapManager);
 }
