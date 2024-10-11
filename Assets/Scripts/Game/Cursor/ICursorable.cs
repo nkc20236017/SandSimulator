@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public interface ICursorable
+public interface ICursorSettable
 {
 	/// <summary>
 	/// カーソルを設定
