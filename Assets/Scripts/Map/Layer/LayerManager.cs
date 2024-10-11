@@ -30,6 +30,8 @@ public class LayerManager : MonoBehaviour, IWorldGenerateWaitable
 
     private void Update()
     {
+        if (_chunkInformation == null) { return; }
+        
         var layer = _chunkInformation.GetLayer(_playerTransform.position);
         if (layer == _oldLayer) { return; }
         if (_layerList.Contains(layer)) { return; }

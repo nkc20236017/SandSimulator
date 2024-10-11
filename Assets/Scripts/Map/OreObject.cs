@@ -77,6 +77,8 @@ public class OreObject : MonoBehaviour, IDamageable, IWorldGenerateWaitable
         _isChild = true;
         CanSuckUp = true;
         _currentEndurance = 0;
+        
+        if (_rigidbody2D == null) { _rigidbody2D = GetComponent<Rigidbody2D>(); }
         _rigidbody2D.isKinematic = false;
     }
 
@@ -98,6 +100,8 @@ public class OreObject : MonoBehaviour, IDamageable, IWorldGenerateWaitable
         if (_currentEndurance > 0) { return; }
 
         CanSuckUp = true;
+        
+        if (_rigidbody2D == null) { _rigidbody2D = GetComponent<Rigidbody2D>(); }
         _rigidbody2D.isKinematic = false; 
     }
     

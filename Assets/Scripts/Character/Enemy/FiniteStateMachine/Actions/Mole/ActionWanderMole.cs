@@ -2,7 +2,7 @@
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
 
-public class ActionWanderMole : FsmAction, IWorldGenerateWaitable
+public class ActionWanderMole : FsmAction
 {
 	[Header("Wander Config")]
 	[SerializeField, MinMaxSlider(0f, 60f)] private Vector2 _wanderTime;
@@ -14,7 +14,6 @@ public class ActionWanderMole : FsmAction, IWorldGenerateWaitable
 	private Vector3 _movePosition;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
-	private IChunkInformation _chunkInformation;
 	
 	private void Start()
 	{
@@ -80,7 +79,7 @@ public class ActionWanderMole : FsmAction, IWorldGenerateWaitable
     private bool IsTilemap(Vector3 position)
     {
         // マップがあるかどうか調べる
-		var mapTilemap = _chunkInformation.GetChunkTilemap(position);
+		var mapTilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(position);
 		return mapTilemap != null;
     }
 
@@ -96,10 +95,9 @@ public class ActionWanderMole : FsmAction, IWorldGenerateWaitable
 		Gizmos.DrawWireSphere(_movePosition, 2.5f);
     }
 
-	public void OnGenerated(IChunkInformation worldMapManager)
-	{
-		_chunkInformation = worldMapManager;
-		_rigidbody2D = GetComponent<Rigidbody2D>();
-		_enemyBrain = GetComponent<EnemyBrain>();
-	}
+    private void OnEnable()
+    {
+	    _rigidbody2D = GetComponent<Rigidbody2D>();
+	    _enemyBrain = GetComponent<EnemyBrain>();
+    }
 }

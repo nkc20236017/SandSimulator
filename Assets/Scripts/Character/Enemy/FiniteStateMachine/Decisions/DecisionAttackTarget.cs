@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class DecisionAttackTarget : FsmDecision, IWorldGenerateWaitable
+public class DecisionAttackTarget : FsmDecision
 {
 	[Header("Decision Attack Target")]
 	[SerializeField] private bool checkWall;
@@ -10,7 +10,6 @@ public class DecisionAttackTarget : FsmDecision, IWorldGenerateWaitable
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
-	private IChunkInformation _chunkInformation;
 	
 	public override bool Decide()
 	{
@@ -59,10 +58,10 @@ public class DecisionAttackTarget : FsmDecision, IWorldGenerateWaitable
 		for (var y = minY + 1; y <= maxY; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
-			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			var tilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(position);
 			if (tilemap == null) { return true; }
 
-			var localPosition = _chunkInformation.WorldToChunk(position);
+			var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(localPosition)) { continue; }
 			
 			return true;
@@ -71,10 +70,8 @@ public class DecisionAttackTarget : FsmDecision, IWorldGenerateWaitable
 		return false;
 	}
 
-	public void OnGenerated(IChunkInformation worldMapManager)
+	private void OnEnable()
 	{
-		_chunkInformation = worldMapManager;
-		
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();

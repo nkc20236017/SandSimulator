@@ -2,7 +2,7 @@
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
 
-public class ActionWanderTurtle : FsmAction, IWorldGenerateWaitable
+public class ActionWanderTurtle : FsmAction
 {
 	[Header("Datas Config")]
 	[SerializeField] private LayerMask groundLayerMask;
@@ -34,7 +34,6 @@ public class ActionWanderTurtle : FsmAction, IWorldGenerateWaitable
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
-	private IChunkInformation _chunkInformation;
 
 	private void Start()
 	{
@@ -85,13 +84,13 @@ public class ActionWanderTurtle : FsmAction, IWorldGenerateWaitable
 		for (var y = 1; y <= autoJumpHeight; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
-			var tilemap = _chunkInformation.GetChunkTilemap(position);
-			var tilemap2 = _chunkInformation.GetChunkTilemap(position + Vector2.up);
+			var tilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(position);
+			var tilemap2 = _enemyBrain.ChunkInformation.GetChunkTilemap(position + Vector2.up);
 			if (tilemap == null) { continue; }
 			if (tilemap2 == null) { continue; }
 			
-			var localPosition = _chunkInformation.WorldToChunk(position);
-			var localPosition2 = _chunkInformation.WorldToChunk(position + Vector2.up);
+			var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(position);
+			var localPosition2 = _enemyBrain.ChunkInformation.WorldToChunk(position + Vector2.up);
 			if (!tilemap.HasTile(localPosition) || tilemap2.HasTile(localPosition2)) { continue; }
 
 			if (IsWall(y) || IsHeavenly(y))
@@ -137,10 +136,10 @@ public class ActionWanderTurtle : FsmAction, IWorldGenerateWaitable
 		for (var y = minY + 1; y <= maxY; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
-			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			var tilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(position);
 			if (tilemap == null) { return true; }
 			
-			var localPosition = _chunkInformation.WorldToChunk(position);
+			var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(localPosition)) { continue; }
 			
 			return true;
@@ -158,10 +157,10 @@ public class ActionWanderTurtle : FsmAction, IWorldGenerateWaitable
 			for (var x = minX; x <= maxX; x++)
 			{
 				var position = new Vector2(x, _boxCollider2D.bounds.max.y + y);
-				var tilemap = _chunkInformation.GetChunkTilemap(position);
+				var tilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(position);
 				if (tilemap == null) { continue; }
 				
-				var localPosition = _chunkInformation.WorldToChunk(position);
+				var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(position);
 				if (!tilemap.HasTile(localPosition)) { continue; }
 
 				return true;
@@ -189,8 +188,8 @@ public class ActionWanderTurtle : FsmAction, IWorldGenerateWaitable
 			for (var x = 0; x < _boxCollider2D.size.x; x++)
 			{
 				Debug.DrawLine(minPosition + new Vector2(x, y), minPosition + new Vector2(x, y) + Vector2.down * 0.1f, Color.yellow);
-				var localPosition = _chunkInformation.WorldToChunk(new Vector2(minPosition.x + x, minPosition.y + y));
-				var localTilemap = _chunkInformation.GetChunkTilemap(new Vector2(minPosition.x + x, minPosition.y + y));
+				var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(new Vector2(minPosition.x + x, minPosition.y + y));
+				var localTilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(new Vector2(minPosition.x + x, minPosition.y + y));
 				if (localTilemap == null) { continue; }
 				if (localTilemap.HasTile(localPosition)) { return false; }
 			}
@@ -204,9 +203,8 @@ public class ActionWanderTurtle : FsmAction, IWorldGenerateWaitable
 		_rigidbody2D.velocity = new Vector2(_moveDirection.x * _enemyBrain.Status.speed, _rigidbody2D.velocity.y);
 	}
 
-	public void OnGenerated(IChunkInformation worldMapManager)
+	private void OnEnable()
 	{
-		_chunkInformation = worldMapManager;
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-public class EnemyBrain : MonoBehaviour
+public class EnemyBrain : MonoBehaviour, IWorldGenerateWaitable
 {
 	[Header("Enemy Config")]
 	[SerializeField] private Enemy enemy;
@@ -16,6 +16,7 @@ public class EnemyBrain : MonoBehaviour
 	public EnemyStatus Status { get; private set; }
 	public Transform Target { get; set; }
 	public Vector3 TargetPosition { get; set; }
+	public IChunkInformation ChunkInformation { get; private set; }
 
 	private void Awake()
 	{
@@ -48,5 +49,10 @@ public class EnemyBrain : MonoBehaviour
 	private FsmState GetState(string newStateID)
 	{
 		return states.FirstOrDefault(state => state.ID == newStateID);
+	}
+
+	public void OnGenerated(IChunkInformation worldMapManager)
+	{
+		ChunkInformation = worldMapManager;
 	}
 }

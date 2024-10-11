@@ -30,10 +30,10 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 	private SpriteRenderer _spriteRenderer;
 	private Camera _camera;
 	private PlayerActions _playerActions;
-	private IChunkInformation _chunkInformation;
 
 	public bool CanMove { get; set; } = true;
 	public bool IsMoveFlip { get; set; } = true;
+	public IChunkInformation ChunkInformation { get; private set; }
 	private PlayerActions.MovementActions MovementActions => _playerActions.Movement;
 
 	private void Awake()
@@ -119,10 +119,10 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 		for (var y = 1; y <= autoJumpHeight; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
-			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			var tilemap = ChunkInformation.GetChunkTilemap(position);
 			if (tilemap == null) { continue; }
 			
-			var cellPosition = _chunkInformation.WorldToChunk(position);
+			var cellPosition = ChunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(cellPosition) || tilemap.HasTile(cellPosition + Vector3Int.up)) { continue; }
 
 			if (IsWall(y) || IsHeavenly(y))
@@ -158,10 +158,10 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 		for (var y = minY + 1; y <= maxY; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
-			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			var tilemap = ChunkInformation.GetChunkTilemap(position);
 			if (tilemap == null) { return true; }
 			
-			var cellPosition = _chunkInformation.WorldToChunk(position);
+			var cellPosition = ChunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(cellPosition)) { continue; }
 			
 			return true;
@@ -179,10 +179,10 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 			for (var x = minX; x <= maxX; x++)
 			{
 				var position = new Vector2(x, _boxCollider2D.bounds.max.y + y);
-				var tilemap = _chunkInformation.GetChunkTilemap(position);
+				var tilemap = ChunkInformation.GetChunkTilemap(position);
 				if (tilemap == null) { continue; }
 				
-				var cellPosition = _chunkInformation.WorldToChunk(position);
+				var cellPosition = ChunkInformation.WorldToChunk(position);
 				if (!tilemap.HasTile(cellPosition)) { continue; }
 
 				return true;
@@ -263,7 +263,7 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 
 	public void OnGenerated(IChunkInformation worldMapManager)
 	{
-		_chunkInformation = worldMapManager;
+		ChunkInformation = worldMapManager;
 		
 		_camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 	}

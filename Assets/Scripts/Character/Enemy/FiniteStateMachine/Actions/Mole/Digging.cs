@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-public class Digging : MonoBehaviour, IWorldGenerateWaitable
+public class Digging : MonoBehaviour
 {
 	[Header("Digging Config")]
 	[SerializeField] private BlockDatas _blockDatas;
@@ -10,7 +10,7 @@ public class Digging : MonoBehaviour, IWorldGenerateWaitable
 	
 	private int _numberExecutions;
 	private float _timer;
-	private IChunkInformation _chunkInformation;
+	private EnemyBrain _enemyBrain;
 
 	private void Update()
 	{
@@ -25,10 +25,10 @@ public class Digging : MonoBehaviour, IWorldGenerateWaitable
 			var distance = Vector3.Distance(transform.position, position);
 			if (distance > _radius) { continue; }
 			
-			var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
+			var tilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
 			if (tilemap == null) { continue; }
 			
-			var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+			var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(new Vector2(position.x, position.y));
 			if (!tilemap.HasTile(localPosition)) { continue; }
 			var tile = tilemap.GetTile(localPosition);
 			var isContinue = _blockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
@@ -44,8 +44,8 @@ public class Digging : MonoBehaviour, IWorldGenerateWaitable
 		Gizmos.DrawWireSphere(transform.position, _radius);
 	}
 
-	public void OnGenerated(IChunkInformation worldMapManager)
+	private void OnEnable()
 	{
-		_chunkInformation = worldMapManager;
+		_enemyBrain = GetComponent<EnemyBrain>();
 	}
 }
