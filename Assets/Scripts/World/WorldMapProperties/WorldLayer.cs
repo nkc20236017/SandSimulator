@@ -11,8 +11,8 @@ namespace WorldCreation
         private Color layerColor;
         public Color LayerColor => layerColor;
         [SerializeField]    // ‚±‚Ì’n‘w‚ð\¬‚·‚éÞŽ¿
-        private TileBase materialTileID;
-        public TileBase MaterialTile => materialTileID;
+        private TileBase materialTile;
+        public TileBase MaterialTile => materialTile;
         [SerializeField]    // ‚±‚Ì’n‘w‚É¶¬‚³‚ê‚ézÎ
         private PrimevalOre[] primevalOres;
         public PrimevalOre[] PrimevalOres => primevalOres;

@@ -38,7 +38,7 @@ namespace WorldCreation.Preview
             {
                 Gizmos.color = Color.red;
             }
-            if (worldMap.MinOriginGapRange.x + worldMap.WorldSize.x < 0 || worldMap.MinOriginGapRange.y + worldMap.WorldSize.y < 0)
+            if (worldMap.MinOriginGapRange.x + worldMap.WorldSplidCount.x < 0 || worldMap.MinOriginGapRange.y + worldMap.WorldSplidCount.y < 0)
             {
                 Gizmos.color = Color.red;
             }
@@ -46,7 +46,7 @@ namespace WorldCreation.Preview
             {
                 Gizmos.color = Color.red;
             }
-            if (worldMap.MaxOriginGapRange.x + worldMap.WorldSize.x < 0 || worldMap.MaxOriginGapRange.y + worldMap.WorldSize.y < 0)
+            if (worldMap.MaxOriginGapRange.x + worldMap.WorldSplidCount.x < 0 || worldMap.MaxOriginGapRange.y + worldMap.WorldSplidCount.y < 0)
             {
                 Gizmos.color = Color.red;
             }

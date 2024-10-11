@@ -46,13 +46,13 @@ namespace WorldCreation.Preview
 
         private void CreateLumpFrame()
         {
-            int[,] lumpIndexes = new int[worldMap.WorldSize.x, worldMap.WorldSize.y];
-            noise = _randomization.Order(10, 0, Int16.MaxValue);
+            int[,] lumpIndexes = new int[worldMap.WorldSplidCount.x, worldMap.WorldSplidCount.y];
+            noise = _randomization.OrderInt(10, 0, Int16.MaxValue);
             bool isInsideLumpOld = false;
 
-            for (int y = 0; y < worldMap.WorldSize.y; y++)
+            for (int y = 0; y < worldMap.WorldSplidCount.y; y++)
             {
-                for (int x = 0; x < worldMap.WorldSize.x; x++)
+                for (int x = 0; x < worldMap.WorldSplidCount.x; x++)
                 {
                     if (IsLump(x, y) && !isInsideLumpOld)
                     {
@@ -115,7 +115,7 @@ namespace WorldCreation.Preview
 
         private bool IsLump(int x, int y)
         {
-            if (worldMap.WorldSize.x < x || worldMap.WorldSize.y < y) { return false; }
+            if (worldMap.WorldSplidCount.x < x || worldMap.WorldSplidCount.y < y) { return false; }
             for (int i = 0; i < worldMap.CaveCombines.Length; i++)
             {
                 float noisePower = Mathf.PerlinNoise
@@ -136,8 +136,8 @@ namespace WorldCreation.Preview
         private void CheckSameLump(int x, int y, int[,] lumpIndexes)
         {
             // ”ÍˆÍŠO‚È‚çˆ—‚ð‚µ‚È‚¢
-            bool isInsideRangeX = 0 <= x && x < worldMap.WorldSize.x;
-            bool isInsideRangeY = 0 <= y && y < worldMap.WorldSize.y;
+            bool isInsideRangeX = 0 <= x && x < worldMap.WorldSplidCount.x;
+            bool isInsideRangeY = 0 <= y && y < worldMap.WorldSplidCount.y;
             if (!(isInsideRangeX && isInsideRangeY)) { return; }
             // ‘ÎÛ‚ª‰ò‚Å‚È‚¯‚ê‚Îˆ—‚ð‚µ‚È‚¢
             if (lumpIndexes[x, y] == -1) { return; }

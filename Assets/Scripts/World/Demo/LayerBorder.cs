@@ -9,7 +9,7 @@ namespace WorldCreation.Preview
     {
         public void LayerBorderView()
         {
-            int layerHeight = worldMap.WorldSize.y;
+            int layerHeight = worldMap.WorldSplidCount.y;
             for (int i = 0; i < worldMap.LayerRatios.Length; i++)
             {
                 layerHeight -= (int)(layerHeight * worldMap.LayerRatios[i]);
@@ -28,21 +28,21 @@ namespace WorldCreation.Preview
                 Gizmos.DrawLine
                 (
                     new(0, layerHeight + worldMap.BorderDistortionPower),
-                    new(worldMap.WorldSize.x, layerHeight + worldMap.BorderDistortionPower)
+                    new(worldMap.WorldSplidCount.x, layerHeight + worldMap.BorderDistortionPower)
                 );
                 Gizmos.DrawLine
                 (
                     new(0, layerHeight),
-                    new(worldMap.WorldSize.x, layerHeight)
+                    new(worldMap.WorldSplidCount.x, layerHeight)
                 );
             }
         }
 
         public Vector2Int[] GetBorder(int altitude, int layerCount)
         {
-            Vector2Int[] borders = new Vector2Int[worldMap.WorldSize.x];
-            int noise = _randomization.Order(layerCount + 2, 0, Int16.MaxValue);
-            for (int x = 0; x < worldMap.WorldSize.x; x++)
+            Vector2Int[] borders = new Vector2Int[worldMap.WorldSplidCount.x];
+            int noise = _randomization.OrderInt(layerCount + 2, 0, Int16.MaxValue);
+            for (int x = 0; x < worldMap.WorldSplidCount.x; x++)
             {
                 int border = (int)(Mathf.PerlinNoise1D
                 (

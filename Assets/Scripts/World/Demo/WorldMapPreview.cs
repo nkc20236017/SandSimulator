@@ -12,14 +12,14 @@ namespace WorldCreation.Preview
     public partial class WorldMapPreview : MonoBehaviour
     {
         [SerializeField]    // プレビューを表示する対象データ
-        private WorldMap worldMap;
+        private WorldCreatePrinciple worldMap;
         [SerializeField]
         private UnityEvent previewAlways;
         [SerializeField]
         private UnityEvent previewSelected;
 
         private ManagedRandom _randomization;
-        private LayerGenerator _layerGenerator;
+        private LayerDecisioner _layerGenerator;
         private const float GUIDELINE_ALPHA = 0.25f;
         private Vector3 _tilemapOrigin;
         private List<List<Vector2Int>> lumpFrames;

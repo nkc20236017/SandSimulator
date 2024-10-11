@@ -14,11 +14,11 @@ namespace WorldCreation
         private int seed;   // シード値
         public int Seed => seed;
         [SerializeField]
-        private WorldMap worldMap;
+        private WorldCreatePrinciple worldMap;
         [SerializeField]
         private Transform sceneParent;
         [SerializeField]
-        private WorldMap backgroundWorldMap;
+        private WorldCreatePrinciple backgroundWorldMap;
         [SerializeField]
         private LayerMask touchLayer;
         [SerializeField]
@@ -55,27 +55,27 @@ namespace WorldCreation
         private int structureRadius;
 
         private bool _isQuitting;
-        private LayerGenerator _layer;
+        private LayerDecisioner _layer;
         private CancellationTokenSource _cancelTokenSource;
         private List<GameObject> activeStanbyObject = new();
         private Vector2 _tilemapOrigin;
         private ManagedRandom _randomization;
-        private Chunk[,] _chunks;
-        private Chunk[,] _backgroundChunks;
+        private GameChunk[,] _chunks;
+        private GameChunk[,] _backgroundChunks;
         private IInputTank inputTank;
         private IGameLoad gameLoad;
-        private IWorldGeneratable[] _worldGenerators =
+        private IWorldDecidable[] _worldGenerators =
         {
-            new LayerGenerator(),
+            new LayerDecisioner(),
             new CaveGenerator(),
             // new OreGenerator(),
             // new TempWorldMapCreator(),
-            new ChunkLoader()
+            new TileInstaller()
         };
-        private IWorldGeneratable[] _backgroundGenerators =
+        private IWorldDecidable[] _backgroundGenerators =
         {
-            new LayerGenerator(),
-            new ChunkLoader()
+            new LayerDecisioner(),
+            new TileInstaller()
         };
 
         Vector2[] directions =
@@ -122,18 +122,18 @@ namespace WorldCreation
             // チャンクアレイの範囲を決める
             Vector2Int split = new Vector2Int
             (
-                worldMap.WorldSize.x / worldMap.OneChunkSize.x,
-                worldMap.WorldSize.y / worldMap.OneChunkSize.y
+                worldMap.WorldSplidCount.x / worldMap.OneChunkSize.x,
+                worldMap.WorldSplidCount.y / worldMap.OneChunkSize.y
             );
 
-            _chunks = new Chunk[split.x, split.y];
-            _backgroundChunks = new Chunk[split.x, split.y];
+            _chunks = new GameChunk[split.x, split.y];
+            _backgroundChunks = new GameChunk[split.x, split.y];
 
             // チャンクの生成原点を取得
             Vector2 origin = new
             (
-                _randomization.Range(worldMap.MinOriginGapRange.x, worldMap.MaxOriginGapRange.x),
-                _randomization.Range(worldMap.MinOriginGapRange.y, worldMap.MaxOriginGapRange.y)
+                _randomization.NextInt(worldMap.MinOriginGapRange.x, worldMap.MaxOriginGapRange.x),
+                _randomization.NextInt(worldMap.MinOriginGapRange.y, worldMap.MaxOriginGapRange.y)
             );
             _tilemapOrigin = origin;
 
@@ -146,7 +146,7 @@ namespace WorldCreation
                     GameObject tilemap = Instantiate(tilemapPrefab, origin, Quaternion.identity, tilemapParent);
                     // 名前をチャンクの番号にする
                     tilemap.name = $"{tilemap.name} ({x}, {y})";
-                    _chunks[x, y] = new Chunk
+                    _chunks[x, y] = new GameChunk
                     (
                         _randomization,
                         new Vector2Int(x, y),
@@ -154,7 +154,7 @@ namespace WorldCreation
                         new int[worldMap.OneChunkSize.x, worldMap.OneChunkSize.y]
                     );
 
-                    _backgroundChunks[x, y] = new Chunk
+                    _backgroundChunks[x, y] = new GameChunk
                     (
                         _randomization,
                         new Vector2Int(x, y),
@@ -171,7 +171,7 @@ namespace WorldCreation
                 origin.y += worldMap.OneChunkSize.y;
             }
             // 次の乱数に合わせるために空の乱数を生成しておく
-            _randomization.Range(0, 0);
+            _randomization.NextInt(0, 0);
 
             Debug.Log($"<color=#00ff00ff>初期化処理完了</color>");
         }
@@ -194,14 +194,14 @@ namespace WorldCreation
             {
                 for (int x = 0; x < _chunks.GetLength(0); x++)
                 {
-                    foreach (IWorldGeneratable worldGenerator in _worldGenerators)
+                    foreach (IWorldDecidable worldGenerator in _worldGenerators)
                     {
                         worldGenerator.Initalize(_chunks[x, y], worldMap, _randomization.UsageCount);
                         _chunks[x, y] = await worldGenerator.Execute(_chunks[x, y], worldMap, token);
 
                     }
 
-                    foreach (IWorldGeneratable backgourndGenerator in _backgroundGenerators)
+                    foreach (IWorldDecidable backgourndGenerator in _backgroundGenerators)
                     {
                         backgourndGenerator.Initalize(_chunks[x, y], backgroundWorldMap, initalUsageCount);
                         _backgroundChunks[x, y] = await backgourndGenerator.Execute(_backgroundChunks[x, y], backgroundWorldMap, token);
@@ -245,7 +245,7 @@ namespace WorldCreation
 
         private void EnemyGenerate()
         {
-            Vector2Int[] noisePoints = BlueNoise(worldMap.WorldSize.x, worldMap.WorldSize.y, worldMap.EnemySpase, seed + 1);
+            Vector2Int[] noisePoints = BlueNoise(worldMap.WorldSplidCount.x, worldMap.WorldSplidCount.y, worldMap.EnemySpase, seed + 1);
 
             foreach (Vector2Int noisePoint in noisePoints)
             {
@@ -271,7 +271,7 @@ namespace WorldCreation
 
         private void OreGenerate()
         {
-            Vector2Int[] noisePoints = BlueNoise(worldMap.WorldSize.x, worldMap.WorldSize.y, worldMap.WorldLayers[0].PrimevalOres[0].Space, seed);
+            Vector2Int[] noisePoints = BlueNoise(worldMap.WorldSplidCount.x, worldMap.WorldSplidCount.y, worldMap.WorldLayers[0].PrimevalOres[0].Space, seed);
 
             foreach (Vector2Int noisePoint in noisePoints)
             {
@@ -387,8 +387,8 @@ namespace WorldCreation
             {
                 Vector2Int point = circulePoints[i];
                 // マップの外なら次の場所へ
-                bool isOrverX = point.x < 0 || worldMap.WorldSize.x < point.x;
-                bool isOrverY = point.y < 0 || worldMap.WorldSize.y < point.y;
+                bool isOrverX = point.x < 0 || worldMap.WorldSplidCount.x < point.x;
+                bool isOrverY = point.y < 0 || worldMap.WorldSplidCount.y < point.y;
                 if (isOrverX || isOrverY) { continue; }
 
                 int chunkX = point.x / worldMap.OneChunkSize.x;
@@ -505,7 +505,7 @@ namespace WorldCreation
             activeStanbyObject.Add(player);
             activeStanbyObject.Add(updateTilemap.gameObject);
 
-            mainCameraSystem.CameraConfig(player.transform, worldMap.WorldSize);
+            mainCameraSystem.CameraConfig(player.transform, worldMap.WorldSplidCount);
 
             mapCameraSystem.CameraConfig(player.transform);
             minimap.AddTargetIcons(MinimapIconType.Player, player);

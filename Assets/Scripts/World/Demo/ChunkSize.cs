@@ -9,13 +9,13 @@ namespace WorldCreation.Preview
         public void ChunkSizeView()
         {
             Gizmos.color = Color.blue;
-            Vector3 worldScale = (Vector2)worldMap.WorldSize;
+            Vector3 worldScale = (Vector2)worldMap.WorldSplidCount;
             Vector3 size = (Vector2)worldMap.OneChunkSize;
             Vector3 anchor = size * 0.5f;
             Vector3 center = Vector3.zero;
             int split
-                = worldMap.WorldSize.x * (worldMap.OneChunkSize.x / 2)
-                + worldMap.WorldSize.y * (worldMap.OneChunkSize.y / 2);
+                = worldMap.WorldSplidCount.x * (worldMap.OneChunkSize.x / 2)
+                + worldMap.WorldSplidCount.y * (worldMap.OneChunkSize.y / 2);
             Vector3[] points = new Vector3[split * 2];
 
             for (int i = 0; i < points.Length / 4; i += 4)

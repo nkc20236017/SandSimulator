@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using WorldCreation;
 
-public class CaveGenerator : IWorldGeneratable
+public class CaveGenerator : WorldDecisionerBase
 {
     private const int VOID_ID = -1;
 
@@ -15,9 +15,10 @@ public class CaveGenerator : IWorldGeneratable
 
     public int ExecutionOrder => _executionOrder;
 
-    public void Initalize(Chunk chunk, WorldMap worldMap, int executionOrder)
+    public override void Initalize(GameChunk gameChunk, WorldCreatePrinciple createPrinciple, ManagedRandom managedRandom)
     {
-        _executionOrder = executionOrder;
+        // ‰Šú‰»ˆ—‚ğ‚·‚é
+        base.Initalize(gameChunk, createPrinciple, managedRandom);
 
         _noise = new int[worldMap.CaveCombines.Length];
         for (int i = 0; i < worldMap.CaveCombines.Length; i++)
@@ -26,7 +27,7 @@ public class CaveGenerator : IWorldGeneratable
         }
     }
 
-    public async UniTask<Chunk> Execute(Chunk chunk, WorldMap worldMap, CancellationToken token)
+    public async UniTask<GameChunk> Execute(GameChunk chunk, WorldCreatePrinciple worldMap, CancellationToken token)
     {
         // ‰Šú‰»‚µ‚Ä‹óID‚É‚·‚é
         int[,] grid = new int[chunk.GetChunkLength(0), chunk.GetChunkLength(1)];
@@ -40,7 +41,7 @@ public class CaveGenerator : IWorldGeneratable
 
         for (int i = 0; i < worldMap.CaveCombines.Length; i++)
         {
-            CaveCombine caveCombine = worldMap.CaveCombines[i];
+            CaveProcedures caveCombine = worldMap.CaveCombines[i];
 
             for (int y = 0; y < grid.GetLength(1); y++)
             {

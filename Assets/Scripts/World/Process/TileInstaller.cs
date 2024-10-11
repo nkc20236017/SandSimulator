@@ -5,17 +5,17 @@ using UnityEngine;
 
 namespace WorldCreation
 {
-    public class ChunkLoader : IWorldGeneratable
+    public class TileInstaller : IWorldDecidable
     {
         private int _executionOrder;
         public int ExecutionOrder => _executionOrder;
 
-        public void Initalize(Chunk chunk, WorldMap worldMap, int executionOrder)
+        public void Initalize(GameChunk chunk, WorldCreatePrinciple worldMap, int executionOrder)
         {
             _executionOrder = executionOrder;
         }
 
-        async UniTask<Chunk> IWorldGeneratable.Execute(Chunk chunk, WorldMap worldMap, CancellationToken token)
+        async UniTask<GameChunk> IWorldDecidable.Execute(GameChunk chunk, WorldCreatePrinciple worldMap, CancellationToken token)
         {
             int limitter = 0;
             for (int y = 0; y < chunk.GetChunkLength(1); y++)

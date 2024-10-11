@@ -6,18 +6,18 @@ using UnityEngine;
 
 namespace WorldCreation
 {
-    public class OreGenerator : IWorldGeneratable
+    public class OreGenerator : IWorldDecidable
     {
         private int _executionOrder;
         private int _runCount;
         public int ExecutionOrder => _executionOrder;
 
-        public void Initalize(Chunk chunk, WorldMap worldMap, int executionOrder)
+        public void Initalize(GameChunk chunk, WorldCreatePrinciple worldMap, int executionOrder)
         {
             _executionOrder = executionOrder;
         }
 
-        public async UniTask<Chunk> Execute(Chunk chunk, WorldMap worldMap, CancellationToken token)
+        public async UniTask<GameChunk> Execute(GameChunk chunk, WorldCreatePrinciple worldMap, CancellationToken token)
         {
             int[,] noise = BlueNoise(chunk.GetChunkLength(0), chunk.GetChunkLength(1), worldMap, chunk, 0);
 
@@ -32,7 +32,7 @@ namespace WorldCreation
             return await UniTask.RunOnThreadPool(() => chunk);
         }
 
-        public int[,] BlueNoise(int width, int height, WorldMap worldMap, Chunk chunk, int targetOre)
+        public int[,] BlueNoise(int width, int height, WorldCreatePrinciple worldMap, GameChunk chunk, int targetOre)
         {
             int[,] grid = new int[width, height];
             List<Vector2Int> activeList = new List<Vector2Int>();

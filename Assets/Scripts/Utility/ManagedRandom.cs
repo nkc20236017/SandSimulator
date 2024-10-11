@@ -25,7 +25,7 @@ public struct ManagedRandom
     /// <summary>
     /// シード値を元に乱数を生成し取得する
     /// </summary>
-    public int Range(int min, int max)
+    public int NextInt(int min, int max)
     {
         // 現在の乱数状態を保持してこの実態の乱数状態を適用
         Random.State stateTemp = Random.state;
@@ -43,7 +43,7 @@ public struct ManagedRandom
     /// <summary>
     /// シード値を元に乱数を生成し取得する
     /// </summary>
-    public float Range(float min, float max)
+    public float NextFloat(float min, float max)
     {
         // 現在の乱数状態を保持してこの実態の乱数状態を適用
         Random.State stateTemp = Random.state;
@@ -61,7 +61,7 @@ public struct ManagedRandom
     /// <summary>
     /// 特定の回数乱数を生成した時の値を取得します
     /// </summary>
-    public int Order(int orderIndex, int min, int max)
+    public int OrderInt(int orderIndex, int min, int max)
     {
         // 現在の乱数状態を保持してこの実態の乱数状態を適用
         Random.State stateTemp = Random.state;
@@ -69,7 +69,7 @@ public struct ManagedRandom
         Random.InitState(_seed);
         // 乱数取得
         int result = 0;
-        for (int i = 0; i < orderIndex + 1; i++)
+        for (int i = 0; i < orderIndex; i++)
         {
             result = Random.Range(min, max);
         }
@@ -81,7 +81,7 @@ public struct ManagedRandom
     /// <summary>
     /// 特定の回数乱数を生成した時の値を取得します
     /// </summary>
-    public float Order(int orderIndex, float min, float max)
+    public float OrderFloat(int orderIndex, float min, float max)
     {
         // 現在の乱数状態を保持してこの実態の乱数状態を適用
         Random.State stateTemp = Random.state;
