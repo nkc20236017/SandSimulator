@@ -1,8 +1,11 @@
 {
-    "name": "PlayerStatusInterface",
+    "name": "PlayerLevel",
     "rootNamespace": "",
     "references": [
-        "GUID:e51a24f21301a534782f4cdcd9e9654e"
+        "GUID:fe3a613aed1e3864cbffdff5664be637",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:de99c7ebec590b049962cf1f1e86afcb",
+        "GUID:029c1c1b674aaae47a6841a0b89ad80e"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
