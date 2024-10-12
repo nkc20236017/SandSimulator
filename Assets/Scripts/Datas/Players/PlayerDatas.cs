@@ -5,13 +5,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New PlayerData",menuName = "ScriptableObjects/Datas/PlayerData")]
 public class PlayerDatas : ScriptableObject 
 {
-    public int MaxHealth;
-    public int CurrentHealth;
+    public List<StatusValue> statusValues = new List<StatusValue>();
+
     public int PlayerMoney;
-    public int MaxTankCapacity;
-    public int CurrentTankCapacity;
     public float PlayerExpRate;
     public int CurrentExp;
-    public int BaseExp;
+    public int BaseNextLevelExp;
 
 }

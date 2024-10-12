@@ -1,6 +1,6 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 
 public class LevelPresenter : MonoBehaviour, IExpOutPut
@@ -11,6 +11,8 @@ public class LevelPresenter : MonoBehaviour, IExpOutPut
     public void OutPutExp(ExpOutPutData data)
     {
         var expPercent = (float)data.Exp / (float)data.NextLevelHurdle;
-        expSlider.value = expPercent;
+
+        expSlider.DOValue(expPercent, 0.1f).SetEase(Ease.InFlash);
+
     }
 }

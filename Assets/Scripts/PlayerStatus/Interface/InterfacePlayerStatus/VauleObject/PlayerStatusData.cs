@@ -15,10 +15,10 @@ public class PlayerStatusData
 
     public PlayerStatusData(PlayerDatas playerData)
     {
-        MaxHealth = playerData.MaxHealth;
-        CurrentHealth = playerData.CurrentHealth;
-        MaxTankCapacity = playerData.MaxTankCapacity;
-        CurrentTankCapacity = playerData.CurrentTankCapacity;
+        //MaxHealth = playerData.MaxHealth;
+        //CurrentHealth = playerData.CurrentHealth;
+        //MaxTankCapacity = playerData.MaxTankCapacity;
+        //CurrentTankCapacity = playerData.CurrentTankCapacity;
     }
 
 }

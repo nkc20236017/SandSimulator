@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using MackySoft.Navigathena.SceneManagement;
 using Cysharp.Threading.Tasks;
-using System;
 using MackySoft.Navigathena;
+using MackySoft.Navigathena.SceneManagement;
+using System;
 using System.Threading;
 using UniRx;
+using UnityEngine;
 
 public class MainGameEntoryPoint : SceneEntryPointBase
 {
@@ -16,7 +14,7 @@ public class MainGameEntoryPoint : SceneEntryPointBase
     {
         var store = new ProgressDataStore<ProgressData>();
 
-        await UniTask.Delay(1,cancellationToken: cancellationToken);
+        await UniTask.Delay(1, cancellationToken: cancellationToken);
 
         this.ObserveEveryValueChanged(progress => progressData.Value.Progress)
             .Subscribe(progressData =>

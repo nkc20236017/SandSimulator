@@ -1,20 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using static Codice.Client.BaseCommands.Import.Commit;
 
 [System.Serializable]
 public class StatusValue
 {
+    public PlayerStatusType statusType;
+    public int baseValue;
 
-    private readonly int baseValue;
-
-    public StatusValue(int baseValue)
-    {
-        this.baseValue = baseValue;
-    }
-
-    private List<int> modifiers = new ();
+    private List<int> modifiers = new();
 
     public int GetValue()
     {

@@ -15,6 +15,11 @@ public class PlayerStatusDataAccess : IPlayerStatusRepository
         return new PlayerStatusData (this.playerDatas);
     }
 
+    public List<StatusValue> GetPlayerStatusData()
+    {
+        return playerDatas.statusValues;
+    }
+
     public void SetPlayerData(SetPlayerStatus setPlayerStatus)
     {
         

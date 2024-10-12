@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa3e3ed7ea5761549b9625040fbef9aa, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  MaxHealth: 100
-  CurrentHealth: 0
+  statusValues:
+  - statusType: 1
+    baseValue: 100
+  - statusType: 0
+    baseValue: 3
   PlayerMoney: 0
-  MaxTankCapacity: 0
-  CurrentTankCapacity: 0
+  PlayerExpRate: 2
+  CurrentExp: 0
+  BaseNextLevelExp: 30

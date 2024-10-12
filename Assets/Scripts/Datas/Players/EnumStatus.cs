@@ -1,4 +1,4 @@
-public enum EnumStatus
+public enum PlayerStatusType
 {
     Health,
     TankCapacity,
