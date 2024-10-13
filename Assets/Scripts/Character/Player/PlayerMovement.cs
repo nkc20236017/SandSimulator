@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 	private static readonly int IsJump = Animator.StringToHash("isJump");
 	private static readonly int XVelocity = Animator.StringToHash("xVelocity");
 	private float _knockbackTimer;
+	private bool _isAutoJump;
 	private Vector2 _moveDirection;
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
@@ -57,10 +58,7 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 
 		if (!CanMove) { return; }
 
-		if (canAutoJump)
-		{
-			AutoBlockJump();
-		}
+		AutoBlockJump();
 		Movement();
 	}
 	
@@ -97,6 +95,13 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 	{
 		if (!CanMove) { return; }
 		if (!IsGround()) { return; }
+
+		if (_isAutoJump)
+		{
+			_isAutoJump = false;
+			_rigidbody2D.velocity += Vector2.up * jumpForce * Time.fixedDeltaTime;
+			return;
+		}
 		
 		_rigidbody2D.velocity = Vector2.up * jumpForce * Time.fixedDeltaTime;
 	}
@@ -111,6 +116,8 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 	
 	private void AutoBlockJump()
 	{
+		_isAutoJump = false;
+		if (!canAutoJump) { return; }
 		if (_rigidbody2D.velocity.y is > 0.001f or < -0.001f) { return; }
 		if (_moveDirection.x == 0) { return; }
 		if (!IsGround()) { return; }
@@ -132,6 +139,7 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 				continue;
 			}
 
+			_isAutoJump = true;
 			transform.position += new Vector3(0.1f, y + 0.1f, 0);
 			return;
 		}
@@ -243,7 +251,7 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 		var position = new Vector2(x, y);
 		if (isColliderRadius)
 		{
-			Gizmos.DrawWireSphere(position, boxCollider2D.size.x / 2 - 0.1f);
+			Gizmos.DrawWireSphere(position, boxCollider2D.size.x / 2 - 0.01f);
 		}
 		else
 		{

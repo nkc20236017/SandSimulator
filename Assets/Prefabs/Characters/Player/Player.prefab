@@ -22,7 +22,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5093466217659978656
 Transform:
   m_ObjectHideFlags: 0
@@ -56,7 +56,7 @@ MonoBehaviour:
   speed: 15
   jumpForce: 2000
   isColliderRadius: 1
-  radius: 2.83
+  radius: 2.99
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 16392
@@ -452,6 +452,7 @@ MonoBehaviour:
   _debugMode: 0
   matchTheSizeOfTheCollider: 0
   suckEffect: {fileID: 6082819924891215767}
+  suckUpPostion: {x: 0, y: 0, z: 0}
 --- !u!114 &8575309676087972804
 MonoBehaviour:
   m_ObjectHideFlags: 0

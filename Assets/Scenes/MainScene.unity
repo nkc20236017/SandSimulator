@@ -1152,34 +1152,6 @@ PrefabInstance:
       propertyPath: m_BoundingShape2D
       value: 
       objectReference: {fileID: 512384045}
-    - target: {fileID: 7997976605037333592, guid: b0232300b73f1a74da19eab0e5ec52b5, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7997976605037333592, guid: b0232300b73f1a74da19eab0e5ec52b5, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.0954895
-      objectReference: {fileID: 0}
-    - target: {fileID: 8790889239050641938, guid: b0232300b73f1a74da19eab0e5ec52b5, type: 3}
-      propertyPath: _offset.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8790889239050641938, guid: b0232300b73f1a74da19eab0e5ec52b5, type: 3}
-      propertyPath: _overSize.x
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8790889239050641938, guid: b0232300b73f1a74da19eab0e5ec52b5, type: 3}
-      propertyPath: _overSize.y
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8790889239050641938, guid: b0232300b73f1a74da19eab0e5ec52b5, type: 3}
-      propertyPath: _boxCollider2D
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8790889239050641938, guid: b0232300b73f1a74da19eab0e5ec52b5, type: 3}
-      propertyPath: _polygonCollider2D
-      value: 
-      objectReference: {fileID: 512384045}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

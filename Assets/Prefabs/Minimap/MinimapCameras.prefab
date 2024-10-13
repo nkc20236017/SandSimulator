@@ -87,7 +87,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _virtualCamera: {fileID: 5003442847347938106}
-  _boxCollider2D: {fileID: 0}
+  _overSize: {x: 10, y: 10}
+  _offset: {x: 0, y: 0}
 --- !u!114 &7266713979781125808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,7 +260,7 @@ Transform:
   m_GameObject: {fileID: 9093175799158616631}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2, y: 23, z: -10}
+  m_LocalPosition: {x: 0, y: 0.0954895, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -365,4 +366,4 @@ MonoBehaviour:
   _minimapIcon: {fileID: 11400000, guid: 8571427fb855188448ba90ab67fa0fbc, type: 2}
   _targetIconPrefab: {fileID: 7871713926053123297, guid: d7b8d5b8b9850a6439b17c308a8d5b3d, type: 3}
   _minimapCamera: {fileID: 1513204567804605867}
-  _distance: 20
+  _distance: 30
