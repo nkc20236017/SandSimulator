@@ -12,4 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3db3dd816e4e294b9fc14e12f313e9f, type: 3}
   m_Name: CaveDecision
   m_EditorClassIdentifier: 
-  caveProceduresGathering: []
+  caveProceduresGathering:
+  - scale: {x: 0.02, y: 0.02}
+    lumpThreshold: 0.433
+    hollowThreshold: 1
+    isOrverride: 0
+    isBackfill: 0
+    isInvert: 0
+    backfillTile: {fileID: 0}
+  - scale: {x: 0.02, y: 0.02}
+    lumpThreshold: 0.433
+    hollowThreshold: 0.532
+    isOrverride: 0
+    isBackfill: 0
+    isInvert: 0
+    backfillTile: {fileID: 0}

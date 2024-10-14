@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using RandomExtensions;
 using System.Threading;
 using UnityEngine;
 using WorldCreation;
@@ -7,8 +8,7 @@ public abstract class WorldDecisionerBase
 {
     protected GameChunk _gameChunk;
     protected WorldCreatePrinciple _createPrinciple;
-    protected ManagedRandom _managedRandom;
-    protected int _recycleProcessNumber;
+    protected IRandom _random;
 
     public abstract UniTask<GameChunk> Execute(CancellationToken token);
 
@@ -18,13 +18,11 @@ public abstract class WorldDecisionerBase
     /// <param name="gameChunk">初期化対象のゲームチャンク</param>
     /// <param name="createPrinciple">作成するルール</param>
     /// <param name="managedRandom">シード値を元に決定された乱数</param>
-    public virtual void Initalize(GameChunk gameChunk, WorldCreatePrinciple createPrinciple, ManagedRandom managedRandom)
+    public virtual void Initalize(GameChunk gameChunk, WorldCreatePrinciple createPrinciple, IRandom managedRandom)
     {
         _gameChunk = gameChunk;
         _createPrinciple = createPrinciple;
-        _managedRandom = managedRandom;
-
-        _recycleProcessNumber = managedRandom.UsageCount;
+        _random = managedRandom;
     }
 
     /// <summary>

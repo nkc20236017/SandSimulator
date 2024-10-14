@@ -7,11 +7,6 @@ namespace WorldCreation
 {
     public class TileInstaller : WorldDecisionerBase
     {
-        public override void Initalize(GameChunk gameChunk, WorldCreatePrinciple createPrinciple, ManagedRandom managedRandom)
-        {
-            base.Initalize(gameChunk, createPrinciple, managedRandom);
-        }
-
         public override async UniTask<GameChunk> Execute(CancellationToken token)
         {
             int limitter = 0;

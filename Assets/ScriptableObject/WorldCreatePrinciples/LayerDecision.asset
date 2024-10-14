@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a358fc46efa431f4a87a3a9ab106e868, type: 3}
   m_Name: LayerDecision
   m_EditorClassIdentifier: 
-  borderAmplitude: 0.02
+  borderAmplitude: 0.01
   layerRatios:
-  - 0.31
-  - 0.544
-  borderDistortionPower: 0
+  - 0.494
+  - 0.506
+  borderDistortionPower: 10
   worldLayers:
   - layerColor: {r: 1, g: 1, b: 1, a: 1}
     materialTile: {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}

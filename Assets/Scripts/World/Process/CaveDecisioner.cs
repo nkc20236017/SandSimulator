@@ -1,4 +1,6 @@
 using Cysharp.Threading.Tasks;
+using RandomExtensions;
+using System;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -7,12 +9,6 @@ using WorldCreation;
 public class CaveDecisioner : WorldDecisionerBase
 {
     private const int VOID_ID = -1;
-
-    public override void Initalize(GameChunk gameChunk, WorldCreatePrinciple createPrinciple, ManagedRandom managedRandom)
-    {
-        // 初期化処理をする
-        base.Initalize(gameChunk, createPrinciple, managedRandom);
-    }
 
     public override async UniTask<GameChunk> Execute(CancellationToken token)
     {
@@ -26,8 +22,12 @@ public class CaveDecisioner : WorldDecisionerBase
             }
         }
 
-        foreach (CaveProcedures caveProcedures in _createPrinciple.CaveDecision.CaveProceduresGathering)
+        for (int i = 0; i < _createPrinciple.CaveDecision.CaveProceduresGathering.Length; i++)
         {
+            float noiseRandomX = _random.NextInt(Int16.MinValue, Int16.MaxValue);
+            float noiseRandomY = _random.NextInt(Int16.MinValue, Int16.MaxValue);
+
+            CaveProcedures caveProcedures = _createPrinciple.CaveDecision.CaveProceduresGathering[i];
             for (int y = 0; y < _gameChunk.Size.y; y++)
             {
                 for (int x = 0; x < _gameChunk.Size.x; x++)
@@ -39,12 +39,19 @@ public class CaveDecisioner : WorldDecisionerBase
                     // 現在の座標のノイズ値を取得
                     float noisePower = Mathf.PerlinNoise
                     (
-                        worldPosition.x * caveProcedures.Scale.x + _managedRandom.NextFloat(float.MinValue, float.MaxValue),
-                        worldPosition.y * caveProcedures.Scale.y + _managedRandom.NextFloat(float.MinValue, float.MaxValue)
+                        worldPosition.x * caveProcedures.Scale.x
+                            + noiseRandomX,
+                        worldPosition.y * caveProcedures.Scale.y
+                            + noiseRandomY
                     );
 
+                    float cropValue = Mathf.Max
+                    (
+                        caveProcedures.HollowThreshold,
+                        caveProcedures.LumpThreshold + 0.01f    // MN 0.01f = 同じ値では生成がされないため、多少の猶予を持たせるための微量な値
+                    );
                     // 反転させる場所を決める
-                    if (noisePower > caveProcedures.HollowThreshold)
+                    if (noisePower > cropValue)
                     {
                         noisePower = 1f - noisePower;
                     }

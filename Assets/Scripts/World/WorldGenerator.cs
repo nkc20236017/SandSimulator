@@ -1,14 +1,14 @@
-using System;
-using System.Collections;
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using WorldCreation;
+using RandomExtensions;
 
 public class WorldGenerator : MonoBehaviour
 {
     [SerializeField]    // シード値
-    private int seed;
+    private uint seed;
 
     // チャンクの情報を保持しておく辞書型
     private Dictionary<Vector2Int, GameChunk> _gameChunkDictionary = new();
@@ -16,14 +16,13 @@ public class WorldGenerator : MonoBehaviour
 
     private void Start()
     {
-        seed = (int)UnityEngine.Random.Range(float.MinValue, float.MaxValue);
+        seed = (uint)Random.Range(uint.MinValue, uint.MaxValue);
     }
 
-    public async void ChunksLoad(GameChunk gameChunk, WorldCreatePrinciple worldCreatePrinciple, WorldDecisionerBase[] worldDecidables)
+    public async UniTask ChunksLoad(GameChunk gameChunk, WorldCreatePrinciple worldCreatePrinciple, WorldDecisionerBase[] worldDecidables)
     {
         // ロード用トークンを発行
         _tokenSource = new();
-        ManagedRandom random = new ManagedRandom(seed);
 
         foreach (WorldDecisionerBase worldDecision in worldDecidables)
         {
@@ -31,9 +30,8 @@ public class WorldGenerator : MonoBehaviour
             (
                 gameChunk,
                 worldCreatePrinciple,
-                random
+                new Xoshiro256StarStarRandom(seed)
             );
-
             gameChunk = await worldDecision.Execute(_tokenSource.Token);
         }
 

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace WorldCreation
@@ -36,25 +35,29 @@ namespace WorldCreation
         private CaveDecisionData caveDecision;
         public CaveDecisionData CaveDecision => caveDecision;
 
+        [SerializeField]
+        private OreDecisionData oreDecision;
+        public OreDecisionData OreDecision => oreDecision;
+
         [Space]
         [SerializeField]    // ƒuƒƒbƒN‚Å–„‚ß‚éˆ—‚Ì§ŒÀ
         private int fillLimit;
         public int FillLimit => fillLimit;
-/*
-        [SerializeField, Range(0f, 1f)]
-        private float turtleChance;
-        public float TurtleChance => turtleChance;
-        [SerializeField]
-        private GameObject turtlePrefab;
-        public GameObject TurtlePrefab => turtlePrefab;
-        [SerializeField, Range(0f, 1f)]
-        private float moleChance;
-        public float MoleChance => moleChance;
-        [SerializeField]
-        private GameObject molePrefab;
-        public GameObject MolePrefab => molePrefab;
-        [SerializeField]
-        private int enemySpase;
-        public int EnemySpase => enemySpase;*/
+        /*
+                [SerializeField, Range(0f, 1f)]
+                private float turtleChance;
+                public float TurtleChance => turtleChance;
+                [SerializeField]
+                private GameObject turtlePrefab;
+                public GameObject TurtlePrefab => turtlePrefab;
+                [SerializeField, Range(0f, 1f)]
+                private float moleChance;
+                public float MoleChance => moleChance;
+                [SerializeField]
+                private GameObject molePrefab;
+                public GameObject MolePrefab => molePrefab;
+                [SerializeField]
+                private int enemySpase;
+                public int EnemySpase => enemySpase;*/
     }
 }

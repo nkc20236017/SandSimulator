@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System;
+using RandomExtensions;
 
 namespace WorldCreation
 {
@@ -11,8 +12,9 @@ namespace WorldCreation
     {
         private int[] _layerBorderRangeHeights; // \‘¢F[‹«ŠE’ê•Ó0, ‹«ŠEãŒÀ0, ‹«ŠE’ê•Ó1, ‹«ŠEãŒÀ1, ...]
         private int[] _layerHeights;
+        private int[] _layerNoise;
 
-        public override void Initalize(GameChunk chunk, WorldCreatePrinciple createPrinciple, ManagedRandom managedRandom)
+        public override void Initalize(GameChunk chunk, WorldCreatePrinciple createPrinciple, IRandom managedRandom)
         {
             // ‰Šú‰»ˆ—‚ğÀs
             base.Initalize(chunk, createPrinciple, managedRandom);
@@ -117,18 +119,20 @@ namespace WorldCreation
             return await UniTask.RunOnThreadPool(() => _gameChunk);
         }
 
+        // TODO: ’n‘w‚Ì”»’è‚ğ•Êƒƒ\ƒbƒh‚Åì‚é
+
         private int GetBorder(GameChunk chunk, LayerDecisionData layerDecision, int x, int layerNumber)
         {
-            float[] layerNoise = new float[layerDecision.LayerRatios.Length];
+            int[] layerNoise = new int[layerDecision.LayerRatios.Length];
             for (int i = 0; i < layerNoise.Length; i++)
             {
-                layerNoise[i] = _managedRandom.NextFloat(float.MinValue, float.MaxValue);
+                layerNoise[i] = _random.NextInt(Int16.MinValue, Int16.MaxValue);
             }
 
             return (int)
             (
                 Mathf.PerlinNoise1D(x * layerDecision.BorderAmplitude + layerNoise[layerNumber])
-                * layerDecision.BorderDistortionPower
+                    * layerDecision.BorderDistortionPower
             );
         }
 
@@ -142,9 +146,17 @@ namespace WorldCreation
             for (int i = 0; i < layerDecision.LayerRatios.Length; i++)
             {
                 // ‚»‚ê‚¼‚ê‚Ì’n‘w‚ÌŠ„‚è‡‚¢‚ğ‹‚ß‚é
-                _layerBorderRangeHeights[i] = (int)(layerMaxRatio * (1 - layerDecision.LayerRatios[i]));
-                _layerBorderRangeHeights[_layerBorderRangeHeights.Length - (i + 1)] = _layerBorderRangeHeights[i] + (int)layerDecision.BorderDistortionPower;
-                _layerHeights[i] = _layerBorderRangeHeights[i] + (int)layerDecision.BorderDistortionPower;
+                _layerBorderRangeHeights[i]
+                    = (int)(layerMaxRatio
+                    * (1 - layerDecision.LayerRatios[i]));
+
+                _layerBorderRangeHeights[_layerBorderRangeHeights.Length - (i + 1)]
+                    = _layerBorderRangeHeights[i]
+                    + (int)layerDecision.BorderDistortionPower;
+
+                _layerHeights[i]
+                    = _layerBorderRangeHeights[i]
+                    + (int)layerDecision.BorderDistortionPower;
 
                 layerMaxRatio = _layerHeights[i];
             }

@@ -1,29 +1,31 @@
 using System;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace WorldCreation
 {
     [Serializable]
     public struct PrimevalOre
     {
-        [SerializeField]    // 地上に見えている鉱石のゲームオブジェクト
+        [SerializeField]    // 地上に生成される場合のゲームオブジェクト
         private Ore exposedOreData;
         public Ore ExposedOreData => exposedOreData;
-        [SerializeField]    // 生成するオブジェクト
-        private int buriedOreID;
-        public int BuriedOreID => buriedOreID;
-        [SerializeField]    // 塊の生成量
-        private int lumpDispersion;
-        public int LumpDispersion => lumpDispersion;
-        [SerializeField]    // ひとつの塊に存在する量
-        private int buriedOreRadius;
-        public int BuriedOreRadius => buriedOreRadius;
+        [SerializeField]    // 地中に生成される場合のタイルベース
+        private TileBase buriedOre;
+        public TileBase BuriedOre => buriedOre;
+        [SerializeField]    // 塊の最小半径
+        private int oreMinRadius;
+        public int OreMinRadius => oreMinRadius;
+        [SerializeField]    // 塊の最大半径
+        private int oreMaxRadius;
+        public int OreMaxRadius => oreMaxRadius;
+        [SerializeField]    // 地中鉱石の欠け具合
+        [Range(0f, 100f)]
+        private float chipped;
+        public float Chipped => chipped;
         [SerializeField]    // 生成される確率
         [Range(0f, 100f)]
         private float probability;
         public float Probability => probability;
-        [SerializeField]    // 鉱石を生成する間隔
-        private int space;
-        public int Space => space;
     }
 }
