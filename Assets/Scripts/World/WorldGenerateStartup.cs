@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using WorldCreation;
@@ -13,10 +14,12 @@ public class WorldGenerateStartup : MonoBehaviour
     private TilemapRenderer chunkTilemapRenderer;
 
     private WorldGenerator _worldGenerator;
+    private bool _isQuitting = false;
     private WorldDecisionerBase[] mainWorldDecisions = new WorldDecisionerBase[]
     {
         new LayerDecisioner(),
         new CaveDecisioner(),
+        new OreDecisioner(),
         new TileInstaller()
     };
 
@@ -32,12 +35,22 @@ public class WorldGenerateStartup : MonoBehaviour
         SetupProcess((int)chunkSize.x, (int)chunkSize.y);
     }
 
+    private void OnApplicationQuit()
+    {
+        _isQuitting = true;
+    }
+
     private async void SetupProcess(int sizeX, int sizeY)
     {
         for (int y = 0; y < worldPrinciple.WorldSplidCount.y; y++)
         {
             for (int x = 0; x < worldPrinciple.WorldSplidCount.x; x++)
             {
+                if (_isQuitting)
+                {
+                    return;
+                }
+
                 // チャンクのタイルマップを生成し、コンポーネントを取得する
                 // TilemapRendererはTilemapをRequireComponentしているためTilemapがあることが保証される
                 Vector3 position = new Vector3(x * sizeX, y * sizeY);

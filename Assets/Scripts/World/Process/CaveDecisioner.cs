@@ -32,7 +32,7 @@ public class CaveDecisioner : WorldDecisionerBase
             {
                 for (int x = 0; x < _gameChunk.Size.x; x++)
                 {
-                    Vector2Int worldPosition = _gameChunk.GetRawWorldPosition(x, y);
+                    Vector2Int worldPosition = _gameChunk.RawGameChunkPositionToWorldPosition(x, y);
                     // 現在の座標にタイルが既にあったら次の座標へ移動する
                     if (!caveProcedures.IsOrverride && grid[x, y] != VOID_ID) { continue; }
 

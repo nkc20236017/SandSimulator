@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   caveProceduresGathering:
   - scale: {x: 0.02, y: 0.02}
-    lumpThreshold: 0.433
+    lumpThreshold: 0.785
     hollowThreshold: 1
     isOrverride: 0
     isBackfill: 0
@@ -22,7 +22,7 @@ MonoBehaviour:
     backfillTile: {fileID: 0}
   - scale: {x: 0.02, y: 0.02}
     lumpThreshold: 0.433
-    hollowThreshold: 0.532
+    hollowThreshold: 0.51
     isOrverride: 0
     isBackfill: 0
     isInvert: 0

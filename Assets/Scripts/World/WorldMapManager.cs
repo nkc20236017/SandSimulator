@@ -24,9 +24,9 @@ public class WorldMapManager : MonoBehaviour, IChunkInformation, IWorldMapManage
     {
         if (GetChunk(position, Vector2Int.zero) == null) { return null; }
 
-        GameChunk chunk = (GameChunk)GetChunk(position, Vector2Int.zero);
+        GameChunk chunk = GetChunk(position, Vector2Int.zero);
 
-        return chunk.TileMap;
+        return chunk.GameChunkTilemap;
     }
 
     public int GetLayer(Vector2 position)
@@ -38,12 +38,12 @@ public class WorldMapManager : MonoBehaviour, IChunkInformation, IWorldMapManage
             return 0;
         }
 
-        GameChunk chunk = (GameChunk)GetChunk(position, Vector2Int.zero);
+        GameChunk chunk = GetChunk(position, Vector2Int.zero);
 
         return chunk.GetLayerIndex(gridPosition.x, gridPosition.y) + 1;
     }
 
-    private GameChunk? GetChunk(Vector2 position, Vector2Int chunkVector)
+    private GameChunk GetChunk(Vector2 position, Vector2Int chunkVector)
     {
         // 原点からの距離を求める
         Vector2 originDistance = position - _tilemapOrigin;
@@ -61,7 +61,7 @@ public class WorldMapManager : MonoBehaviour, IChunkInformation, IWorldMapManage
         );
 
         // チャンクが存在すればそれを返し、なければNull
-        GameChunk? result;
+        GameChunk result;
         try
         {
             result

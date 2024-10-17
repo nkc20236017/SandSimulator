@@ -35,10 +35,6 @@ namespace WorldCreation
         private CaveDecisionData caveDecision;
         public CaveDecisionData CaveDecision => caveDecision;
 
-        [SerializeField]
-        private OreDecisionData oreDecision;
-        public OreDecisionData OreDecision => oreDecision;
-
         [Space]
         [SerializeField]    // ƒuƒƒbƒN‚Å–„‚ß‚éˆ—‚Ì§ŒÀ
         private int fillLimit;

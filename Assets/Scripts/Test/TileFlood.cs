@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class TileFlood : MonoBehaviour
 {
-    [Header("Tilemap Config")]
+    [Header("GameChunkTilemap Config")]
     [SerializeField] private Tilemap tilemap;
     [SerializeField] private Tilemap updateTilemap;
     [SerializeField] private TileBase tile;

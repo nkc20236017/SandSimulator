@@ -19,15 +19,17 @@ namespace WorldCreation
                     int blockID = _gameChunk.GetBlockID(position);
                     int airIndex = _createPrinciple.Blocks.AirIndex;
                     if (_gameChunk.GetBlockID(position) == airIndex) { continue; }
-                    _gameChunk.TileMap.SetTile
+                    _gameChunk.GameChunkTilemap.SetTile
                     (
                         (Vector3Int)position,
                         _createPrinciple.Blocks.GetBlock(blockID)
                     );
 
-                    if (_gameChunk.TileMap.GetTile((Vector3Int)position) != null)
+                    if (_gameChunk.GameChunkTilemap.GetTile((Vector3Int)position) != null)
                     {
-                        _gameChunk.TileMap.SetColor
+                        if (_gameChunk.GetBlockID(x, y) != 1) { continue; }
+
+                        _gameChunk.GameChunkTilemap.SetColor
                         (
                             (Vector3Int)position,
                             _createPrinciple

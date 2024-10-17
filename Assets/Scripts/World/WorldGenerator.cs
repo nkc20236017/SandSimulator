@@ -4,6 +4,8 @@ using System.Threading;
 using UnityEngine;
 using WorldCreation;
 using RandomExtensions;
+using Unity.VisualScripting;
+using System.Linq;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -32,10 +34,34 @@ public class WorldGenerator : MonoBehaviour
                 worldCreatePrinciple,
                 new Xoshiro256StarStarRandom(seed)
             );
-            gameChunk = await worldDecision.Execute(_tokenSource.Token);
+            await worldDecision.Execute(_tokenSource.Token);
         }
 
         // ゲームオブジェクトを設置する
+        for (int i = 0; i < gameChunk.GetSummonLaterObjectCount(); i++)
+        {
+            var laterObject = gameChunk.SummonLaterObjects[i];
 
+            RaycastHit2D[] hits = new RaycastHit2D[laterObject.CheckDirections.Length];
+
+            for (int j = 0; j < laterObject.CheckDirections.Length; j++)
+            {
+                RaycastHit2D hit = Physics2D.Raycast(laterObject.Position, laterObject.CheckDirections[j], laterObject.CheckDistance, laterObject.GroundLayerMask);
+                hits[j] = (hit) ? hit : default;
+            }
+
+            RaycastHit2D nearestHit = hits
+                .Where(hit => hit)
+                .OrderBy(point => (point.point - laterObject.Position).magnitude)
+                .FirstOrDefault();
+
+            if (nearestHit == default) { continue; }
+
+            GameObject summonObject = Instantiate(laterObject.Prefab, nearestHit.point, Quaternion.identity, transform);
+
+            laterObject.InitalizeAction?.Invoke(summonObject, nearestHit.normal);
+
+            await UniTask.NextFrame();
+        }
     }
 }

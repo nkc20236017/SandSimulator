@@ -27,7 +27,7 @@ namespace WorldCreation
             // 地層用のデータ取得
             LayerDecisionData layerDecision = _createPrinciple.LayerDecision;
             // 現在のチャンクの下と上の座標を取得
-            int worldLowerHeight = _gameChunk.Size.y * _gameChunk.Position.y;
+            int worldLowerHeight = _gameChunk.Size.y * _gameChunk.GameChunkPosition.y;
             int worldUpperHeight = worldLowerHeight + (_gameChunk.Size.y - 1);
 
             // 地層をまたいでいる場所の取得
@@ -75,7 +75,7 @@ namespace WorldCreation
                 for (int x = 0; x < _gameChunk.Size.x; x++)
                 {
                     // 地層の境界線の位置を取得する
-                    Vector2Int worldPosition = _gameChunk.GetRawWorldPosition(x, y);
+                    Vector2Int worldPosition = _gameChunk.RawGameChunkPositionToWorldPosition(x, y);
                     int borderHeight = GetBorder(_gameChunk, layerDecision, worldPosition.x, layerIndex - 1);
 
                     borderHeight

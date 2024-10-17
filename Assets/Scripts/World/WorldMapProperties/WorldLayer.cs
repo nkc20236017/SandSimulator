@@ -7,15 +7,15 @@ namespace WorldCreation
     [Serializable]
     public struct WorldLayer
     {
-        [SerializeField]
+        [SerializeField]    // ’n‘w‚ÌF
         private Color layerColor;
         public Color LayerColor => layerColor;
-        [SerializeField]    // ‚±‚Ì’n‘w‚ð\¬‚·‚éÞŽ¿
+        [SerializeField]    // ’n‘w‚ð\¬‚·‚éÞŽ¿
         private TileBase materialTile;
         public TileBase MaterialTile => materialTile;
-        [SerializeField]    // ‚±‚Ì’n‘w‚É¶¬‚³‚ê‚ézÎ
-        private PrimevalOre[] primevalOres;
-        public PrimevalOre[] PrimevalOres => primevalOres;
+        [SerializeField]    // zÎ‚Ì¶¬î•ñ
+        private OreDecisionData oreDecision;
+        public OreDecisionData OreDecision => oreDecision;
         [SerializeField]    // ‚±‚Ì’n‘w‚É‘¶Ý‚·‚éƒ_ƒ“ƒWƒ‡ƒ“
         private PrimevalOre[] primevalDungeons;
         public PrimevalOre[] PrimevalDungeons => primevalDungeons;
