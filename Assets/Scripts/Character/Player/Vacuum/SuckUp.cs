@@ -90,7 +90,6 @@ public class SuckUp : MonoBehaviour
         {
             if (inputTank.TamkMaxSignal())
             {
-                AudioManager.Instance.PlaySFX("MaxtankSE");
                 return;
             }
             suckEffect.SetActive(true);
@@ -146,10 +145,6 @@ mouseWorldPosition - pivot.position;
     private void PlaySuckUp()
     {
         _playerMovement.IsMoveFlip = false;
-        if (inputTank.TamkMaxSignal())
-        {
-            AudioManager.Instance.PlaySFX("MaxtankSE");
-        }
     }
 
     private void CancelSuckUp()
