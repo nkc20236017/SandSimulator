@@ -167,6 +167,11 @@ public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
             {
                 _updateTilemap.SetColor(tilePosition, tile.GetStratumGeologyData(tileLayer).color);
             }
+            
+            // 動いている砂は当たり判定をなくす
+            if (tile.type != BlockType.Sand) { return; }
+            
+            _updateTilemap.SetColliderType(tilePosition, Tile.ColliderType.None);
         }
     }
 
@@ -238,6 +243,8 @@ public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
                     break;
             }
         }
+        
+        _updateTilemap.SetColliderType(position, Tile.ColliderType.Sprite);
     }
 
     private bool CheckHasTile(Tilemap tilemap, Vector3Int position)
