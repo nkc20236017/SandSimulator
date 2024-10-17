@@ -9,9 +9,8 @@ public class SemicircleGraph : MonoBehaviour, IOutResultUI
 
     [Header("Semicircle Chart Config")]
     [SerializeField] private int maxSemicircleCount = 9;
-
-    [SerializeField]
-    private Image selectImage;
+    [SerializeField] private Image selectImage;
+    [SerializeField] private GameObject needle;
 
     private Semicircle[] _semicircles;
 
@@ -53,6 +52,8 @@ public class SemicircleGraph : MonoBehaviour, IOutResultUI
             var deg = rad * Mathf.Rad2Deg;
             angle += deg;
         }
+
+        needle.transform.rotation = Quaternion.Euler(0, 0, -angle);
 
         if (hasSemicircle) { return; }
 
