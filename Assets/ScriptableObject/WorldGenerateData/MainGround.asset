@@ -15,7 +15,7 @@ MonoBehaviour:
   worldScale: {x: 640, y: 576}
   minOriginGapRange: {x: 0, y: 0}
   maxOriginGapRange: {x: 0, y: 0}
-  borderAmplitude: 0.02
+  borderAmplitude: 0.1
   blocks:
     useBlockList:
     - {fileID: 11400000, guid: 304c1403353c5a94cae08cf87678fc99, type: 2}
@@ -24,8 +24,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 4c8f89a6aa38a7643add9c20c6a236c9, type: 2}
   fillLimit: 5000
   layerRatios:
-  - 0.25
-  - 0.75
+  - 0.5
+  - 0.65
   borderDistortionPower: 15
   worldLayers:
   - layerColor: {r: 1, g: 1, b: 1, a: 1}
@@ -35,19 +35,19 @@ MonoBehaviour:
       buriedOreID: 2
       lumpDispersion: 30
       buriedOreRadius: 5
-      probability: 75
+      probability: 60
       space: 30
     - exposedOreData: {fileID: 11400000, guid: b9f2c12f461f9c649b1deb1dabb9767a, type: 2}
       buriedOreID: 3
       lumpDispersion: 0
       buriedOreRadius: 3
-      probability: 75
+      probability: 30
       space: 30
     - exposedOreData: {fileID: 11400000, guid: 1aa9d39301cef7a49acd44409269e64f, type: 2}
       buriedOreID: 4
       lumpDispersion: 0
       buriedOreRadius: 5
-      probability: 75
+      probability: 10
       space: 30
     primevalDungeons: []
   - layerColor: {r: 0.6745283, g: 0.9187974, b: 1, a: 1}
@@ -59,36 +59,29 @@ MonoBehaviour:
     primevalOres: []
     primevalDungeons: []
   caveCombines:
-  - scale: {x: 0.01, y: 0.01}
-    lumpSize: 0.706
+  - scale: {x: 0.01, y: 0.025}
+    lumpSize: 0.6
     hollowSize: 1
     isOrverride: 0
     isBackfill: 0
     isInvert: 0
     backfillTileID: 0
   - scale: {x: 0.01, y: 0.01}
-    lumpSize: 0.442
-    hollowSize: 0.586
+    lumpSize: 0.636
+    hollowSize: 0.729
     isOrverride: 0
     isBackfill: 0
     isInvert: 0
     backfillTileID: 0
-  - scale: {x: 0.01, y: 0.01}
-    lumpSize: 0.845
-    hollowSize: 0.91
-    isOrverride: 0
-    isBackfill: 0
-    isInvert: 0
-    backfillTileID: 0
-  - scale: {x: 0.01, y: 0.01}
-    lumpSize: 0.302
+  - scale: {x: 0.005, y: 0.005}
+    lumpSize: 0.814
     hollowSize: 1
     isOrverride: 0
     isBackfill: 0
-    isInvert: 1
+    isInvert: 0
     backfillTileID: 0
   turtleChance: 0.75
   turtlePrefab: {fileID: 1271221230508101186, guid: 0aa6e47f839bbad4f992753059cbfc00, type: 3}
   moleChance: 0.075
   molePrefab: {fileID: 325152271554838758, guid: c2d2a402552a1894d8bc8e9db82b4f40, type: 3}
-  enemySpase: 40
+  enemySpase: 45
