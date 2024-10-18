@@ -2,13 +2,13 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using WorldCreation;
 
-public class WorldMapManager : MonoBehaviour, IChunkInformation, IWorldMapManager
+public class WorldMapManager : IChunkInformation
 {
     private GameChunk[,] _chunks;
     private Vector2Int _oneChunkSize;
     private Vector2 _tilemapOrigin;
 
-    void IWorldMapManager.Initialize(GameChunk[,] chunks, Vector2Int oneChunkSize, Vector2 tilemapOrigin)
+    public WorldMapManager(GameChunk[,] chunks, Vector2Int oneChunkSize, Vector2 tilemapOrigin)
     {
         _chunks = chunks;
         _oneChunkSize = oneChunkSize;

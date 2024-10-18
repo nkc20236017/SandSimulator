@@ -42,6 +42,9 @@ public class WorldGenerateStartup : MonoBehaviour
 
     private async void SetupProcess(int sizeX, int sizeY)
     {
+        GameChunk[,] gameChunks
+            = new GameChunk[worldPrinciple.WorldSplidCount.x, worldPrinciple.WorldSplidCount.y];
+
         for (int y = 0; y < worldPrinciple.WorldSplidCount.y; y++)
         {
             for (int x = 0; x < worldPrinciple.WorldSplidCount.x; x++)
@@ -73,6 +76,20 @@ public class WorldGenerateStartup : MonoBehaviour
                     mainWorldDecisions
                 );
             }
+        }
+
+        // 召喚するオブジェクトに与える情報を渡す
+        WorldMapManager mapManager = new
+        (
+            gameChunks,
+            new Vector2Int((int)chunkTilemapRenderer.chunkCullingBounds.x, (int)chunkTilemapRenderer.chunkCullingBounds.y),
+            Vector2.zero
+        );
+
+        foreach (GameChunk gameChunk in gameChunks)
+        {
+            // ゲームオブジェクトを召喚する
+            _worldGenerator.InstantiateLaterObjects(gameChunk.SummonLaterObjects.ToArray(), mapManager);
         }
     }
 }

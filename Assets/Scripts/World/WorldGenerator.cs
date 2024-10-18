@@ -37,10 +37,14 @@ public class WorldGenerator : MonoBehaviour
             await worldDecision.Execute(_tokenSource.Token);
         }
 
+    }
+
+    public async void InstantiateLaterObjects(LetterInstantiateObject[] summonLetterObjects, IChunkInformation manager)
+    {
         // ゲームオブジェクトを設置する
-        for (int i = 0; i < gameChunk.GetSummonLaterObjectCount(); i++)
+        for (int i = 0; i < summonLetterObjects.Length; i++)
         {
-            var laterObject = gameChunk.SummonLaterObjects[i];
+            var laterObject = summonLetterObjects[i];
 
             RaycastHit2D[] hits = new RaycastHit2D[laterObject.CheckDirections.Length];
 
@@ -59,7 +63,20 @@ public class WorldGenerator : MonoBehaviour
 
             GameObject summonObject = Instantiate(laterObject.Prefab, nearestHit.point, Quaternion.identity, transform);
 
-            laterObject.InitalizeAction?.Invoke(summonObject, nearestHit.normal);
+            if (laterObject.InitalizeAction != null)
+            {
+                laterObject.InitalizeAction?.Invoke(summonObject, nearestHit.normal);
+            }
+
+            if (summonObject.TryGetComponent<IWorldGenerateWaitable>(out _))
+            {
+                IWorldGenerateWaitable[] worldGenerateWaiters = summonObject.GetComponents<IWorldGenerateWaitable>();
+
+                foreach (IWorldGenerateWaitable worldGenerateWaiter in worldGenerateWaiters)
+                {
+                    worldGenerateWaiter.OnGenerated(manager);
+                }
+            }
 
             await UniTask.NextFrame();
         }
