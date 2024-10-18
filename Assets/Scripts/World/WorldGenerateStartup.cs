@@ -62,7 +62,7 @@ public class WorldGenerateStartup : MonoBehaviour
                         .GetComponent<Tilemap>();
 
                 // ロードに必要なデータを作成する
-                GameChunk gameChunk = new GameChunk
+                gameChunks[x, y] = new GameChunk
                 (
                     new Vector2Int(x, y),
                     newChunkTilemap,
@@ -71,7 +71,7 @@ public class WorldGenerateStartup : MonoBehaviour
 
                 await _worldGenerator.ChunksLoad
                 (
-                    gameChunk,
+                    gameChunks[x, y],
                     worldPrinciple,
                     mainWorldDecisions
                 );

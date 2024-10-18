@@ -4,13 +4,13 @@ public class OreObject : MonoBehaviour, IDamageable, IWorldGenerateWaitable
 {
     [Header("Datas Config")]
     [SerializeField] private BlockDatas blockDatas;
-    
+
     [Header("Fall Ore Config")]
     [SerializeField] private float fallDamageInterval;
     [SerializeField] private float fundamentalDistance;
 
     [SerializeField] private GameObject oreEffect;
-    
+
     private int _currentEndurance;
     private float _fallDamageTimer;
     private bool _isChild;
@@ -44,20 +44,20 @@ public class OreObject : MonoBehaviour, IDamageable, IWorldGenerateWaitable
         {
             _fallDamageTimer = 0;
         }
-        
+
         if (_isFall) { return; }
-        
+
         var size = Mathf.Max(_capsuleCollider2D.size.x, _capsuleCollider2D.size.y) / 2 + 0.9f;
         var angle = (transform.eulerAngles.z + 270) * Mathf.Deg2Rad;
         var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-        
+
         var position = _capsuleCollider2D.bounds.center + (Vector3)direction.normalized * size;
         var mapTilemap = _chunkInformation.GetChunkTilemap(position);
         if (mapTilemap == null) { return; }
-        
+
         var localPosition = _chunkInformation.WorldToChunk(position);
         if (mapTilemap.HasTile(localPosition)) { return; }
-        
+
         _isFall = true;
         _rigidbody2D.isKinematic = false;
     }
@@ -77,7 +77,7 @@ public class OreObject : MonoBehaviour, IDamageable, IWorldGenerateWaitable
         _isChild = true;
         CanSuckUp = true;
         _currentEndurance = 0;
-        
+
         if (_rigidbody2D == null) { _rigidbody2D = GetComponent<Rigidbody2D>(); }
         _rigidbody2D.isKinematic = false;
     }
@@ -100,11 +100,11 @@ public class OreObject : MonoBehaviour, IDamageable, IWorldGenerateWaitable
         if (_currentEndurance > 0) { return; }
 
         CanSuckUp = true;
-        
+
         if (_rigidbody2D == null) { _rigidbody2D = GetComponent<Rigidbody2D>(); }
-        _rigidbody2D.isKinematic = false; 
+        _rigidbody2D.isKinematic = false;
     }
-    
+
     private void SetOreConfig(int size)
     {
         Size = size;
@@ -112,11 +112,11 @@ public class OreObject : MonoBehaviour, IDamageable, IWorldGenerateWaitable
         if (_spriteRenderer == null) { _spriteRenderer = GetComponentInChildren<SpriteRenderer>(); }
         _spriteRenderer.sprite = Ore.oreSprites[Size - 1];
     }
-    
+
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (!_canDestroy) { return; }
-		
+
         _soundSource.InstantiateSound("OreObject", transform.position);
         if (other.collider.TryGetComponent<IDamageable>(out var target))
         {
@@ -135,11 +135,11 @@ public class OreObject : MonoBehaviour, IDamageable, IWorldGenerateWaitable
     public void OnGenerated(IChunkInformation worldMapManager)
     {
         _chunkInformation = worldMapManager;
-        
+
         var soundSource = FindObjectOfType<SoundSource>();
         _soundSource = soundSource.GetComponent<ISoundSourceable>();
         _soundSource.SetInstantiation("OreObject");
-        
+
         _capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();

@@ -73,16 +73,13 @@ public class OreDecisioner : DistributionDecisioner
 
             /* 現在地が地中の場合 */
             // 配置するための事前準備
-            if (_gameChunk.IsInsideChunkPosition(noisePoint, chosenOre.MaxRadius))
-            {
-                int radius = _random.NextInt(chosenOre.MinRadius, chosenOre.MaxRadius);
-                _oreGrids.AddRange(GetInsideCircleGrid(radius, noisePoint));
+            int radius = _random.NextInt(chosenOre.MinRadius, chosenOre.MaxRadius);
+            _oreGrids.AddRange(GetInsideCircleGrid(radius, noisePoint));
 
-                // 求めた全ての点をチャンクに配置する
-                foreach (Vector2Int point in _oreGrids)
-                {
-                    SetBuriedOre(point, chosenOre);
-                }
+            // 求めた全ての点をチャンクに配置する
+            foreach (Vector2Int point in _oreGrids)
+            {
+                SetBuriedOre(point, chosenOre);
             }
         }
 

@@ -16,7 +16,7 @@ MonoBehaviour:
   space: 20
   orePrefab: {fileID: 1150115400017002325, guid: 10a0c754ed58f2d46ab3ff05da9b78d8, type: 3}
   primevalOres:
-  - probability: 100
+  - probability: 76.8
     exposedOreData: {fileID: 11400000, guid: 6534895f1114d374a80f4e1c68535ad4, type: 2}
     distance: 10
     groundLayerMask:
@@ -25,4 +25,4 @@ MonoBehaviour:
     buriedOre: {fileID: 11400000, guid: c9bed54d6a2e470409f62956e3af2062, type: 2}
     minRadius: 3
     maxRadius: 5
-    chipped: 100
+    chipped: 65.6
