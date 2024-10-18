@@ -253,11 +253,6 @@ public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
         return tilemap.HasTile(localPosition) || _updateTilemap.HasTile(position) || CheckUpdateTilePosition(position) || IsCollision(position);
     }
     
-    private bool CheckUpdateTilePosition(Vector3Int position)
-    {
-        return _updateTiles.Any(updateTile => updateTile == position) || _clearTiles.Any(clearTile => clearTile == position);
-    }
-    
     private bool IsCollision(Vector3Int position)
     {
         var tilePosition = _updateTilemap.GetCellCenterWorld(position);
@@ -335,6 +330,11 @@ public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
                 }
             }
         }
+    }
+    
+    private bool CheckUpdateTilePosition(Vector3Int position)
+    {
+        return _updateTiles.Any(updateTile => updateTile == position) || _clearTiles.Any(clearTile => clearTile == position);
     }
 
     private void SandToMud(Vector3Int position)

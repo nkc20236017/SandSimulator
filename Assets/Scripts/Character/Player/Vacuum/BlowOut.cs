@@ -4,9 +4,13 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
+using UnityEngine.InputSystem;
 
-public class BlowOut : Vacuum
+public class BlowOut : MonoBehaviour
 {
+    [Header("Tile Config")]
+    [SerializeField] private BlockDatas blockDatas;
+
     [Header("BlowOut Config")]
     [SerializeField] private BlockType blockType;
     [SerializeField] private Transform pivot;
@@ -14,7 +18,6 @@ public class BlowOut : Vacuum
     [SerializeField, Min(0f)] private float distance; // 吐き出し距離（現状意味ない）
     [SerializeField, Min(0f)] private float range; // 吐き出し範囲の幅（現状意味ない）
     [SerializeField, Min(1f)] private float blowOutSpeed = 1;
-    [SerializeField, Min(0)] private int blowOutUp = 3;
     
     [Header("Instantiation Config")]
     [SerializeField] private float interval;
@@ -28,13 +31,18 @@ public class BlowOut : Vacuum
 
     private float _weight;
     private float _lastUpdateTime;
-    private List<Vector3Int> _blowOutTilesList = new();
     private PlayerMovement _playerMovement;
+    private Camera _camera;
     private SuckUp _suckUp;
     private Parabola _parabola;
+    private PlayerActions _playerActions;
+    private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
     private Tilemap _updateTilemap;
     private IInputTank inputTank;
     private ISoundSourceable _soundSource;
+
+    [SerializeField]
+    private Vector3 blowOutMousePostion;
 
     public bool IsBlowOut { get; private set; }
 
@@ -67,6 +75,8 @@ public class BlowOut : Vacuum
 
         VacuumActions.SpittingOut.started += _ => _playerMovement.IsMoveFlip = false;
         VacuumActions.SpittingOut.canceled += _ => CancelBlowOut();
+        VacuumActions.VacuumPos.performed += OnBlowOut;
+        VacuumActions.VacuumMouse.performed += OnBlowOutMouse;
     }
 
     private void Update()
@@ -91,17 +101,43 @@ public class BlowOut : Vacuum
         }
     }
 
+    private void OnBlowOut(InputAction.CallbackContext context)
+    {
+        Vector3 mouseWorldPosition = context.ReadValue<Vector2>();
+
+        Vector3 direction = VacuumActions.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
+? VacuumActions.VacuumPos.ReadValue<Vector2>().normalized :
+mouseWorldPosition - pivot.position;
+
+        blowOutMousePostion = direction;
+    }
+    private void OnBlowOutMouse(InputAction.CallbackContext context)
+    {
+        if (_camera == null)
+        {
+            _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        }
+
+        Vector3 mouseWorldPosition = _camera.ScreenToWorldPoint(context.ReadValue<Vector2>());
+
+        Vector3 direction = VacuumActions.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
+? VacuumActions.VacuumPos.ReadValue<Vector2>().normalized :
+mouseWorldPosition - pivot.position;
+
+        blowOutMousePostion = direction;
+    }
+
     private void BlowOutTiles()
     {
         if (blockType != BlockType.None)
         {
             if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
             {
-                _weight = _blockDatas.GetOre(blockType).weightPerSize[0] * 10;
+                _weight = blockDatas.GetOre(blockType).weightPerSize[0] * 10;
             }
             else
             {
-                _weight = _blockDatas.GetBlock(blockType).weight;
+                _weight = blockDatas.GetBlock(blockType).weight;
             }
         
             if (_lastUpdateTime <= 0f)
@@ -122,7 +158,19 @@ public class BlowOut : Vacuum
 
     private void GenerateTile()
     {
-        var angle = Mathf.Atan2(_direction.y, _direction.x);
+        if (_camera == null)
+        {
+            _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        }
+        
+        var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPosition.z = 0;
+        var centerCell = (Vector3)_updateTilemap.WorldToCell(mouseWorldPosition);
+
+        Vector3 direction = blowOutMousePostion;
+
+        //var direction = centerCell - pivot.position;
+        var angle = Mathf.Atan2(direction.y, direction.x);
 
         var chordLength = Mathf.Sqrt(Mathf.Pow(distance, 2) + Mathf.Pow(range, 2));
         var angle2 = Mathf.Acos(distance / chordLength);
@@ -133,11 +181,11 @@ public class BlowOut : Vacuum
         if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
         {
             AudioManager.Instance.PlaySFX("SpitoutSE");
-            var position = distance * _direction.normalized + pivot.position;
+            var position = distance * direction.normalized + pivot.position;
             var blowOutOre = Instantiate(blowOutOrePrefab, position, Quaternion.identity);
             blowOutOre.gameObject.SetActive(true);
-            var ore = _blockDatas.GetOre(blockType);
-            blowOutOre.SetOre(ore, _direction.normalized);
+            var ore = blockDatas.GetOre(blockType);
+            blowOutOre.SetOre(ore, direction.normalized);
             inputTank.RemoveTank();
         }
         else
@@ -145,7 +193,9 @@ public class BlowOut : Vacuum
             var randomGenerateTileCount = Random.Range(generateTileCount.x, generateTileCount.y);
             for (var i = 0; i < randomGenerateTileCount; i++)
             {
-                var randomPosition = RandomPosition(newCell1, newCell2);
+                var randomX = Random.Range(newCell1.x, newCell2.x);
+                var randomY = Random.Range(newCell1.y, newCell2.y);
+                var randomPosition = new Vector3(randomX, randomY, 0);
                 var randomCell = _updateTilemap.WorldToCell(randomPosition);
                 var mapTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(new Vector2(randomCell.x, randomCell.y));
                 if (mapTilemap == null) { continue; }
@@ -153,10 +203,10 @@ public class BlowOut : Vacuum
                 var localPosition = _playerMovement.ChunkInformation.WorldToChunk(new Vector2(randomCell.x, randomCell.y));
                 if (_updateTilemap.HasTile(randomCell) || mapTilemap.HasTile(localPosition)) { continue; }
                 
-                _updateTilemap.SetTile(randomCell, _blockDatas.GetBlock(blockType).tile);
+                _updateTilemap.SetTile(randomCell, blockDatas.GetBlock(blockType).tile);
 
                 var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(randomCell.x, randomCell.y));
-                var block = _blockDatas.GetBlock(_blockDatas.GetBlock(blockType).tile);
+                var block = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile);
                 if (block.GetStratumGeologyData(tileLayer) != null)
                 {
                     _updateTilemap.SetColor(randomCell, block.GetStratumGeologyData(tileLayer).color);
@@ -167,18 +217,10 @@ public class BlowOut : Vacuum
             }
         }
     }
-    
-    private Vector3 RandomPosition(Vector3 cellA, Vector3 cellB)
-    {
-        var index = Random.Range(0f, 1f);
-        var randomLerpPosition = Vector3.Lerp(cellA, cellB, index);
-        return randomLerpPosition;
-    }
 
     // 疑似吐き出し範囲
     private void UpdateTiles()
     {
-        _blowOutTilesList.Clear();
         var bounds = new BoundsInt(_updateTilemap.WorldToCell(pivot.position) - new Vector3Int((int)radius, (int)radius, 0), new Vector3Int((int)radius * 2, (int)radius * 2, 1));
         
         var hasTile = false;
@@ -204,81 +246,79 @@ public class BlowOut : Vacuum
             mapTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
             if (mapTilemap == null) { continue; }
             
+            if (_camera == null)
+            {
+                _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+            }
+            
+            var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorldPosition.z = 0;
+
+            Vector3 direction2 = blowOutMousePostion;
+
             var direction1 = position - pivot.position;
-            var angle = Vector3.Angle(direction1, _direction);
+            //var direction2 = mouseWorldPosition - pivot.position;
+            var angle = Vector3.Angle(direction1, direction2);
 
             var dis = Vector3.Distance(pivot.position, position);
+
             if (angle <= 30 && dis <= radius)
             {
-                _blowOutTilesList.Add(position);
-            }
-        }
-
-        foreach (var position in _blowOutTilesList)
-        {
-            SetUpdateTile(position);
-        }
-    }
-
-    private void SetUpdateTile(Vector3Int position)
-    {
-        var mapTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
-        if (mapTilemap == null) { return; }
-        
-        var direction = position - pivot.position;
-        var newTilePosition = Vector3Int.RoundToInt(position + direction.normalized * blowOutSpeed) + Vector3Int.up * blowOutUp;
-        var localNewTilePosition = _playerMovement.ChunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
-        var newMapTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
-        if (newMapTilemap == null) { return; }
-        if (_updateTilemap.HasTile(newTilePosition) || newMapTilemap.HasTile(localNewTilePosition)) { return; }
+                var newTilePosition = Vector3Int.RoundToInt(position + direction1.normalized * blowOutSpeed);
+                var localNewTilePosition = _playerMovement.ChunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
+                var newMapTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
+                if (newMapTilemap == null) { continue; }
+                if (_updateTilemap.HasTile(newTilePosition) || newMapTilemap.HasTile(localNewTilePosition)) { continue; }
                 
-        // 更新用タイルの移動
-        if (_updateTilemap.HasTile(position))
-        {
-            var tile = _updateTilemap.GetTile(position);
-                    
-            _updateTilemap.SetTile(position, null);
-            _updateTilemap.SetTile(newTilePosition, tile);
-                    
-            var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
-            var blockStratumGeologyData = _blockDatas.GetBlock(tile).GetStratumGeologyData(tileLayer);
-            if (blockStratumGeologyData != null)
-            {
-                _updateTilemap.SetColor(newTilePosition, blockStratumGeologyData.color);
-            }
-                    
-            return;
-        }
-
-        // マップタイルの移動（砂の場合更新用タイルに移行）
-        var localPosition = _playerMovement.ChunkInformation.WorldToChunk(new Vector2(position.x, position.y));
-        if (mapTilemap.HasTile(localPosition))
-        {
-            var tile = mapTilemap.GetTile(localPosition);
-            mapTilemap.SetTile(localPosition, null);
-                    
-            if (_blockDatas.GetBlock(tile).type == BlockType.Sand)
-            {
-                _updateTilemap.SetTile(newTilePosition, tile);
-                        
-                var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
-                var blockStratumGeologyData = _blockDatas.GetBlock(tile).GetStratumGeologyData(tileLayer);
-                if (blockStratumGeologyData != null)
+                // 更新用タイルの移動
+                if (_updateTilemap.HasTile(position))
                 {
-                    _updateTilemap.SetColor(newTilePosition, blockStratumGeologyData.color);
-                }
-            }
-            else
-            {
-                newMapTilemap.SetTile(localNewTilePosition, tile);
-                        
-                if (_blockDatas.GetBlock(tile).type is not (BlockType.Ruby or BlockType.Crystal or BlockType.Emerald))
-                {
-                    var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(localNewTilePosition.x, localNewTilePosition.y));
-                    var blockStratumGeologyData = _blockDatas.GetBlock(_blockDatas.GetBlock(blockType).tile).GetStratumGeologyData(tileLayer);
+                    var tile = _updateTilemap.GetTile(position);
+                    
+                    _updateTilemap.SetTile(position, null);
+                    _updateTilemap.SetTile(newTilePosition, tile);
+                    
+                    var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
+                    var blockStratumGeologyData = blockDatas.GetBlock(tile).GetStratumGeologyData(tileLayer);
                     if (blockStratumGeologyData != null)
                     {
-                        newMapTilemap.SetColor(localNewTilePosition, blockStratumGeologyData.color);
+                        _updateTilemap.SetColor(newTilePosition, blockStratumGeologyData.color);
+                    }
+                    
+                    continue;
+                }
+
+                // マップタイルの移動（砂の場合更新用タイルに移行）
+                var localPosition = _playerMovement.ChunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+                if (mapTilemap.HasTile(localPosition))
+                {
+                    var tile = mapTilemap.GetTile(localPosition);
+                    mapTilemap.SetTile(localPosition, null);
+                    
+                    if (blockDatas.GetBlock(tile).type == BlockType.Sand)
+                    {
+                        _updateTilemap.SetTile(newTilePosition, tile);
+                        
+                        var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
+                        var blockStratumGeologyData = blockDatas.GetBlock(tile).GetStratumGeologyData(tileLayer);
+                        if (blockStratumGeologyData != null)
+                        {
+                            _updateTilemap.SetColor(newTilePosition, blockStratumGeologyData.color);
+                        }
+                    }
+                    else
+                    {
+                        newMapTilemap.SetTile(localNewTilePosition, tile);
+                        
+                        if (blockDatas.GetBlock(tile).type is not (BlockType.Ruby or BlockType.Crystal or BlockType.Emerald))
+                        {
+                            var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(localNewTilePosition.x, localNewTilePosition.y));
+                            var blockStratumGeologyData = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile).GetStratumGeologyData(tileLayer);
+                            if (blockStratumGeologyData != null)
+                            {
+                                newMapTilemap.SetColor(localNewTilePosition, blockStratumGeologyData.color);
+                            }
+                        }
                     }
                 }
             }
@@ -302,10 +342,21 @@ public class BlowOut : Vacuum
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(pivot.position, distance);
 
-        var targetPosition = pivot.position + _direction.normalized * distance;
+        var mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        if (mainCamera == null) { return; }
+
+        var mouseWorldPosition = blowOutMousePostion;
+        if (_updateTilemap == null) { return; }
+
+        var centerCell = (Vector3)_updateTilemap.WorldToCell(mouseWorldPosition);
+
+        //var direction = centerCell - pivot.position;
+        Vector3 direction = blowOutMousePostion;
+
+        var targetPosition = pivot.position + direction.normalized * distance;
         Gizmos.DrawLine(pivot.position, targetPosition);
 
-        var angle = Mathf.Atan2(_direction.y, _direction.x);
+        var angle = Mathf.Atan2(direction.y, direction.x);
 
         var chordLength = Mathf.Sqrt(Mathf.Pow(distance, 2) + Mathf.Pow(range, 2));
         var angle2 = Mathf.Acos(distance / chordLength);

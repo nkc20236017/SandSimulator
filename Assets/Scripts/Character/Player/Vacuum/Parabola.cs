@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static PlayerActions;
 
-public class Parabola : Vacuum
+public class Parabola : MonoBehaviour
 {
     [Header("Parabola Config")]
     [SerializeField] private float interval;

@@ -28,6 +28,7 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private Animator _animator;
+	private SpriteRenderer _spriteRenderer;
 	private Camera _camera;
 	private PlayerActions _playerActions;
 
@@ -42,6 +43,7 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 		_animator = transform.Find("Model").GetComponent<Animator>();
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
+		_spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 	}
 
 	private void Start()
@@ -202,14 +204,12 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 	{
 		if (IsMoveFlip)
 		{
-			if (_moveDirection.x > 0)
+			_spriteRenderer.flipX = _moveDirection.x switch
 			{
-				transform.localScale = new Vector3(1, 1, 1);
-			}
-			else if (_moveDirection.x < 0)
-			{
-				transform.localScale = new Vector3(-1, 1, 1);
-			}
+					> 0 => false,
+					< 0 => true,
+					_ => _spriteRenderer.flipX,
+			};
 		}
 		else
 		{
@@ -221,11 +221,11 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 			var worldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
 			if (transform.position.x < worldPosition.x)
 			{
-				transform.localScale = new Vector3(1, 1, 1);
+				_spriteRenderer.flipX = false;
 			}
 			else if (transform.position.x > worldPosition.x)
 			{
-				transform.localScale = new Vector3(-1, 1, 1);
+				_spriteRenderer.flipX = true;
 			}
 		}
 	}
