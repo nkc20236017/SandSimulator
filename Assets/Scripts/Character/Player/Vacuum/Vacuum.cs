@@ -9,14 +9,19 @@ public class Vacuum : MonoBehaviour
 	
 	private Camera _camera;
 	private PlayerActions _playerActions;
-	private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
 
-	public Vector3 _direction { get; private set; }
+	public Vector3 Direction { get; private set; }
+	public PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
 	public BlockDatas BlockDatas => _blockDatas;
 	public Transform Pivot => _pivot;
+	public ISoundSourceable SoundSource { get; private set; }
 	
 	private void Start()
 	{
+		var soundSource = FindObjectOfType<SoundSource>();
+		SoundSource = soundSource.GetComponent<ISoundSourceable>();
+		SoundSource.SetInstantiation("BlowOut");
+		
 		_camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 		
 		_playerActions = new PlayerActions();
@@ -26,12 +31,12 @@ public class Vacuum : MonoBehaviour
 
 	private void Update()
 	{
-		RotateToCursorDirection();
+		RotateVacuum();
 	}
 
-	private void RotateToCursorDirection()
+	private void RotateVacuum()
 	{
-		float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+		float angle = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg;
 		if (_pivot.parent.localScale.x < 0)
 		{
 			angle += 180;
@@ -40,14 +45,22 @@ public class Vacuum : MonoBehaviour
 		_pivot.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
 	}
 
+	/// <summary>
+	/// ゲームパッドの入力を取得して、吸引方向を決定する
+	/// </summary>
+	/// <param name="context"></param>
 	private void OnGamepad(InputAction.CallbackContext context)
 	{
 		Vector2 vacuumPos = VacuumActions.VacuumPos.ReadValue<Vector2>();
 		if (vacuumPos.sqrMagnitude == 0) { return; }
 		
-		_direction = vacuumPos.normalized;
+		Direction = vacuumPos.normalized;
 	}
 	
+	/// <summary>
+	/// マウスの位置を取得して、吸引方向を決定する
+	/// </summary>
+	/// <param name="context"></param>
 	private void OnMouse(InputAction.CallbackContext context)
 	{
 		var position = context.ReadValue<Vector2>();
@@ -60,9 +73,7 @@ public class Vacuum : MonoBehaviour
 		Vector3 direction = (mouseWorldPosition - _pivot.position).normalized;
 		direction.z = 0;
 
-		_direction = direction;
-
-		return _direction;
+		Direction = direction;
 	}
 
 	private void OnEnable()

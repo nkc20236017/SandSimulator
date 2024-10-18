@@ -32,10 +32,9 @@ public class SuckUp : MonoBehaviour
     private Tilemap _updateTilemap;
     private PlayerMovement _playerMovement;
     private BlowOut _blowOut;
-    private IInputTank inputTank;
-    private ISoundSourceable _soundSource;
     private PlayerHealth playerHealth;
     private Vacuum _vacuum;
+    private IInputTank inputTank;
 
     private string[] seName =
     {
@@ -73,8 +72,8 @@ public class SuckUp : MonoBehaviour
     {
         _numberExecutions = 0;
 
-        VacuumActions.Absorption.started += _ => PlaySuckUp();
-        VacuumActions.Absorption.canceled += _ => CancelSuckUp();
+        vacuum.VacuumActions.Absorption.started += _ => PlaySuckUp();
+        vacuum.VacuumActions.Absorption.canceled += _ => CancelSuckUp();
 
         _direction = new Vector3(1,0, 0);
     }
@@ -188,9 +187,9 @@ public class SuckUp : MonoBehaviour
             if (_numberExecutions % oreObject.Ore.weightPerSize[oreObject.Size - 1] == 0)
             {
                 target.TakeDamage(3);
-                if (_soundSource != null)
+                if (SoundSource != null)
                 {
-                    _soundSource.InstantiateSound("SuckUp", transform.position);
+                    SoundSource.InstantiateSound("SuckUp", transform.position);
                 }
             }
         }
@@ -235,7 +234,7 @@ public class SuckUp : MonoBehaviour
             }
             if (tile == null) { continue; }
 
-            _soundSource.InstantiateSound("SuckUp", transform.position);
+            SoundSource.InstantiateSound("SuckUp", transform.position);
             if ((position - pivot.position).sqrMagnitude <= _deleteDistance * _deleteDistance)
             {
                 inputTank.InputAddTank(tile);//タンクに追加
@@ -355,8 +354,8 @@ public class SuckUp : MonoBehaviour
         _playerActions.Enable();
         
         var soundSource = FindObjectOfType<SoundSource>();
-        _soundSource = soundSource.GetComponent<ISoundSourceable>();
-        _soundSource.SetInstantiation("SuckUp");
+        SoundSource = soundSource.GetComponent<ISoundSourceable>();
+        SoundSource.SetInstantiation("SuckUp");
 
         _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         

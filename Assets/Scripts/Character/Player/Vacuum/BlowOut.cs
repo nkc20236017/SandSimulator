@@ -54,8 +54,6 @@ public class BlowOut : Vacuum
 
     private void Awake()
     {
-        _playerActions = new PlayerActions();
-
         _suckUp = GetComponent<SuckUp>();
         _parabola = GetComponentInParent<Parabola>();
         _playerMovement = GetComponentInParent<PlayerMovement>();
@@ -122,7 +120,7 @@ public class BlowOut : Vacuum
 
     private void GenerateTile()
     {
-        var angle = Mathf.Atan2(_direction.y, _direction.x);
+        var angle = Mathf.Atan2(Direction.y, Direction.x);
 
         var chordLength = Mathf.Sqrt(Mathf.Pow(distance, 2) + Mathf.Pow(range, 2));
         var angle2 = Mathf.Acos(distance / chordLength);
@@ -133,11 +131,11 @@ public class BlowOut : Vacuum
         if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
         {
             AudioManager.Instance.PlaySFX("SpitoutSE");
-            var position = distance * _direction.normalized + pivot.position;
+            var position = distance * Direction.normalized + pivot.position;
             var blowOutOre = Instantiate(blowOutOrePrefab, position, Quaternion.identity);
             blowOutOre.gameObject.SetActive(true);
             var ore = _blockDatas.GetOre(blockType);
-            blowOutOre.SetOre(ore, _direction.normalized);
+            blowOutOre.SetOre(ore, Direction.normalized);
             inputTank.RemoveTank();
         }
         else
@@ -205,7 +203,7 @@ public class BlowOut : Vacuum
             if (mapTilemap == null) { continue; }
             
             var direction1 = position - pivot.position;
-            var angle = Vector3.Angle(direction1, _direction);
+            var angle = Vector3.Angle(direction1, Direction);
 
             var dis = Vector3.Distance(pivot.position, position);
             if (angle <= 30 && dis <= radius)
@@ -302,10 +300,10 @@ public class BlowOut : Vacuum
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(pivot.position, distance);
 
-        var targetPosition = pivot.position + _direction.normalized * distance;
+        var targetPosition = pivot.position + Direction.normalized * distance;
         Gizmos.DrawLine(pivot.position, targetPosition);
 
-        var angle = Mathf.Atan2(_direction.y, _direction.x);
+        var angle = Mathf.Atan2(Direction.y, Direction.x);
 
         var chordLength = Mathf.Sqrt(Mathf.Pow(distance, 2) + Mathf.Pow(range, 2));
         var angle2 = Mathf.Acos(distance / chordLength);
@@ -340,21 +338,5 @@ public class BlowOut : Vacuum
         var newDirection = new Vector3(newX, newY, 0);
         var newCell = pivot.position + newDirection;
         return newCell;
-    }
-
-    private void OnEnable()
-    {
-        _playerActions.Enable();
-        
-        var soundSource = FindObjectOfType<SoundSource>();
-        _soundSource = soundSource.GetComponent<ISoundSourceable>();
-        _soundSource.SetInstantiation("BlowOut");
-        
-        _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
-    }
-
-    private void OnDisable()
-    {
-        _playerActions.Disable();
     }
 }
