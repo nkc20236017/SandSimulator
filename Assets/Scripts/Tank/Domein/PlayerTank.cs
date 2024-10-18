@@ -6,7 +6,7 @@ using VContainer;
 
 public class PlayerTank : IInputTank, IGameLoad
 {
-    private int selectIndex;
+    private int selectIndex =1;
     private ITankRepository tankRepository;
     private ExitGate exitGate;
     private Dictionary<Block, MineralTank> itemTankDictionary = new();

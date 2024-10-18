@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
@@ -39,10 +38,10 @@ public class SuckUp : MonoBehaviour
     private PlayerActions _playerActions;
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
     private IInputTank inputTank;
-    private IChunkInformation _chunkInformation;
     private ISoundSourceable _soundSource;
     private PlayerHealth playerHealth;
 
+    [SerializeField]
     private Vector3 suckUpPostion;
 
     private string[] seName =
@@ -69,10 +68,6 @@ public class SuckUp : MonoBehaviour
     private void Awake()
     {
         _playerActions = new PlayerActions();
-
-        _blowOut = GetComponent<BlowOut>();
-        _playerMovement = GetComponentInParent<PlayerMovement>();
-        playerHealth = GetComponentInParent<PlayerHealth>();
     }
 
     private void Start()
@@ -95,7 +90,6 @@ public class SuckUp : MonoBehaviour
         {
             if (inputTank.TamkMaxSignal())
             {
-                AudioManager.Instance.PlaySFX("MaxtankSE");
                 return;
             }
             suckEffect.SetActive(true);
@@ -128,8 +122,9 @@ mouseWorldPosition - pivot.position;
         Vector3 direction = VacuumActions.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
 ? VacuumActions.VacuumPos.ReadValue<Vector2>().normalized :
 mouseWorldPosition - pivot.position;
+        direction.z = 0;
 
-        suckUpPostion = direction;
+        suckUpPostion = direction.normalized;
     }
 
     private void Performed()
@@ -150,10 +145,6 @@ mouseWorldPosition - pivot.position;
     private void PlaySuckUp()
     {
         _playerMovement.IsMoveFlip = false;
-        if (inputTank.TamkMaxSignal())
-        {
-            AudioManager.Instance.PlaySFX("MaxtankSE");
-        }
     }
 
     private void CancelSuckUp()
@@ -190,7 +181,7 @@ mouseWorldPosition - pivot.position;
         _suckUpTilePositions.Clear();
         _suckUpOreObject.Clear();
 
-        var mapTilemap = _chunkInformation.GetChunkTilemap(pivot.position);
+        var mapTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(pivot.position);
         if (mapTilemap == null) { return; }
 
         var bounds = new BoundsInt(Vector3Int.RoundToInt(pivot.position) - new Vector3Int((int)_suctionDistance, (int)_suctionDistance, 0), new Vector3Int((int)_suctionDistance * 2, (int)_suctionDistance * 2, 1));
@@ -198,10 +189,10 @@ mouseWorldPosition - pivot.position;
         foreach (var position in bounds.allPositionsWithin)
         {
             var pos = new Vector2(position.x, position.y);
-            mapTilemap = _chunkInformation.GetChunkTilemap(pos);
+            mapTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(pos);
             if (mapTilemap == null) { continue; }
 
-            var localPosition = _chunkInformation.WorldToChunk(pos);
+            var localPosition = _playerMovement.ChunkInformation.WorldToChunk(pos);
             if (mapTilemap.HasTile(localPosition) || _updateTilemap.HasTile(position))
             {
                 hasTile = true;
@@ -211,7 +202,7 @@ mouseWorldPosition - pivot.position;
 
         foreach (var position in bounds.allPositionsWithin)
         {
-            var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
+            var tilemap = _playerMovement.ChunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
             if (tilemap == null) { continue; }
 
             var mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
@@ -228,7 +219,7 @@ mouseWorldPosition - pivot.position;
                 DetectOre(new Vector2(position.x, position.y));
                 if (_suckUpOreObject.Count > 0) { continue; }
 
-                var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+                var localPosition = _playerMovement.ChunkInformation.WorldToChunk(new Vector2(position.x, position.y));
                 if (tilemap.HasTile(localPosition) || _updateTilemap.HasTile(position))
                 {
                     _suckUpTilePositions.Add(position);
@@ -277,17 +268,17 @@ mouseWorldPosition - pivot.position;
 
         foreach (var position in _suckUpTilePositions)
         {
-            var tilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
+            var tilemap = _playerMovement.ChunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
             if (tilemap == null) { continue; }
 
             var direction = pivot.position - position;
             var newTilePosition = position + direction.normalized * suckUpSpeed;
 
-            var newTilemap = _chunkInformation.GetChunkTilemap(newTilePosition);
-            var localNewTilePosition = _chunkInformation.WorldToChunk(newTilePosition);
+            var newTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(newTilePosition);
+            var localNewTilePosition = _playerMovement.ChunkInformation.WorldToChunk(newTilePosition);
 
             TileBase tile = null;
-            var localTilePosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+            var localTilePosition = _playerMovement.ChunkInformation.WorldToChunk(new Vector2(position.x, position.y));
             if (tilemap.HasTile(localTilePosition))
             {
                 tile = tilemap.GetTile(localTilePosition);
@@ -321,7 +312,7 @@ mouseWorldPosition - pivot.position;
                 newTilemap.SetTile(localNewTilePosition, tile);
             }
             // TODO: 層ごとに色を変える
-            var tileLayer = _chunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
+            var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
             var block = blockDatas.GetBlock(tile);
             if (block.GetStratumGeologyData(tileLayer) != null)
             {
@@ -431,15 +422,16 @@ mouseWorldPosition - pivot.position;
     private void OnEnable()
     {
         _playerActions.Enable();
-
-        var worldMapManager = FindObjectOfType<WorldMapManager>();
-        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
-
+        
         var soundSource = FindObjectOfType<SoundSource>();
         _soundSource = soundSource.GetComponent<ISoundSourceable>();
         _soundSource.SetInstantiation("SuckUp");
 
         _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        
+        _blowOut = GetComponent<BlowOut>();
+        _playerMovement = GetComponentInParent<PlayerMovement>();
+        playerHealth = GetComponentInParent<PlayerHealth>();
     }
 
     private void OnDisable()

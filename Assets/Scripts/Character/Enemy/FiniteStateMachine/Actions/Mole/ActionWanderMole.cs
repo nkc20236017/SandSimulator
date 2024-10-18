@@ -14,7 +14,6 @@ public class ActionWanderMole : FsmAction
 	private Vector3 _movePosition;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
-	private IChunkInformation _chunkInformation;
 	
 	private void Start()
 	{
@@ -80,7 +79,7 @@ public class ActionWanderMole : FsmAction
     private bool IsTilemap(Vector3 position)
     {
         // マップがあるかどうか調べる
-		var mapTilemap = _chunkInformation.GetChunkTilemap(position);
+		var mapTilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(position);
 		return mapTilemap != null;
     }
 
@@ -97,11 +96,8 @@ public class ActionWanderMole : FsmAction
     }
 
     private void OnEnable()
-	{
-		var worldMapManager = FindObjectOfType<WorldMapManager>();
-		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
-		_rigidbody2D = GetComponent<Rigidbody2D>();
-		_enemyBrain = GetComponent<EnemyBrain>();
-	}
+    {
+	    _rigidbody2D = GetComponent<Rigidbody2D>();
+	    _enemyBrain = GetComponent<EnemyBrain>();
+    }
 }
-

@@ -17,7 +17,6 @@ public class ActionAttackTurtle : FsmAction
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
-	private IChunkInformation _chunkInformation;
 
 	public override void Action()
 	{
@@ -41,13 +40,13 @@ public class ActionAttackTurtle : FsmAction
 		for (var y = 1; y <= autoJumpHeight; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
-			var tilemap = _chunkInformation.GetChunkTilemap(position);
-			var tilemap2 = _chunkInformation.GetChunkTilemap(position + Vector2.up);
+			var tilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(position);
+			var tilemap2 = _enemyBrain.ChunkInformation.GetChunkTilemap(position + Vector2.up);
 			if (tilemap == null) { continue; }
 			if (tilemap2 == null) { continue; }
 			
-			var localPosition = _chunkInformation.WorldToChunk(position);
-			var localPosition2 = _chunkInformation.WorldToChunk(position + Vector2.up);
+			var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(position);
+			var localPosition2 = _enemyBrain.ChunkInformation.WorldToChunk(position + Vector2.up);
 			if (!tilemap.HasTile(localPosition) || tilemap2.HasTile(localPosition2)) { continue; }
 
 			if (IsWall(y) || IsHeavenly(y))
@@ -83,10 +82,10 @@ public class ActionAttackTurtle : FsmAction
 		for (var y = minY + 1; y <= maxY; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
-			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			var tilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(position);
 			if (tilemap == null) { return true; }
 			
-			var localPosition = _chunkInformation.WorldToChunk(position);
+			var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(localPosition)) { continue; }
 			
 			return true;
@@ -104,10 +103,10 @@ public class ActionAttackTurtle : FsmAction
 			for (var x = minX; x <= maxX; x++)
 			{
 				var position = new Vector2(x, _boxCollider2D.bounds.max.y + y);
-				var tilemap = _chunkInformation.GetChunkTilemap(position);
+				var tilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(position);
 				if (tilemap == null) { continue; }
 				
-				var localPosition = _chunkInformation.WorldToChunk(position);
+				var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(position);
 				if (!tilemap.HasTile(localPosition)) { continue; }
 
 				return true;
@@ -119,9 +118,6 @@ public class ActionAttackTurtle : FsmAction
 
 	private void OnEnable()
 	{
-		var worldMapManager = FindObjectOfType<WorldMapManager>();
-		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
-		
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();

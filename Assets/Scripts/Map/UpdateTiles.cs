@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class UpdateTile : MonoBehaviour
+public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
 {
     [Header("Datas Config")]
     [SerializeField] private BlockDatas blockDatas;
@@ -167,6 +167,11 @@ public class UpdateTile : MonoBehaviour
             {
                 _updateTilemap.SetColor(tilePosition, tile.GetStratumGeologyData(tileLayer).color);
             }
+            
+            // 動いている砂は当たり判定をなくす
+            if (tile.type != BlockType.Sand) { return; }
+            
+            _updateTilemap.SetColliderType(tilePosition, Tile.ColliderType.None);
         }
     }
 
@@ -238,6 +243,8 @@ public class UpdateTile : MonoBehaviour
                     break;
             }
         }
+        
+        _updateTilemap.SetColliderType(position, Tile.ColliderType.Sprite);
     }
 
     private bool CheckHasTile(Tilemap tilemap, Vector3Int position)
@@ -376,10 +383,9 @@ public class UpdateTile : MonoBehaviour
         _updateTilemap.color = color;
     }
 
-    private void OnEnable()
+    public void OnGenerated(IChunkInformation worldMapManager)
     {
-        var worldMapManager = FindObjectOfType<WorldMapManager>();
-        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
+        _chunkInformation = worldMapManager;
         _updateTilemap = GetComponent<Tilemap>();
         blockDatas.Block.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
     }

@@ -223,8 +223,10 @@ namespace WorldCreation
             StructureGenerate();
 
             GameObject worldMapManager = Instantiate(worldMapManagerPrefab, sceneParent);
-            worldMapManager.GetComponent<IWorldMapManager>()
-                .Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
+            WorldMapManager manager = worldMapManager.GetComponent<WorldMapManager>();
+            IWorldMapManager worldManager = manager;
+            worldManager.Initialize(_chunks, worldMap.OneChunkSize, _tilemapOrigin);
+
             Debug.Log($"<color=#ffff00ff>WorldMapManager‚Ì¶¬Š®—¹</color>");
 
             int childCount = sceneParent.childCount;
@@ -238,6 +240,11 @@ namespace WorldCreation
             foreach (GameObject activateObject in activeStanbyObject)
             {
                 activateObject.SetActive(true);
+                IWorldGenerateWaitable worldGenerateWaiter;
+                if (activateObject.TryGetComponent(out worldGenerateWaiter))
+                {
+                    worldGenerateWaiter.OnGenerated(manager);
+                }
             }
 
             entoryPoint.SetProgress(new(1f, "100%", "¢ŠE‚Ì¶¬‚ªŠ®—¹‚µ‚Ü‚µ‚½"));

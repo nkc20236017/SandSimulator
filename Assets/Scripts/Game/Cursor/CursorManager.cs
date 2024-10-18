@@ -1,15 +1,10 @@
 ﻿using UnityEngine;
 
-public class CursorManager : MonoBehaviour
+public class CursorManager : MonoBehaviour, ICursorSettable
 {
 	[Header("Cursor Config")]
 	[SerializeField] private Cursor cursor;
-
-	/// <summary>
-	/// カーソルを設定
-	/// </summary>
-	/// <param name="cursorType">カーソルの種類</param>
-	/// <param name="size">カーソルの大きさ</param>
+	
 	public void SetCursor(CursorType cursorType, Vector2Int size = default)
 	{
 		if (cursorType == CursorType.None)

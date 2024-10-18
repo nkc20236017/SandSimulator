@@ -39,7 +39,6 @@ public class BlowOut : MonoBehaviour
     private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
     private Tilemap _updateTilemap;
     private IInputTank inputTank;
-    private IChunkInformation _chunkInformation;
     private ISoundSourceable _soundSource;
 
     [SerializeField]
@@ -198,15 +197,15 @@ mouseWorldPosition - pivot.position;
                 var randomY = Random.Range(newCell1.y, newCell2.y);
                 var randomPosition = new Vector3(randomX, randomY, 0);
                 var randomCell = _updateTilemap.WorldToCell(randomPosition);
-                var mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(randomCell.x, randomCell.y));
+                var mapTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(new Vector2(randomCell.x, randomCell.y));
                 if (mapTilemap == null) { continue; }
                 
-                var localPosition = _chunkInformation.WorldToChunk(new Vector2(randomCell.x, randomCell.y));
+                var localPosition = _playerMovement.ChunkInformation.WorldToChunk(new Vector2(randomCell.x, randomCell.y));
                 if (_updateTilemap.HasTile(randomCell) || mapTilemap.HasTile(localPosition)) { continue; }
                 
                 _updateTilemap.SetTile(randomCell, blockDatas.GetBlock(blockType).tile);
 
-                var tileLayer = _chunkInformation.GetLayer(new Vector2(randomCell.x, randomCell.y));
+                var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(randomCell.x, randomCell.y));
                 var block = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile);
                 if (block.GetStratumGeologyData(tileLayer) != null)
                 {
@@ -230,10 +229,10 @@ mouseWorldPosition - pivot.position;
         foreach (var position in bounds.allPositionsWithin)
         {
             var pos = new Vector2(position.x, position.y);
-            mapTilemap = _chunkInformation.GetChunkTilemap(pos);
+            mapTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(pos);
             if (mapTilemap == null) { continue; }
             
-            var localPosition = _chunkInformation.WorldToChunk(pos);
+            var localPosition = _playerMovement.ChunkInformation.WorldToChunk(pos);
             if (!mapTilemap.HasTile(localPosition) && !_updateTilemap.HasTile(position)) { continue; }
 
             hasTile = true;
@@ -244,7 +243,7 @@ mouseWorldPosition - pivot.position;
         positions = positions.OrderBy(_ => Random.value).ToList();
         foreach (var position in positions)
         {
-            mapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
+            mapTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
             if (mapTilemap == null) { continue; }
             
             if (_camera == null)
@@ -266,8 +265,8 @@ mouseWorldPosition - pivot.position;
             if (angle <= 30 && dis <= radius)
             {
                 var newTilePosition = Vector3Int.RoundToInt(position + direction1.normalized * blowOutSpeed);
-                var localNewTilePosition = _chunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
-                var newMapTilemap = _chunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
+                var localNewTilePosition = _playerMovement.ChunkInformation.WorldToChunk(new Vector2(newTilePosition.x, newTilePosition.y));
+                var newMapTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(new Vector2(newTilePosition.x, newTilePosition.y));
                 if (newMapTilemap == null) { continue; }
                 if (_updateTilemap.HasTile(newTilePosition) || newMapTilemap.HasTile(localNewTilePosition)) { continue; }
                 
@@ -279,7 +278,7 @@ mouseWorldPosition - pivot.position;
                     _updateTilemap.SetTile(position, null);
                     _updateTilemap.SetTile(newTilePosition, tile);
                     
-                    var tileLayer = _chunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
+                    var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
                     var blockStratumGeologyData = blockDatas.GetBlock(tile).GetStratumGeologyData(tileLayer);
                     if (blockStratumGeologyData != null)
                     {
@@ -290,7 +289,7 @@ mouseWorldPosition - pivot.position;
                 }
 
                 // マップタイルの移動（砂の場合更新用タイルに移行）
-                var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
+                var localPosition = _playerMovement.ChunkInformation.WorldToChunk(new Vector2(position.x, position.y));
                 if (mapTilemap.HasTile(localPosition))
                 {
                     var tile = mapTilemap.GetTile(localPosition);
@@ -300,7 +299,7 @@ mouseWorldPosition - pivot.position;
                     {
                         _updateTilemap.SetTile(newTilePosition, tile);
                         
-                        var tileLayer = _chunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
+                        var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
                         var blockStratumGeologyData = blockDatas.GetBlock(tile).GetStratumGeologyData(tileLayer);
                         if (blockStratumGeologyData != null)
                         {
@@ -313,7 +312,7 @@ mouseWorldPosition - pivot.position;
                         
                         if (blockDatas.GetBlock(tile).type is not (BlockType.Ruby or BlockType.Crystal or BlockType.Emerald))
                         {
-                            var tileLayer = _chunkInformation.GetLayer(new Vector2(localNewTilePosition.x, localNewTilePosition.y));
+                            var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(localNewTilePosition.x, localNewTilePosition.y));
                             var blockStratumGeologyData = blockDatas.GetBlock(blockDatas.GetBlock(blockType).tile).GetStratumGeologyData(tileLayer);
                             if (blockStratumGeologyData != null)
                             {
@@ -397,9 +396,6 @@ mouseWorldPosition - pivot.position;
     private void OnEnable()
     {
         _playerActions.Enable();
-        
-        var worldMapManager = FindObjectOfType<WorldMapManager>();
-        _chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
         
         var soundSource = FindObjectOfType<SoundSource>();
         _soundSource = soundSource.GetComponent<ISoundSourceable>();

@@ -23,13 +23,25 @@ public class Parabola : MonoBehaviour
     private Camera _camera;
     private GameObject[] _dots;
 
+    private bool isMouse;
+    private bool isController;
+
     private void Start()
     {
         _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         playerActions = new();
-        playerActions.Vacuum.VacuumPos.performed += OnParabola;
+        playerActions.Vacuum.VacuumPos.started += _ => isController = true;
+        playerActions.Vacuum.VacuumPos.canceled += _ => isController = false;
         playerActions.Vacuum.VacuumMouse.performed += OnParabolaMouse;
         playerActions.Enable();
+    }
+
+    private void Update()
+    {
+        if (isController)
+        {
+            OnParabola();
+        }
     }
 
     private void OnDestroy()
@@ -37,9 +49,9 @@ public class Parabola : MonoBehaviour
         playerActions.Disable();
     }
 
-    private void OnParabola(InputAction.CallbackContext context)
+    private void OnParabola()
     {
-        Vector3 mouseWorldPosition = context.ReadValue<Vector2>();
+        Vector3 mouseWorldPosition = playerActions.Vacuum.VacuumPos.ReadValue<Vector2>();
         Vector3 direction = playerActions.Vacuum.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
 ? playerActions.Vacuum.VacuumPos.ReadValue<Vector2>().normalized :
 mouseWorldPosition - pivot.position;

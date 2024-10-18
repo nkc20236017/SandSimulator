@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using NaughtyAttributes;
 using Random = UnityEngine.Random;
 
@@ -35,7 +34,6 @@ public class ActionWanderTurtle : FsmAction
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
 	private EnemyBrain _enemyBrain;
-	private IChunkInformation _chunkInformation;
 
 	private void Start()
 	{
@@ -68,10 +66,10 @@ public class ActionWanderTurtle : FsmAction
 	private void Wander()
 	{
 		AutoBlockJump();
-		if (IsHole() && IsGround())
-		{
-			Flip();
-		}
+		// if (IsHole() && IsGround())
+		// {
+		// 	Flip();
+		// }
 		Movement();
 	}
 	
@@ -86,13 +84,13 @@ public class ActionWanderTurtle : FsmAction
 		for (var y = 1; y <= autoJumpHeight; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
-			var tilemap = _chunkInformation.GetChunkTilemap(position);
-			var tilemap2 = _chunkInformation.GetChunkTilemap(position + Vector2.up);
+			var tilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(position);
+			var tilemap2 = _enemyBrain.ChunkInformation.GetChunkTilemap(position + Vector2.up);
 			if (tilemap == null) { continue; }
 			if (tilemap2 == null) { continue; }
 			
-			var localPosition = _chunkInformation.WorldToChunk(position);
-			var localPosition2 = _chunkInformation.WorldToChunk(position + Vector2.up);
+			var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(position);
+			var localPosition2 = _enemyBrain.ChunkInformation.WorldToChunk(position + Vector2.up);
 			if (!tilemap.HasTile(localPosition) || tilemap2.HasTile(localPosition2)) { continue; }
 
 			if (IsWall(y) || IsHeavenly(y))
@@ -138,10 +136,10 @@ public class ActionWanderTurtle : FsmAction
 		for (var y = minY + 1; y <= maxY; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
-			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			var tilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(position);
 			if (tilemap == null) { return true; }
 			
-			var localPosition = _chunkInformation.WorldToChunk(position);
+			var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(localPosition)) { continue; }
 			
 			return true;
@@ -159,10 +157,10 @@ public class ActionWanderTurtle : FsmAction
 			for (var x = minX; x <= maxX; x++)
 			{
 				var position = new Vector2(x, _boxCollider2D.bounds.max.y + y);
-				var tilemap = _chunkInformation.GetChunkTilemap(position);
+				var tilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(position);
 				if (tilemap == null) { continue; }
 				
-				var localPosition = _chunkInformation.WorldToChunk(position);
+				var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(position);
 				if (!tilemap.HasTile(localPosition)) { continue; }
 
 				return true;
@@ -183,23 +181,18 @@ public class ActionWanderTurtle : FsmAction
 		if (_rigidbody2D.velocity.y is > 0.01f or < -0.01f) { return false; }
 		if (_moveDirection.x == 0) { return false; }
 		
-		var x = _moveDirection.x >= 0 ? _boxCollider2D.bounds.max.x : _boxCollider2D.bounds.min.x - _boxCollider2D.size.x;
-		var position = new Vector2(x, _boxCollider2D.bounds.min.y - _boxCollider2D.size.y);
-		var tilemap = _chunkInformation.GetChunkTilemap(position);
-		if (tilemap == null) { return false; }
-		
-		var cellPosition = tilemap.WorldToCell(position);
-		var size = Vector3Int.CeilToInt(_boxCollider2D.size);
-		var bounds = new BoundsInt(cellPosition.x, cellPosition.y, 1, size.x, size.y, 1);
-		foreach (var pos in bounds.allPositionsWithin)
+		var positionX = _moveDirection.x >= 0 ? _boxCollider2D.bounds.max.x : _boxCollider2D.bounds.min.x - _boxCollider2D.size.x;
+		var minPosition = new Vector2(positionX, _boxCollider2D.bounds.min.y - _boxCollider2D.size.y);
+		for (var y = 0; y < _boxCollider2D.size.y; y++)
 		{
-			tilemap = _chunkInformation.GetChunkTilemap(new Vector2(pos.x, pos.y));
-			if (tilemap == null) { continue; }
-			
-			var localPosition = _chunkInformation.WorldToChunk(new Vector2(pos.x, pos.y));
-			if (!tilemap.HasTile(localPosition)) { continue; }
-
-			return false;
+			for (var x = 0; x < _boxCollider2D.size.x; x++)
+			{
+				Debug.DrawLine(minPosition + new Vector2(x, y), minPosition + new Vector2(x, y) + Vector2.down * 0.1f, Color.yellow);
+				var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(new Vector2(minPosition.x + x, minPosition.y + y));
+				var localTilemap = _enemyBrain.ChunkInformation.GetChunkTilemap(new Vector2(minPosition.x + x, minPosition.y + y));
+				if (localTilemap == null) { continue; }
+				if (localTilemap.HasTile(localPosition)) { return false; }
+			}
 		}
 		
 		return true;
@@ -212,9 +205,6 @@ public class ActionWanderTurtle : FsmAction
 
 	private void OnEnable()
 	{
-		var worldMapManager = FindObjectOfType<WorldMapManager>();
-		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
-		
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_enemyBrain = GetComponent<EnemyBrain>();

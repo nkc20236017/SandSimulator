@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using NaughtyAttributes;
-using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 {
 	[Header("Movement Config")]
 	[SerializeField] private float speed;
@@ -24,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
 	private static readonly int IsJump = Animator.StringToHash("isJump");
 	private static readonly int XVelocity = Animator.StringToHash("xVelocity");
 	private float _knockbackTimer;
+	private bool _isAutoJump;
 	private Vector2 _moveDirection;
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
@@ -31,10 +31,10 @@ public class PlayerMovement : MonoBehaviour
 	private SpriteRenderer _spriteRenderer;
 	private Camera _camera;
 	private PlayerActions _playerActions;
-	private IChunkInformation _chunkInformation;
 
 	public bool CanMove { get; set; } = true;
 	public bool IsMoveFlip { get; set; } = true;
+	public IChunkInformation ChunkInformation { get; private set; }
 	private PlayerActions.MovementActions MovementActions => _playerActions.Movement;
 
 	private void Awake()
@@ -58,10 +58,7 @@ public class PlayerMovement : MonoBehaviour
 
 		if (!CanMove) { return; }
 
-		if (canAutoJump)
-		{
-			AutoBlockJump();
-		}
+		AutoBlockJump();
 		Movement();
 	}
 	
@@ -98,6 +95,13 @@ public class PlayerMovement : MonoBehaviour
 	{
 		if (!CanMove) { return; }
 		if (!IsGround()) { return; }
+
+		if (_isAutoJump)
+		{
+			_isAutoJump = false;
+			_rigidbody2D.velocity += Vector2.up * jumpForce * Time.fixedDeltaTime;
+			return;
+		}
 		
 		_rigidbody2D.velocity = Vector2.up * jumpForce * Time.fixedDeltaTime;
 	}
@@ -112,6 +116,8 @@ public class PlayerMovement : MonoBehaviour
 	
 	private void AutoBlockJump()
 	{
+		_isAutoJump = false;
+		if (!canAutoJump) { return; }
 		if (_rigidbody2D.velocity.y is > 0.001f or < -0.001f) { return; }
 		if (_moveDirection.x == 0) { return; }
 		if (!IsGround()) { return; }
@@ -120,10 +126,10 @@ public class PlayerMovement : MonoBehaviour
 		for (var y = 1; y <= autoJumpHeight; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y - 1);
-			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			var tilemap = ChunkInformation.GetChunkTilemap(position);
 			if (tilemap == null) { continue; }
 			
-			var cellPosition = _chunkInformation.WorldToChunk(position);
+			var cellPosition = ChunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(cellPosition) || tilemap.HasTile(cellPosition + Vector3Int.up)) { continue; }
 
 			if (IsWall(y) || IsHeavenly(y))
@@ -133,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
 				continue;
 			}
 
+			_isAutoJump = true;
 			transform.position += new Vector3(0.1f, y + 0.1f, 0);
 			return;
 		}
@@ -159,10 +166,10 @@ public class PlayerMovement : MonoBehaviour
 		for (var y = minY + 1; y <= maxY; y++)
 		{
 			var position = new Vector2(x, _boxCollider2D.bounds.min.y + y);
-			var tilemap = _chunkInformation.GetChunkTilemap(position);
+			var tilemap = ChunkInformation.GetChunkTilemap(position);
 			if (tilemap == null) { return true; }
 			
-			var cellPosition = _chunkInformation.WorldToChunk(position);
+			var cellPosition = ChunkInformation.WorldToChunk(position);
 			if (!tilemap.HasTile(cellPosition)) { continue; }
 			
 			return true;
@@ -180,10 +187,10 @@ public class PlayerMovement : MonoBehaviour
 			for (var x = minX; x <= maxX; x++)
 			{
 				var position = new Vector2(x, _boxCollider2D.bounds.max.y + y);
-				var tilemap = _chunkInformation.GetChunkTilemap(position);
+				var tilemap = ChunkInformation.GetChunkTilemap(position);
 				if (tilemap == null) { continue; }
 				
-				var cellPosition = _chunkInformation.WorldToChunk(position);
+				var cellPosition = ChunkInformation.WorldToChunk(position);
 				if (!tilemap.HasTile(cellPosition)) { continue; }
 
 				return true;
@@ -244,7 +251,7 @@ public class PlayerMovement : MonoBehaviour
 		var position = new Vector2(x, y);
 		if (isColliderRadius)
 		{
-			Gizmos.DrawWireSphere(position, boxCollider2D.size.x / 2 - 0.1f);
+			Gizmos.DrawWireSphere(position, boxCollider2D.size.x / 2 - 0.01f);
 		}
 		else
 		{
@@ -255,15 +262,17 @@ public class PlayerMovement : MonoBehaviour
 	private void OnEnable()
 	{
 		_playerActions.Enable();
-		
-		var worldMapManager = FindObjectOfType<WorldMapManager>();
-		_chunkInformation = worldMapManager.GetComponent<IChunkInformation>();
-		
-		_camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 	}
 	
 	private void OnDisable()
 	{
 		_playerActions.Disable();
+	}
+
+	public void OnGenerated(IChunkInformation worldMapManager)
+	{
+		ChunkInformation = worldMapManager;
+		
+		_camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 	}
 }
