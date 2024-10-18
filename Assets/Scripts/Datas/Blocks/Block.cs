@@ -41,7 +41,8 @@ public class Block : ScriptableObject
     public int endurance;
     public int price;
     public Material material;
-    public int vacuumAmount;
+    public int AddAmount;
+    public int RemoveAmount;
 
     [HideInInspector] public List<Vector3Int> tilePositions = new();
     

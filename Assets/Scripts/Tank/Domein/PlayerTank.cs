@@ -6,17 +6,16 @@ using VContainer;
 
 public class PlayerTank : IInputTank, IGameLoad
 {
-    private int selectIndex =1;
-    private ITankRepository tankRepository;
-    private ExitGate exitGate;
-    private Dictionary<Block, MineralTank> itemTankDictionary = new();
-    private IOutResultUI outPutTank;
     private readonly float MaxTank = 4000;
+    private int selectIndex =1;
     private int currentItemAmount = 1;
-    private BlockType currentBlockType;
     private bool maxSignal;
-
     private bool fast;
+    private Dictionary<Block, MineralTank> itemTankDictionary = new();
+    private ExitGate exitGate;
+    private BlockType currentBlockType;
+    private IOutResultUI outPutTank;
+    private ITankRepository tankRepository;
 
     [Inject]
     public PlayerTank(IOutResultUI outPutTank, ITankRepository tankRepository)
@@ -28,7 +27,7 @@ public class PlayerTank : IInputTank, IGameLoad
     public void InputAddTank(TileBase tileBase)
     {
         var mineralItem = tankRepository.Find(tileBase);
-        for (int i = 0; i < mineralItem.vacuumAmount; i++)
+        for (int i = 0; i < mineralItem.AddAmount; i++)
         {
             AddItem(mineralItem);
         }
@@ -37,7 +36,7 @@ public class PlayerTank : IInputTank, IGameLoad
     public void InputAddTank(BlockType type)
     {
         var mineralItem = tankRepository.Find(type);
-        for (int i = 0; i < mineralItem.vacuumAmount + 45; i++)
+        for (int i = 0; i < mineralItem.AddAmount + 45; i++)
         {
             AddItem(mineralItem);
         }
@@ -48,7 +47,7 @@ public class PlayerTank : IInputTank, IGameLoad
         var block = tankRepository.Find(currentBlockType);
         if (block == null) { return; }
 
-        for (int i = 0; i < block.vacuumAmount; i++)
+        for (int i = 0; i < block.RemoveAmount; i++)
         {
             RemoveItem(block);
         }

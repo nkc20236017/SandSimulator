@@ -23,7 +23,8 @@ MonoBehaviour:
   endurance: 0
   price: 0
   material: {fileID: 0}
-  vacuumAmount: 0
+  AddAmount: 10
+  RemoveAmount: 50
   tilePositions: []
   attackPower: 0
   weightPerSize: 010000000100000001000000
