@@ -4,19 +4,17 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
-
-public class SelectAction : MonoBehaviour
-{
-    [SerializeField]
-    private GameObject virtualMouse;
-
-    /// 入力デバイスの種別
-    /// </summary>
     public enum InputDeviceType
     {
         Keyboard,   // キーボード・マウス
         Xbox,       // Xboxコントローラー
     }
+
+public class SelectAction : MonoBehaviour
+{
+
+    /// 入力デバイスの種別
+    /// </summary>
 
     // 直近に操作された入力デバイスタイプ
     public InputDeviceType CurrentDeviceType { get; private set; } = InputDeviceType.Keyboard;
@@ -75,13 +73,11 @@ public class SelectAction : MonoBehaviour
         if (xInputAnyKey.triggered)
         {
             CurrentDeviceType = InputDeviceType.Xbox;
-            virtualMouse.SetActive(true);
         }
 
         if (keyboardAnyKey.triggered || mouseAnyKey.triggered)
         {
             CurrentDeviceType = InputDeviceType.Keyboard;
-            virtualMouse.SetActive(false);
         }
 
         // 操作デバイスが切り替わったとき、イベント発火
