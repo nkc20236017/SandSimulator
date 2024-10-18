@@ -32,6 +32,6 @@ MonoBehaviour:
   endurance: 0
   price: 1
   material: {fileID: 0}
-  AddAmount: 2
+  AddAmount: 1
   RemoveAmount: 4
   tilePositions: []

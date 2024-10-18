@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class DemoInputTitleScene : MonoBehaviour
 {
-    private ISceneIdentifier loadScene = new BuiltInSceneIdentifier("LoadScene");
-    private ISceneIdentifier gameScene = new BuiltInSceneIdentifier("SelectScene");
+    private ISceneIdentifier loadScene = new BuiltInSceneIdentifier("LoadProgressScene");
+    private ISceneIdentifier gameScene = new BuiltInSceneIdentifier("MainScene");
     private PlayerActions inputActions;
 
     private void Start()
