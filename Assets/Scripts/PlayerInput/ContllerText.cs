@@ -18,7 +18,7 @@ public class ContllerText : MonoBehaviour
 
         if(InputDeviceManager.CurrentDeviceType == InputDeviceType.Keyboard)
         {
-            Text.text = "Click To Start";
+            Text.text = "Press A To Start";
         }
         if(InputDeviceManager.CurrentDeviceType == InputDeviceType.Xbox)
         {

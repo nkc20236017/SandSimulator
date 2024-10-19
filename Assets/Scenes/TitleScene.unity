@@ -1059,8 +1059,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   volume: {fileID: 1435520634}
   waitTime: 5
-  maxIntensity: 21
-  minIntensity: 27
+  maxIntensity: 27
+  minIntensity: 15
 --- !u!1 &1469738187
 GameObject:
   m_ObjectHideFlags: 0

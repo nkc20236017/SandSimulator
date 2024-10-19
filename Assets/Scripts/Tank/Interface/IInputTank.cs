@@ -15,4 +15,6 @@ public interface IInputTank
     bool TamkMaxSignal();
     BlockType GetSelectType();
 
+    void InputLock();
+
 }

@@ -23,7 +23,7 @@ MonoBehaviour:
   endurance: 35
   price: 50
   material: {fileID: 2100000, guid: 50090c6683dbeea4cb680bc0ef16aa93, type: 2}
-  AddAmount: 10
+  AddAmount: 5
   RemoveAmount: 50
   tilePositions: []
   attackPower: 10

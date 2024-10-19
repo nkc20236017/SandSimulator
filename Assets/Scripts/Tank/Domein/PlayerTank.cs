@@ -6,11 +6,12 @@ using VContainer;
 
 public class PlayerTank : IInputTank, IGameLoad
 {
-    private readonly float MaxTank = 4000;
-    private int selectIndex =1;
+    private readonly float MaxTank = 6000;
+    private int selectIndex = 1;
     private int currentItemAmount = 1;
     private bool maxSignal;
     private bool fast;
+    private bool lockTank;
     private Dictionary<Block, MineralTank> itemTankDictionary = new();
     private ExitGate exitGate;
     private BlockType currentBlockType;
@@ -96,6 +97,8 @@ public class PlayerTank : IInputTank, IGameLoad
             {
                 itemTankDictionary.Remove(mineralData);
                 currentItemAmount--;
+                lockTank = true;
+                Debug.Log("あああああ");
                 SelectTank(itemTankDictionary.Keys.Count);
                 if (itemTankDictionary.Keys.Count <= 0)
                 {
@@ -129,11 +132,17 @@ public class PlayerTank : IInputTank, IGameLoad
 
     public bool FiringTank()
     {
+
         var block = tankRepository.Find(currentBlockType);
 
         var item = itemTankDictionary.
     Where(item => item.Key.type == block.type).
     FirstOrDefault();
+
+        if (lockTank)
+        {
+            return false;
+        }
 
         if (item.Key != null)
         {
@@ -179,7 +188,7 @@ public class PlayerTank : IInputTank, IGameLoad
     {
         selectIndex = Mathf.Clamp(selectIndex, 0, itemTankDictionary.Keys.Count);
         selectIndex--;
-        if(selectIndex ==  0)
+        if (selectIndex == 0)
         {
             selectIndex = itemTankDictionary.Keys.Count;
         }
@@ -188,10 +197,10 @@ public class PlayerTank : IInputTank, IGameLoad
 
     public void RightSelectTank()
     {
-        selectIndex = Mathf.Clamp(selectIndex, 1, itemTankDictionary.Keys.Count+1);
+        selectIndex = Mathf.Clamp(selectIndex, 1, itemTankDictionary.Keys.Count + 1);
         selectIndex++;
 
-        if(selectIndex > itemTankDictionary.Keys.Count)
+        if (selectIndex > itemTankDictionary.Keys.Count)
         {
             selectIndex = 1;
         }
@@ -203,4 +212,8 @@ public class PlayerTank : IInputTank, IGameLoad
         return currentBlockType;
     }
 
+    public void InputLock()
+    {
+        lockTank = false;
+    }
 }

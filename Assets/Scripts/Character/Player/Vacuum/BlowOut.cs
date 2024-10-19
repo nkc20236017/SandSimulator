@@ -77,6 +77,13 @@ public class BlowOut : MonoBehaviour
         VacuumActions.SpittingOut.canceled += _ => CancelBlowOut();
         VacuumActions.VacuumPos.performed += OnBlowOut;
         VacuumActions.VacuumMouse.performed += OnBlowOutMouse;
+        VacuumActions.SpittingOut.started += OnOut;
+    }
+
+    private void OnOut(InputAction.CallbackContext callback)
+    {
+        Debug.Log("$$");
+        inputTank.InputLock();
     }
 
     private void Update()
