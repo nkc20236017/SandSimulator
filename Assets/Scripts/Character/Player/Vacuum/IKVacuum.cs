@@ -5,20 +5,28 @@ using NaughtyAttributes;
 public class IKVacuum : MonoBehaviour
 {
     [Header("IK Settings")]
+    [SerializeField] private Transform _player;
     [SerializeField] private GameObject _bonePrefab;
     [SerializeField] private LineRenderer _linePrefab;
-    [SerializeField, MinValue(0f), MaxValue(1f)] private float _lineWidth = 0.1f;
     [SerializeField] private Transform _firstPoint;
     [SerializeField] private Transform _targetPoint;
-    [SerializeField, Min(0)] private int maxIteration = 5;
-    [SerializeField] private Material lineMaterial;
-    [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private Material _lineMaterial;
+    
+    [Header("IK Config")]
+    [Tooltip("間接の数")][Min(0)]
+    [SerializeField] private int _maxIteration = 5;
+    [Tooltip("全体の長さ")]
     [SerializeField] private float _length = 1f;
+    [Tooltip("線の太さ")][MinValue(0f), MaxValue(1f)]
+    [SerializeField] private float _lineWidth = 0.1f;
+    [Tooltip("重力")]
+    [SerializeField] private Vector3 _gravity = new(0, -9.81f, 0);
 
-    private List<float> lengths = new();
-    private List<Vector3> positions = new();
-    private List<Transform> axises = new();
-    private List<LineRenderer> lineRenderers = new();
+    private float _axesLength;
+    private List<float> _lengths = new();
+    private List<Vector3> _positions = new();
+    private List<Transform> _axises = new();
+    private List<LineRenderer> _lineRenderers = new();
 
     private void Start()
     {
@@ -27,55 +35,55 @@ public class IKVacuum : MonoBehaviour
 
     private void CreateIK()
     {
-        axises.Add(_firstPoint);
+        _axises.Add(_firstPoint);
         Transform parent = _firstPoint;
-        for (int i = 0; i < maxIteration; i++)
+        _axesLength = _length / _maxIteration;
+        for (int i = 0; i < _maxIteration; i++)
         {
-            GameObject newPoint = Instantiate(_bonePrefab, parent.position + Vector3.up * _length, Quaternion.identity);
+            GameObject newPoint = Instantiate(_bonePrefab, parent.position + Vector3.up * _axesLength, Quaternion.identity);
             newPoint.transform.SetParent(parent);
-            axises.Add(newPoint.transform);
+            _axises.Add(newPoint.transform);
             parent = newPoint.transform;
         }
 
-        lengths.Clear();
-        for (var i = 0; i < axises.Count - 1; i++)
+        _lengths.Clear();
+        for (var i = 0; i < _axises.Count - 1; i++)
         {
-            lengths.Add(Vector3.Distance(axises[i].position, axises[i + 1].position));
+            _lengths.Add(Vector3.Distance(_axises[i].position, _axises[i + 1].position));
         }
 
-        positions.Clear();
-        foreach (var b in axises)
+        _positions.Clear();
+        foreach (var b in _axises)
         {
-            positions.Add(b.position);
+            _positions.Add(b.position);
         }
 
-        for (var i = 0; i < axises.Count - 1; i++)
+        for (var i = 0; i < _axises.Count - 1; i++)
         {
-            LineRenderer lineRenderer = Instantiate(_linePrefab, axises[i]);
-            lineRenderer.material = lineMaterial;
+            LineRenderer lineRenderer = Instantiate(_linePrefab, _axises[i]);
+            lineRenderer.material = _lineMaterial;
             lineRenderer.startWidth = _lineWidth;
             lineRenderer.endWidth = _lineWidth;
-            lineRenderers.Add(lineRenderer);
+            _lineRenderers.Add(lineRenderer);
         }
     }
 
     private void Update()
     {
-        var dir = (_targetPoint.position - _firstPoint.position).normalized;
-        var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        _targetPoint.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-        
-        for (var i = 0; i < axises.Count; i++)
+        VacuumMovement();
+        VacuumRotate();
+
+        for (var i = 0; i < _axises.Count; i++)
         {
-            positions[i] = axises[i].position;
+            _positions[i] = _axises[i].position;
         }
 
-        var basePos = positions[0];
+        var basePos = _positions[0];
         var targetPos = _targetPoint.position;
         var prevDistance = 0.0f;
-        for (var iter = 0; iter < maxIteration; iter++)
+        for (var iter = 0; iter < _maxIteration; iter++)
         {
-            var distance = Vector3.Distance(positions[positions.Count - 1], targetPos);
+            var distance = Vector3.Distance(_positions[_positions.Count - 1], targetPos);
             var change = Mathf.Abs(distance - prevDistance);
             prevDistance = distance;
             if (distance < 1e-6 || change < 1e-8)
@@ -83,41 +91,60 @@ public class IKVacuum : MonoBehaviour
                 break;
             }
 
-            positions[^1] = targetPos;
-            for (var i = positions.Count - 1; i >= 1; i--)
+            _positions[^1] = targetPos;
+            for (var i = _positions.Count - 1; i >= 1; i--)
             {
-                var direction = (positions[i] - positions[i - 1]).normalized;
-                positions[i - 1] = positions[i] - direction * lengths[i - 1];
+                var direction = (_positions[i] - _positions[i - 1]).normalized;
+                _positions[i - 1] = _positions[i] - direction * _lengths[i - 1];
             }
 
-            positions[0] = basePos;
-            for (var i = 0; i <= positions.Count - 2; i++)
+            _positions[0] = basePos;
+            for (var i = 0; i <= _positions.Count - 2; i++)
             {
-                var direction = (positions[i + 1] - positions[i]).normalized;
-                positions[i + 1] = positions[i] + direction * lengths[i];
+                var direction = (_positions[i + 1] - _positions[i]).normalized;
+                _positions[i + 1] = _positions[i] + direction * _lengths[i];
             }
 
-            // Apply gravity
-            for (var i = 1; i < positions.Count; i++)
+            // 重力
+            for (var i = 1; i < _positions.Count; i++)
             {
-                positions[i] += Vector3.down * (gravity * Time.deltaTime * Time.deltaTime);
+                _positions[i] += _gravity * (Time.deltaTime * Time.deltaTime);
             }
         }
 
-        for (var i = 0; i < positions.Count - 1; i++)
+        for (var i = 0; i < _positions.Count - 1; i++)
         {
-            var origin = axises[i].position;
-            var current = axises[i + 1].position;
-            var target = positions[i + 1];
+            var origin = _axises[i].position;
+            var current = _axises[i + 1].position;
+            var target = _positions[i + 1];
             var delta = GetDeltaRotation(origin, current, target);
-            axises[i].rotation = delta * axises[i].rotation;
+            _axises[i].rotation = delta * _axises[i].rotation;
         }
 
-        for (var i = 0; i < lineRenderers.Count; i++)
+        for (var i = 0; i < _lineRenderers.Count; i++)
         {
-            lineRenderers[i].SetPosition(0, axises[i].position + new Vector3(0, 0, -0.25f));
-            lineRenderers[i].SetPosition(1, axises[i + 1].position + new Vector3(0, 0, -0.25f));
+            _lineRenderers[i].SetPosition(0, _axises[i].position + new Vector3(0, 0, -0.25f));
+            _lineRenderers[i].SetPosition(1, _axises[i + 1].position + new Vector3(0, 0, -0.25f));
         }
+    }
+
+    private void VacuumMovement()
+    {
+        // バキュームの移動制限
+        var dis = Vector3.Distance(_firstPoint.position, _targetPoint.position);
+        if (dis >= _length)
+        {
+            var direction = (_targetPoint.position - _firstPoint.position).normalized;
+            _targetPoint.position = _firstPoint.position + direction * _length;
+        }
+    }
+
+    private void VacuumRotate()
+    {
+        // バキュームの向きを設定
+        var dir = (_targetPoint.position - _player.position).normalized;
+        var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        _targetPoint.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
     }
 
     private static Quaternion GetDeltaRotation(Vector3 origin, Vector3 current, Vector3 target)
