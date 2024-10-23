@@ -144,14 +144,14 @@ ScriptedImporter:
   spriteSheetImportData:
   - name: player_0
     originalName: 
-    pivot: {x: 0.339, y: 0}
-    alignment: 9
+    pivot: {x: 0.5, y: 0}
+    alignment: 7
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
       x: 19
       y: 4
-      width: 27
+      width: 19
       height: 29
     spriteID: f818fbb622937504db668706bd1255d1
     spriteBone: []
