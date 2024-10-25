@@ -12,7 +12,6 @@ public class BlowOut : MonoBehaviour
     [SerializeField] private BlockDatas blockDatas;
 
     [Header("BlowOut Config")]
-    [SerializeField] private BlockType blockType;
     [SerializeField] private Transform pivot;
     [SerializeField, Min(0f)] private float radius; // 吐き出し範囲
     [SerializeField, Min(0f)] private float distance; // 吐き出し距離（現状意味ない）
@@ -31,6 +30,7 @@ public class BlowOut : MonoBehaviour
 
     private float _weight;
     private float _lastUpdateTime;
+    private BlockType blockType;
     private PlayerMovement _playerMovement;
     private Camera _camera;
     private SuckUp _suckUp;
@@ -73,17 +73,9 @@ public class BlowOut : MonoBehaviour
     {
         _lastUpdateTime = 0f;
 
-        VacuumActions.SpittingOut.started += _ => _playerMovement.IsMoveFlip = false;
         VacuumActions.SpittingOut.canceled += _ => CancelBlowOut();
-        VacuumActions.VacuumPos.performed += OnBlowOut;
-        VacuumActions.VacuumMouse.performed += OnBlowOutMouse;
-        VacuumActions.SpittingOut.started += OnOut;
-    }
-
-    private void OnOut(InputAction.CallbackContext callback)
-    {
-        Debug.Log("$$");
-        inputTank.InputLock();
+        VacuumActions.VacuumPos.performed += OnGamepad;
+        VacuumActions.VacuumMouse.performed += OnMouse;
     }
 
     private void Update()
@@ -108,28 +100,33 @@ public class BlowOut : MonoBehaviour
         }
     }
 
-    private void OnBlowOut(InputAction.CallbackContext context)
+    /// <summary>
+    /// ゲームパッドの入力を取得して、吸引方向を決定する
+    /// </summary>
+    /// <param name="context"></param>
+    private void OnGamepad(InputAction.CallbackContext context)
     {
-        Vector3 mouseWorldPosition = context.ReadValue<Vector2>();
-
-        Vector3 direction = VacuumActions.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
-? VacuumActions.VacuumPos.ReadValue<Vector2>().normalized :
-mouseWorldPosition - pivot.position;
-
-        blowOutMousePostion = direction;
+        var vacuumPos = VacuumActions.VacuumPos.ReadValue<Vector2>();
+        if (vacuumPos.sqrMagnitude == 0) { return; }
+		
+        blowOutMousePostion = vacuumPos.normalized;
     }
-    private void OnBlowOutMouse(InputAction.CallbackContext context)
+	
+    /// <summary>
+    /// マウスの位置を取得して、吸引方向を決定する
+    /// </summary>
+    /// <param name="context"></param>
+    private void OnMouse(InputAction.CallbackContext context)
     {
         if (_camera == null)
         {
             _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         }
-
-        Vector3 mouseWorldPosition = _camera.ScreenToWorldPoint(context.ReadValue<Vector2>());
-
-        Vector3 direction = VacuumActions.VacuumPos.ReadValue<Vector2>().sqrMagnitude != 0
-? VacuumActions.VacuumPos.ReadValue<Vector2>().normalized :
-mouseWorldPosition - pivot.position;
+		
+        var position = context.ReadValue<Vector2>();
+        Vector3 mouseWorldPosition = _camera.ScreenToWorldPoint(position);
+        Vector3 direction = (mouseWorldPosition - pivot.position).normalized;
+        direction.z = 0;
 
         blowOutMousePostion = direction;
     }
@@ -336,7 +333,6 @@ mouseWorldPosition - pivot.position;
     {
         blowEffect.SetActive(false);
         IsBlowOut = false;
-        _playerMovement.IsMoveFlip = true;
     }
 
     private void OnDrawGizmos()
@@ -349,17 +345,7 @@ mouseWorldPosition - pivot.position;
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(pivot.position, distance);
 
-        var mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
-        if (mainCamera == null) { return; }
-
-        var mouseWorldPosition = blowOutMousePostion;
-        if (_updateTilemap == null) { return; }
-
-        var centerCell = (Vector3)_updateTilemap.WorldToCell(mouseWorldPosition);
-
-        //var direction = centerCell - pivot.position;
         Vector3 direction = blowOutMousePostion;
-
         var targetPosition = pivot.position + direction.normalized * distance;
         Gizmos.DrawLine(pivot.position, targetPosition);
 
