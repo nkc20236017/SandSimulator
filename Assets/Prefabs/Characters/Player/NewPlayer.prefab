@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 761576920284506522}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.87881714, w: 0.4771588}
-  m_LocalPosition: {x: 0.61283374, y: 1.6254982, z: 0}
+  m_LocalPosition: {x: 0.6114, y: 1.6095, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -142,7 +142,7 @@ Transform:
   m_GameObject: {fileID: 2321089699253107245}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.87881714, w: 0.4771588}
-  m_LocalPosition: {x: 0.0032016, y: -0.0055896, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -715,7 +715,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   suckUpSpeed: 3
-  _debugMode: 1
+  _debugMode: 0
   matchTheSizeOfTheCollider: 0
   suckEffect: {fileID: 5052201344631655864}
   suckUpPostion: {x: 0, y: 0, z: 0}
@@ -740,7 +740,7 @@ MonoBehaviour:
   interval: 0.01
   generateTileCount: {x: 5, y: 8}
   blowOutOrePrefab: {fileID: 6160956251364179191, guid: f9894d24cfcacfb418601744a869af7e, type: 3}
-  debug: 1
+  debug: 0
   blowEffect: {fileID: 6886564342449709102}
   blowOutMousePostion: {x: 0, y: 0, z: 0}
 --- !u!1 &8661631215917979656

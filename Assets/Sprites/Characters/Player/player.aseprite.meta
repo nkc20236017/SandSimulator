@@ -344,15 +344,15 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Arm_Left
     originalName: 
-    pivot: {x: 0.56445855, y: 0.75085783}
+    pivot: {x: 0.71303123, y: 0.78765756}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 49
-      y: 44
+      x: 48
+      y: 42
       width: 7
-      height: 8
+      height: 10
     spriteID: a532a536b279987478c0cacfcd5e57ed
     spriteBone: []
     spriteOutline: []
