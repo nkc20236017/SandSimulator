@@ -74,7 +74,6 @@ public class SuckUp : MonoBehaviour
     {
         _numberExecutions = 0;
 
-        VacuumActions.Absorption.started += _ => PlaySuckUp();
         VacuumActions.Absorption.canceled += _ => CancelSuckUp();
         VacuumActions.VacuumPos.performed += OnSuckUp;
         VacuumActions.VacuumMouse.performed += OnSuckUpMouse;
@@ -142,17 +141,11 @@ mouseWorldPosition - pivot.position;
         SuckUpTiles();
     }
 
-    private void PlaySuckUp()
-    {
-        _playerMovement.IsMoveFlip = false;
-    }
-
     private void CancelSuckUp()
     {
         suckEffect.SetActive(false);
         IsSuckUp = false;
         _suckUpTilePositions.Clear();
-        _playerMovement.IsMoveFlip = true;
         _numberExecutions = 0;
     }
 

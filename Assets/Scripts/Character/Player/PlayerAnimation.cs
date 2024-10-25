@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq;
-using NaughtyAttributes;
 using UnityEngine;
+using NaughtyAttributes;
 
 public class PlayerAnimation : MonoBehaviour
 {
 	[Header("Animation Config")]
+	[SerializeField] private Animator _playerModelAnimator;
+	[SerializeField] private Rigidbody2D _rigidbody2D;
+	[SerializeField] private PlayerMovement _playerMovement;
 	[SerializeField] private Transform _playerPoint;
 	[SerializeField] private Transform _playerCenterPoint;
 	[SerializeField] private Transform _vacuumPoint;
@@ -18,11 +21,10 @@ public class PlayerAnimation : MonoBehaviour
 	[SerializeField] private SpriteRenderer _playerHeadSpriteRenderer;
 	[SerializeField] private PlayerHead[] _playerHeads;
 	
-	[Header("Head Settings")]
-	[SerializeField] private PlayerHeadType _defaultPlayerHeadType;
-	
+	private static readonly int IsJump = Animator.StringToHash("isJump");
+	private static readonly int XVelocity = Animator.StringToHash("xVelocity");
 	private Vector3 _playerDirection;
-	private PlayerHeadType _currentPlayerHeadType;
+	private PlayerHeadType _currentPlayerHeadType = PlayerHeadType.Normal;
 
 	/// <summary>
 	/// プレイヤーの頭の種類を設定する
@@ -36,19 +38,21 @@ public class PlayerAnimation : MonoBehaviour
 			_playerHeadSpriteRenderer.sprite = GetPlayerHead().upHead;
 		}
 	}
-	
-	private void Start()
-	{
-		CurrentPlayerHeadType = _defaultPlayerHeadType;
-	}
 
 	private void Update()
 	{
+		// Animation();
 		SetPlayerToVacuumDirection();
 		Flip();
 		HeadDirection();
 		LeftArmRotation();
 		RightArmRotation();
+	}
+	
+	private void Animation()
+	{
+		_playerModelAnimator.SetBool(IsJump, !_playerMovement.IsGround());
+		_playerModelAnimator.SetFloat(XVelocity, Mathf.Abs(_rigidbody2D.velocity.x));
 	}
 	
 	private void SetPlayerToVacuumDirection()

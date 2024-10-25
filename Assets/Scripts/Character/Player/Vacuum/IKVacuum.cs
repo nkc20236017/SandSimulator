@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
+using UnityEngine.InputSystem;
 
 public class IKVacuum : MonoBehaviour
 {
@@ -25,18 +27,14 @@ public class IKVacuum : MonoBehaviour
     [SerializeField] private float _vacuumRange = 1f;
 
     private float _axesLength;
+    private Vector3 _direction;
     private List<float> _lengths = new();
     private List<Vector3> _positions = new();
     private List<Transform> _axises = new();
     private List<LineRenderer> _lineRenderers = new();
     private Camera _camera;
-
-    private void Start()
-    {
-        _camera = Camera.main;
-        
-        CreateIK();
-    }
+    private PlayerActions _playerActions;
+    private PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
 
     private void CreateIK()
     {
@@ -142,13 +140,39 @@ public class IKVacuum : MonoBehaviour
 
     private void VacuumMovement()
     {
-        // バキュームの位置をマウスの位置に設定
-        Vector3 cursor = _camera.ScreenToWorldPoint(Input.mousePosition);
-        cursor.z = 0;
-        
         // バキュームの移動制限
-        Vector3 direction = (cursor - _player.position).normalized;
-        _targetPoint.position = _player.position + direction * _vacuumRange;
+        _targetPoint.position = _player.position + _direction * _vacuumRange;
+    }
+    
+    /// <summary>
+    /// ゲームパッドの入力を取得して、吸引方向を決定する
+    /// </summary>
+    /// <param name="context"></param>
+    private void OnGamepad(InputAction.CallbackContext context)
+    {
+        var vacuumPos = VacuumActions.VacuumPos.ReadValue<Vector2>();
+        if (vacuumPos.sqrMagnitude == 0) { return; }
+		
+        _direction = vacuumPos.normalized;
+    }
+	
+    /// <summary>
+    /// マウスの位置を取得して、吸引方向を決定する
+    /// </summary>
+    /// <param name="context"></param>
+    private void OnMouse(InputAction.CallbackContext context)
+    {
+        if (_camera == null)
+        {
+            _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        }
+		
+        var position = context.ReadValue<Vector2>();
+        Vector3 mouseWorldPosition = _camera.ScreenToWorldPoint(position);
+        Vector3 direction = (mouseWorldPosition - _player.position).normalized;
+        direction.z = 0;
+
+        _direction = direction;
     }
 
     private void VacuumRotate()
@@ -165,6 +189,23 @@ public class IKVacuum : MonoBehaviour
         var beforeDirection = (current - origin).normalized;
         var afterDirection = (target - origin).normalized;
         return Quaternion.FromToRotation(beforeDirection, afterDirection);
+    }
+    
+    private void OnEnable()
+    {
+        _camera = Camera.main;
+        
+        _playerActions = new PlayerActions();
+        _playerActions.Enable();
+        VacuumActions.VacuumPos.performed += OnGamepad;
+        VacuumActions.VacuumMouse.performed += OnMouse;
+        
+        CreateIK();
+    }
+
+    private void OnDisable()
+    {
+        _playerActions.Disable();
     }
     
     private void OnDrawGizmos()

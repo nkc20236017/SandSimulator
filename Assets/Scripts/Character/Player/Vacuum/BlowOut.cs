@@ -12,7 +12,6 @@ public class BlowOut : MonoBehaviour
     [SerializeField] private BlockDatas blockDatas;
 
     [Header("BlowOut Config")]
-    [SerializeField] private BlockType blockType;
     [SerializeField] private Transform pivot;
     [SerializeField, Min(0f)] private float radius; // 吐き出し範囲
     [SerializeField, Min(0f)] private float distance; // 吐き出し距離（現状意味ない）
@@ -31,6 +30,7 @@ public class BlowOut : MonoBehaviour
 
     private float _weight;
     private float _lastUpdateTime;
+    private BlockType blockType;
     private PlayerMovement _playerMovement;
     private Camera _camera;
     private SuckUp _suckUp;
@@ -73,7 +73,6 @@ public class BlowOut : MonoBehaviour
     {
         _lastUpdateTime = 0f;
 
-        VacuumActions.SpittingOut.started += _ => _playerMovement.IsMoveFlip = false;
         VacuumActions.SpittingOut.canceled += _ => CancelBlowOut();
         VacuumActions.VacuumPos.performed += OnBlowOut;
         VacuumActions.VacuumMouse.performed += OnBlowOutMouse;
@@ -329,7 +328,6 @@ mouseWorldPosition - pivot.position;
     {
         blowEffect.SetActive(false);
         IsBlowOut = false;
-        _playerMovement.IsMoveFlip = true;
     }
 
     private void OnDrawGizmos()

@@ -19,28 +19,23 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 	
 	[Header("Knockback Config")]
 	[SerializeField] private float knockbackTime;
-		
-	private static readonly int IsJump = Animator.StringToHash("isJump");
-	private static readonly int XVelocity = Animator.StringToHash("xVelocity");
+	
 	private float _knockbackTimer;
 	private bool _isAutoJump;
 	private Vector2 _moveDirection;
 	private BoxCollider2D _boxCollider2D;
 	private Rigidbody2D _rigidbody2D;
-	private Animator _animator;
 	private SpriteRenderer _spriteRenderer;
 	private Camera _camera;
 	private PlayerActions _playerActions;
 
 	public bool CanMove { get; set; } = true;
-	public bool IsMoveFlip { get; set; } = true;
 	public IChunkInformation ChunkInformation { get; private set; }
 	private PlayerActions.MovementActions MovementActions => _playerActions.Movement;
 
 	private void Awake()
 	{
 		_playerActions = new PlayerActions();
-		_animator = transform.Find("Model").GetComponent<Animator>();
 		_boxCollider2D = GetComponent<BoxCollider2D>();
 		_rigidbody2D = GetComponent<Rigidbody2D>();
 		_spriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -54,8 +49,6 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 
 	private void FixedUpdate()
 	{
-		Animation();
-
 		if (!CanMove) { return; }
 
 		AutoBlockJump();
@@ -87,8 +80,6 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 	private void InputMovement()
 	{
 		_moveDirection = MovementActions.Move.ReadValue<Vector2>();
-		
-		Flip();
 	}
 
 	private void Jump()
@@ -145,7 +136,10 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 		}
 	}
 	
-	private bool IsGround()
+	/// <summary>
+	/// プレイヤーが地面にいるかどうか判定する
+	/// </summary>
+	public bool IsGround()
 	{
 		if (_rigidbody2D.velocity.y is > 0.001f or < -0.001f) { return false; }
 		
@@ -200,46 +194,10 @@ public class PlayerMovement : MonoBehaviour, IWorldGenerateWaitable
 		return false;
 	}
 	
-	private void Flip()
-	{
-		if (IsMoveFlip)
-		{
-			_spriteRenderer.flipX = _moveDirection.x switch
-			{
-					> 0 => false,
-					< 0 => true,
-					_ => _spriteRenderer.flipX,
-			};
-		}
-		else
-		{
-			if (_camera == null)
-			{
-				_camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
-			}
-			
-			var worldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-			if (transform.position.x < worldPosition.x)
-			{
-				_spriteRenderer.flipX = false;
-			}
-			else if (transform.position.x > worldPosition.x)
-			{
-				_spriteRenderer.flipX = true;
-			}
-		}
-	}
-	
 	public void Knockback(Vector2 direction)
 	{
 		_rigidbody2D.velocity = direction;
 		CanMove = false;
-	}
-
-	private void Animation()
-	{
-        _animator.SetBool(IsJump, !IsGround());
-        _animator.SetFloat(XVelocity, Mathf.Abs(_rigidbody2D.velocity.x));
 	}
 
 	private void OnDrawGizmos()
