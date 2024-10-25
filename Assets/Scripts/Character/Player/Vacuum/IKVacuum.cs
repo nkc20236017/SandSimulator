@@ -169,16 +169,17 @@ public class IKVacuum : MonoBehaviour
 		
         var position = context.ReadValue<Vector2>();
         Vector3 mouseWorldPosition = _camera.ScreenToWorldPoint(position);
-        Vector3 direction = (mouseWorldPosition - _player.position).normalized;
+        Vector3 direction = mouseWorldPosition - _player.position;
         direction.z = 0;
 
-        _direction = direction;
+        _direction = direction.normalized;
     }
 
     private void VacuumRotate()
     {
         // バキュームの向きを設定
         Vector3 direction = (_targetPoint.position - _player.position).normalized;
+        direction.z = 0;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         _targetPoint.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
     }
