@@ -41,7 +41,7 @@ public class PlayerAnimation : MonoBehaviour
 
 	private void Update()
 	{
-		// Animation();
+		Animation();
 		SetPlayerToVacuumDirection();
 		Flip();
 		HeadDirection();
