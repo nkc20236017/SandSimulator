@@ -142,7 +142,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
   spriteSheetImportData:
-  - name: player_0
+  - name: Head1
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -162,7 +162,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_1
+  - name: Head3
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -182,7 +182,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_2
+  - name: Head5
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -202,7 +202,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_3
+  - name: Head7
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -222,7 +222,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_4
+  - name: Head2
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -242,7 +242,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_5
+  - name: Head4
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -262,7 +262,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_6
+  - name: Head6
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -282,7 +282,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_7
+  - name: Head8
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -302,10 +302,10 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_8
+  - name: Arm_Right
     originalName: 
-    pivot: {x: 0, y: 1}
-    alignment: 1
+    pivot: {x: 0.19873533, y: 0.78189355}
+    alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
@@ -322,10 +322,10 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_9
+  - name: Arm_Left
     originalName: 
-    pivot: {x: 1, y: 1}
-    alignment: 3
+    pivot: {x: 0.729793, y: 0.81352884}
+    alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
@@ -342,7 +342,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_10
+  - name: Walk1
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -362,7 +362,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_11
+  - name: Walk2
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -382,7 +382,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_12
+  - name: Walk3
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -402,7 +402,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_13
+  - name: Walk4
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -422,7 +422,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_14
+  - name: Walk5
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -442,7 +442,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_15
+  - name: Walk6
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -462,7 +462,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_16
+  - name: Walk7
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -482,7 +482,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: player_17
+  - name: Walk8
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
