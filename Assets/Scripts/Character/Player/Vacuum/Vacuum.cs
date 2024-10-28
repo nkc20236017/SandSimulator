@@ -36,13 +36,14 @@ public class Vacuum : MonoBehaviour
 
 	private void RotateVacuum()
 	{
-		float angle = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg;
+		float directionAngle = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg;
 		if (_pivot.parent.localScale.x < 0)
 		{
-			angle += 180;
+			directionAngle += 180;
 		}
 
-		_pivot.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+		var angle = new Vector3(0, 0, directionAngle);
+		_pivot.rotation = Quaternion.Euler(angle);
 	}
 
 	/// <summary>

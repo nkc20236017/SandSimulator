@@ -8,6 +8,7 @@ public class SuckUp : MonoBehaviour
 {
     [Header("Tile Config")]
     [SerializeField] private LayerMask blockLayerMask;
+    [SerializeField] private GameObject suckEffect;
 
     [Header("Suction Config")]
     [SerializeField] private Transform vacuum;
@@ -24,7 +25,6 @@ public class SuckUp : MonoBehaviour
     [Header("Delete Config")]
     [SerializeField] private bool matchTheSizeOfTheCollider;
     
-    [SerializeField] private GameObject suckEffect;
 
     private int _numberExecutions;
     private List<Vector3Int> _suckUpTilePositions = new();
@@ -56,31 +56,18 @@ public class SuckUp : MonoBehaviour
     {
         _updateTilemap = tilemap;
     }
-    
-    private Vacuum GetVacuum()
-    {
-        
-    }
-
-    private void Awake()
-    {
-        _playerActions = new PlayerActions();
-        vacuum = new Vacuum();
-    }
 
     private void Start()
     {
         _numberExecutions = 0;
 
-        vacuum.VacuumActions.Absorption.started += _ => PlaySuckUp();
-        vacuum.VacuumActions.Absorption.canceled += _ => CancelSuckUp();
-
-        _direction = new Vector3(1,0, 0);
+        _vacuum.VacuumActions.Absorption.started += _ => PlaySuckUp();
+        _vacuum.VacuumActions.Absorption.canceled += _ => CancelSuckUp();
     }
 
     private void Update()
     {
-        if (VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
+        if (_vacuum.VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
         {
             if (inputTank.TamkMaxSignal())
             {
@@ -152,7 +139,7 @@ public class SuckUp : MonoBehaviour
             if (tilemap == null) { continue; }
 
             Vector2 direction1 = position - pivot.position;
-            var angle = Vector3.Angle(direction1, _direction);
+            var angle = Vector3.Angle(direction1, _vacuum.Direction);
 
             var distance = Vector3.Distance(pivot.position, position);
             if (angle <= _suctionAngle && distance <= _suctionDistance)
@@ -187,10 +174,7 @@ public class SuckUp : MonoBehaviour
             if (_numberExecutions % oreObject.Ore.weightPerSize[oreObject.Size - 1] == 0)
             {
                 target.TakeDamage(3);
-                if (SoundSource != null)
-                {
-                    SoundSource.InstantiateSound("SuckUp", transform.position);
-                }
+                _vacuum.SoundSource?.InstantiateSound("SuckUp", transform.position);
             }
         }
     }
@@ -223,18 +207,18 @@ public class SuckUp : MonoBehaviour
             if (tilemap.HasTile(localTilePosition))
             {
                 tile = tilemap.GetTile(localTilePosition);
-                var isContinue = _blockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
+                var isContinue = _vacuum.BlockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
                 if (isContinue) { continue; }
             }
             else if (_updateTilemap.HasTile(position))
             {
                 tile = _updateTilemap.GetTile(position);
-                var isContinue = _blockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
+                var isContinue = _vacuum.BlockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
                 if (isContinue) { continue; }
             }
             if (tile == null) { continue; }
 
-            SoundSource.InstantiateSound("SuckUp", transform.position);
+            _vacuum.SoundSource.InstantiateSound("SuckUp", transform.position);
             if ((position - pivot.position).sqrMagnitude <= _deleteDistance * _deleteDistance)
             {
                 inputTank.InputAddTank(tile);//タンクに追加
@@ -244,7 +228,7 @@ public class SuckUp : MonoBehaviour
 
             if (newTilemap.HasTile(localNewTilePosition) || _updateTilemap.HasTile(_updateTilemap.WorldToCell(newTilePosition))) { continue; }
 
-            if (_blockDatas.GetBlock(tile).type == BlockType.Sand)
+            if (_vacuum.BlockDatas.GetBlock(tile).type == BlockType.Sand)
             {
                 _updateTilemap.SetTile(_updateTilemap.WorldToCell(newTilePosition), tile);
             }
@@ -254,7 +238,7 @@ public class SuckUp : MonoBehaviour
             }
             // TODO: 層ごとに色を変える
             var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
-            var block = _blockDatas.GetBlock(tile);
+            var block = _vacuum.BlockDatas.GetBlock(tile);
             if (block.GetStratumGeologyData(tileLayer) != null)
             {
                 newTilemap.SetColor(localNewTilePosition, block.GetStratumGeologyData(tileLayer).color);
@@ -331,7 +315,7 @@ public class SuckUp : MonoBehaviour
 
         Gizmos.color = Color.green;
         var angleInRadians = _suctionAngle * Mathf.Deg2Rad;
-        var angle = Mathf.Atan2(_direction.y, _direction.x);
+        var angle = Mathf.Atan2(_vacuum.Direction.y, _vacuum.Direction.x);
 
         var newCell1 = GetNewCell(angle - angleInRadians, _suctionDistance);
         Gizmos.DrawLine(pivot.position, newCell1);
@@ -351,21 +335,8 @@ public class SuckUp : MonoBehaviour
 
     private void OnEnable()
     {
-        _playerActions.Enable();
-        
-        var soundSource = FindObjectOfType<SoundSource>();
-        SoundSource = soundSource.GetComponent<ISoundSourceable>();
-        SoundSource.SetInstantiation("SuckUp");
-
-        _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
-        
         _blowOut = GetComponent<BlowOut>();
         _playerMovement = GetComponentInParent<PlayerMovement>();
         playerHealth = GetComponentInParent<PlayerHealth>();
-    }
-
-    private void OnDisable()
-    {
-        _playerActions.Disable();
     }
 }
