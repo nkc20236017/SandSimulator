@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
 using UnityEngine;
@@ -19,7 +20,9 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     //ˆêŽž“I‚È
     private bool demofast;
     private CancellationToken token;
+    private CancellationToken token2;
     private CancellationTokenSource tokenSource;
+    private CancellationTokenSource tokenSource2;
     private PlayerActions playerActions;
     private ResultOutPutData resultOutPutData;
 
@@ -27,6 +30,8 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     private void Start()
     {
         tokenSource = new CancellationTokenSource();
+        tokenSource2 = new CancellationTokenSource();
+        token2 = tokenSource2.Token;
         playerActions = new PlayerActions();
         token = tokenSource.Token;
         playerActions.UI.UISelect.started += OnUISelect;
@@ -35,6 +40,7 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
 
     private void OnDisable()
     {
+        tokenSource2.Cancel();
         playerActions.Disable();
     }
 
@@ -61,14 +67,14 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
             animationPresenter.gameObject.SetActive(false);
             resultPresenter.gameObject.SetActive(true);
             totalePrise.SetActive(true);
+            await UniTask.Delay(1,cancellationToken : token2);
+            demofast = true;
         }
         AudioManager.Instance.StopBGM("Coinloop");
         AudioManager.Instance.PlaySFX("CoinSE");
         animationPresenter.gameObject.SetActive(false);
         resultPresenter.gameObject.SetActive(true);
-        sceneButton.SetActive(true);
         totalePrise.SetActive(true);
-        demofast = true;
     }
 
     private async void NextRanking()
