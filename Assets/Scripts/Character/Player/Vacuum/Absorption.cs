@@ -4,39 +4,38 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class SuckUp : MonoBehaviour
+public class Absorption : MonoBehaviour
 {
-    [Header("Tile Config")]
-    [SerializeField] private LayerMask blockLayerMask;
-    [SerializeField] private GameObject suckEffect;
-
     [Header("Suction Config")]
-    [SerializeField] private Transform vacuum;
-    [SerializeField] private Transform pivot;
-    [SerializeField, Range(0f, 180f)] private float _suctionAngle; // この角度以内のオブジェクトは吸い寄せられる
-    [SerializeField, Min(0f)] private float _suctionDistance; // この距離以内のオブジェクトは吸い寄せられる
-    [SerializeField, Min(0f)] private float _deleteDistance; // この距離以内のオブジェクトは削除される
-    [SerializeField] private LayerMask oreLayerMask;
-    [SerializeField, Min(1f)] private float suckUpSpeed;
-
-    [Header("Debug Config")]
-    [SerializeField] private bool _debugMode;
-
-    [Header("Delete Config")]
-    [SerializeField] private bool matchTheSizeOfTheCollider;
+    [SerializeField] private GameObject _absorptionEffect;
+    [SerializeField] private LayerMask _absorptionTileLayerMask;
+    [SerializeField] private LayerMask _absorptionObjectLayerMask;
     
+    [Header("Suction Settings")]
+    [Tooltip("吸引角度")] [Range(0f, 180f)]
+    [SerializeField] private float _suctionAngle;
+    [Tooltip("吸引距離")] [Min(0f)]
+    [SerializeField] private float _suctionDistance;
+    [Tooltip("削除距離")] [Min(0f)]
+    [SerializeField] private float _deleteDistance;
+    [Tooltip("吸い込み速度")] [Min(1f)]
+    [SerializeField] private float _suckUpSpeed;
 
+    [Header("Debug Settings")]
+    [SerializeField] private bool _debugMode;
+    
     private int _numberExecutions;
     private List<Vector3Int> _suckUpTilePositions = new();
     private List<OreObject> _suckUpOreObject = new();
     private Tilemap _updateTilemap;
     private PlayerMovement _playerMovement;
-    private BlowOut _blowOut;
-    private PlayerHealth playerHealth;
+    private PlayerHealth _playerHealth;
+    private Eject _eject;
     private Vacuum _vacuum;
-    private IInputTank inputTank;
+    private IInputTank _inputTank;
+    private IChunkInformation _chunkInformation;
 
-    private string[] seName =
+    private string[] _seName =
     {
         "VacuumSE",
         "VacuumSE-2",
@@ -49,7 +48,7 @@ public class SuckUp : MonoBehaviour
 
     public void Inject(IInputTank inputTank)
     {
-        this.inputTank = inputTank;
+        _inputTank = inputTank;
     }
 
     public void SetTilemap(Tilemap tilemap)
@@ -59,30 +58,24 @@ public class SuckUp : MonoBehaviour
 
     private void Start()
     {
-        _numberExecutions = 0;
-
         _vacuum.VacuumActions.Absorption.started += _ => PlaySuckUp();
         _vacuum.VacuumActions.Absorption.canceled += _ => CancelSuckUp();
     }
 
     private void Update()
     {
-        if (_vacuum.VacuumActions.Absorption.IsPressed() && !_blowOut.IsBlowOut)
-        {
-            if (inputTank.TamkMaxSignal())
-            {
-                return;
-            }
-            suckEffect.SetActive(true);
-            IsSuckUp = true;
-            Performed();
-            _numberExecutions++;
-        }
+        if (!_vacuum.VacuumActions.Absorption.IsPressed() || _eject.IsBlowOut) { return; }
+        if (_inputTank.TamkMaxSignal()) { return; }
+        
+        _absorptionEffect.SetActive(true);
+        IsSuckUp = true;
+        Performed();
+        _numberExecutions++;
     }
 
     private void Performed()
     {
-        if (inputTank.TamkMaxSignal()) { return; }
+        if (_inputTank.TamkMaxSignal()) { return; }
 
         // 吸い込み対象の座標取得
         GetSuckUpTilePositions();
@@ -102,7 +95,7 @@ public class SuckUp : MonoBehaviour
 
     private void CancelSuckUp()
     {
-        suckEffect.SetActive(false);
+        _absorptionEffect.SetActive(false);
         IsSuckUp = false;
         _suckUpTilePositions.Clear();
         _playerMovement.IsMoveFlip = true;
@@ -113,11 +106,14 @@ public class SuckUp : MonoBehaviour
     {
         _suckUpTilePositions.Clear();
         _suckUpOreObject.Clear();
-
-        var mapTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(pivot.position);
+        
+        Tilemap mapTilemap = _chunkInformation.GetChunkTilemap(_vacuum.Pivot.position);
         if (mapTilemap == null) { return; }
 
-        var bounds = new BoundsInt(Vector3Int.RoundToInt(pivot.position) - new Vector3Int((int)_suctionDistance, (int)_suctionDistance, 0), new Vector3Int((int)_suctionDistance * 2, (int)_suctionDistance * 2, 1));
+        Vector3Int boundsPosition = Vector3Int.RoundToInt(_vacuum.Pivot.position) - new Vector3Int((int)_suctionDistance, (int)_suctionDistance);
+        var boundsSize = new Vector3Int((int)_suctionDistance * 2, (int)_suctionDistance * 2);
+        var bounds = new BoundsInt(boundsPosition, boundsSize);
+        
         var hasTile = false;
         foreach (var position in bounds.allPositionsWithin)
         {
@@ -138,10 +134,10 @@ public class SuckUp : MonoBehaviour
             var tilemap = _playerMovement.ChunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
             if (tilemap == null) { continue; }
 
-            Vector2 direction1 = position - pivot.position;
+            Vector2 direction1 = position - _vacuum.Pivot.position;
             var angle = Vector3.Angle(direction1, _vacuum.Direction);
 
-            var distance = Vector3.Distance(pivot.position, position);
+            var distance = Vector3.Distance(_vacuum.Pivot.position, position);
             if (angle <= _suctionAngle && distance <= _suctionDistance)
             {
                 DetectOre(new Vector2(position.x, position.y));
@@ -158,7 +154,7 @@ public class SuckUp : MonoBehaviour
 
     private void DetectOre(Vector2 position)
     {
-        var hitAll = Physics2D.OverlapBoxAll(position, Vector2.one, 0, oreLayerMask);
+        var hitAll = Physics2D.OverlapBoxAll(position, Vector2.one, 0, _absorptionObjectLayerMask);
         if (hitAll.Length == 0) { return; }
 
         foreach (var hit in hitAll)
@@ -174,14 +170,14 @@ public class SuckUp : MonoBehaviour
             if (_numberExecutions % oreObject.Ore.weightPerSize[oreObject.Size - 1] == 0)
             {
                 target.TakeDamage(3);
-                _vacuum.SoundSource?.InstantiateSound("SuckUp", transform.position);
+                _vacuum.SoundSource?.InstantiateSound("Absorption", transform.position);
             }
         }
     }
 
     private bool IsBlock(Vector3 position)
     {
-        var hit = Physics2D.Linecast(pivot.position, position, blockLayerMask);
+        var hit = Physics2D.Linecast(_vacuum.Pivot.position, position, _absorptionTileLayerMask);
         return hit.collider != null;
     }
 
@@ -196,8 +192,8 @@ public class SuckUp : MonoBehaviour
             var tilemap = _playerMovement.ChunkInformation.GetChunkTilemap(new Vector2(position.x, position.y));
             if (tilemap == null) { continue; }
 
-            var direction = pivot.position - position;
-            var newTilePosition = position + direction.normalized * suckUpSpeed;
+            var direction = _vacuum.Pivot.position - position;
+            var newTilePosition = position + direction.normalized * _suckUpSpeed;
 
             var newTilemap = _playerMovement.ChunkInformation.GetChunkTilemap(newTilePosition);
             var localNewTilePosition = _playerMovement.ChunkInformation.WorldToChunk(newTilePosition);
@@ -207,28 +203,28 @@ public class SuckUp : MonoBehaviour
             if (tilemap.HasTile(localTilePosition))
             {
                 tile = tilemap.GetTile(localTilePosition);
-                var isContinue = _vacuum.BlockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
+                var isContinue = _vacuum.BlockData.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
                 if (isContinue) { continue; }
             }
             else if (_updateTilemap.HasTile(position))
             {
                 tile = _updateTilemap.GetTile(position);
-                var isContinue = _vacuum.BlockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
+                var isContinue = _vacuum.BlockData.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
                 if (isContinue) { continue; }
             }
             if (tile == null) { continue; }
 
-            _vacuum.SoundSource.InstantiateSound("SuckUp", transform.position);
-            if ((position - pivot.position).sqrMagnitude <= _deleteDistance * _deleteDistance)
+            _vacuum.SoundSource.InstantiateSound("Absorption", transform.position);
+            if ((position - _vacuum.Pivot.position).sqrMagnitude <= _deleteDistance * _deleteDistance)
             {
-                inputTank.InputAddTank(tile);//タンクに追加
+                _inputTank.InputAddTank(tile);//タンクに追加
                 tilemap.SetTile(localTilePosition, null);
                 _updateTilemap.SetTile(position, null);
             }
 
             if (newTilemap.HasTile(localNewTilePosition) || _updateTilemap.HasTile(_updateTilemap.WorldToCell(newTilePosition))) { continue; }
 
-            if (_vacuum.BlockDatas.GetBlock(tile).type == BlockType.Sand)
+            if (_vacuum.BlockData.GetBlock(tile).type == BlockType.Sand)
             {
                 _updateTilemap.SetTile(_updateTilemap.WorldToCell(newTilePosition), tile);
             }
@@ -238,7 +234,7 @@ public class SuckUp : MonoBehaviour
             }
             // TODO: 層ごとに色を変える
             var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
-            var block = _vacuum.BlockDatas.GetBlock(tile);
+            var block = _vacuum.BlockData.GetBlock(tile);
             if (block.GetStratumGeologyData(tileLayer) != null)
             {
                 newTilemap.SetColor(localNewTilePosition, block.GetStratumGeologyData(tileLayer).color);
@@ -248,9 +244,9 @@ public class SuckUp : MonoBehaviour
             _updateTilemap.SetTile(_updateTilemap.WorldToCell(position), null);
             tilemap.SetTile(localTilePosition, null);
 
-            if ((newTilePosition - pivot.position).sqrMagnitude <= _deleteDistance * _deleteDistance)
+            if ((newTilePosition - _vacuum.Pivot.position).sqrMagnitude <= _deleteDistance * _deleteDistance)
             {
-                inputTank.InputAddTank(tile);//タンクに追加
+                _inputTank.InputAddTank(tile);//タンクに追加
                 newTilemap.SetTile(localNewTilePosition, null);
                 _updateTilemap.SetTile(_updateTilemap.WorldToCell(newTilePosition), null);
             }
@@ -268,21 +264,21 @@ public class SuckUp : MonoBehaviour
             if (!oreObject.CanSuckUp) { continue; }
 
             var position = oreObject.transform.position;
-            var direction = pivot.position - position;
+            var direction = _vacuum.Pivot.position - position;
             oreObject.transform.position = position + direction.normalized;
 
-            if (Vector3.Distance(oreObject.transform.position, pivot.position) <= _deleteDistance)
+            if (Vector3.Distance(oreObject.transform.position, _vacuum.Pivot.position) <= _deleteDistance)
             {
                 if (oreObject.TryGetComponent<HealOre>(out var ore))
                 {
-                    playerHealth.TakeHeal(ore.healPoint);
+                    _playerHealth.TakeHeal(ore.healPoint);
                 }
                 else
                 {
-                    inputTank.InputAddTank(oreObject.Ore.type);//タンクに追加
+                    _inputTank.InputAddTank(oreObject.Ore.type);//タンクに追加
                 }
-                int x = Random.Range(0, seName.Length);
-                AudioManager.Instance.PlaySFX(seName[x]);
+                int x = Random.Range(0, _seName.Length);
+                AudioManager.Instance.PlaySFX(_seName[x]);
                 _suckUpOreObject.Remove(oreObject);
                 Destroy(oreObject.gameObject);
             }
@@ -296,32 +292,21 @@ public class SuckUp : MonoBehaviour
 
         if (!_debugMode) { return; }
 
-        if (matchTheSizeOfTheCollider)
-        {
-            var boxCollider2D = GetComponentInParent<BoxCollider2D>();
-            if (boxCollider2D != null)
-            {
-                _suctionDistance = pivot.transform.position.y - boxCollider2D.bounds.min.y;
-                var left = pivot.transform.position.x - boxCollider2D.bounds.min.x;
-                var right = boxCollider2D.bounds.max.x - pivot.transform.position.x;
-                _deleteDistance = Mathf.Max(left, right);
-            }
-        }
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(pivot.position, _suctionDistance);
+        Gizmos.DrawWireSphere(_vacuum.Pivot.position, _suctionDistance);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(pivot.position, _deleteDistance);
+        Gizmos.DrawWireSphere(_vacuum.Pivot.position, _deleteDistance);
 
         Gizmos.color = Color.green;
         var angleInRadians = _suctionAngle * Mathf.Deg2Rad;
         var angle = Mathf.Atan2(_vacuum.Direction.y, _vacuum.Direction.x);
 
         var newCell1 = GetNewCell(angle - angleInRadians, _suctionDistance);
-        Gizmos.DrawLine(pivot.position, newCell1);
+        Gizmos.DrawLine(_vacuum.Pivot.position, newCell1);
 
         var newCell2 = GetNewCell(angle + angleInRadians, _suctionDistance);
-        Gizmos.DrawLine(pivot.position, newCell2);
+        Gizmos.DrawLine(_vacuum.Pivot.position, newCell2);
     }
 
     private Vector3 GetNewCell(float angle, float chordLength)
@@ -329,14 +314,15 @@ public class SuckUp : MonoBehaviour
         var newX = chordLength * Mathf.Cos(angle);
         var newY = chordLength * Mathf.Sin(angle);
         var newDirection = new Vector3(newX, newY, 0);
-        var newCell = pivot.position + newDirection;
+        var newCell = _vacuum.Pivot.position + newDirection;
         return newCell;
     }
 
     private void OnEnable()
     {
-        _blowOut = GetComponent<BlowOut>();
+        _eject = GetComponent<Eject>();
+        _playerHealth = GetComponentInParent<PlayerHealth>();
         _playerMovement = GetComponentInParent<PlayerMovement>();
-        playerHealth = GetComponentInParent<PlayerHealth>();
+        _chunkInformation = _playerMovement.ChunkInformation;
     }
 }

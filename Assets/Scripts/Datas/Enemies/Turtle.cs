@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[CreateAssetMenu(fileName = "New Turtle", menuName = "ScriptableObjects/Datas/Enemies/New Turtle")]
+[CreateAssetMenu(fileName = "New Turtle", menuName = "ScriptableObjects/Data/Characters/Enemies/New Turtle")]
 public class Turtle : Enemy
 {
 	[Header("Ore Config")]

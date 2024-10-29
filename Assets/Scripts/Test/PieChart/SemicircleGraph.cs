@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class SemicircleGraph : MonoBehaviour, IOutResultUI
 {
+    [FormerlySerializedAs("_blockDatas")]
     [Header("Data Config")]
-    [SerializeField] private BlockDatas _blockDatas;
+    [SerializeField] private BlockData _blockData;
     [SerializeField] private Semicircle _semicirclePrefab;
 
     [Header("Semicircle Chart Config")]

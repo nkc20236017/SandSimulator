@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using NaughtyAttributes;
 
-[CreateAssetMenu(fileName = "New Ore", menuName = "ScriptableObjects/Datas/New Ore")]
+[CreateAssetMenu(fileName = "New Ore", menuName = "ScriptableObjects/Data/Blocks/New Ore")]
 public class Ore : Block
 {
 	public int attackPower;

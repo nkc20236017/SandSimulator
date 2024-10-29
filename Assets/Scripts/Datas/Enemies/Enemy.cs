@@ -10,7 +10,7 @@ public enum EnemyType
 	Wolf,
 }
 
-[CreateAssetMenu(fileName = "New Enemy", menuName = "ScriptableObjects/Datas/Enemies/New Enemy")]
+[CreateAssetMenu(fileName = "New Enemy", menuName = "ScriptableObjects/Data/Characters/Enemies/New Enemy")]
 public class Enemy : ScriptableObject
 {
 	public EnemyType type;

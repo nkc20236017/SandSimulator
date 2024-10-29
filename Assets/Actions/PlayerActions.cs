@@ -142,7 +142,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             ""id"": ""6ec33095-08b2-4395-96c6-907b4f5622bd"",
             ""actions"": [
                 {
-                    ""name"": ""Absorption"",
+                    ""name"": ""Eject"",
                     ""type"": ""Button"",
                     ""id"": ""582d8831-77da-4f6c-bcdd-6038628976f8"",
                     ""expectedControlType"": ""Button"",
@@ -213,7 +213,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Absorption"",
+                    ""action"": ""Eject"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -224,7 +224,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Absorption"",
+                    ""action"": ""Eject"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -355,7 +355,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Movement_Jump = m_Movement.FindAction("Jump", throwIfNotFound: true);
         // Vacuum
         m_Vacuum = asset.FindActionMap("Vacuum", throwIfNotFound: true);
-        m_Vacuum_Absorption = m_Vacuum.FindAction("Absorption", throwIfNotFound: true);
+        m_Vacuum_Absorption = m_Vacuum.FindAction("Eject", throwIfNotFound: true);
         m_Vacuum_SpittingOut = m_Vacuum.FindAction("SpittingOut", throwIfNotFound: true);
         m_Vacuum_LeftSelect = m_Vacuum.FindAction("LeftSelect", throwIfNotFound: true);
         m_Vacuum_RightSelect = m_Vacuum.FindAction("RightSelect", throwIfNotFound: true);

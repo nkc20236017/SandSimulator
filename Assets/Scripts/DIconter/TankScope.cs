@@ -1,17 +1,18 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using VContainer;
 using VContainer.Unity;
 
 public class TankScope : LifetimeScope
 {
-    [SerializeField]
-    private BlockDatas MineralDataBase;
+    [FormerlySerializedAs("MineralDataBase")] [SerializeField]
+    private BlockData _mineralDataBase;
     [SerializeField]
     private SemicircleGraph ui;
 
     protected override void Configure(IContainerBuilder builder)
     {
-        builder.RegisterComponent(MineralDataBase);
+        builder.RegisterComponent(_mineralDataBase);
         builder.Register<PlayerTank>(Lifetime.Singleton)
             .As<IInputTank>()
             .As<IGameLoad>();

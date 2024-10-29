@@ -3,44 +3,53 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using NaughtyAttributes;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-public class BlowOut : Vacuum
+public class Eject : Vacuum
 {
-    [Header("BlowOut Config")]
-    [SerializeField] private BlockType blockType;
+    [Header("Eject Config")]
     [SerializeField] private Transform pivot;
-    [SerializeField, Min(0f)] private float radius; // 吐き出し範囲
-    [SerializeField, Min(0f)] private float distance; // 吐き出し距離（現状意味ない）
-    [SerializeField, Min(0f)] private float range; // 吐き出し範囲の幅（現状意味ない）
-    [SerializeField, Min(1f)] private float blowOutSpeed = 1;
-    [SerializeField, Min(0)] private int blowOutUp = 3;
-    
-    [Header("Instantiation Config")]
-    [SerializeField] private float interval;
-    [SerializeField, MinMaxSlider(0, 10)] private Vector2Int generateTileCount;
-    [SerializeField] private BlowOutOre blowOutOrePrefab;
-
-    [Header("Debug Config")]
-    [SerializeField] private bool debug;
-
     [SerializeField] private GameObject blowEffect;
+    
+    [Header("Eject Settings")]
+    [Tooltip("吐き出し範囲")] [Min(0f)]
+    [SerializeField] private float radius;
+    [Tooltip("吐き出し距離")] [Min(0f)]
+    [SerializeField] private float distance;
+    [Tooltip("吐き出し範囲の幅")] [Min(0f)]
+    [SerializeField] private float range;
+    [Tooltip("吐き出し速度")] [Min(1f)]
+    [SerializeField] private float blowOutSpeed = 1;
+    [Tooltip("吐き出し高さ")] [Min(0)]
+    [SerializeField] private int blowOutUp = 3;
+    
+    [Header("Instantiation Settings")]
+    [SerializeField] private float interval;
+    [MinMaxSlider(0, 10)]
+    [SerializeField] private Vector2Int generateTileCount;
+    [FormerlySerializedAs("blowOutOrePrefab")] [SerializeField] private EjectOre _ejectOrePrefab;
 
+    [Header("Debug Settings")]
+    [SerializeField] private bool debug;
+    
     private float _weight;
     private float _lastUpdateTime;
     private List<Vector3Int> _blowOutTilesList = new();
+    private BlockType _blockType;
     private PlayerMovement _playerMovement;
-    private SuckUp _suckUp;
+    private Absorption _absorption;
     private Parabola _parabola;
     private Tilemap _updateTilemap;
-    private IInputTank inputTank;
+    private Vacuum _vacuum;
+    private IInputTank _inputTank;
     private ISoundSourceable _soundSource;
 
     public bool IsBlowOut { get; private set; }
 
     public void Inject(IInputTank inputTank)
     {
-        this.inputTank = inputTank;
+        _inputTank = inputTank;
     }
     
     /// <summary>
@@ -54,7 +63,7 @@ public class BlowOut : Vacuum
 
     private void Awake()
     {
-        _suckUp = GetComponent<SuckUp>();
+        _absorption = GetComponent<Absorption>();
         _parabola = GetComponentInParent<Parabola>();
         _playerMovement = GetComponentInParent<PlayerMovement>();
     }
@@ -69,9 +78,9 @@ public class BlowOut : Vacuum
 
     private void Update()
     {
-        blockType = inputTank.GetSelectType();
+        _blockType = _inputTank.GetSelectType();
         
-        if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
+        if (_blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
         {
             _parabola.GenerateParabola();
         }
@@ -81,7 +90,7 @@ public class BlowOut : Vacuum
         }
         
         _lastUpdateTime -= Time.deltaTime;
-        if (VacuumActions.SpittingOut.IsPressed() && !_suckUp.IsSuckUp)
+        if (VacuumActions.SpittingOut.IsPressed() && !_absorption.IsSuckUp)
         {
             blowEffect.SetActive(true);
             IsBlowOut = true;
@@ -91,23 +100,23 @@ public class BlowOut : Vacuum
 
     private void BlowOutTiles()
     {
-        if (blockType != BlockType.None)
+        if (_blockType != BlockType.None)
         {
-            if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
+            if (_blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
             {
-                _weight = _blockDatas.GetOre(blockType).weightPerSize[0] * 10;
+                _weight = _vacuum.BlockData.GetOre(_blockType).weightPerSize[0] * 10;
             }
             else
             {
-                _weight = _blockDatas.GetBlock(blockType).weight;
+                _weight = _vacuum.BlockData.GetBlock(_blockType).weight;
             }
         
             if (_lastUpdateTime <= 0f)
             {
-                if (blockType == BlockType.Liquid) { return; }
+                if (_blockType == BlockType.Liquid) { return; }
 
                 _lastUpdateTime = interval * _weight;
-                if (inputTank.FiringTank())
+                if (_inputTank.FiringTank())
                 {
                     // TODO: ［効果音］吐き出し
                     GenerateTile();
@@ -128,15 +137,15 @@ public class BlowOut : Vacuum
         var newCell2 = GetNewCell(angle + angle2, chordLength);
         
         // TODO: blockTypeが鉱石かどうかの判定
-        if (blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
+        if (_blockType is BlockType.Ruby or BlockType.Crystal or BlockType.Emerald)
         {
             AudioManager.Instance.PlaySFX("SpitoutSE");
             var position = distance * Direction.normalized + pivot.position;
-            var blowOutOre = Instantiate(blowOutOrePrefab, position, Quaternion.identity);
+            var blowOutOre = Instantiate(_ejectOrePrefab, position, Quaternion.identity);
             blowOutOre.gameObject.SetActive(true);
-            var ore = _blockDatas.GetOre(blockType);
+            var ore = _vacuum.BlockData.GetOre(_blockType);
             blowOutOre.SetOre(ore, Direction.normalized);
-            inputTank.RemoveTank();
+            _inputTank.RemoveTank();
         }
         else
         {
@@ -151,17 +160,17 @@ public class BlowOut : Vacuum
                 var localPosition = _playerMovement.ChunkInformation.WorldToChunk(new Vector2(randomCell.x, randomCell.y));
                 if (_updateTilemap.HasTile(randomCell) || mapTilemap.HasTile(localPosition)) { continue; }
                 
-                _updateTilemap.SetTile(randomCell, _blockDatas.GetBlock(blockType).tile);
+                Block block = _vacuum.BlockData.GetBlock(_blockType);
+                _updateTilemap.SetTile(randomCell, block.tile);
 
                 var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(randomCell.x, randomCell.y));
-                var block = _blockDatas.GetBlock(_blockDatas.GetBlock(blockType).tile);
                 if (block.GetStratumGeologyData(tileLayer) != null)
                 {
                     _updateTilemap.SetColor(randomCell, block.GetStratumGeologyData(tileLayer).color);
                 }
                 
-                inputTank.RemoveTank();
-                _soundSource.InstantiateSound("BlowOut", randomPosition);
+                _inputTank.RemoveTank();
+                _soundSource.InstantiateSound("Eject", randomPosition);
             }
         }
     }
@@ -239,7 +248,7 @@ public class BlowOut : Vacuum
             _updateTilemap.SetTile(newTilePosition, tile);
                     
             var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
-            var blockStratumGeologyData = _blockDatas.GetBlock(tile).GetStratumGeologyData(tileLayer);
+            var blockStratumGeologyData = _vacuum.BlockData.GetBlock(tile).GetStratumGeologyData(tileLayer);
             if (blockStratumGeologyData != null)
             {
                 _updateTilemap.SetColor(newTilePosition, blockStratumGeologyData.color);
@@ -255,12 +264,12 @@ public class BlowOut : Vacuum
             var tile = mapTilemap.GetTile(localPosition);
             mapTilemap.SetTile(localPosition, null);
                     
-            if (_blockDatas.GetBlock(tile).type == BlockType.Sand)
+            if (_vacuum.BlockData.GetBlock(tile).type == BlockType.Sand)
             {
                 _updateTilemap.SetTile(newTilePosition, tile);
                         
                 var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(newTilePosition.x, newTilePosition.y));
-                var blockStratumGeologyData = _blockDatas.GetBlock(tile).GetStratumGeologyData(tileLayer);
+                var blockStratumGeologyData = _vacuum.BlockData.GetBlock(tile).GetStratumGeologyData(tileLayer);
                 if (blockStratumGeologyData != null)
                 {
                     _updateTilemap.SetColor(newTilePosition, blockStratumGeologyData.color);
@@ -270,10 +279,10 @@ public class BlowOut : Vacuum
             {
                 newMapTilemap.SetTile(localNewTilePosition, tile);
                         
-                if (_blockDatas.GetBlock(tile).type is not (BlockType.Ruby or BlockType.Crystal or BlockType.Emerald))
+                if (_vacuum.BlockData.GetBlock(tile).type is not (BlockType.Ruby or BlockType.Crystal or BlockType.Emerald))
                 {
                     var tileLayer = _playerMovement.ChunkInformation.GetLayer(new Vector2(localNewTilePosition.x, localNewTilePosition.y));
-                    var blockStratumGeologyData = _blockDatas.GetBlock(_blockDatas.GetBlock(blockType).tile).GetStratumGeologyData(tileLayer);
+                    var blockStratumGeologyData = _vacuum.BlockData.GetBlock(_vacuum.BlockData.GetBlock(_blockType).tile).GetStratumGeologyData(tileLayer);
                     if (blockStratumGeologyData != null)
                     {
                         newMapTilemap.SetColor(localNewTilePosition, blockStratumGeologyData.color);

@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class Vacuum : MonoBehaviour
 {
+	[FormerlySerializedAs("_blockDatas")]
 	[Header("Vacuum Settings")]
-	[SerializeField] private BlockDatas _blockDatas;
+	[SerializeField] private BlockData _blockData;
 	[SerializeField] private Transform _pivot;
 	
 	private Camera _camera;
@@ -12,7 +14,7 @@ public class Vacuum : MonoBehaviour
 
 	public Vector3 Direction { get; private set; }
 	public PlayerActions.VacuumActions VacuumActions => _playerActions.Vacuum;
-	public BlockDatas BlockDatas => _blockDatas;
+	public BlockData BlockData => _blockData;
 	public Transform Pivot => _pivot;
 	public ISoundSourceable SoundSource { get; private set; }
 	
@@ -20,7 +22,7 @@ public class Vacuum : MonoBehaviour
 	{
 		var soundSource = FindObjectOfType<SoundSource>();
 		SoundSource = soundSource.GetComponent<ISoundSourceable>();
-		SoundSource.SetInstantiation("BlowOut");
+		SoundSource.SetInstantiation("Eject");
 		
 		_camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 		

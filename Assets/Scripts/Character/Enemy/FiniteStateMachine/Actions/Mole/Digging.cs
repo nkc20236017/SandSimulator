@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Digging : MonoBehaviour
 {
+	[FormerlySerializedAs("_blockDatas")]
 	[Header("Digging Config")]
-	[SerializeField] private BlockDatas _blockDatas;
+	[SerializeField] private BlockData _blockData;
 	[SerializeField] private float _radius;
 	[SerializeField] private float _diggingInterval;
 	
@@ -31,7 +33,7 @@ public class Digging : MonoBehaviour
 			var localPosition = _enemyBrain.ChunkInformation.WorldToChunk(new Vector2(position.x, position.y));
 			if (!tilemap.HasTile(localPosition)) { continue; }
 			var tile = tilemap.GetTile(localPosition);
-			var isContinue = _blockDatas.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
+			var isContinue = _blockData.Block.Where(tileData => tileData.tile == tile).Any(tileData => _numberExecutions % tileData.weight != 0);
 			if (isContinue) { continue; }
 			
 			tilemap.SetTile(localPosition, null);

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class BlowOutOre : MonoBehaviour
+public class EjectOre : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float plusRadius;
@@ -22,7 +22,7 @@ public class BlowOutOre : MonoBehaviour
     {
         var soundSource = FindObjectOfType<SoundSource>();
         _soundSource = soundSource.GetComponent<ISoundSourceable>();
-        _soundSource.SetInstantiation("BlowOutOre");
+        _soundSource.SetInstantiation("EjectOre");
 
         _circleCollider2D = GetComponent<CircleCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -79,7 +79,7 @@ public class BlowOutOre : MonoBehaviour
 
     private void Destroy()
     {
-        _soundSource.InstantiateSound("BlowOutOre", transform.position);
+        _soundSource.InstantiateSound("EjectOre", transform.position);
         // TODO: ［エフェクト］鉱石破壊
         AudioManager.Instance.PlaySFX("BreakSE");
         Vector2 effectPos = new Vector2(transform.position.x, transform.position.y);

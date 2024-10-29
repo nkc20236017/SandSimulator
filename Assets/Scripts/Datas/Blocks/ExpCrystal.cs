@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using NaughtyAttributes;
 
-[CreateAssetMenu(fileName = "New ExpCrystal", menuName = "ScriptableObjects/Datas/New ExpCrystal")]
+[CreateAssetMenu(fileName = "New ExpCrystal", menuName = "ScriptableObjects/Data/Blocks/New ExpCrystal")]
 public class ExpCrystal : Block
 {
 	public int expAmount;
