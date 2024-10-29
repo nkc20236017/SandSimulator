@@ -4,9 +4,14 @@ using MackySoft.Navigathena.SceneManagement;
 using System;
 using System.Threading;
 using VContainer;
+using UnityEngine;
+using System.Collections.Generic;
 
 public class ResultEntoryPoint : SceneEntryPointBase
 {
+    [SerializeField]
+    private Block demoblock;
+
     private IResultAction resultAction;
 
     [Inject]
@@ -29,6 +34,19 @@ public class ResultEntoryPoint : SceneEntryPointBase
         if (reader.TryRead(out SceneResultData resultData))
         {
             resultAction.ResultStart(resultData.result);
+        }
+        else
+        {
+#if UNITY_EDITOR
+            var mineralTank = new MineralTank(demoblock);
+            for (int i = 0; i < 1000; i++)
+            {
+                mineralTank.MineralAdd();
+            }
+            var dic = new Dictionary<Block, MineralTank>();
+            dic.Add(demoblock, mineralTank);
+            resultAction.ResultStart(new(dic));
+#endif
         }
 
         return base.OnEnter(reader, cancellationToken);

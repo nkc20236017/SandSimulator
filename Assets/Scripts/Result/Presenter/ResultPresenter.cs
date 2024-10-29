@@ -11,6 +11,8 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     [SerializeField]
     private ResultAnimationPresenter animationPresenter;
     [SerializeField]
+    private RankingPresenter rankingPresenter;
+    [SerializeField]
     private GameObject sceneButton;
     [SerializeField]
     private GameObject totalePrise;
@@ -19,6 +21,7 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     private CancellationToken token;
     private CancellationTokenSource tokenSource;
     private PlayerActions playerActions;
+    private ResultOutPutData resultOutPutData;
 
 
     private void Start()
@@ -26,7 +29,7 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
         tokenSource = new CancellationTokenSource();
         playerActions = new PlayerActions();
         token = tokenSource.Token;
-        playerActions.UI.UISelect.performed += OnUISelect;
+        playerActions.UI.UISelect.started += OnUISelect;
         playerActions.Enable();
     }
 
@@ -37,14 +40,15 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
 
     private void OnUISelect(InputAction.CallbackContext context)
     {
-        if (demofast) { return; }
-        demofast = true;
         tokenSource.Cancel();
-
+        NextRanking();
+        if (!rankingPresenter.rankingEnd) { return; }
+        NextScene();
     }
 
     public async void ResultUI(ResultOutPutData outPutData)
     {
+        resultOutPutData = outPutData;
         resultPresenter.gameObject.SetActive(false);
         resultPresenter.TotalUI(outPutData);
         try
@@ -55,7 +59,6 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
         {
             animationPresenter.gameObject.SetActive(false);
             resultPresenter.gameObject.SetActive(true);
-            sceneButton.SetActive(true);
             totalePrise.SetActive(true);
         }
         AudioManager.Instance.StopBGM("Coinloop");
@@ -64,6 +67,25 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
         resultPresenter.gameObject.SetActive(true);
         sceneButton.SetActive(true);
         totalePrise.SetActive(true);
+        demofast = true;
+    }
+
+    private async void NextRanking()
+    {
+        if (!demofast)
+        {
+            return;
+        }
+
+        rankingPresenter.gameObject.SetActive(true);
+        await rankingPresenter.ShowRanking(resultOutPutData);
+        sceneButton.SetActive(true);
+
+    }
+
+    private void NextScene()
+    {
+        sceneButton.GetComponent<ResultSceneButton>().SceneLoad();
     }
 
     private void OnDestroy()
