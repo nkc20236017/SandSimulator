@@ -1,12 +1,16 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Threading;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class RankingPresenter : MonoBehaviour
 {
     private RankingService ranking;
+
+    private CancellationTokenSource cancellationTokenSource;
+    private CancellationToken cancellationToken;
 
     [SerializeField]
     private Transform textParent;
@@ -22,8 +26,16 @@ public class RankingPresenter : MonoBehaviour
 
     private void Awake()
     {
+        cancellationTokenSource = new CancellationTokenSource();
+        cancellationToken = cancellationTokenSource.Token;
+        
         ranking = new RankingService();
         texts = textParent.GetComponentsInChildren<Text>();
+    }
+
+    private void OnDestroy()
+    {
+        cancellationTokenSource.Cancel();
     }
 
     public async UniTask ShowRanking(ResultOutPutData outPutData)
@@ -55,7 +67,7 @@ public class RankingPresenter : MonoBehaviour
             }
         }
         
-        await this.transform.DOMoveX(endPoint.position.x, 1).ToUniTask();
+        await this.transform.DOMoveX(endPoint.position.x, 1).ToUniTask(cancellationToken:cancellationToken);
         rankingEnd = true;
     }
 }
