@@ -15,6 +15,7 @@ public class RankingService : IRanking
 
     private void Initialize()
     {
+        data = new RankingData();
         filepath = Application.persistentDataPath + "/" + fileName;
 
         if (!File.Exists(filepath))

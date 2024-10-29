@@ -41,6 +41,7 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     private void OnUISelect(InputAction.CallbackContext context)
     {
         tokenSource.Cancel();
+        if (!demofast) { return; }
         NextRanking();
         if (!rankingPresenter.rankingEnd) { return; }
         NextScene();
@@ -72,12 +73,6 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
 
     private async void NextRanking()
     {
-        if (!demofast)
-        {
-            return;
-        }
-
-        rankingPresenter.gameObject.SetActive(true);
         await rankingPresenter.ShowRanking(resultOutPutData);
         sceneButton.SetActive(true);
 

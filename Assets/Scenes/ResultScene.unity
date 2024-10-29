@@ -177,6 +177,7 @@ MonoBehaviour:
   textParent: {fileID: 1016327849}
   texts: []
   endPoint: {fileID: 1850984668}
+  rankingEnd: 0
 --- !u!1 &650350285
 GameObject:
   m_ObjectHideFlags: 0

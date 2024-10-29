@@ -40,7 +40,7 @@ public class RankingPresenter : MonoBehaviour
 
     public async UniTask ShowRanking(ResultOutPutData outPutData)
     {
-
+        if (rankingEnd) { return; }
 
         int totaleAmount = 0;
         for (int i = 0; i < outPutData.mineralTank.Count; i++)
@@ -61,7 +61,7 @@ public class RankingPresenter : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < texts.Length; i++)
+            for (int i = 0; i < data.Ranks.Count; i++)
             {
                 texts[i].text = i + 1 + "E" + data.Ranks[i].ToString();
             }
