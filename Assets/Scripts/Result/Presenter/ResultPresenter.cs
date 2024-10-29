@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System;
 using System.Threading;
 using UnityEngine;
@@ -17,6 +18,12 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     private GameObject sceneButton;
     [SerializeField]
     private GameObject totalePrise;
+
+    [SerializeField]
+    private GameObject resultObject;
+    [SerializeField]
+    private Transform endPoint;
+
     //ˆêŽž“I‚È
     private bool demofast;
     private CancellationToken token;
@@ -79,6 +86,7 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
 
     private async void NextRanking()
     {
+        resultObject.transform.DOMoveX(endPoint.position.x, 1);
         await rankingPresenter.ShowRanking(resultOutPutData);
         sceneButton.SetActive(true);
 
