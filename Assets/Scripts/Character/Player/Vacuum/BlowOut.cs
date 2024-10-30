@@ -73,6 +73,7 @@ public class BlowOut : MonoBehaviour
     {
         _lastUpdateTime = 0f;
 
+        VacuumActions.SpittingOut.started += OnSpittingOut;
         VacuumActions.SpittingOut.canceled += _ => CancelBlowOut();
         VacuumActions.VacuumPos.performed += OnGamepad;
         VacuumActions.VacuumMouse.performed += OnMouse;
@@ -98,6 +99,11 @@ public class BlowOut : MonoBehaviour
             IsBlowOut = true;
             BlowOutTiles();
         }
+    }
+
+    private void OnSpittingOut(InputAction.CallbackContext context)
+    {
+        inputTank.InputLock();
     }
 
     /// <summary>

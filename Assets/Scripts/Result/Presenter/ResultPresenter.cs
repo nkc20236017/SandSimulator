@@ -55,6 +55,7 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     {
         tokenSource.Cancel();
         if (!demofast) { return; }
+        resultObject.transform.DOMoveX(endPoint.position.x, 1);
         NextRanking();
         if (!rankingPresenter.rankingEnd) { return; }
         NextScene();
@@ -75,8 +76,8 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
             resultPresenter.gameObject.SetActive(true);
             totalePrise.SetActive(true);
             await UniTask.Delay(1,cancellationToken : token2);
-            demofast = true;
         }
+        demofast = true;
         AudioManager.Instance.StopBGM("Coinloop");
         AudioManager.Instance.PlaySFX("CoinSE");
         animationPresenter.gameObject.SetActive(false);
@@ -85,11 +86,9 @@ public class ResultPresenter : MonoBehaviour, IOutputResultUI
     }
 
     private async void NextRanking()
-    {
-        resultObject.transform.DOMoveX(endPoint.position.x, 1);
+    {  
         await rankingPresenter.ShowRanking(resultOutPutData);
         sceneButton.SetActive(true);
-
     }
 
     private void NextScene()

@@ -98,7 +98,6 @@ public class PlayerTank : IInputTank, IGameLoad
                 itemTankDictionary.Remove(mineralData);
                 currentItemAmount--;
                 lockTank = true;
-                Debug.Log("あああああ");
                 SelectTank(itemTankDictionary.Keys.Count);
                 if (itemTankDictionary.Keys.Count <= 0)
                 {
