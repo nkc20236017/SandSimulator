@@ -172,11 +172,12 @@ MonoBehaviour:
   jumpTutorial: 0
   SlicUpTutorial: 0
   BlowOutTutorial: 0
-  tutorialClear: 0
-  moveText: "\u79FB\u52D5\u3057\u308D"
-  jumpText: "\u30B8\u30E3\u30F3\u30D7\u3057\u308D"
-  slicUpText: "\u5438\u3044\u8FBC\u3081"
-  blowDownText: "\u5410\u304D\u51FA\u305B"
-  clerText: "\u7D42\u308F\u308A"
+  SelectTutorial: 0
+  ImageAnimator: {fileID: 0}
+  moveText: "\u79FB\u52D5"
+  jumpText: "\u30B8\u30E3\u30F3\u30D7"
+  slicUpText: "\u5438\u3044\u8FBC\u307F"
+  blowDownText: "\u5410\u304D\u51FA\u3057"
+  selectText: "\u9271\u77F3\u306E\u9078\u629E"
   text: {fileID: 2738333271113385637}
   tutorialObject: {fileID: 7245793730870037424}
