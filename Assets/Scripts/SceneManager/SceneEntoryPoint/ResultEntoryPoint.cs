@@ -39,7 +39,7 @@ public class ResultEntoryPoint : SceneEntryPointBase
         {
 #if UNITY_EDITOR
             var mineralTank = new MineralTank(demoblock);
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 19999; i++)
             {
                 mineralTank.MineralAdd();
             }

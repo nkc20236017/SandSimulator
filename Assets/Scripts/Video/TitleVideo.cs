@@ -30,7 +30,7 @@ public class TitleVideo : MonoBehaviour
         cancellationToken = cancellationTokenSource.Token;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         cancellationTokenSource.Cancel();
     }

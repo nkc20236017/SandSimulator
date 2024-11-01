@@ -21,7 +21,13 @@ public class RankingPresenter : MonoBehaviour
     [SerializeField]
     private Transform endPoint;
 
+    [SerializeField]
+    private Text PlayerText;
+
     public bool rankingEnd;
+
+    [SerializeField]
+    private bool rankingStart;
 
 
     private void Awake()
@@ -56,6 +62,12 @@ public class RankingPresenter : MonoBehaviour
         {
             for (int i = 0; i < 5; i++)
             {
+                if (totaleAmount == data.Ranks[i]&&rankingStart ==false)
+                {
+                    rankingStart = true;
+                    texts[i].text = "New=>" + (i + 1) + "・" + data.Ranks[i].ToString();
+                    continue;
+                }
                 texts[i].text = i+1+"・"+data.Ranks[i].ToString();
             }
         }
@@ -63,8 +75,20 @@ public class RankingPresenter : MonoBehaviour
         {
             for (int i = 0; i < data.Ranks.Count; i++)
             {
+                if(totaleAmount == data.Ranks[i] && rankingStart == false)
+                {
+                    Debug.Log("aaaa");
+                    rankingStart = true;
+                    texts[i].text = "New=>" + (i + 1) + "・" + data.Ranks[i].ToString();
+                    continue;
+                }
                 texts[i].text = i + 1 + "・" + data.Ranks[i].ToString();
             }
+        }
+
+        if(rankingStart == false)
+        {
+            PlayerText.text = "New=>" + totaleAmount.ToString();
         }
         
         await this.transform.DOMoveX(endPoint.position.x, 1).ToUniTask(cancellationToken:cancellationToken);

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -16,6 +17,8 @@ public class TutorialManager : MonoBehaviour
     private bool BlowOutTutorial;
     [SerializeField]
     private bool SelectTutorial;
+    [SerializeField]
+    private bool TargetTutorial;
 
     [SerializeField]
     private Animator ImageAnimator;
@@ -35,6 +38,9 @@ public class TutorialManager : MonoBehaviour
     [TextArea]
     [SerializeField]
     private string selectText;
+    [TextArea]
+    [SerializeField]
+    private string targetText;
 
     [SerializeField]
     private Text text;
@@ -58,6 +64,7 @@ public class TutorialManager : MonoBehaviour
         inputActions.Vacuum.RightSelect.performed += OnSelect;
         inputActions.Vacuum.LeftSelect.performed += OnSelect;
         inputActions.Vacuum.TankSelect.performed += OnSelect;
+        inputActions.Vacuum.VacuumPos.performed += OnTargetTank;
 
         inputActions.Enable();
     }
@@ -102,6 +109,12 @@ public class TutorialManager : MonoBehaviour
             ImageAnimator.SetFloat("Blend", 5);
             return;
         }
+        if(!TargetTutorial)
+        {
+            text.text = targetText;
+            ImageAnimator.SetFloat("Blend", 6);
+            return;
+        }
 
         tutorialObject.SetActive(false);
 
@@ -141,6 +154,13 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
+    private void OnTargetTank(InputAction.CallbackContext context)
+    {
+        if (SelectTutorial)
+        {
+            TargetTutorial = true;
+        }
+    }
 
 
 }
