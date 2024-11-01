@@ -32,6 +32,7 @@ public class TitleVideo : MonoBehaviour
 
     private void OnDisable()
     {
+        inputAction.Dispose();
         cancellationTokenSource.Cancel();
     }
 
