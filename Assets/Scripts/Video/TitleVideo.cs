@@ -18,6 +18,9 @@ public class TitleVideo : MonoBehaviour
     [SerializeField]
     private RawImage rawImage;
 
+    [SerializeField]
+    private float waiteTime;
+
     private InputAction inputAction;
 
     private CancellationTokenSource cancellationTokenSource;
@@ -58,17 +61,15 @@ public class TitleVideo : MonoBehaviour
 
     private async UniTask VideoPlayer()
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(60), cancellationToken: cancellationToken);
+        await UniTask.Delay(TimeSpan.FromSeconds(waiteTime), cancellationToken: cancellationToken);
         intensity.enabled = false;
         videoPlayer.Play();
-        await rawImage.DOFade(1, 1).ToUniTask(cancellationToken: cancellationToken);
     }
 
     private async UniTask VideoStop()
     {
         videoPlayer.Stop();
         intensity.enabled = true;
-        await rawImage.DOFade(0, 1).ToUniTask(cancellationToken: cancellationToken);
 
         await VideoPlayer();
 
