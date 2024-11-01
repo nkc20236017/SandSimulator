@@ -693,7 +693,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   videoPlayer: {fileID: 1806679261}
   intensity: {fileID: 1435520635}
-  waiteTime: 1
+  waiteTime: 60
 --- !u!328 &788850403
 VideoPlayer:
   m_ObjectHideFlags: 0
