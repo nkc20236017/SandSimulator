@@ -16,9 +16,6 @@ public class TitleVideo : MonoBehaviour
     private PostProcessLayer intensity;
 
     [SerializeField]
-    private RawImage rawImage;
-
-    [SerializeField]
     private float waiteTime;
 
     private InputAction inputAction;
@@ -63,6 +60,7 @@ public class TitleVideo : MonoBehaviour
     {
         await UniTask.Delay(TimeSpan.FromSeconds(waiteTime), cancellationToken: cancellationToken);
         intensity.enabled = false;
+
         videoPlayer.Play();
     }
 
@@ -79,7 +77,4 @@ public class TitleVideo : MonoBehaviour
     {
         VideoStop().Forget();
     }
-
-
-
 }
