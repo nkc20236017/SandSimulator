@@ -161,7 +161,6 @@ public class PlayerTank : IInputTank, IGameLoad
 
 
         select = Mathf.Clamp(select, 0, itemTankDictionary.Keys.Count);
-        Debug.Log(select);
 
         foreach (KeyValuePair<Block, MineralTank> pair in itemTankDictionary)
         {
@@ -188,7 +187,6 @@ public class PlayerTank : IInputTank, IGameLoad
 
     public void LeftSelectTank()
     {
-        Debug.Log(selectIndex);
 
         selectIndex--;
         selectIndex = Mathf.Clamp(selectIndex, 0, itemTankDictionary.Keys.Count);
@@ -203,7 +201,6 @@ public class PlayerTank : IInputTank, IGameLoad
 
     public void RightSelectTank()
     {
-        Debug.Log(selectIndex);
         selectIndex++;
         selectIndex = Mathf.Clamp(selectIndex, 1, itemTankDictionary.Keys.Count + 1);
 
