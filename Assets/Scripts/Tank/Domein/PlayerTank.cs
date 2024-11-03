@@ -98,6 +98,7 @@ public class PlayerTank : IInputTank, IGameLoad
                 itemTankDictionary.Remove(mineralData);
                 currentItemAmount--;
                 lockTank = true;
+                selectIndex = itemTankDictionary.Keys.Count;
                 SelectTank(itemTankDictionary.Keys.Count);
                 if (itemTankDictionary.Keys.Count <= 0)
                 {
@@ -158,7 +159,9 @@ public class PlayerTank : IInputTank, IGameLoad
     {
         int selectIndex = 0;
 
+
         select = Mathf.Clamp(select, 0, itemTankDictionary.Keys.Count);
+        Debug.Log(select);
 
         foreach (KeyValuePair<Block, MineralTank> pair in itemTankDictionary)
         {
@@ -185,24 +188,30 @@ public class PlayerTank : IInputTank, IGameLoad
 
     public void LeftSelectTank()
     {
-        selectIndex = Mathf.Clamp(selectIndex, 0, itemTankDictionary.Keys.Count);
+        Debug.Log(selectIndex);
+
         selectIndex--;
+        selectIndex = Mathf.Clamp(selectIndex, 0, itemTankDictionary.Keys.Count);
+
         if (selectIndex == 0)
         {
             selectIndex = itemTankDictionary.Keys.Count;
         }
+
         SelectTank(selectIndex);
     }
 
     public void RightSelectTank()
     {
-        selectIndex = Mathf.Clamp(selectIndex, 1, itemTankDictionary.Keys.Count + 1);
+        Debug.Log(selectIndex);
         selectIndex++;
+        selectIndex = Mathf.Clamp(selectIndex, 1, itemTankDictionary.Keys.Count + 1);
 
-        if (selectIndex > itemTankDictionary.Keys.Count)
+        if (selectIndex > itemTankDictionary.Count)
         {
             selectIndex = 1;
         }
+
         SelectTank(selectIndex);
     }
 
