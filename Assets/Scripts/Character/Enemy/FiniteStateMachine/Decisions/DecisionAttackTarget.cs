@@ -40,7 +40,7 @@ public class DecisionAttackTarget : FsmDecision
 				if (targetMovement != null)
 				{
 					var direction = hit.transform.position - transform.position;
-					targetMovement.Knockback(direction.normalized * (_enemyBrain.Status.attackSpeed / 2));
+					targetMovement.KnockBackAddForce(direction.normalized * (_enemyBrain.Status.attackSpeed / 2));
 				}
 			}
 		}

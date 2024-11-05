@@ -21,6 +21,15 @@ public class PlayerAnimation : MonoBehaviour
 	[SerializeField] private SpriteRenderer _playerHeadSpriteRenderer;
 	[SerializeField] private PlayerHead[] _playerHeads;
 	
+	[Header("Tank Config")]
+	[SerializeField] private Transform _tankPoint;
+	
+	[Header("Tank Settings")]
+	[Tooltip("タンクの回転範囲")] [MinMaxSlider(-180, -0f)]
+	[SerializeField] private Vector2 _tankRotationRange = new(-110, 0);
+	[Tooltip("タンクの回転速度")] [Min(0f)]
+	[SerializeField] private float _tankRotationSpeed = 2f;
+	
 	private static readonly int IsJump = Animator.StringToHash("isJump");
 	private static readonly int XVelocity = Animator.StringToHash("xVelocity");
 	private Vector3 _playerDirection;
@@ -47,6 +56,7 @@ public class PlayerAnimation : MonoBehaviour
 		HeadDirection();
 		LeftArmRotation();
 		RightArmRotation();
+		TankAnimation();
 	}
 	
 	private void Animation()
@@ -110,6 +120,37 @@ public class PlayerAnimation : MonoBehaviour
 		float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 		int directionalityAmendment = _playerDirection == Vector3.right ? 0 : 180;
 		_rightArmPoint.rotation = Quaternion.Euler(new Vector3(0, 0, angle + directionalityAmendment));
+	}
+	
+	private void TankAnimation()
+	{
+	    // プレイヤーの速度に基づいてタンクの位置を更新
+	    Vector3 playerVelocity = _rigidbody2D.velocity;
+	    float angle = Mathf.Atan2(playerVelocity.y, playerVelocity.x) * Mathf.Rad2Deg;
+
+	    // タンクの回転範囲を制限
+	    angle = Mathf.Clamp(angle, _tankRotationRange.x, _tankRotationRange.y);
+
+	    // タンクの回転を設定
+	    var euler = new Vector3(0, 0, angle);
+	    Quaternion rotation = Quaternion.Euler(euler);
+
+	    // プレイヤーの向きが反転している場合、タンクの回転も反転
+	    if (_playerPoint.localScale.x < 0)
+	    {
+	        rotation = Quaternion.Euler(new Vector3(0, 0, -angle));
+	    }
+
+	    _tankPoint.rotation = Quaternion.Lerp(_tankPoint.rotation, rotation, _tankRotationSpeed * Time.deltaTime);
+	}
+
+	private void OnDrawGizmos()
+	{
+		Gizmos.color = Color.yellow;
+		Vector3 from = Quaternion.Euler(0, 0, _tankRotationRange.x - 90) * Vector3.right;
+		Vector3 to = Quaternion.Euler(0, 0, _tankRotationRange.y - 90) * Vector3.right;
+		Gizmos.DrawLine(_tankPoint.position, _tankPoint.position + from);
+		Gizmos.DrawLine(_tankPoint.position, _tankPoint.position + to);
 	}
 }
 
