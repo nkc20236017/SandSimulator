@@ -2,8 +2,8 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[CreateAssetMenu(fileName = "BlockDatas", menuName = "ScriptableObjects/Datas/BlockDatas")]
-public class BlockDatas : ScriptableObject
+[CreateAssetMenu(fileName = "BlockData", menuName = "ScriptableObjects/Data/Blocks/BlockData")]
+public class BlockData : ScriptableObject
 {
 	[SerializeField] private Block[] blocks;
 

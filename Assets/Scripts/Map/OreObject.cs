@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 public class OreObject : MonoBehaviour, IDamageable, IWorldGenerateWaitable
 {
+    [FormerlySerializedAs("blockDatas")]
     [Header("Datas Config")]
-    [SerializeField] private BlockDatas blockDatas;
+    [SerializeField] private BlockData _blockData;
     
     [Header("Fall Ore Config")]
     [SerializeField] private float fallDamageInterval;

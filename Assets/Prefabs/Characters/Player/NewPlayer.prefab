@@ -832,9 +832,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1262846146962141656}
-  - component: {fileID: 3096270862166128512}
+  - component: {fileID: 9125731530515429452}
   - component: {fileID: 7372913311512468596}
   - component: {fileID: 517658503967576376}
+  - component: {fileID: 3096270862166128512}
   m_Layer: 0
   m_Name: Vacuum
   m_TagString: Untagged
@@ -860,6 +861,67 @@ Transform:
   - {fileID: 2742181527502545212}
   m_Father: {fileID: 8631620046660992223}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9125731530515429452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7534302333382250281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aabcf288d72475ab3557af14e9efefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _vacuumData: {fileID: 0}
+  _blockData: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
+  _pivot: {fileID: 4376876092548384439}
+--- !u!114 &7372913311512468596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7534302333382250281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17f48989030049c8b609ce3e810157ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _absorptionEffect: {fileID: 5052201344631655864}
+  _absorptionTileLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  _absorptionObjectLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  _suctionAngle: 35
+  _suctionDistance: 23
+  _deleteDistance: 7.9
+  _suckUpSpeed: 0
+  _debugMode: 0
+--- !u!114 &517658503967576376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7534302333382250281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b25146e0b1c4301af0ee85eedc9b1ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blowEffect: {fileID: 6886564342449709102}
+  radius: 25
+  distance: 6
+  range: 3.25
+  blowOutSpeed: 3
+  blowOutUp: 3
+  interval: 0.01
+  generateTileCount: {x: 5, y: 8}
+  _ejectOrePrefab: {fileID: 6160956251364179191, guid: f9894d24cfcacfb418601744a869af7e, type: 3}
+  debug: 0
 --- !u!114 &3096270862166128512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -884,58 +946,6 @@ MonoBehaviour:
   _lineWidth: 0.75
   _gravity: {x: 0, y: -98.1, z: 0}
   _vacuumRange: 4.4
---- !u!114 &7372913311512468596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7534302333382250281}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17f48989030049c8b609ce3e810157ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
-  blockLayerMask:
-    serializedVersion: 2
-    m_Bits: 8
-  pivot: {fileID: 4376876092548384439}
-  _suctionAngle: 35
-  _suctionDistance: 23
-  _deleteDistance: 7.9
-  oreLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  suckUpSpeed: 3
-  _debugMode: 0
-  matchTheSizeOfTheCollider: 0
-  suckEffect: {fileID: 5052201344631655864}
-  suckUpPostion: {x: 0, y: 0, z: 0}
---- !u!114 &517658503967576376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7534302333382250281}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b25146e0b1c4301af0ee85eedc9b1ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  blockDatas: {fileID: 11400000, guid: 0c0662d73f1d2694a8015aadc7415033, type: 2}
-  pivot: {fileID: 4376876092548384439}
-  radius: 25
-  distance: 6
-  range: 3.25
-  blowOutSpeed: 3
-  interval: 0.01
-  generateTileCount: {x: 5, y: 8}
-  blowOutOrePrefab: {fileID: 6160956251364179191, guid: f9894d24cfcacfb418601744a869af7e, type: 3}
-  debug: 0
-  blowEffect: {fileID: 6886564342449709102}
-  blowOutMousePostion: {x: 0, y: 0, z: 0}
 --- !u!1 &7585330990428590436
 GameObject:
   m_ObjectHideFlags: 0
@@ -1193,7 +1203,7 @@ MonoBehaviour:
     downHead: {fileID: -901895084773352926, guid: 2b52adf1ea5706d4fb31d6dba79095e5, type: 3}
     upHead: {fileID: -901895084773352926, guid: 2b52adf1ea5706d4fb31d6dba79095e5, type: 3}
   - name: "\u30C0\u30E1\u30FC\u30B8"
-    playerHeadType: 3
+    playerHeadType: 4
     downHead: {fileID: 6266832379714697181, guid: 2b52adf1ea5706d4fb31d6dba79095e5, type: 3}
     upHead: {fileID: 6266832379714697181, guid: 2b52adf1ea5706d4fb31d6dba79095e5, type: 3}
   _tankPoint: {fileID: 1895779095038353373}
@@ -1528,7 +1538,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4580003718124624101, guid: 42ff2fbf30f8c804ba5f281ba083f01d, type: 3}
       propertyPath: m_Name
-      value: BlowoutEffect2
+      value: EjectEffect
       objectReference: {fileID: 0}
     - target: {fileID: 4580003718124624101, guid: 42ff2fbf30f8c804ba5f281ba083f01d, type: 3}
       propertyPath: m_IsActive
@@ -1623,7 +1633,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4580003718124624101, guid: e0195b431a6db1748b01d1188fe495a4, type: 3}
       propertyPath: m_Name
-      value: SuckupEffect
+      value: AbsorptionEffect
       objectReference: {fileID: 0}
     - target: {fileID: 4580003718124624101, guid: e0195b431a6db1748b01d1188fe495a4, type: 3}
       propertyPath: m_IsActive

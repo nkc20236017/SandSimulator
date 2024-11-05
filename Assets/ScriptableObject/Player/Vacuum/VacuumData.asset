@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2adcea3aeaaa4e618c5e77eb8f7f9803, type: 3}
+  m_Name: VacuumData
+  m_EditorClassIdentifier: 
+  VacuumName: 
+  VacuumSprite: {fileID: 0}
+  Price: 0
+  AbsorptionAngle: 0
+  AbsorptionDistance: 0
+  AbsorptionDeleteDistance: 0
+  AbsorptionSpeed: 0
+  EjectRadius: 0
+  EjectDistance: 0
+  EjectRange: 0
+  EjectSpeed: 1
+  EjectUp: 3

@@ -26,7 +26,7 @@ public enum LiquidType
     Lava
 }
 
-[CreateAssetMenu(fileName = "New Block", menuName = "ScriptableObjects/Datas/New Block")]
+[CreateAssetMenu(fileName = "New Block", menuName = "ScriptableObjects/Data/Blocks/New Block")]
 public class Block : ScriptableObject
 {
     public BlockType type;

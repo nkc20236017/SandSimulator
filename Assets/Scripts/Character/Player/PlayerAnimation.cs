@@ -158,8 +158,9 @@ public enum PlayerHeadType
 {
 	Normal,
 	Sad,
-	Nihility,
-	Detection
+	Nihilist,
+	Detection,
+	Damage,
 }
 
 [Serializable]

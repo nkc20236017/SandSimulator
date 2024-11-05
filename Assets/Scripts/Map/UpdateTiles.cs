@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
 {
+    [FormerlySerializedAs("blockDatas")]
     [Header("Datas Config")]
-    [SerializeField] private BlockDatas blockDatas;
+    [SerializeField] private BlockData _blockData;
     [SerializeField] private LayerMask collisionLayerMask;
 
     [Header("Update Config")]
@@ -48,7 +50,7 @@ public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
 
     private void GetTilePosition()
     {
-        foreach (var tile in blockDatas.Block.Where(tile => tile.tilePositions.Count > 0))
+        foreach (var tile in _blockData.Block.Where(tile => tile.tilePositions.Count > 0))
         {
             tile.tilePositions.Clear();
         }
@@ -68,10 +70,10 @@ public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
                 var tile = _updateTilemap.GetTile(position);
                 if (tile == null) { continue; }
             
-                var index = Array.FindIndex(blockDatas.Block, t => t.tile == tile);
-                if (index >= 0 && index < blockDatas.Block.Length)
+                var index = Array.FindIndex(_blockData.Block, t => t.tile == tile);
+                if (index >= 0 && index < _blockData.Block.Length)
                 {
-                    blockDatas.Block[index].tilePositions.Add(position);
+                    _blockData.Block[index].tilePositions.Add(position);
                 }
             }
         }
@@ -92,22 +94,22 @@ public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
                     
                     var tile = _updateTilemap.GetTile(position);
                     if (tile == null) { continue; }
-                    var index = Array.FindIndex(blockDatas.Block, t => t.tile == tile);
-                    if (index >= 0 && index < blockDatas.Block.Length)
+                    var index = Array.FindIndex(_blockData.Block, t => t.tile == tile);
+                    if (index >= 0 && index < _blockData.Block.Length)
                     {
-                        blockDatas.Block[index].tilePositions.Add(position);
+                        _blockData.Block[index].tilePositions.Add(position);
                     }
                 }
             }
         }
-        if (blockDatas.Block.All(tile => tile.tilePositions.Count == 0)) { return; }
+        if (_blockData.Block.All(tile => tile.tilePositions.Count == 0)) { return; }
         
         CheckUpdateTiles();
     }
 
     private void CheckUpdateTiles()
     {
-        foreach (var tileData in blockDatas.Block.Where(tile => tile.tilePositions.Count > 0))
+        foreach (var tileData in _blockData.Block.Where(tile => tile.tilePositions.Count > 0))
         {
             _clearTiles.Clear();
             _updateTiles.Clear();
@@ -197,7 +199,7 @@ public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
 
         if (hasTileCount == 3)
         {
-            var block = blockDatas.GetBlock(BlockType.Sand);
+            var block = _blockData.GetBlock(BlockType.Sand);
             mapTilemap.SetTile(localPosition, block.tile);
             // TODO: 地層の色を設定する
             var tileLayer = _chunkInformation.GetLayer(pos);
@@ -339,8 +341,8 @@ public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
 
     private void SandToMud(Vector3Int position)
     {
-        if (blockDatas.GetBlock(BlockType.Liquid).tilePositions.Count == 0) { return; }
-        if (blockDatas.GetBlock(BlockType.Sand).tilePositions.Count == 0) { return; }
+        if (_blockData.GetBlock(BlockType.Liquid).tilePositions.Count == 0) { return; }
+        if (_blockData.GetBlock(BlockType.Sand).tilePositions.Count == 0) { return; }
         
         var checkBound = new BoundsInt(position.x - 1, position.y - 1, 0, 3, 3, 1);
         var tilesBlock = _updateTilemap.GetTilesBlock(checkBound);
@@ -352,11 +354,11 @@ public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
         if (mapTilemap == null) { return; }
         
         var tileLayer = _chunkInformation.GetLayer(pos);
-        if (tilesBlock.Any(tileBase => tileBase == blockDatas.GetBlock(BlockType.Liquid).tile))
+        if (tilesBlock.Any(tileBase => tileBase == _blockData.GetBlock(BlockType.Liquid).tile))
         {
             var localPosition = _chunkInformation.WorldToChunk(new Vector2(position.x, position.y));
             
-            var block = blockDatas.GetBlock(BlockType.Liquid);
+            var block = _blockData.GetBlock(BlockType.Liquid);
             mapTilemap.SetTile(localPosition, block.tile);
             
             if (block.GetStratumGeologyData(tileLayer) == null) { return; }
@@ -387,6 +389,6 @@ public class UpdateTile : MonoBehaviour, IWorldGenerateWaitable
     {
         _chunkInformation = worldMapManager;
         _updateTilemap = GetComponent<Tilemap>();
-        blockDatas.Block.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
+        _blockData.Block.ToList().ForEach(tile => tile.tilePositions ??= new List<Vector3Int>());
     }
 }

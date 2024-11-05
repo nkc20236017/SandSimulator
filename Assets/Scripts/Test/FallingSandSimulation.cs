@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class FallingSandSimulation : MonoBehaviour
 {
+    [FormerlySerializedAs("blockDatas")]
     [Header("Datas Config")]
-    [SerializeField] private BlockDatas blockDatas;
+    [SerializeField] private BlockData _blockData;
 
     [Header("Update Config")]
     [SerializeField] private Tilemap tilemap;
@@ -35,7 +37,7 @@ public class FallingSandSimulation : MonoBehaviour
 
     private void GetTilePosition()
     {
-        foreach (var tile in blockDatas.Block.Where(tile => tile.tilePositions.Count > 0))
+        foreach (var tile in _blockData.Block.Where(tile => tile.tilePositions.Count > 0))
         {
             tile.tilePositions.Clear();
         }
@@ -48,21 +50,21 @@ public class FallingSandSimulation : MonoBehaviour
                 var tile = tilemap.GetTile(position);
                 if (tile == null) { continue; }
                 
-                var index = Array.FindIndex(blockDatas.Block, t => t.tile == tile);
-                if (index >= 0 && index < blockDatas.Block.Length)
+                var index = Array.FindIndex(_blockData.Block, t => t.tile == tile);
+                if (index >= 0 && index < _blockData.Block.Length)
                 {
-                    blockDatas.Block[index].tilePositions.Add(position);
+                    _blockData.Block[index].tilePositions.Add(position);
                 }
             }
         }
-        if (blockDatas.Block.All(tile => tile.tilePositions.Count == 0)) { return; }
+        if (_blockData.Block.All(tile => tile.tilePositions.Count == 0)) { return; }
         
         CheckUpdateTiles();
     }
 
     private void CheckUpdateTiles()
     {
-        foreach (var tileData in blockDatas.Block.Where(tile => tile.tilePositions.Count > 0))
+        foreach (var tileData in _blockData.Block.Where(tile => tile.tilePositions.Count > 0))
         {
             _clearTiles.Clear();
             _updateTiles.Clear();

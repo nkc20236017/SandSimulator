@@ -498,15 +498,15 @@ namespace WorldCreation
             GameObject player = Instantiate(playerPrefab, (Vector2)center, Quaternion.identity, sceneParent);
             UpdateTile updateTilemap = Instantiate(updateTilemapPrefab, tilemapParent);
             updateTilemap.SetPlayer(player.transform);
-            SuckUp suckUp = player.GetComponentInChildren<SuckUp>();
-            BlowOut blowOut = player.GetComponentInChildren<BlowOut>();
+            Absorption absorption = player.GetComponentInChildren<Absorption>();
+            Eject eject = player.GetComponentInChildren<Eject>();
             SelectTank select = player.GetComponent<SelectTank>();
 
-            suckUp.SetTilemap(updateTilemap.gameObject.GetComponent<Tilemap>());
-            blowOut.SetTilemap(updateTilemap.gameObject.GetComponent<Tilemap>());
+            absorption.Inject(updateTilemap.gameObject.GetComponent<Tilemap>());
+            eject.Inject(updateTilemap.gameObject.GetComponent<Tilemap>());
 
-            suckUp.Inject(inputTank);
-            blowOut.Inject(inputTank);
+            absorption.Inject(inputTank);
+            eject.Inject(inputTank);
             select.Inject(inputTank);
 
             activeStanbyObject.Add(player);

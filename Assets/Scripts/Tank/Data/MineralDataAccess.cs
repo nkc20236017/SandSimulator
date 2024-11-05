@@ -4,24 +4,24 @@ using VContainer;
 
 public class MineralDataAccess : ITankRepository
 {
-    private BlockDatas mineralDataBase;
+    private BlockData _mineralDataBase;
 
     [Inject]
-    public MineralDataAccess(BlockDatas mineralDataBase)
+    public MineralDataAccess(BlockData mineralDataBase)
     {
-        this.mineralDataBase = mineralDataBase;
+        this._mineralDataBase = mineralDataBase;
     }
 
     public Block Find(BlockType type)
     {
-        return mineralDataBase.Block
+        return _mineralDataBase.Block
             .Where(mineral => mineral.type == type)
             .FirstOrDefault();
     }
 
     public Block Find(TileBase tile)
     {
-        return mineralDataBase.Block
+        return _mineralDataBase.Block
             .Where(mineral=> mineral.tile == tile)
             .FirstOrDefault();
     }
