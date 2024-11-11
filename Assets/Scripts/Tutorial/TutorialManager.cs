@@ -65,6 +65,7 @@ public class TutorialManager : MonoBehaviour
         inputActions.Vacuum.LeftSelect.performed += OnSelect;
         inputActions.Vacuum.TankSelect.performed += OnSelect;
         inputActions.Vacuum.VacuumPos.performed += OnTargetTank;
+        inputActions.Vacuum.VacuumMouse.performed += OnTargetTank;
 
         inputActions.Enable();
     }
